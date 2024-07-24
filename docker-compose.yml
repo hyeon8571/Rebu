@@ -31,6 +31,8 @@ services:
       - mysql
       - redis
     container_name: spring_container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/rebu?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     networks:
       - internal_network
       

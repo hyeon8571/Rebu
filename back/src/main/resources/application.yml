@@ -5,7 +5,6 @@ spring:
     include: secret
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/rebu?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
   jpa:
     properties:
       hibernate:
