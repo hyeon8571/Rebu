@@ -1,0 +1,22 @@
+.Button {
+  background-color: #a55eea;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  height: 3rem;
+  width: 100%;
+  cursor: pointer;
+  white-space: nowrap;
+  /*   버튼안에 있는 텍스트가 화면이 줄어들더라도 줄바꿈되지 않도록 설정해줌*/
+}
+
+.Button_Hover {
+  background-color: white;
+  border: 1px solid gray;
+  color: black;
+  &:hover {
+    background-color: #a55eea;
+    color: white;
+  }
+
+}

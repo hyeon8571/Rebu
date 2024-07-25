@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState, useEffect } from "react";
+import styled, { ThemeProvider } from "styled-components";
+import { lightTheme, darkTheme } from "./util/theme";
+import { GlobalStyles } from "./util/GlobalStyles";
+import { useMediaQuery } from "react-responsive";
+import NavigationBar from "./components/common/NavigationBar";
+import NavigationRail from "./components/common/NavigationRail";
+
+const MobileWrapper = styled.div`
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+`;
 
 function App() {
+  const [theme, setTheme] = useState("light");
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isDesktop = useMediaQuery({ minWidth: 769 });
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <>
+        <GlobalStyles />
+        {isDesktop && (
+          <NavigationRail theme={theme} toggleTheme={toggleTheme} />
+        )}
+        {isMobile && (
+          <MobileWrapper>
+            <NavigationBar theme={theme} toggleTheme={toggleTheme} />
+          </MobileWrapper>
+        )}
+      </>
+    </ThemeProvider>
   );
 }
 
