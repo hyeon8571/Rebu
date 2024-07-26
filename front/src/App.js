@@ -25,13 +25,13 @@ function App() {
         <BrowserRouter>
           <GlobalStyles />
           {isDesktop && (
-            <NavigationRail theme={theme} toggleTheme={toggleTheme}>
+            <NavigationRail>
               <AppRoutes theme={theme} toggleTheme={toggleTheme} />
               <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
             </NavigationRail>
           )}
           {isMobile && (
-            <NavigationBar theme={theme} toggleTheme={toggleTheme}>
+            <NavigationBar>
               <AppRoutes theme={theme} toggleTheme={toggleTheme} />
               <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
             </NavigationBar>

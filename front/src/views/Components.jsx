@@ -11,7 +11,7 @@ import ButtonSmall from "../components/common/ButtonSmall";
 import ModalNoBackGround from "../components/common/ModalNoBackground";
 import Img from "../assets/images/img.webp";
 import ThemeToggler from "../util/ThemeToggler";
-import VisitedCard from "../components/review/VisitedCard";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div``;
 const ProfilesDisplay = styled.div`
@@ -23,6 +23,11 @@ export default function Components({ theme, toggleTheme }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalNoBackgroundOpen, setIsModalNoBackgroundOpen] = useState(false);
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/timetable");
+  };
   const buttons = [
     {
       id: 1,
@@ -45,6 +50,15 @@ export default function Components({ theme, toggleTheme }) {
     highlight: false,
     title: "버튼",
   };
+
+  const buttons4 = [
+    {
+      id: 1,
+      onClick: handleClick,
+      title: "시간표",
+      highlight: true,
+    },
+  ];
 
   function handleModal() {
     setIsModalOpen(true);
@@ -79,6 +93,7 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileMedium img={Img} time={3600} />
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
+      <ButtonFull buttons={buttons4}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
