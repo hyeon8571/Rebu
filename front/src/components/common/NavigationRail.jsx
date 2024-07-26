@@ -17,6 +17,7 @@ import Components from "../../views/Components";
 import VisitedPage from "../../views/VisitedPage";
 import ReservationCalendar from "../reservation/ReservationCalendar";
 import Login from "../../views/Login";
+import PersonalInfo from "../../views/PersonalInfo";
 
 const GridContainer = styled.div`
   display: grid;
@@ -37,7 +38,7 @@ const Rail = styled.nav`
   border-radius: 1rem;
   height: 80vh;
   min-height: 320px;
-  width: 64px;
+  width: 60px;
   background-color: ${(props) =>
     props.theme.value === "light"
       ? props.theme.tertiary
@@ -49,7 +50,7 @@ const Rail = styled.nav`
 `;
 
 const Content = styled.div`
-  padding: 16px;
+  padding: 0 16px;
   grid-column: 2 / 3;
   overflow: auto;
 `;
@@ -115,10 +116,11 @@ export default function NavigationRail({ theme, toggleTheme, children }) {
     <Router>
       <Navigation theme={theme} children={children}>
         <Routes>
+          <Route path="/personal-info" element={<PersonalInfo />}/>
           <Route path="/" element={<Login/>}/>
           <Route
             path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
+            element={<MyProfile theme={theme} toggleTheme={toggleTheme} children={children}/>}
           />
           <Route path="/calendar" element={<ReservationCalendar />} />
           <Route path="/visited" element={<VisitedPage />} />

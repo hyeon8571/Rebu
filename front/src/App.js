@@ -8,8 +8,8 @@ import NavigationBar from "./components/common/NavigationBar";
 import NavigationRail from "./components/common/NavigationRail";
 
 const MobileWrapper = styled.div`
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  /* margin-left: 0.5rem;
+  margin-right: 0.5rem; */
 `;
 
 function App() {

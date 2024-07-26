@@ -11,6 +11,7 @@ import VisitedPage from "../../views/VisitedPage";
 import Components from "../../views/Components";
 import ComponentsJiwon from "../../views/ComponentsJiwon";
 import ReservationCalendar from "../reservation/ReservationCalendar";
+import PersonalInfo from "../../views/PersonalInfo";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -85,6 +86,7 @@ export default function NavigationBar({ theme, toggleTheme, children }) {
     <Router>
       <Navigation theme={theme}>
         <Routes>
+          <Route path="/personal-info" element={<PersonalInfo />}/>
           <Route path="jiwonComponents" element={<ComponentsJiwon />} />
           <Route path="/calendar" element={<ReservationCalendar />} />
           <Route path="/visited" element={<VisitedPage />} />

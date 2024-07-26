@@ -11,7 +11,7 @@ const TabMenu = styled.ul`
   margin: auto;
   margin-left: 4px;
   /* margin-right: 8px; */
-  max-width: 760px;
+  max-width: 768px;
   height: 60px;
   flex-direction: row;
   align-items: center;

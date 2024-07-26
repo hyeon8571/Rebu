@@ -25,23 +25,23 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  max-width: 768px;
 `;
 
+
 const ProfileContainer = styled.div`
-  margin-top: 40px;
+  /* margin-top: 40px; */
   max-width: 768px;
   width: 100%;
 `;
 
 const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? "fixed" : "")};
-  top: ${(props) =>
-    props.isSticky ? "50px" : "auto"}; /* Adjust based on header height */
+  position: sticky;
+  top: 50px; /* Adjust based on header height */
   transition: background-color 0.5s linear;
   width: 100%;
   background-color: ${(props) =>
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
-  z-index: 1000;
 `;
 
 const GridContainer = styled.div`
@@ -64,20 +64,19 @@ const ReviewPhotos = [ChaImg, nail3Img, hairImg];
 
 const ScrapPhotos = [manImg, nail1Img, nail2Img, nailartImg];
 
-const Likes = ["싸피 네일", "싸피 헤어샵", "차차 헤어샵"];
-
 const name = "Cha_Cha";
 
 const introduce = "나는 차은우 나는 뷰티 마스터 V";
 
 const ReviewCount = ReviewPhotos.length;
 const ScrapCount = ScrapPhotos.length;
-const LikesCount = Likes.length;
+const LikesCount = visitedCards.length
+
 
 const FollowersCount = 10;
 const FollowingCount = 12;
 
-const ProfilePage = ({ theme, toggleTheme }) => {
+const ProfilePage = ({ theme, toggleTheme, children }) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
   const tabRef = useRef(null);
@@ -125,7 +124,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
   return (
     <Wrapper>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <Header theme={theme} toggleTheme={toggleTheme} children={children}/>
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage

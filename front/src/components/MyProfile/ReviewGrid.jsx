@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import MyProfileDetail from "./MyProfileDetail";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GridContainer = styled.div`
   display: grid;
-  /* grid-template-columns: 2fr 3fr; */
   height: 150px;
   width: 100%;
   max-width: 768px;
@@ -27,14 +27,15 @@ const GridItem = styled.div`
 
 const Photo = styled.img`
   width: 100%;
-  height: 100%; // 그리드 아이템 높이에 맞춰서 조정
+  height: 100%;
   object-fit: cover;
 `;
 
 function GridComponent({ uploadedPhotos }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
-  const [rowHeight, setRowHeight] = useState(150); // 초기 rowHeight 설정
+  const [rowHeight, setRowHeight] = useState(150);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     const generateLayout = (photos) => {
@@ -61,37 +62,55 @@ function GridComponent({ uploadedPhotos }) {
   useEffect(() => {
     const updateRowHeight = () => {
       if (containerRef.current) {
-        const gridWidth = containerRef.current.clientWidth / 3; // 그리드 열 수에 따라 변경
-        const newHeight = gridWidth; // 그리드 항목의 높이를 너비와 동일하게 설정
+        const gridWidth = containerRef.current.clientWidth / 3;
+        const newHeight = gridWidth;
         setRowHeight(newHeight);
       }
     };
 
     window.addEventListener("resize", updateRowHeight);
-    updateRowHeight(); // 초기 실행
+    updateRowHeight();
 
     return () => {
       window.removeEventListener("resize", updateRowHeight);
     };
   }, []);
 
+  const handlePhotoClick = (photo) => {
+    setSelectedPhoto(photo);
+    console.log("클릭")
+    // <MyProfileDetail photo={selectedPhoto} />
+  };
+
   return (
-    <GridContainer ref={containerRef}>
-      <ResponsiveGridLayout
-        className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 1024 }}
-        cols={{ lg: 3, md: 3 }}
-        rowHeight={rowHeight}
-        width={containerRef.current ? containerRef.current.clientWidth : 0}
-      >
-        {uploadedPhotos.map((photo, index) => (
-          <GridItem key={`photo-${index}`} data-grid={layouts.lg[index]}>
-            <Photo src={photo} alt={`uploaded-${index}`} />
-          </GridItem>
-        ))}
-      </ResponsiveGridLayout>
-    </GridContainer>
+    <div>
+      {selectedPhoto !== null ? (
+        <MyProfileDetail photo={selectedPhoto} />
+      ) : (
+        <GridContainer ref={containerRef}>
+          <ResponsiveGridLayout
+            className="layout"
+            layouts={layouts}
+            breakpoints={{ lg: 1200, md: 1024 }}
+            cols={{ lg: 3, md: 3 }}
+            rowHeight={rowHeight}
+            width={containerRef.current ? containerRef.current.clientWidth : 0}
+            isDraggable={false} // 추가된 부분: 드래그 비활성화
+            isResizable={false} // 추가된 부분: 리사이즈 비활성화
+          >
+            {uploadedPhotos.map((photo, index) => (
+              <GridItem
+                key={`photo-${index}`}
+                data-grid={layouts.lg[index]}
+                onClick={() => handlePhotoClick(photo)}
+              >
+                <Photo src={photo} alt={`uploaded-${index}`} />
+              </GridItem>
+            ))}
+          </ResponsiveGridLayout>
+        </GridContainer>
+      )}
+    </div>
   );
 }
 
