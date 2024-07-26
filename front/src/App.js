@@ -1,16 +1,14 @@
 // App.js
 import React, { useState, useEffect } from "react";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./util/theme";
 import { GlobalStyles } from "./util/GlobalStyles";
 import { useMediaQuery } from "react-responsive";
+import { BrowserRouter, Router } from "react-router-dom";
 import NavigationBar from "./components/common/NavigationBar";
 import NavigationRail from "./components/common/NavigationRail";
-
-const MobileWrapper = styled.div`
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-`;
+import AppRoutes from "./routes/AppRoutes";
+import PrivateRoutes from "./routes/PrivateRoutes";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -24,15 +22,21 @@ function App() {
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <>
-        <GlobalStyles />
-        {isDesktop && (
-          <NavigationRail theme={theme} toggleTheme={toggleTheme} />
-        )}
-        {isMobile && (
-          <MobileWrapper>
-            <NavigationBar theme={theme} toggleTheme={toggleTheme} />
-          </MobileWrapper>
-        )}
+        <BrowserRouter>
+          <GlobalStyles />
+          {isDesktop && (
+            <NavigationRail theme={theme} toggleTheme={toggleTheme}>
+              <AppRoutes theme={theme} toggleTheme={toggleTheme} />
+              <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
+            </NavigationRail>
+          )}
+          {isMobile && (
+            <NavigationBar theme={theme} toggleTheme={toggleTheme}>
+              <AppRoutes theme={theme} toggleTheme={toggleTheme} />
+              <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
+            </NavigationBar>
+          )}
+        </BrowserRouter>
       </>
     </ThemeProvider>
   );

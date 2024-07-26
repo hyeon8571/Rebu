@@ -6,17 +6,8 @@ import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
-import MyProfile from "../../views/MyProfile";
-import {
-  BrowserRouter as Router,
-  NavLink,
-  Route,
-  Routes,
-} from "react-router-dom";
-import Components from "../../views/Components";
-import VisitedPage from "../../views/VisitedPage";
-import ReservationCalendar from "../reservation/ReservationCalendar";
-import Login from "../../views/Login";
+
+import { NavLink } from "react-router-dom";
 
 const GridContainer = styled.div`
   display: grid;
@@ -76,7 +67,7 @@ const Navigation = ({ children }) => (
   <>
     <GridContainer>
       <Rail>
-        <StyledNavLink to="/">
+        <StyledNavLink to="/Login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -111,23 +102,5 @@ const Navigation = ({ children }) => (
 );
 
 export default function NavigationRail({ theme, toggleTheme, children }) {
-  return (
-    <Router>
-      <Navigation theme={theme} children={children}>
-        <Routes>
-          <Route path="/" element={<Login/>}/>
-          <Route
-            path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
-          />
-          <Route path="/calendar" element={<ReservationCalendar />} />
-          <Route path="/visited" element={<VisitedPage />} />
-          <Route
-            path="/component"
-            element={<Components theme={theme} toggleTheme={toggleTheme} />}
-          />
-        </Routes>
-      </Navigation>
-    </Router>
-  );
+  return <Navigation theme={theme} children={children} />;
 }

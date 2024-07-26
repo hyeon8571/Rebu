@@ -1,22 +1,11 @@
 import styled from "styled-components";
 import ProfileSmall from "./ProfileSmall";
-import Img from "../../assets/images/img.webp";
 import NavigationItem from "./NavigationItem";
 import { CgAddR } from "react-icons/cg";
 import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
-import MyProfile from "../../views/MyProfile";
 import img from "../../assets/images/cha.png";
-import VisitedPage from "../../views/VisitedPage";
-import Components from "../../views/Components";
-import ComponentsJiwon from "../../views/ComponentsJiwon";
-import ReservationCalendar from "../reservation/ReservationCalendar";
-import {
-  BrowserRouter as Router,
-  NavLink,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, NavLink } from "react-router-dom";
 
 const Bar = styled.div`
   padding-top: 6px;
@@ -45,12 +34,13 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 const ICON_SIZE = 28;
-const Navigation = ({ theme, children }) => {
+
+export default function NavigationBar({ children }) {
   return (
     <>
       <>{children}</>
       <Bar>
-        <StyledNavLink to="/jinwonComponents">
+        <StyledNavLink to="/Login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -70,34 +60,12 @@ const Navigation = ({ theme, children }) => {
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/Profile">
+        <StyledNavLink to="/profile">
           <NavigationItem>
             <ProfileSmall img={img}></ProfileSmall>
           </NavigationItem>
         </StyledNavLink>
       </Bar>
     </>
-  );
-};
-
-export default function NavigationBar({ theme, toggleTheme, children }) {
-  return (
-    <Router>
-      <Navigation theme={theme}>
-        <Routes>
-          <Route path="jiwonComponents" element={<ComponentsJiwon />} />
-          <Route path="/calendar" element={<ReservationCalendar />} />
-          <Route path="/visited" element={<VisitedPage />} />
-          <Route
-            path="/component"
-            element={<Components theme={theme} toggleTheme={toggleTheme} />}
-          />
-          <Route
-            path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
-          />
-        </Routes>
-      </Navigation>
-    </Router>
   );
 }

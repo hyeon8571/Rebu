@@ -29,7 +29,7 @@ const LoginTitle = ({ text, description }) => {
     <>
       <Section>
         <Img
-          src={process.env.PUBLIC_URL + "/REBU_logo.png"}
+          src={process.env.PUBLIC_URL + "/logo.png"}
           alt="logo"
           width="50px"
         />

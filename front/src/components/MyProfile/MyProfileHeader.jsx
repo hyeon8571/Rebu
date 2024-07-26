@@ -11,7 +11,7 @@ import ThemeToggler from "../../util/ThemeToggler";
 const Wrapper = styled.div`
   /* 레이아웃 */
   display: flex;
-  position: fixed;
+
   align-items: center;
   height: 50px;
   max-width: 760px;
