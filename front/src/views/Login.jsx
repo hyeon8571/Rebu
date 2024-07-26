@@ -1,5 +1,5 @@
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import styled from "styled-components";
 
 import LoginTitle from "../components/common/LoginTitle";
@@ -50,7 +50,7 @@ const Login = () => {
           description={"Sign in to your account"}
         />
 
-        <div className="emailBox">
+        <div className="emailBox" z>
           {/* <EmailBox> */}
           <label htmlFor="email" className="label">
             email address

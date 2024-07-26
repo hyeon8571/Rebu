@@ -124,8 +124,9 @@ const ProfilePage = ({ theme, toggleTheme, children }) => {
 
   return (
     <Wrapper>
-      <Header theme={theme} toggleTheme={toggleTheme} children={children}/>
+      <Header theme={theme} toggleTheme={toggleTheme} />
       <ProfileContainer>
+        <Header theme={theme} toggleTheme={toggleTheme} />
         <IntroduceBox>
           <ProfileImage
             img={Img}

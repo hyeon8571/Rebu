@@ -17,7 +17,6 @@ import Components from "../../views/Components";
 import VisitedPage from "../../views/VisitedPage";
 import ReservationCalendar from "../reservation/ReservationCalendar";
 import Login from "../../views/Login";
-import PersonalInfo from "../../views/PersonalInfo";
 
 const GridContainer = styled.div`
   display: grid;
@@ -77,7 +76,7 @@ const Navigation = ({ children }) => (
   <>
     <GridContainer>
       <Rail>
-        <StyledNavLink to="/">
+        <StyledNavLink to="/Login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -116,11 +115,10 @@ export default function NavigationRail({ theme, toggleTheme, children }) {
     <Router>
       <Navigation theme={theme} children={children}>
         <Routes>
-          <Route path="/personal-info" element={<PersonalInfo />}/>
           <Route path="/" element={<Login/>}/>
           <Route
             path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} children={children}/>}
+            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
           />
           <Route path="/calendar" element={<ReservationCalendar />} />
           <Route path="/visited" element={<VisitedPage />} />
