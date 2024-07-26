@@ -66,8 +66,8 @@ const StyledCalendar = styled(Calendar)`
     margin-top: 8px;
   }
 
-  .react-calendar__navigation button:disabled {
-    background-color: #f0f0f0;
+  .react-calendar__navigation button:disabled:first-of-type {
+    visibility: hidden;
   }
 
   .react-calendar__navigation button:enabled:hover,
@@ -118,6 +118,9 @@ const StyledCalendar = styled(Calendar)`
     background: none;
     text-align: center;
     line-height: 36px;
+
+    @media (max-width: 768px) {
+    }
   }
 
   .react-calendar__tile:disabled {
@@ -187,7 +190,7 @@ export default function ReservationCalendar() {
         next2Label={null}
         tileDisabled={({ activeStartDate, date, view }) => date.getDay() === 0} //타일 비활성화 함수
         tileContent={({ date, view }) =>
-          view === "month" && date.getDay() === 0 ? <p>예약</p> : null
+          view === "month" && date.getDay() === 0 ? "" : null
         } // 타일 내 컨텐츠
         prev2Label={null}
         value={date}
