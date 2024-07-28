@@ -60,6 +60,15 @@ export default function Components({ theme, toggleTheme }) {
     },
   ];
 
+  const buttons5 = [
+    {
+      id: 1,
+      onClick: ()=>{navigate("/menutab")},
+      title: "메뉴탭",
+      highlight: true,
+    },
+  ];
+
   function handleModal() {
     setIsModalOpen(true);
   }
@@ -94,6 +103,7 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
       <ButtonFull buttons={buttons4}></ButtonFull>
+      <ButtonFull buttons={buttons5}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>

@@ -1,0 +1,8 @@
+/* 스타일을 오버라이드하는 CSS 클래스 */
+.Layout-cell {
+  height: 30px;
+  width: 5px;
+  /* 원하는 높이로 조정 */
+  font-size: 8px;
+  /* 폰트 크기 조정 */
+}

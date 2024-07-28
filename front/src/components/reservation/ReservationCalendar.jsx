@@ -173,9 +173,8 @@ const StyledCalendar = styled(Calendar)`
 `;
 
 export default function ReservationCalendar() {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(null));
 
-  const day = date.getDate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -195,7 +194,7 @@ export default function ReservationCalendar() {
         prev2Label={null}
         value={date}
       />
-      <p>Selected date: {date.toDateString()}</p>
+
     </CalendarWrapper>
   );
 }

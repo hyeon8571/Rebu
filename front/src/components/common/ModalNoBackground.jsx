@@ -31,12 +31,21 @@ const Close = styled.span`
 `;
 const ModalContent = styled.div`
   overflow: auto;
+  padding-left : 25%;
+  padding-right : 25%;
+  @media (max-width: 768px) {
+    padding-left: 12.5%;
+    padding-right : 12.5%
+  }
 `;
 
 const ModalBox = styled.div`
   display: flex;
   position: absolute;
-  top: 25vh;
+  top: 20vh;
+  @media (max-width: 768px) {
+    top : 7.5vh;
+  }
   flex-direction: column;
   background-color: ${(props) => props.theme.background};
   max-width: 640px;
@@ -54,7 +63,7 @@ const ModalBox = styled.div`
   transform: ${(props) => (props.isOpen ? "scale(1)" : "scale(0.8)")};
 `;
 
-export default function ModalNoBackground({ isOpen, setIsOpen, Childrun }) {
+export default function ModalNoBackground({ isOpen, setIsOpen, children }) {
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -64,7 +73,7 @@ export default function ModalNoBackground({ isOpen, setIsOpen, Childrun }) {
       <ModalDiv isOpen={isOpen}>
         <ModalBox isOpen={isOpen}>
           <Close onClick={closeModal}>&times;</Close>
-          <ModalContent>{Childrun}</ModalContent>
+          <ModalContent>{children}</ModalContent>
         </ModalBox>
       </ModalDiv>
     </React.Fragment>

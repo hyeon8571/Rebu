@@ -6,6 +6,7 @@ import ReservationCalendar from "../components/reservation/ReservationCalendar";
 import VisitedPage from "../views/VisitedPage";
 import Components from "../views/Components";
 import TimeTable from "../components/reservation/TimeTable";
+import MenuTab from "../components/reservation/MenuTab";
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
@@ -24,6 +25,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       element={<Components theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route path="/timetable" element={<TimeTable />} />
+    <Route path="/menutab" element={<MenuTab />} />
   </Routes>
 );
 
