@@ -6,11 +6,13 @@ import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import Img from "../../assets/images/img.webp";
 import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
+import AlertDeleteDesigner from "./AlertDeleteDesigner";
 
 const UpperTabWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
+  border-bottom: 5px solid ${(props) => props.theme.secondary};
 `;
 
 const EditDesignerButton = styled.div`
@@ -25,7 +27,8 @@ const DesignerCardContainer = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
   padding: 0.5rem;
-  border-top: 1px solid ${(props) => props.theme.primary};
+ box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-bottom: 1rem;
 `;
 
 const DesignerContent = styled.div`
@@ -141,10 +144,10 @@ export default function DesignerTab() {
     setModalContent();
   }
 
-  function handleModifyInstruction() {
-    setIsEditMode(true);
+  function handleModifyInstruction(introduction) {
+    setIsModalOpen(true);
     setModalContent(
-      <EditDesignerIntroduction setIsModalOpen={setIsModalOpen} />
+      <EditDesignerIntroduction introduction={introduction} setIsModalOpen={setIsModalOpen} />
     );
   }
 
@@ -155,6 +158,11 @@ export default function DesignerTab() {
   function handleAddDesigner() {
     setIsModalOpen(true);
     setModalContent(<InviteDesigner setIsModalOpen={setIsModalOpen} />);
+  }
+
+  function handleDeleteDesigner() {
+    setIsModalOpen(true);
+    setModalContent(<AlertDeleteDesigner setIsModalOpen={setIsModalOpen}></AlertDeleteDesigner>);
   }
 
   return (
@@ -192,8 +200,8 @@ export default function DesignerTab() {
           </DesignerPhotoContainer>
           {isEditMode && (
             <ButtonWrapper>
-              <EditButton onClick={handleModifyInstruction}>수정</EditButton>
-              <SaveButton>삭제</SaveButton>
+              <EditButton onClick={() => handleModifyInstruction(item.workingIntroduction)}>수정</EditButton>
+              <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
             </ButtonWrapper>
           )}
         </DesignerCardContainer>
