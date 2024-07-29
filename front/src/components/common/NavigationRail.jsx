@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
-import { CgAddR, CgSearch } from "react-icons/cg";
+import { CgAddR } from "react-icons/cg";
 import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
@@ -39,16 +39,6 @@ const Rail = styled.nav`
   transition: background-color 0.3s ease-in-out;
 `;
 
-const Content = styled.div`
-  padding: 16px;
-  grid-column: 2 / 3;
-  overflow: auto;
-`;
-
-const RightWrapper = styled.div`
-  grid-column: 3 / 4;
-`;
-
 const StyledNavLink = styled(NavLink)`
   color: ${(props) => (props.theme.value === "light" ? "" : props.theme.text)};
   transition: background-color 0.3s ease-in-out;
@@ -63,8 +53,8 @@ const ProfileNavLink = styled(NavLink)``;
 
 const ICON_SIZE = 36;
 
-const Navigation = ({ children }) => (
-  <>
+export default function NavigationRail() {
+  return (
     <GridContainer>
       <Rail>
         <StyledNavLink to="/Login">
@@ -95,12 +85,6 @@ const Navigation = ({ children }) => (
           <ProfileMedium img={Img} time={0} />
         </ProfileNavLink>
       </Rail>
-      <Content>{children}</Content>
-      <RightWrapper />
     </GridContainer>
-  </>
-);
-
-export default function NavigationRail({ theme, toggleTheme, children }) {
-  return <Navigation theme={theme} children={children} />;
+  );
 }

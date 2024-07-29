@@ -63,8 +63,20 @@ export default function Components({ theme, toggleTheme }) {
   const buttons5 = [
     {
       id: 1,
-      onClick: ()=>{navigate("/menutab")},
+      onClick: () => {
+        navigate("/menutab");
+      },
       title: "메뉴탭",
+      highlight: true,
+    },
+  ];
+  const buttons6 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/designertab");
+      },
+      title: "디자이너탭",
       highlight: true,
     },
   ];
@@ -104,7 +116,7 @@ export default function Components({ theme, toggleTheme }) {
       </ProfilesDisplay>
       <ButtonFull buttons={buttons4}></ButtonFull>
       <ButtonFull buttons={buttons5}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>

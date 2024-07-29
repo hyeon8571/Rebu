@@ -35,10 +35,9 @@ const StyledNavLink = styled(NavLink)`
 `;
 const ICON_SIZE = 28;
 
-export default function NavigationBar({ children }) {
+export default function NavigationBar() {
   return (
     <>
-      <>{children}</>
       <Bar>
         <StyledNavLink to="/Login">
           <NavigationItem>

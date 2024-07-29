@@ -22,26 +22,16 @@ export const Wrapper = styled.div`
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
   transition: background-color 0.5s linear;
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  max-width: 768px;
 `;
 
 const ProfileContainer = styled.div`
-  margin-top: 40px;
   max-width: 768px;
   width: 100%;
-`;
-
-const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? "fixed" : "")};
-  top: ${(props) =>
-    props.isSticky ? "50px" : "auto"}; /* Adjust based on header height */
-  transition: background-color 0.5s linear;
-  width: 100%;
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#ffffff" : props.theme.body};
-  z-index: 1000;
 `;
 
 const GridContainer = styled.div`
@@ -49,6 +39,7 @@ const GridContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -60,26 +51,44 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
+const StickyTabContainer = styled.div`
+  position: ${(props) => (props.isSticky ? "fixed" : "relative")};
+  top: 50px;
+  right: ${(props) => (props.isSticky ? "50%" : "0px")};
+  transition: background-color 0.5s linear;
+  @media (max-width: 768px) {
+    width: 100%;
+    right: 0%;
+  }
+  width: ${(props) => (props.isSticky ? "50%" : "100%")};
+  max-width: 768px;
+  /* left: ${(props) => (props.isSticky ? "16px" : "0")}; */
+  grid-column: 2 / 3;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#ffffff" : props.theme.body};
+`;
+
 const ReviewPhotos = [ChaImg, nail3Img, hairImg];
-
 const ScrapPhotos = [manImg, nail1Img, nail2Img, nailartImg];
-
-const Likes = ["싸피 네일", "싸피 헤어샵", "차차 헤어샵"];
-
 const name = "Cha_Cha";
-
 const introduce = "나는 차은우 나는 뷰티 마스터 V";
-
 const ReviewCount = ReviewPhotos.length;
 const ScrapCount = ScrapPhotos.length;
-const LikesCount = Likes.length;
-
+const LikesCount = visitedCards.length;
 const FollowersCount = 10;
 const FollowingCount = 12;
 
-const ProfilePage = ({ theme, toggleTheme }) => {
+const ProfilePage = ({ theme, toggleTheme, children }) => {
   const [currentTab, setCurrentTab] = useState(0);
+  const [key, setKey] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
+
+  const tabTitle = [
+    { name: "Reviews", content: "Reviews", count: ReviewCount },
+    { name: "Scraps", content: "Scraps", count: ScrapCount },
+    { name: "Likes", content: "Likes", count: LikesCount },
+  ];
+
   const tabRef = useRef(null);
 
   useEffect(() => {
@@ -95,38 +104,32 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []);
 
-  const tabTitle = [
-    { name: "Reviews", content: "Reviews", count: ReviewCount },
-    { name: "Scraps", content: "Scraps", count: ScrapCount },
-    { name: "Likes", content: "Likes", count: LikesCount },
-  ];
-
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
-
     if (content === "Reviews") {
-      return <ReviewGrid uploadedPhotos={ReviewPhotos} />;
+      return <ReviewGrid key={key} uploadedPhotos={ReviewPhotos} />;
     } else if (content === "Scraps") {
-      return <ScrapGrid uploadedPhotos={ScrapPhotos} />;
+      return <ScrapGrid key={key} uploadedPhotos={ScrapPhotos} />;
     } else if (content === "Likes") {
       return (
-        <>
+        <React.Fragment key={key}>
           {visitedCards.map((item) => (
-            <LikesCard
-              key={item.id}
-              Card={item}
-              button={item.button}
-            ></LikesCard>
+            <LikesCard key={item.id} Card={item} button={item.button} />
           ))}
-        </>
+        </React.Fragment>
       );
     }
   };
 
+  const handleTabChange = (index) => {
+    setCurrentTab(index);
+    setKey((prevKey) => prevKey + 1); // 추가된 부분: 같은 탭을 클릭해도 리렌더링
+  };
+
   return (
     <Wrapper>
+      <Header theme={theme} toggleTheme={toggleTheme} />
       <ProfileContainer>
-        <Header theme={theme} toggleTheme={toggleTheme} />
         <IntroduceBox>
           <ProfileImage
             img={Img}
@@ -144,6 +147,57 @@ const ProfilePage = ({ theme, toggleTheme }) => {
               onTabChange={setCurrentTab}
             />
           </StickyTabContainer>
+        </div>
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
         </div>
       </ProfileContainer>
       <GridContainer>{renderGrid()}</GridContainer>

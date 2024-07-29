@@ -7,6 +7,7 @@ import VisitedPage from "../views/VisitedPage";
 import Components from "../views/Components";
 import TimeTable from "../components/reservation/TimeTable";
 import MenuTab from "../components/reservation/MenuTab";
+import DesignerTab from "../components/reservation/DesignerTab";
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
@@ -26,6 +27,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     />
     <Route path="/timetable" element={<TimeTable />} />
     <Route path="/menutab" element={<MenuTab />} />
+    <Route path="/designertab" element={<DesignerTab />} />
   </Routes>
 );
 
