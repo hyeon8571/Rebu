@@ -130,6 +130,7 @@ public class FTPStorageService implements StorageService{
             ftpClient.connect(server, Integer.parseInt(port));
             ftpClient.login(username, password);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
         } catch (IOException e) {
             throw new StorageConnectionErrorException();
         }
