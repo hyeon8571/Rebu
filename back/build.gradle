@@ -31,6 +31,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'commons-net:commons-net:3.11.1'
 
 	// Test Dependencies
 	testCompileOnly 'org.projectlombok:lombok'
@@ -38,6 +39,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'commons-net:commons-net:3.11.1'
 }
 
 tasks.named('test') {
