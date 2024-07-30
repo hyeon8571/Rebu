@@ -1,6 +1,7 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import ReservationCalendarTab from "./ReservationCalendarTab";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -181,6 +182,7 @@ export default function ReservationCalendar() {
   }, []);
 
   return (
+    <>
     <CalendarWrapper>
       <StyledCalendar
         onChange={setDate}
@@ -191,10 +193,12 @@ export default function ReservationCalendar() {
         tileContent={({ date, view }) =>
           view === "month" && date.getDay() === 0 ? "" : null
         } // 타일 내 컨텐츠
+        onClickDay={(date)=>window.alert("today is " + date)}
         prev2Label={null}
         value={date}
       />
-
-    </CalendarWrapper>
+      </CalendarWrapper>
+    <ReservationCalendarTab/>
+      </>
   );
 }

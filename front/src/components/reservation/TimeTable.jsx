@@ -64,6 +64,11 @@ const schedulerData = [
     endDate: "2024-07-31T20:00",
     title: "그라데이션 네일(행사)",
   },
+  {
+    startDate: "2024-08-02T13:00",
+    endDate: "2024-08-02T14:00",
+    title: "남성 헤어 커트",
+  }
 ];
 
 const ShopStartTime = 8;

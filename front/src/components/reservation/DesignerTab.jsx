@@ -154,13 +154,13 @@ export default function DesignerTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
 
   // 예약화면일때
-  const isReservation = false;
+  const isReservation = true;
 
   // 디자이너일때
   const isDesigner = false;
 
   // 가게 프로필 일떄
-  const isShop = true;
+  const isShop = false;
 
   // 손님일때
   const isCustomer = false;
@@ -239,11 +239,11 @@ export default function DesignerTab() {
         <DesignerCardContainer key={item.id}>
           <DesignerContent>
             <DesignerTitle>
-              <Checkbox
+              {isReservation&& <Checkbox
                 key={item.id}
                 value={item.id === chosenMenu}
                 onChange={() => handleChosenMenu(item.id)}
-              />
+              />}
               {item.workingName} {item.role}
             </DesignerTitle>
             <DesignerIntroduction>
