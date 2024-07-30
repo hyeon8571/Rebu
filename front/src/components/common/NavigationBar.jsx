@@ -5,7 +5,7 @@ import { CgAddR } from "react-icons/cg";
 import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import img from "../../assets/images/cha.png";
-import { BrowserRouter as Router, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Bar = styled.div`
   padding-top: 6px;
@@ -19,7 +19,7 @@ const Bar = styled.div`
   right: 0;
   background-color: ${(props) =>
     props.theme.value === "light" ? "#f2e9fc" : "#666666"};
-  z-index: 1;
+  z-index: 2;
   height: 48px;
   transition: background-color 0.3s ease-in-out;
 `;

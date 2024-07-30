@@ -19,10 +19,13 @@ const DescriptionContainer = styled.div`
   text-align: center;
 `;
 
-export default function EditDesignerIntroduction({ introduction, setIsModalOpen }) {
+export default function EditDesignerIntroduction({
+  introduction,
+  setIsModalOpen,
+}) {
   const Button1 = {
     id: 1,
-    title: "전송",
+    title: "수정",
     onClick: () => {},
     highlight: true,
   };

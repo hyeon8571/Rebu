@@ -1,18 +1,21 @@
 import styled from "styled-components";
 import Switch from "../common/Switch";
 import React, { useState } from "react";
-import ModalNoBackground from "../common/ModalNoBackground";
+import Checkbox from "../common/StyledCheckbox";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import Img from "../../assets/images/img.webp";
 import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
+import ButtonSmall from "../common/ButtonSmall";
 
 const UpperTabWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  border-bottom: 5px solid ${(props) => props.theme.secondary};
+  border-bottom: 2px solid ${(props) => props.theme.primary};
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 const EditDesignerButton = styled.div`
@@ -26,9 +29,10 @@ const EditDesignerButton = styled.div`
 const DesignerCardContainer = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
-  padding: 0.5rem;
- box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  margin-bottom: 1rem;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? props.theme.body : props.theme.secondary};
+  padding: 1rem;
+  border-bottom: 2px solid ${(props) => props.theme.primary};
 `;
 
 const DesignerContent = styled.div`
@@ -38,11 +42,13 @@ const DesignerContent = styled.div`
 `;
 
 const DesignerTitle = styled.div`
+  display: flex;
   font-size: 18px;
   font-weight: 500;
+  padding-bottom: 1rem;
 `;
 
-const DesignerIntroduction = styled.text`
+const DesignerIntroduction = styled.li`
   font-size: 12px;
   padding-top: 0.2rem;
 `;
@@ -89,6 +95,13 @@ const SaveButton = styled.div`
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
 `;
 
+const NextButtonWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-right: 5%;
+  margin-top: 1rem;
+`;
+
 const DesignerData = [
   {
     id: 1,
@@ -126,13 +139,34 @@ const DesignerData = [
   },
 ];
 
+const Button = {
+  id: 1,
+  title: "다음",
+  onClick: () => {},
+  highlight: true,
+};
+
 export default function DesignerTab() {
   const [isMale, setIsMale] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
+  const [chosenMenu, setChosenMenu] = useState(null);
 
-  const isShopProfile = true;
+  // 예약화면일때
+  const isReservation = false;
+
+  // 디자이너일때
+  const isDesigner = false;
+
+  // 가게 프로필 일떄
+  const isShop = true;
+
+  // 손님일때
+  const isCustomer = false;
+
+  // 디자이너인데 자기자신 항목인지 (테스트용 변수 실제로는 map 내부에서 판단해야함)
+  const isMine = false;
 
   const toggleHandler = () => {
     // isMale의 상태를 변경하는 메소드를 구현
@@ -147,7 +181,10 @@ export default function DesignerTab() {
   function handleModifyInstruction(introduction) {
     setIsModalOpen(true);
     setModalContent(
-      <EditDesignerIntroduction introduction={introduction} setIsModalOpen={setIsModalOpen} />
+      <EditDesignerIntroduction
+        introduction={introduction}
+        setIsModalOpen={setIsModalOpen}
+      />
     );
   }
 
@@ -162,7 +199,19 @@ export default function DesignerTab() {
 
   function handleDeleteDesigner() {
     setIsModalOpen(true);
-    setModalContent(<AlertDeleteDesigner setIsModalOpen={setIsModalOpen}></AlertDeleteDesigner>);
+    setModalContent(
+      <AlertDeleteDesigner
+        setIsModalOpen={setIsModalOpen}
+      ></AlertDeleteDesigner>
+    );
+  }
+
+  function handleChosenMenu(value) {
+    if (value === chosenMenu) {
+      setChosenMenu(null);
+    } else {
+      setChosenMenu(value);
+    }
   }
 
   return (
@@ -172,14 +221,16 @@ export default function DesignerTab() {
       </ModalNoBackNoExit>
       <UpperTabWrapper>
         <Switch isMan={isMale} toggleHandler={toggleHandler} />
-        {isShopProfile && !isEditMode && (
+        {(isDesigner || isShop) && !isEditMode && (
           <EditDesignerButton onClick={handleModifyDesigner}>
             디자이너 관리
           </EditDesignerButton>
         )}
         {isEditMode && (
           <ButtonWrapper>
-            <EditButton onClick={handleAddDesigner}>추가</EditButton>
+            {isShop && (
+              <EditButton onClick={handleAddDesigner}>추가</EditButton>
+            )}
             <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
           </ButtonWrapper>
         )}
@@ -188,6 +239,11 @@ export default function DesignerTab() {
         <DesignerCardContainer key={item.id}>
           <DesignerContent>
             <DesignerTitle>
+              <Checkbox
+                key={item.id}
+                value={item.id === chosenMenu}
+                onChange={() => handleChosenMenu(item.id)}
+              />
               {item.workingName} {item.role}
             </DesignerTitle>
             <DesignerIntroduction>
@@ -200,12 +256,27 @@ export default function DesignerTab() {
           </DesignerPhotoContainer>
           {isEditMode && (
             <ButtonWrapper>
-              <EditButton onClick={() => handleModifyInstruction(item.workingIntroduction)}>수정</EditButton>
-              <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
+              {isMine && (
+                <EditButton
+                  onClick={() =>
+                    handleModifyInstruction(item.workingIntroduction)
+                  }
+                >
+                  수정
+                </EditButton>
+              )}
+              {isShop || isMine ? (
+                <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
+              ) : null}
             </ButtonWrapper>
           )}
         </DesignerCardContainer>
       ))}
+      {isReservation && (
+        <NextButtonWrapper>
+          <ButtonSmall button={Button}></ButtonSmall>
+        </NextButtonWrapper>
+      )}
     </>
   );
 }

@@ -44,7 +44,7 @@ const ModalBox = styled.div`
   position: absolute;
   top: 20vh;
   @media (max-width: 768px) {
-    top: calc(20vh);
+    top: 10vh;
   }
   flex-direction: column;
   background-color: ${(props) => props.theme.background};

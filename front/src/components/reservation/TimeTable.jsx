@@ -1,117 +1,90 @@
-import React from 'react';
-import { ViewState } from '@devexpress/dx-react-scheduler';
-import {Scheduler, WeekView, Toolbar, Appointments,TodayButton,DateNavigator } from '@devexpress/dx-react-scheduler-material-ui';
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import { useState } from "react";
+import moment from "moment";
+import { ViewState } from "@devexpress/dx-react-scheduler";
+import {
+  Scheduler,
+  WeekView,
+  Appointments,
+  Toolbar,
+  DateNavigator,
+} from "@devexpress/dx-react-scheduler-material-ui";
 
-const CustomTimeScaleLayout = ({ children, style, ...restProps }) => (
-  <WeekView.TimeScaleLayout
-    {...restProps}
-    style={{
-      ...style,
-      fontSize: "8px",
-      width: '50px',
-      minWidth: '50px',
-    }}
-  >
-    {children}
-  </WeekView.TimeScaleLayout>
-);
+import "./TimeTable.css";
 
-const CustomDayScaleLayout = ({ children, style, ...restProps }) => (
-  <WeekView.DayScaleLayout
-    {...restProps}
-      style={{
-        ...style,
-        width : "50px",
-        fontSize: "8px",
-      }}
-    >
-    {children}
+import "moment/locale/ko"; // 한글 로케일을 가져옵니다.
 
-  </WeekView.DayScaleLayout>
-)
+moment.locale("kr"); // 한글 로케일 설정
 
-const CustomDayScaleRow = ({ children, style, ...restProps }) => (
-  <WeekView.DayScaleRow
-    {...restProps}
-      style={{
-        ...style,
-        width : "50px",
-        fontSize: "8px",
-      }}
-    >
-    {children}
+const today = new Date();
 
-  </WeekView.DayScaleRow>
-)
+// 연도 추출
+const year = today.getFullYear();
 
+// 월 추출 (월은 0부터 시작하므로 1을 더해줘야 함)
+const month = String(today.getMonth() + 1).padStart(2, "0");
 
-const CustomTimeScaleLabel = ({ children, style, ...restProps }) => (
+// 일 추출
+const day = String(today.getDate()).padStart(2, "0");
+
+const formatTimeScaleDate = (date) => moment(date, "A hh:mm").format("HH:mm");
+
+const TimeScaleLabel = ({ style, formatDate, ...restProps }) => (
   <WeekView.TimeScaleLabel
     {...restProps}
-    style={{
-      ...style,
-      fontSize: "8px",
-      width: "50px",
-    }
-    }
-  >
-    {children}
-  </WeekView.TimeScaleLabel>
+    style={{ ...style, width: "100%" }}
+    formatDate={formatTimeScaleDate}
+  />
 );
 
-const CustomTimeTableLayout = ({ children, style, ...restProps }) => (
-  <WeekView.TimeTableLayout
+const TimeScaleLayout = ({ style, ...restProps }) => (
+  <WeekView.TimeScaleLayout
     {...restProps}
+    className="custom-time-table-cell"
     style={{
       ...style,
-      width: '70%',
-      minWidth: '70%',
+      width: "45px",
+      minWidth: "45px",
     }}
-  >
-    {children}
-  </WeekView.TimeTableLayout>
+  />
 );
 
+const currentDate = `${year}-${month}-${day}`;
 
-const CustomTimeTableCell = ({ children, style, ...restProps }) => (
-  <WeekView.TimeTableCell
-    {...restProps}
-    style={{
-      ...style,
-      width: 'auto',
-      minWidth: 'auto',
-    }}
-  >
-    {children}
-  </WeekView.TimeTableCell>
-);
-const today = new Date();
-const formattedToday = today.toISOString().split('T')[0];
-
-
-const appointments = [
-  { startDate: '2024-07-30T09:45', endDate: '2024-07-30T11:00', title: formattedToday },
-  // 다른 일정 데이터 추가
+const schedulerData = [
+  {
+    startDate: "2024-07-30T10:55",
+    endDate: "2024-07-30T14:00",
+    title: "여성 펌",
+  },
+  {
+    startDate: "2024-07-31T19:00",
+    endDate: "2024-07-31T20:00",
+    title: "그라데이션 네일(행사)",
+  },
 ];
 
-const MyScheduler = () => (
-  <Scheduler data={appointments} locale={"kr-KR"}>
-    <ViewState />
-    <WeekView
-      dayScaleRowComponent={CustomDayScaleRow}
-      dayScaleLayoutComponent={CustomDayScaleLayout}
-      timeScaleLayoutComponent={CustomTimeScaleLayout}
-      timeScaleLabelComponent={CustomTimeScaleLabel}
-      timeTableLayoutComponent={CustomTimeTableLayout}
-      timeTableCellComponent={CustomTimeTableCell}
-    />
-    <Appointments />
-    <Toolbar/>
-    <DateNavigator />
-    <TodayButton
-    />
-  </Scheduler>
-);
+const ShopStartTime = 8;
+const ShopEndTime = 20;
 
-export default MyScheduler;
-
+export default function TimeTable() {
+  const [date, setDate] = useState(currentDate);
+  return (
+    <Paper>
+      <Scheduler data={schedulerData} locale={"kr-KR"}>
+        <ViewState currentDate={date} onCurrentDateChange={setDate} />
+        <WeekView
+          startDayHour={ShopStartTime}
+          endDayHour={ShopEndTime}
+          timeScaleLabelComponent={TimeScaleLabel}
+          timeScaleLayoutComponent={TimeScaleLayout}
+        />
+        <Appointments />
+        <Toolbar />
+        <DateNavigator />
+      </Scheduler>
+    </Paper>
+  );
+}

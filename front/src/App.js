@@ -22,6 +22,8 @@ const Layout = styled.div`
   height: 100%;
   @media (min-width: 769px) {
     grid-column: 2 / 3;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
   }
 `;
 

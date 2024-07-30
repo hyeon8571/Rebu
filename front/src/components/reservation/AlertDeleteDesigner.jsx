@@ -22,7 +22,7 @@ const DescriptionContainer = styled.div`
 export default function AlertDeleteDesigner({ setIsModalOpen }) {
   const Button1 = {
     id: 1,
-    title: "전송",
+    title: "삭제",
     onClick: () => {},
     highlight: true,
   };
