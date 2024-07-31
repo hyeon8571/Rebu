@@ -1,7 +1,7 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
 import React, { useState, useEffect, useMemo } from "react";
-import ReservationCalendarTab from "./ReservationForm";
+import ReservationForm from "./ReservationForm";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -126,6 +126,7 @@ const StyledCalendar = styled(Calendar)`
     max-width: 100%;
     padding: 10px 6.6667px;
     border: 0;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px 0px;
     background: none;
     text-align: center;
     line-height: 36px;
@@ -298,7 +299,7 @@ export default function ReservationCalendar() {
         </SelectedTime>
       </SelectedWrapper>
 
-      <ReservationCalendarTab
+      <ReservationForm
         timeInfo={shopTimeInfo}
         chosenTime={chosenTime}
         setChosenTime={setChosenTime}

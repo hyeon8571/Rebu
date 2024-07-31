@@ -18,6 +18,9 @@ const ButtonWrapper = styled.div`
 
 const ButtonLabelAndInputStyles = css`
   display: block;
+  background-color: ${(props) => props.theme.value === "light" ? "#D2B9EA" : "#939393"};
+  color: white;
+  box-shadow: ${(props)=>props.theme.value==="light" ? "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;":""};
 `;
 
 const ButtonInput = styled.input.attrs({ type: "radio" })`
@@ -28,14 +31,19 @@ const ButtonInput = styled.input.attrs({ type: "radio" })`
   background: ${(props) =>
     props.theme.value === "light"
       ? props.theme.primary
-      : props.theme.secondary};
+    : props.theme.secondary};
+    color: #000;
 
   &:checked + label {
     background: ${(props) =>
       props.theme.value === "light"
         ? props.theme.primary
-        : props.theme.secondary};
-    color: #fff;
+        : "#fff"};
+    color: ${(props) =>
+      props.theme.value === "light"
+        ? "#fff"
+    : "#000"};
+      
   }
 `;
 
@@ -51,7 +59,7 @@ const ButtonLabel = styled.label`
   z-index: 90;
   line-height: 1.8em;
   text-align: center;
-  border: 1px solid black;
+  border: 1px solid #666666;
   padding: 0.2rem;
   padding-left: 0.3rem;
   padding-right: 0.3rem;
@@ -67,7 +75,9 @@ const RequestTextArea = styled.textarea`
   width: 80%;
   max-width: 500px;
   height: 240px;
-  margin-bottom: 4rem;
+  margin-top : 1rem;
+  margin-bottom : 1rem;
+  justify-self: center;
 `;
 
 //date = 해당날짜, startTime = 매장 시작시각, endTime= 매장 종료시각, intervalMinutes = 예약 간격 최소시간, serviceDuration = 시술 소요시간, scheulerData = 기존 예약 시간들 (객체형태)
