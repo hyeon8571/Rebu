@@ -19,6 +19,6 @@ export const darkTheme = {
   background: "#999",
   primary: "#b48bdd",
   secondary: "#666666",
-  tertiary: "",
+  tertiary: "#848484",
   boxShadow: "0 0 5px rgba(255, 255, 255, 1)",
 };
