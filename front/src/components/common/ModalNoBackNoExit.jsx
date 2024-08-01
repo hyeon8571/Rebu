@@ -5,31 +5,27 @@ const ModalDiv = styled.div`
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   padding: 0;
   margin: 0;
-  position: fixed;
-  width: 50%;
+  width: 100%;
   height: 100%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
   display: flex;
+  z-index: 1;
   justify-content: center;
   align-items: center;
 `;
 
 const ModalContent = styled.div`
   overflow: auto;
-  padding-left: 5vh;
-  padding-right: 5vh;
+  padding-left: 5vw;
+  padding-right: 5vw;
   padding-top: 5%;
 `;
 
 const ModalBox = styled.div`
   display: flex;
-  position: absolute;
+  position: fixed;
   top: 20vh;
   @media (max-width: 768px) {
-    top: calc(20vh);
+    top: 20vh;
   }
   flex-direction: column;
   background-color: ${(props) => props.theme.background};

@@ -8,6 +8,7 @@ import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
+import ModalPortal from "../../util/ModalPortal";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -154,13 +155,13 @@ export default function DesignerTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
 
   // 예약화면일때
-  const isReservation = true;
+  const isReservation = false;
 
   // 디자이너일때
   const isDesigner = false;
 
   // 가게 프로필 일떄
-  const isShop = false;
+  const isShop = true;
 
   // 손님일때
   const isCustomer = false;
@@ -216,9 +217,11 @@ export default function DesignerTab() {
 
   return (
     <>
-      <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-        {modalContent}
-      </ModalNoBackNoExit>
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          {modalContent}
+        </ModalNoBackNoExit>
+      </ModalPortal>
       <UpperTabWrapper>
         <Switch isMan={isMale} toggleHandler={toggleHandler} />
         {(isDesigner || isShop) && !isEditMode && (
@@ -239,11 +242,13 @@ export default function DesignerTab() {
         <DesignerCardContainer key={item.id}>
           <DesignerContent>
             <DesignerTitle>
-              {isReservation&& <Checkbox
-                key={item.id}
-                value={item.id === chosenMenu}
-                onChange={() => handleChosenMenu(item.id)}
-              />}
+              {isReservation && (
+                <Checkbox
+                  key={item.id}
+                  value={item.id === chosenMenu}
+                  onChange={() => handleChosenMenu(item.id)}
+                />
+              )}
               {item.workingName} {item.role}
             </DesignerTitle>
             <DesignerIntroduction>

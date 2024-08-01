@@ -2,6 +2,8 @@ import Calendar from "react-calendar";
 import styled from "styled-components";
 import React, { useState, useEffect, useMemo } from "react";
 import ReservationForm from "./ReservationForm";
+import ShopCard from "./ShopCard";
+import Img from "../../assets/images/img.webp";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -189,6 +191,14 @@ const SelectedWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
+const ReservationInfo = styled.div`
+  width: calc(100% - 1rem);
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 1rem;
+  padding-top: 1rem;
+`;
+
 const SelectedTitle = styled.span`
   padding-left: 1rem;
   @media (min-width: 769px) {
@@ -203,11 +213,22 @@ const SelectedTime = styled.span`
   font-weight: 500;
   color: ${(props) => props.theme.primary};
 `;
+
+const card = {
+  id: 1,
+  img: Img,
+  title: "싸피 네일샵",
+  menu: "그라데이션 핸드(회원)",
+  designer: "지원 실장",
+  serviceTime: "30",
+  price: "60,000",
+};
+
 //예약 정보
 const schedulerData = [
   {
-    startDate: "2024-07-31T08:30",
-    endDate: "2024-07-31T17:00",
+    startDate: "2024-08-03T14:30",
+    endDate: "2024-08-03T17:00",
     title: "여성 펌",
   },
   {
@@ -285,6 +306,8 @@ export default function ReservationCalendar() {
           value={date}
         />
       </CalendarWrapper>
+      <ReservationInfo>예약정보</ReservationInfo>
+      <ShopCard Card={card}></ShopCard>
 
       <SelectedWrapper
         style={{ visibility: chosenTime ? "visible" : "hidden" }}

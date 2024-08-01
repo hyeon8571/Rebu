@@ -1,7 +1,9 @@
 import styled, { css } from "styled-components";
-import { useEffect, useMemo, useState } from "react";
-import ReservationCalendar from "./ReservationCalendar";
+import { useEffect, useMemo, useState, useRef } from "react";
 import ButtonSmall from "../common/ButtonSmall";
+import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
+import CheckReservation from "./CheckReservation";
+import ModalPortal from "../../util/ModalPortal";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -11,16 +13,17 @@ const ButtonWrapper = styled.div`
   flex-direction: row;
   position: relative;
   align-items: center;
-  &:last-child {
-    padding-bottom: 4rem;
-  }
 `;
 
 const ButtonLabelAndInputStyles = css`
   display: block;
-  background-color: ${(props) => props.theme.value === "light" ? "#D2B9EA" : "#939393"};
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#D2B9EA" : "#939393"};
   color: white;
-  box-shadow: ${(props)=>props.theme.value==="light" ? "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;":""};
+  box-shadow: ${(props) =>
+    props.theme.value === "light"
+      ? "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;"
+      : ""};
 `;
 
 const ButtonInput = styled.input.attrs({ type: "radio" })`
@@ -31,19 +34,13 @@ const ButtonInput = styled.input.attrs({ type: "radio" })`
   background: ${(props) =>
     props.theme.value === "light"
       ? props.theme.primary
-    : props.theme.secondary};
-    color: #000;
+      : props.theme.secondary};
+  color: #000;
 
   &:checked + label {
     background: ${(props) =>
-      props.theme.value === "light"
-        ? props.theme.primary
-        : "#fff"};
-    color: ${(props) =>
-      props.theme.value === "light"
-        ? "#fff"
-    : "#000"};
-      
+      props.theme.value === "light" ? props.theme.primary : "#fff"};
+    color: ${(props) => (props.theme.value === "light" ? "#fff" : "#000")};
   }
 `;
 
@@ -51,6 +48,12 @@ const ButtonContainer = styled.div`
   padding: 0.5rem;
   justify-self: start;
   width: 60px;
+`;
+
+const ButtonBigContainer = styled.div`
+  padding: 0.5rem;
+  justify-self: start;
+  width: 90px;
 `;
 
 const ButtonLabel = styled.label`
@@ -66,18 +69,31 @@ const ButtonLabel = styled.label`
   border-radius: 0.5rem;
 `;
 const Title = styled.div`
-  width: 100%;
+  width: calc(100% - 1rem);
   font-size: 20px;
   font-weight: 600;
+  padding-left: 1rem;
+  padding-top: 1rem;
 `;
 
 const RequestTextArea = styled.textarea`
   width: 80%;
   max-width: 500px;
   height: 240px;
-  margin-top : 1rem;
-  margin-bottom : 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 2rem;
   justify-self: center;
+  border-radius: 0.3rem;
+  resize: none;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+`;
+
+const SubmitButtonWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-right: 5vh;
+  padding-bottom: 4rem;
 `;
 
 //date = 해당날짜, startTime = 매장 시작시각, endTime= 매장 종료시각, intervalMinutes = 예약 간격 최소시간, serviceDuration = 시술 소요시간, scheulerData = 기존 예약 시간들 (객체형태)
@@ -164,11 +180,14 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
   const [chosenHour, setChosenHour] = useState(null);
   const [isHourChosen, setIsHourChosen] = useState(false);
   const [isTimeChosen, setIsTimeChosen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const RequestInput = useRef("");
 
   let idCount = 1;
+
   //useMemo 사용 (불필요 계산 방지)
   const intervals = useMemo(() => {
-    console.log("계산!");
     const result = generateTimeIntervals(
       timeInfo.date,
       timeInfo.startTime,
@@ -205,12 +224,21 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
   }, [chosenTime, chosenHour]);
   return (
     <>
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          {
+            <CheckReservation
+              setIsModalOpen={setIsModalOpen}
+            ></CheckReservation>
+          }
+        </ModalNoBackNoExit>
+      </ModalPortal>
       <ButtonWrapper className="button">
         <Title>오전</Title>
         {intervals.map((item) => {
           if (item[0][0] + item[0][1] < 12) {
             return (
-              <ButtonContainer key={timeInfo.date + idCount}>
+              <ButtonBigContainer key={timeInfo.date + idCount}>
                 <ButtonInput
                   id={`radio+${idCount}`}
                   onClick={() => {
@@ -223,7 +251,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
                     ? "12"
                     : (item[0][0] + item[0][1]) % 12) + "시"}
                 </ButtonLabel>
-              </ButtonContainer>
+              </ButtonBigContainer>
             );
           }
         })}
@@ -233,7 +261,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
         {intervals.map((item) => {
           if (item[0][0] + item[0][1] >= 12) {
             return (
-              <ButtonContainer key={timeInfo.date + idCount}>
+              <ButtonBigContainer key={timeInfo.date + idCount}>
                 <ButtonInput
                   id={`radio+${idCount}`}
                   onClick={() => setChosenHour(item)}
@@ -244,7 +272,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
                     ? "12"
                     : (item[0][0] + item[0][1]) % 12) + "시"}
                 </ButtonLabel>
-              </ButtonContainer>
+              </ButtonBigContainer>
             );
           }
         })}
@@ -254,25 +282,40 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
         {chosenHour && <Title>예약 가능 시간</Title>}
         {chosenHour &&
           chosenHour.map((item) => (
-            <ButtonContainer key={timeInfo.date + idCount}>
+            <ButtonContainer key={item + idCount}>
               <ButtonInput
-                id={`radios+${idCount}`}
+                id={`radios+${item}+${idCount}`}
                 onClick={() => {
                   setChosenTime(item);
                 }}
                 name="radioGroup2"
               />
-              <ButtonLabel htmlFor={`radios+${idCount++}`}>{item}</ButtonLabel>
+              <ButtonLabel htmlFor={`radios+${item}+${idCount++}`}>
+                {item}
+              </ButtonLabel>
             </ButtonContainer>
           ))}
       </ButtonWrapper>
       {chosenTime && (
         <>
           <Title>요청사항</Title>
-          <RequestTextArea></RequestTextArea>
-          <ButtonSmall
-            button={{ title: "예약하기", onClick: () => {}, highlight: true }}
-          />
+          <RequestTextArea
+            placeholder="요청 사항을 입력하세요"
+            onChange={(e) => {
+              RequestInput.current = e.target.value;
+            }}
+          ></RequestTextArea>
+          <SubmitButtonWrapper>
+            <ButtonSmall
+              button={{
+                title: "예약하기",
+                onClick: () => {
+                  setIsModalOpen(true);
+                },
+                highlight: true,
+              }}
+            />
+          </SubmitButtonWrapper>
         </>
       )}
     </>

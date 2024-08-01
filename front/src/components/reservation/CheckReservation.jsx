@@ -13,10 +13,10 @@ const DescriptionContainer = styled.div`
   text-align: center;
 `;
 
-export default function AlertDeleteDesigner({ setIsModalOpen }) {
+export default function CheckReservation({ setIsModalOpen, children }) {
   const Button1 = {
     id: 1,
-    title: "삭제",
+    title: "예약",
     onClick: () => {},
     highlight: true,
   };
@@ -32,9 +32,7 @@ export default function AlertDeleteDesigner({ setIsModalOpen }) {
 
   return (
     <>
-      <DescriptionContainer>
-        해당 디자이너를 삭제하시겠습니까?
-      </DescriptionContainer>
+      <DescriptionContainer>예약을 진행하시겠습니까?</DescriptionContainer>
       <ButtonContainer>
         <ButtonSmall button={Button1}></ButtonSmall>
         <ButtonSmall button={Button2}></ButtonSmall>
