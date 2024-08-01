@@ -1,226 +1,121 @@
 import styled from "styled-components";
-import Img from "../../assets/images/img.webp";
-import ModalNoBackground from "../common/ModalNoBackground";
-import { useRef, useState } from "react";
-import { IoSettings } from "react-icons/io5";
-import ModalPortal from "../../util/ModalPortal";
+import { menuData } from "../../util/visitedDatas";
+import { useState } from "react";
+import Checkbox from "../common/StyledCheckbox";
+import { useLocation,useNavigate } from "react-router-dom";
 import ButtonSmall from "../common/ButtonSmall";
 
-
-const Wrapper = styled.div`
-  padding-left: 1rem;
-  padding-right: 1rem;
-  height: 100%;
-`;
-
-const Grid = styled.div`
+const MenuCardContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 4fr 1fr;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? props.theme.body : props.theme.secondary};
+  padding: 1rem;
+  border-bottom: 2px solid ${(props) => props.theme.primary};
 `;
 
-const Card = styled.div`
+const MenuContent = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-  cursor: pointer; /* 클릭 가능한 카드로 만들기 위해 추가 */
-`;
+  grid-column: 1/2;
+`; 
 
-const PhotoContainer = styled.img`
-  width: 80%;
-  border-radius: 0.3rem;
-`;
-
-const ContentContainer = styled.div`
-  justify-content: start;
-  align-self: start;
-  padding-top: 1rem;
-  padding-left: 11%;
-`;
-
-const MenuTitleContainer = styled.div`
-  font-weight: 600;
-  color: ${(props) => props.theme.text};
-`;
-
-const DurationContainer = styled.div`
-  font-size: 0.9rem;
-  color: ${(props) => props.theme.text};
-`;
-
-const CostContainer = styled.div`
-  font-size: 0.8rem;
-  color: ${(props) => props.theme.text};
-`;
-const ModalContent = styled.div`
-  justify-content: start;
-  align-self: start;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-`;
-const ModalDescription = styled.div`
-  padding-top: 1rem;
+const MenuTitle = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 500;
   padding-bottom: 1rem;
 `;
 
-const ModalContentWrapper = styled.div`
+const MenuPhotoContainer = styled.div`
+  grid-column: 2/3;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
-const IconWrapper = styled.div`
-  display: flex;
-  justify-content: end;
+const MenuPhoto = styled.img`
+  width: 100%;
+  max-width: 150px;
+  border-radius: 0.5rem;
 `;
+
+const MenuIntroduction = styled.li`
+  font-size: 12px;
+  padding-top: 0.2rem;
+`;
+
+const ServiceTimeText = styled.div`
+font-size: 12px;
+  padding-top: 0.2rem;
+`;
+
+const PriceText = styled.div`
+font-size: 12px;
+  padding-top: 0.2rem;
+  
+`;
+
 
 export default function MenuTab() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-  const [isSettingMode, setIsSettingMode] = useState(false);
+  const [chosenMenu, setChosenMenu] = useState(null);
+  const [menuType, setMenuType] = useState(null);
+  const location = useLocation();
+  const { nickname } = location.state;
 
-  const MockData = [
-    {
-      id: 1,
-      img: Img,
-      title: "시그니처 세팅펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h 30",
-      cost: "110,000",
-    },
-    {
-      id: 2,
-      img: Img,
-      title: "시그니처 S컬펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h",
-      cost: "100,000",
-    },
-    {
-      id: 3,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 4,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 5,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 6,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 7,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-  ];
+  const navigate = useNavigate();
 
-  const SettingIcon = styled(IoSettings)`
-  
-  `;
-
-  const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: space-around;
-
-  `;
-
-  function handleModalContent(item) {
-    setModalContent(<ModalContentWrapper>
-        <PhotoContainer src={item.img} />
-        <ModalContent>
-          <MenuTitleContainer>{item.title}</MenuTitleContainer>
-          <ModalDescription>{item.description}</ModalDescription>
-          <DurationContainer>소요시간 : {item.duration}</DurationContainer>
-          <CostContainer>가격 : {item.cost}</CostContainer>
-        </ModalContent>
-        <ButtonSmall button={{id: 1,
-          onClick: ()=>(window.alert("예약하기")),
-          highlight: true,
-          title: "예약하기",
-        }}/>
-      </ModalContentWrapper>);
-    setIsModalOpen(true);
+  console.log(nickname);
+  function handleChosenMenu(value) {
+  if (chosenMenu && value.menuId === chosenMenu.menuId) {
+    setChosenMenu(null);
+  } else {
+    setChosenMenu(value);
   }
-
+}
   return (
     <>
-      <ModalPortal>
-        <ModalNoBackground isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-          {modalContent}
-        </ModalNoBackground>
-      </ModalPortal>
-      <Wrapper>
-
-        {!isSettingMode ?
-          <IconWrapper onClick={()=>setIsSettingMode(true)}>
-            <IoSettings size={32} ></IoSettings>
-          </IconWrapper> : <ButtonWrapper> 
-            <ButtonSmall button={{
-              id :1,
-              onClick: () => { },
-              highlight: true,
-              title: "메뉴 추가",}}></ButtonSmall>
-            <ButtonSmall button={{
-              id :2,
-              onClick: () => { },
-              highlight: true,
-              title: "메뉴 삭제",}}></ButtonSmall>
-          </ButtonWrapper>}
-        
-        <Grid>
-          {MockData.map((item) => (
-            <Card
-              key={item.id}
-              onClick={() => {
-                if (!isSettingMode) {
-                  handleModalContent(item);
+      {menuData.filter((item) => item.nickname === nickname).map((item) => 
+        (
+          <MenuCardContainer key={item.menuId}>
+          <MenuContent>
+              <MenuTitle>
+            <Checkbox
+                  key={item.nickname}
+                  value={chosenMenu ? item.menuId === chosenMenu.menuId : false}
+                  onChange={() => handleChosenMenu(item)}
+                />
+              {item.title}
+            </MenuTitle>
+            <MenuIntroduction>
+              {item.description}
+            </MenuIntroduction>
+            <ServiceTimeText>
+              시술 시간 : {item.duration}
+            </ServiceTimeText>
+            <PriceText>
+              가격 : {item.cost}
+            </PriceText>
+          </MenuContent>
+          <MenuPhotoContainer>
+            <MenuPhoto src={item.img}/>
+          </MenuPhotoContainer>
+          </MenuCardContainer>
+        )
+      )}
+      <ButtonSmall button={{
+        id: 1,
+        title: "다음",
+        onClick: () => {  
+                if (chosenMenu) {
+                  navigate("/calendar", { state: { menu: { shopTitle: "싸피 네일샵", menu: chosenMenu.title, nickname: chosenMenu.nickname, serviceTime: chosenMenu.duration, cost: chosenMenu.cost } } })
                 }
-              }}
-            >
-              <PhotoContainer src={item.img} />
-              <ContentContainer>
-                <MenuTitleContainer>{item.title}</MenuTitleContainer>
-                <DurationContainer>
-                  소요시간 : {item.duration}
-                </DurationContainer>
-                <CostContainer>가격 : {item.cost}</CostContainer>
-              </ContentContainer>
-            </Card>
-          ))}
-        </Grid>
-      </Wrapper>
+                else {
+                  window.alert("시술을 선택해주세요");
+                }
+              },
+                    highlight: true,
+            }}></ButtonSmall>
     </>
   );
+
 }

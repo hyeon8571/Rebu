@@ -1,6 +1,7 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
 import React, { useState, useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import ReservationForm from "./ReservationForm";
 import ShopCard from "./ShopCard";
 import Img from "../../assets/images/img.webp";
@@ -17,7 +18,7 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar {
     width: 320px;
     max-width: 100%;
-    background: #fff;
+    background-color: ${(props)=> props.theme.value ==="light" ? "#f0f0f0" : "#f0f0f0"}; 
     color: #222;
     border-radius: 8px;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
@@ -111,7 +112,7 @@ const StyledCalendar = styled(Calendar)`
     color: #ff3a3a;
   }
   .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
-    color: #3a3dff;
+    color: ${(props)=> props.theme.value==="light" ?"#3a3dff":"#7b7dff"}
   }
 
   .react-calendar__month-view__days__day--neighboringMonth {
@@ -133,7 +134,7 @@ const StyledCalendar = styled(Calendar)`
     padding: 10px 6.6667px;
     border: 0;
     box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px 0px;
-    background: none;
+    background: ${(props)=> props.theme.value ==="light" ? "#ffffff" : "#d1d1d1"}; 
     text-align: center;
     font-weight: 600;
     line-height: 36px;
@@ -143,7 +144,8 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__tile:disabled {
-    background-color: #f0f0f0;
+    background-color:${(props) => props.theme.value === "light" ? "#c2c2c2" : "#333333"};
+    color : ${(props)=> props.theme.value ==="light" ? "#f0f0f0" : "#838383"};  
   }
 
   .react-calendar__tile:enabled:hover,
@@ -159,7 +161,7 @@ const StyledCalendar = styled(Calendar)`
     font-weight: bold;
     color: #fff;
   }
-
+  .re
   .react-calendar__tile--now:enabled:hover,
   .react-calendar__tile--now:enabled:focus {
     background: #6f48eb33;
@@ -219,15 +221,6 @@ const SelectedTime = styled.span`
   color: ${(props) => props.theme.primary};
 `;
 
-const card = {
-  id: 1,
-  img: Img,
-  title: "싸피 네일샵",
-  menu: "그라데이션 핸드(회원)",
-  designer: "지원 실장",
-  serviceTime: "30",
-  price: "60,000",
-};
 
 //예약 정보
 const schedulerData = [
@@ -254,6 +247,23 @@ const weekday = ["일", "월", "화", "수", "목", "금", "토"];
 export default function ReservationCalendar() {
   const [date, setDate] = useState(new Date());
   const [chosenTime, setChosenTime] = useState(null);
+
+  const location = useLocation();
+  const { menu } = location.state; 
+
+  console.log(menu);
+
+  const card = {
+  id: 1,
+  img: Img,
+  title: menu.shopTitle,
+  menu: menu.title,
+  designer: menu.nickname,
+  serviceTime: menu.serviceTime,
+  price: menu.cost,
+  };
+
+
 
   useEffect(() => {
     window.scrollTo(0, 0);

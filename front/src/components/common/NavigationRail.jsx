@@ -40,7 +40,7 @@ const Rail = styled.nav`
 `;
 
 const StyledNavLink = styled(NavLink)`
-  color: ${(props) => (props.theme.value === "light" ? "" : props.theme.text)};
+  color: ${(props) => (props.theme.value === "light" ? "" : props.theme.text)} !important;
   transition: background-color 0.3s ease-in-out;
   border-radius: 1rem;
   &.active {

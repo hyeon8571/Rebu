@@ -1,5 +1,136 @@
 import Img from "../assets/images/img.webp";
 
+export const designerData = [
+  {
+    nickname: "yuseong",
+    workingName: "유승",
+    role: "원장",
+    workingIntroduction:
+      `[맨즈헤어/레이어드펌/셋팅펌 전문]\n` +
+      `편안하고 자연스러운 디자인을 찾아드리겠습니다.`,
+    gender: true,
+    review: 12,
+  },
+  {
+    nickname : "seunghyeon",
+    workingName: "승현",
+    role: "실장",
+    workingIntroduction: "[맨즈헤어/애즈펌/열펌 전문]",
+    gender: true,
+    review: 10,
+  },
+  {
+    nickname : "jiwon",
+    workingName: "지원",
+    role: "실장",
+    workingIntroduction: "[여성헤어/S컬, C컬 펌/셋팅펌 전문]",
+    gender: false,
+    review: 17,
+  },
+  {
+    nickname : "jinseo",
+    workingName: "진서",
+    role: "디자이너",
+    workingIntroduction: "[여성헤어/레이어드 컷 /염색 전문]",
+    gender: false,
+    review: 14,
+  },
+];
+
+
+ export const menuData = [
+    {
+      menuId : 1,
+      nickname: "yuseong",
+      img: Img,
+      title: "시그니처 세팅펌",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "3h 30",
+      cost: "110,000",
+    },
+    {
+      menuId : 2,
+      nickname: "yuseong",
+      img: Img,
+      title: "시그니처 S컬펌",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "3h",
+      cost: "100,000",
+    },
+    {
+      menuId : 3,
+      nickname : "jinseo",
+      img: Img,
+      title: "밀크브라운 염색",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "2h",
+      cost: "80,000",
+    },
+    {
+      menuId: 4,
+      nickname : "jiwon",
+      img: Img,
+      title: "밀크브라운 염색",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "2h",
+      cost: "80,000",
+    },
+    {
+      menuId: 5,
+      nickname : "seunghyeon",
+      img: Img,
+      title: "밀크브라운 염색",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "2h",
+      cost: "80,000",
+    },
+    {
+      menuId: 6,
+      nickname : "yuseong",
+      img: Img,
+      title: "밀크브라운 염색",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "2h",
+      cost: "80,000",
+    },
+    {
+      menuId: 7,
+       nickname : "jinseo",
+      img: Img,
+      title: "밀크브라운 염색",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "2h",
+      cost: "80,000",
+   },
+   {
+     menuId: 8,
+     nickname: "kyuhyeon",
+     img: Img,
+     title: "밀크브라운 염색",
+     description:
+       "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+     duration: "2h",
+     cost: "80,000",
+   },
+   {
+      menuId : 9,
+      nickname: "jiwon",
+      img: Img,
+      title: "시그니처 세팅펌",
+      description:
+        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
+      duration: "3h 30",
+      cost: "120,000",
+    },
+  ];
+
 export const visitedCards = [
   {
     id: 1,
