@@ -79,24 +79,3 @@ export default function NavigationBar({ children }) {
   );
 };
 
-export default function NavigationBar({ theme, toggleTheme, children }) {
-  return (
-    <Router>
-      <Navigation theme={theme}>
-        <Routes>
-          <Route path="jiwonComponents" element={<ComponentsJiwon />} />
-          <Route path="/calendar" element={<ReservationCalendar />} />
-          <Route path="/visited" element={<VisitedPage />} />
-          <Route
-            path="/component"
-            element={<Components theme={theme} toggleTheme={toggleTheme} />}
-          />
-          <Route
-            path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
-          />
-        </Routes>
-      </Navigation>
-    </Router>
-  );
-}

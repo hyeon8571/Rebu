@@ -1,16 +1,19 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
 import ReservationCalendar from "../components/reservation/ReservationCalendar";
 import VisitedPage from "../views/VisitedPage";
 import Components from "../views/Components";
+import PersonalInfo from "../views/PersonalInfo";
+import PostModify from "../views/PostModify";
+
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
     <Route
       path="/personal-info"
-      element={<Components theme={theme} toggleTheme={toggleTheme} />}
+      element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route
       path="/profile"
@@ -22,6 +25,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       path="/component"
       element={<Components theme={theme} toggleTheme={toggleTheme} />}
     />
+    <Route path="/post-modify" element={<PostModify />} />
   </Routes>
 );
 

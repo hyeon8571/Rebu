@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const TabMenu = styled.ul`
@@ -9,7 +9,7 @@ const TabMenu = styled.ul`
     props.theme.value === "light" ? "#000000" : props.theme.text};
   display: flex;
   margin: auto;
-  margin-left: 4px;
+  /* margin-left: 4px; */
   /* margin-right: 8px; */
   max-width: 768px;
   height: 60px;
@@ -21,7 +21,7 @@ const TabMenu = styled.ul`
   transition: border 0.5s linear;
   /* margin-top: 1rem; */
   padding-left: 0px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
   /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 
   /* @media (min-width: 768px) {

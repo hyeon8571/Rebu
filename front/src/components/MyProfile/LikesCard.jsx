@@ -2,21 +2,19 @@ import styled from "styled-components";
 // import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import ButtonSmall from "../common/ButtonSmall";
+import { FaRegStar } from "react-icons/fa";
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-`;
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 3fr;
-  height: 150px;
+  flex-direction: column;
   width: 85%;
   max-width: 500px;
   background: ${(props) =>
     props.theme.value === "light"
       ? "linear-gradient(0deg,rgba(255, 255, 255, 1) 65%,rgba(243, 237, 250, 1) 100%)"
-      : "linear-gradient(0deg, rgba(154,154,154,1) 0%, rgba(120,120,120,1) 100%)"};
+      : "linear-gradient(0deg, rgba(120,120,120,1) 0%, rgba(85,85,85,1) 100%)"};
 
   box-shadow: ${(props) =>
     props.theme.value === "light"
@@ -27,32 +25,41 @@ const GridContainer = styled.div`
   border-radius: 0.7rem;
 `;
 
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+`;
+
+const IntroContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;
+
 const PhotoSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   grid-column: 1/2;
   width: 100%;
+  margin: 10px 5px;
 `;
 
 const Photo = styled.img`
-  width: 150px;
-  height: 150px;
-  max-width: 120px;
-  max-height: 120px;
-
-  @media (max-width: 768px) {
-    max-width: 100px;
-    max-height: 100px;
-  }
-
+  max-width: 70px;
+  max-height: 70px;
   border-radius: 8rem;
+  @media (max-width: 768px) {
+    max-width: 90%;
+    max-height: 90%;
+  }
 `;
 
 const Content = styled.div`
   grid-column: 2/4;
   padding-top: 1rem;
-  padding-right: 1rem;
+  padding-right: 10px;
+  margin-left: 10px;
 `;
 
 const TitleWrapper = styled.div`
@@ -77,38 +84,52 @@ const TitleText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  @media (max-width: 768px) {
+  margin-bottom: 5px;
+  @media (max-width: 500px) {
     font-size: 14px;
   }
 `;
 
-const DateWrapper = styled.div`
-  padding-top: 0.2rem;
-  font-size: 12px;
+const IntroWrapper = styled.div`
+  padding-top: 10px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
-  @media (max-width: 768px) {
-    font-size: 10px;
+  @media (max-width: 500px) {
+    font-size: 13px;
   }
 `;
 
-const MenuWrapper = styled.div`
-  padding-top: 0.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${(props) => (props.theme.value === "light" ? "#943AEE" : "#e9d7fb")};
-  font-weight: 600;
-  @media (max-width: 768px) {
-    font-size: 12px;
-  }
-`;
-
-const VisitStatus = styled.div`
-  padding: 0;
-  margin: 0;
-  font-size: 10px;
-  color: lightgrey;
+const TabItem = styled.div`
+  display: flex;
   text-align: center;
+  flex-direction: column;
+`;
+
+const TabName = styled.span`
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+const Count = styled.span`
+  font-size: 14px;
+  color: ${(props) => (props.theme.value === "light" ? "#black" : "#white")};
+  cursor: pointer;
+`;
+
+const Rating = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  /* margin-bottom: 10px; */
+  /* font-size: 1em; */
+  color: #ffcc00;
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+`;
+
+const Ratingtext = styled.span`
+  color: ${(props) =>
+    props.theme.value === "light" ? "#777777" : "#ffffff"};
 `;
 
 const ButtonWrapper = styled.div`
@@ -134,17 +155,37 @@ export default function VisitedCard({ Card, button }) {
               {Card.title}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>
-            <VisitStatus>방문완료</VisitStatus>
+            <Rating>
+              <FaRegStar />&nbsp;
+              <Ratingtext>{Card.rank}</Ratingtext>
+            </Rating>
           </TitleWrapper>
-          <MenuWrapper>{Card.menu}</MenuWrapper>
-          <DateWrapper>{Card.date}</DateWrapper>
-          {button !== null && (
-            <ButtonWrapper>
-              <button button={button}></button>
-            </ButtonWrapper>
-          )}
+          <IntroWrapper>{Card.introduce}</IntroWrapper>
         </Content>
       </GridContainer>
+      <IntroContainer>
+        
+            <TabItem>
+              <Count>{Card.post}</Count>
+              <TabName>Post</TabName>
+            </TabItem>
+            <TabItem>
+              <Count>{Card.reviews}</Count>
+              <TabName>Reviews</TabName>
+            </TabItem>
+            <TabItem>
+              <Count>{Card.reservation}</Count>
+              <TabName>Reservaion</TabName>
+            </TabItem>
+          
+       
+          {button !== null && (
+            <ButtonWrapper>
+              <ButtonSmall button={button}></ButtonSmall>
+            </ButtonWrapper>
+          )}
+      </IntroContainer>
+      
     </Wrapper>
   );
 }

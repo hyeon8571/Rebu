@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import MyProfileDetail from "./MyProfileDetail";
+import PostDetail from "../post/PostDetail";
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GridContainer = styled.div`
   display: grid;
-  height: 150px;
   width: 100%;
   max-width: 768px;
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
-  border-radius: 0.7rem;
 `;
 
 const GridItem = styled.div`
@@ -31,11 +28,11 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ uploadedPhotos }) {
+function GridComponent({ uploadedPhotos, Card, currentUser }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedPhotos, setSelectedPhotos] = useState(null);
 
   useEffect(() => {
     const generateLayout = (photos) => {
@@ -49,6 +46,7 @@ function GridComponent({ uploadedPhotos }) {
         maxW: 1,
         minH: 1,
         maxH: 1,
+        static: true,
       }));
     };
 
@@ -76,16 +74,15 @@ function GridComponent({ uploadedPhotos }) {
     };
   }, []);
 
-  const handlePhotoClick = (photo) => {
-    setSelectedPhoto(photo);
-    console.log("클릭")
-    // <MyProfileDetail photo={selectedPhoto} />
+  const handlePhotoClick = (index) => {
+    const selectedPhotos = Card.slice(index);
+    setSelectedPhotos(selectedPhotos);
   };
 
   return (
-    <div>
-      {selectedPhoto !== null ? (
-        <MyProfileDetail photo={selectedPhoto} />
+    <>
+      {selectedPhotos !== null ? (
+        <PostDetail information={selectedPhotos} currentUser={currentUser} />
       ) : (
         <GridContainer ref={containerRef}>
           <ResponsiveGridLayout
@@ -95,22 +92,22 @@ function GridComponent({ uploadedPhotos }) {
             cols={{ lg: 3, md: 3 }}
             rowHeight={rowHeight}
             width={containerRef.current ? containerRef.current.clientWidth : 0}
-            isDraggable={false} // 추가된 부분: 드래그 비활성화
-            isResizable={false} // 추가된 부분: 리사이즈 비활성화
+            isDraggable={false}
+            isResizable={false}
           >
-            {uploadedPhotos.map((photo, index) => (
+            {Card.map((item, index) => (
               <GridItem
                 key={`photo-${index}`}
                 data-grid={layouts.lg[index]}
-                onClick={() => handlePhotoClick(photo)}
+                onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={photo} alt={`uploaded-${index}`} />
+                <Photo src={item.img} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>
         </GridContainer>
       )}
-    </div>
+    </>
   );
 }
 

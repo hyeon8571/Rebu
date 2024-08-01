@@ -51,7 +51,7 @@ const Rail = styled.nav`
 const Content = styled.div`
   padding: 0 16px;
   grid-column: 2 / 3;
-  overflow: auto;
+  /* overflow: auto; */
 `;
 
 const RightWrapper = styled.div`
@@ -72,8 +72,10 @@ const ProfileNavLink = styled(NavLink)``;
 
 const ICON_SIZE = 36;
 
-const Navigation = ({ children }) => (
-  <>
+export default function Navigation({ children }) {
+  
+  return (
+    <>
     <GridContainer>
       <Rail>
         <StyledNavLink to="/Login">
@@ -107,27 +109,8 @@ const Navigation = ({ children }) => (
       <Content>{children}</Content>
       <RightWrapper />
     </GridContainer>
-  </>
-);
+    </>
+  )
+};
 
-export default function NavigationRail({ theme, toggleTheme, children }) {
-  return (
-    <Router>
-      <Navigation theme={theme} children={children}>
-        <Routes>
-          <Route path="/" element={<Login/>}/>
-          <Route
-            path="/profile"
-            element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
-          />
-          <Route path="/calendar" element={<ReservationCalendar />} />
-          <Route path="/visited" element={<VisitedPage />} />
-          <Route
-            path="/component"
-            element={<Components theme={theme} toggleTheme={toggleTheme} />}
-          />
-        </Routes>
-      </Navigation>
-    </Router>
-  );
-}
+
