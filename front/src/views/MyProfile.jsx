@@ -118,7 +118,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [key, setKey] = useState(0);
   const tabRef = useRef(null);
 
-  if (updatedUser !== null) {
+  if (updatedUser) {
     currentUser = updatedUser
     loginUser = updatedUser
   };
@@ -178,12 +178,12 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage
-            img={currentUser.profile_src}
+            currentUser={currentUser}
             time={130}
             followers={FollowersCount}
             following={FollowingCount}
           />
-          <ProfileInfo nickname={currentUser.nickname} introduce={currentUser.introduce} currentUser={currentUser} loginUser={loginUser} />
+          <ProfileInfo currentUser={currentUser} loginUser={loginUser} />
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>

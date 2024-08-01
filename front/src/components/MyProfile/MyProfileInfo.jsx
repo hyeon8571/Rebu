@@ -102,10 +102,10 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ nickname, introduce, currentUser, loginUser }) => {
+const InfoComponent = ({ currentUser, loginUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newIntroduce, setNewIntroduce] = useState(introduce);
-  const [tempIntroduce, setTempIntroduce] = useState(introduce);
+  const [newIntroduce, setNewIntroduce] = useState(currentUser.introduce);
+  const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduce);
 
   const openModal = () => {
     setTempIntroduce(newIntroduce);
@@ -128,7 +128,7 @@ const InfoComponent = ({ nickname, introduce, currentUser, loginUser }) => {
 
   return (
     <InfoBox>
-      <NameInfo>{nickname} <ImgShare /></NameInfo>
+      <NameInfo>{currentUser.nickname} <ImgShare /></NameInfo>
       <IntroduceInfo>
         {newIntroduce} &nbsp;
         {currentUser.nickname === loginUser.nickname ? (

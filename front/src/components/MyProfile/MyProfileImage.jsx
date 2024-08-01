@@ -161,7 +161,7 @@ const CloseButton = styled.button`
 `;
 
 
-export default function ProfileLarge({ img, time, followers, following }) {
+export default function ProfileLarge({ currentUser, time, followers, following }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
@@ -206,11 +206,11 @@ export default function ProfileLarge({ img, time, followers, following }) {
       <React.Fragment>
         {online ? (
           <OutterCircleOnline>
-            <Insideimg src={img} alt="Profile" />
+            <Insideimg src={currentUser.profile_src} alt="Profile" />
           </OutterCircleOnline>
         ) : (
           <OutterCircleOffline>
-            <Insideimg src={img}></Insideimg>
+            <Insideimg src={currentUser.profile_src}></Insideimg>
           </OutterCircleOffline>
         )}
       </React.Fragment>
