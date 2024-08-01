@@ -158,16 +158,16 @@ export default function DesignerTab() {
   const isReservation = false;
 
   // 디자이너일때
-  const isDesigner = false;
+  const isDesigner = true;
 
   // 가게 프로필 일떄
-  const isShop = true;
+  const isShop = false;
 
   // 손님일때
   const isCustomer = false;
 
   // 디자이너인데 자기자신 항목인지 (테스트용 변수 실제로는 map 내부에서 판단해야함)
-  const isMine = false;
+  const isMine = true;
 
   const toggleHandler = () => {
     // isMale의 상태를 변경하는 메소드를 구현

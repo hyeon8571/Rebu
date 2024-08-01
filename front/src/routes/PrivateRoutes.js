@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
 import ReservationCalendar from "../components/reservation/ReservationCalendar";
@@ -11,7 +10,6 @@ import MenuTab from "../components/reservation/MenuTab";
 import DesignerTab from "../components/reservation/DesignerTab";
 import PersonalInfo from "../views/PersonalInfo";
 import PostModify from "../views/PostModify";
-
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>

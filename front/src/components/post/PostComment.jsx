@@ -48,7 +48,7 @@ const CommentTime = styled.span`
 `;
 
 const ReplyLink = styled.span`
-  color: #A961F1;
+  color: #a961f1;
   cursor: pointer;
   font-size: 12px;
   margin-top: 5px;
@@ -130,14 +130,13 @@ const LikeButton = styled.button`
   }
 `;
 
- const LikeCount = styled.p`
-    color: ${(props) => (props.theme.value === "light" ? "#8e8e8e" : "#cccccc")};
-    margin-top: 0;
-    margin-bottom: 0;
-    text-align: end;
-    margin-right: 10px;
-
-  `;
+const LikeCount = styled.p`
+  color: ${(props) => (props.theme.value === "light" ? "#8e8e8e" : "#cccccc")};
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: end;
+  margin-right: 10px;
+`;
 
 const CommentInputContainer = styled.div`
   display: flex;
@@ -165,8 +164,17 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostComment = ({ item, information, posts, setPosts, currentUser, index }) => {
-  const [newComments, setNewComments] = useState(Array(information.length).fill(""));
+const PostComment = ({
+  item,
+  information,
+  posts,
+  setPosts,
+  currentUser,
+  index,
+}) => {
+  const [newComments, setNewComments] = useState(
+    Array(information.length).fill("")
+  );
   const [replyingTo, setReplyingTo] = useState(null);
   const [replies, setReplies] = useState({});
   const [likes, setLikes] = useState({});
@@ -191,8 +199,8 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
       writer: currentUser.name,
       content: newComments[index],
       created_at: new Date().toISOString(),
-      img: currentUser.img, // Assuming currentUser has an img property
-      likes: 0
+      img: currentUser.profile_src, // Assuming currentUser has an img property
+      likes: 0,
     };
     updatedPosts[index].comment.push(newComment);
     setPosts(updatedPosts);
@@ -210,8 +218,8 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
       writer: currentUser.name,
       content: replies[commentId] || "",
       created_at: new Date().toISOString(),
-      img: currentUser.img, // Assuming currentUser has an img property
-      likes: 0
+      img: currentUser.profile_src, // Assuming currentUser has an img property
+      likes: 0,
     };
 
     const commentIndex = updatedPosts[postIndex].comment.findIndex(
@@ -248,28 +256,34 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
     setReplyingTo(replyingTo === commentId ? null : commentId);
   };
 
-  const handleLikeToggle = (postIndex, commentIndex, isReply = false, replyIndex = null) => {
+  const handleLikeToggle = (
+    postIndex,
+    commentIndex,
+    isReply = false,
+    replyIndex = null
+  ) => {
     const updatedPosts = [...posts];
     if (isReply && replyIndex !== null) {
-      const reply = updatedPosts[postIndex].comment[commentIndex].replies[replyIndex];
+      const reply =
+        updatedPosts[postIndex].comment[commentIndex].replies[replyIndex];
       reply.likes = (reply.likes || 0) + (likes[reply.id] ? -1 : 1);
       setLikes({
         ...likes,
-        [reply.id]: !likes[reply.id]
+        [reply.id]: !likes[reply.id],
       });
     } else {
       const comment = updatedPosts[postIndex].comment[commentIndex];
       comment.likes = (comment.likes || 0) + (likes[comment.id] ? -1 : 1);
       setLikes({
         ...likes,
-        [comment.id]: !likes[comment.id]
+        [comment.id]: !likes[comment.id],
       });
     }
     setPosts(updatedPosts);
   };
 
   const handleKeyPress = (e, index, type = "comment", commentId) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (type === "comment") {
         handleAddComment(index);
@@ -284,15 +298,19 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
       {item.comment.map((comment, idx) => (
         <div key={idx}>
           <CommentItem>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <CommentUserImage src={comment.img} alt="User" />
               <CommnetDetails>
                 <CommentHeader>
                   <CommentUsername>{comment.writer}</CommentUsername>
-                  <CommentTime>{timeSince(new Date(comment.created_at))}</CommentTime>
+                  <CommentTime>
+                    {timeSince(new Date(comment.created_at))}
+                  </CommentTime>
                 </CommentHeader>
                 <CommentContent>{comment.content}</CommentContent>
-                <ReplyLink onClick={() => handleReplyToggle(comment.id)}>답글달기</ReplyLink>
+                <ReplyLink onClick={() => handleReplyToggle(comment.id)}>
+                  답글달기
+                </ReplyLink>
               </CommnetDetails>
             </div>
             <div>
@@ -304,23 +322,27 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
               <LikeButton onClick={() => handleLikeToggle(index, idx)}>
                 {likes[comment.id] ? <FaHeart color="red" /> : <FaRegHeart />}
               </LikeButton>
-              {comment.likes > 0 && (
-                <LikeCount>{comment.likes}</LikeCount>
-              )}
+              {comment.likes > 0 && <LikeCount>{comment.likes}</LikeCount>}
             </div>
           </CommentItem>
           {replyingTo === comment.id && (
             <CommentInputWrapper>
-              <CommentImage src={currentUser.img} alt="User" />
+              <CommentImage src={currentUser.profile_src} alt="User" />
               <CommentInputContainer>
                 <CommentTextInput
                   type="text"
                   placeholder="답글 추가"
                   value={replies[comment.id] || ""}
-                  onChange={(e) => handleReplyChange(comment.id, e.target.value)}
-                  onKeyPress={(e) => handleKeyPress(e, index, "reply", comment.id)}
+                  onChange={(e) =>
+                    handleReplyChange(comment.id, e.target.value)
+                  }
+                  onKeyPress={(e) =>
+                    handleKeyPress(e, index, "reply", comment.id)
+                  }
                 />
-                <NewCommentButton onClick={() => handleAddReply(index, comment.id)}>
+                <NewCommentButton
+                  onClick={() => handleAddReply(index, comment.id)}
+                >
                   <FaArrowRight />
                 </NewCommentButton>
               </CommentInputContainer>
@@ -329,12 +351,14 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
           {comment.replies &&
             comment.replies.map((reply, replyIdx) => (
               <CommentItem key={replyIdx} style={{ marginLeft: "40px" }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <CommentUserImage src={reply.img} alt="User" />
                   <CommnetDetails>
                     <CommentHeader>
                       <CommentUsername>{reply.writer}</CommentUsername>
-                      <CommentTime>{timeSince(new Date(reply.created_at))}</CommentTime>
+                      <CommentTime>
+                        {timeSince(new Date(reply.created_at))}
+                      </CommentTime>
                     </CommentHeader>
                     <CommentContent>{reply.content}</CommentContent>
                   </CommnetDetails>
@@ -347,12 +371,12 @@ const PostComment = ({ item, information, posts, setPosts, currentUser, index })
                       <FaTrashAlt />
                     </DeleteButton>
                   )}
-                  <LikeButton onClick={() => handleLikeToggle(index, idx, true, replyIdx)}>
+                  <LikeButton
+                    onClick={() => handleLikeToggle(index, idx, true, replyIdx)}
+                  >
                     {likes[reply.id] ? <FaHeart color="red" /> : <FaRegHeart />}
                   </LikeButton>
-                  {reply.likes > 0 && (
-                    <LikeCount>{reply.likes}</LikeCount>
-                  )}
+                  {reply.likes > 0 && <LikeCount>{reply.likes}</LikeCount>}
                 </div>
               </CommentItem>
             ))}
