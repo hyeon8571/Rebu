@@ -22,6 +22,13 @@ const Button = styled.button`
   &:hover {
     box-shadow: ${(props) => props.theme.boxShadow};
   }
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    width: 50px;
+    height: 30px;
+    box-shadow: ${(props) => props.theme.boxShadow};
+  }
 `;
 
 const ButtonSmall = ({ button }) => {

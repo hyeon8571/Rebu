@@ -40,12 +40,10 @@ const ModalContent = styled.div`
 `;
 
 const ModalBox = styled.div`
-  position: absolute;
-  top: 25vh;
   display: flex;
   flex-direction: column;
-  max-width: 640px;
-  max-height: 50%;
+  max-width: 320px;
+  max-height: 320px;
   width: 75%;
   height: auto;
   background-color: ${({ theme }) => theme.body};

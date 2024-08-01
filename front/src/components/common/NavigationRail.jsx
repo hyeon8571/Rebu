@@ -6,8 +6,7 @@ import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
-
-import { NavLink } from "react-router-dom";
+import Img from "./img.jpg";
 
 const GridContainer = styled.div`
   display: grid;
@@ -15,18 +14,18 @@ const GridContainer = styled.div`
   height: 100vh;
 `;
 
-const Rail = styled.nav`
+const Rail = styled.div`
   position: fixed;
   right: 0;
   left: calc(25% - 96px);
-  top: 10%;
+  top: 12.5%;
   bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   border-radius: 1rem;
-  height: 80vh;
+  height: 66.66%;
   min-height: 320px;
   width: 60px;
   background-color: ${(props) =>
@@ -36,7 +35,6 @@ const Rail = styled.nav`
   padding: 8px;
   box-shadow: ${(props) => props.theme.boxShadow};
   grid-column: 1 / 2;
-  transition: background-color 0.3s ease-in-out;
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -59,22 +57,16 @@ export default function NavigationRail() {
       <Rail>
         <StyledNavLink to="/Login">
           <NavigationItem>
-            <IoHome size={ICON_SIZE} />
+            <IoHome size={iconSize}></IoHome>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/calendar">
           <NavigationItem>
-            <IoSearch size={ICON_SIZE} />
+            <CgSearch size={iconSize}></CgSearch>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/visited">
           <NavigationItem>
-            <CgAddR size={ICON_SIZE} />
+            <CgAddR size={iconSize}></CgAddR>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/component">
           <NavigationItem>
-            <RiCalendarScheduleLine size={ICON_SIZE} />
+            <RiCalendarScheduleLine size={iconSize}></RiCalendarScheduleLine>
           </NavigationItem>
         </StyledNavLink>
         <div></div>

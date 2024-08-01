@@ -48,8 +48,8 @@ const ModalBox = styled.div`
   }
   flex-direction: column;
   background-color: ${(props) => props.theme.background};
-  max-width: 640px;
-  max-height: 70%;
+  max-width: 320px;
+  max-height: 320px;
   width: 75%;
   height: auto;
   background-color: ${({ theme }) => theme.body};
