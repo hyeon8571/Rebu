@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
 import ReservationCalendar from "../components/reservation/ReservationCalendar";
@@ -8,12 +9,15 @@ import Components from "../views/Components";
 import TimeTable from "../components/reservation/TimeTable";
 import MenuTab from "../components/reservation/MenuTab";
 import DesignerTab from "../components/reservation/DesignerTab";
+import PersonalInfo from "../views/PersonalInfo";
+import PostModify from "../views/PostModify";
+
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
     <Route
       path="/personal-info"
-      element={<Components theme={theme} toggleTheme={toggleTheme} />}
+      element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route
       path="/profile"
@@ -28,6 +32,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     <Route path="/timetable" element={<TimeTable />} />
     <Route path="/menutab" element={<MenuTab />} />
     <Route path="/designertab" element={<DesignerTab />} />
+    <Route path="/post-modify" element={<PostModify />} />
   </Routes>
 );
 

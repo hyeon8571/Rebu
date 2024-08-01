@@ -28,7 +28,7 @@ const Rail = styled.nav`
   border-radius: 1rem;
   height: 80vh;
   min-height: 320px;
-  width: 64px;
+  width: 60px;
   background-color: ${(props) =>
     props.theme.value === "light"
       ? props.theme.tertiary

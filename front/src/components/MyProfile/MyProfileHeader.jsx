@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Logout from "../common/Logout";
-import SecretMode from "../common/SecretMode";
-import PersonalInfo from "../../views/PersonalInfo";
-import { FiChevronLeft } from "react-icons/fi";
+import Logout from "./ModalLogout";
+import SecretMode from "./ModalSecretMode";
+import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 import ThemeToggler from "../../util/ThemeToggler";
 
 const Wrapper = styled.div`
   /* 레이아웃 */
   display: flex;
-
+  position: sticky;
   align-items: center;
   height: 50px;
-  max-width: 760px;
+  max-width: 768px;
   width: 100%;
   top: 0;
   z-index: 5;
@@ -23,7 +22,7 @@ const Wrapper = styled.div`
   background-color: ${(props) =>
     props.theme.value === "light" ? "#f0e6fb" : props.theme.secondary};
   color: ${(props) => (props.theme.value === "light" ? "#000000" : "#ffffff")};
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
 `;
 
 const ImgBack = styled(FiChevronLeft)`
@@ -38,6 +37,14 @@ const ButtonBox = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: 30px;
+  color: ${(props) => (props.theme.value === "light" ? "#943AEE" : "#ffffff")};
+`;
+
+const ImgSend = styled(FiSend)`
+  width: 22px;
+  height: 22px;
+  margin-left: 20px;
+  cursor: pointer;
 `;
 
 const ImgSetting = styled(IoSettingsOutline)`
@@ -56,7 +63,10 @@ const ImgSettingActive = styled(IoSettings)`
 
 const HeaderText = styled.p`
   font-size: 20px;
-  margin-left: 15px;
+  margin-left: 10px;
+  @media (max-width: 375px) {
+    font-size: 17px;
+  }
 `;
 
 const DropdownMenu = styled.div`
@@ -84,7 +94,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Header = ({ theme, toggleTheme }) => {
+const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
   const [LogoutModalOpen, setLogoutModalOpen] = useState(false);
   const [SecretModalOpen, setSecretModalOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -137,42 +147,48 @@ const Header = ({ theme, toggleTheme }) => {
   }, []);
 
   return (
-    <>
-      <Wrapper>
-        <ImgBack onClick={handleBackClick} />
-        <HeaderText>Profile</HeaderText>
-        <ButtonBox>
-          <ThemeToggler theme={theme} toggleTheme={toggleTheme} />
-          {isSettingActive ? (
+    <Wrapper>
+      <ImgBack onClick={handleBackClick} />
+      <HeaderText>My Profile</HeaderText>
+      <ButtonBox>
+        <ThemeToggler theme={theme} toggleTheme={toggleTheme} />
+        {currentUser.nickname === loginUser.nickname ? (
+          isSettingActive ? (
             <ImgSettingActive onClick={handleSettingClick} />
           ) : (
             <ImgSetting onClick={handleSettingClick} />
-          )}
-        </ButtonBox>
-        <DropdownMenu ref={dropdownRef} show={showDropdown}>
-          <DropdownItem onClick={() => navigate("/personal-info")}>
-            개인정보 확인
-          </DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={() => handleOptionClick("비밀번호 변경")}>
-            비밀번호 변경
-          </DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
-          {LogoutModalOpen && (
-            <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
-          )}
-          {SecretModalOpen && (
-            <SecretMode
-              secretModalOpen={SecretModalOpen}
-              closeModal={closeModal}
-            />
-          )}
-        </DropdownMenu>
-      </Wrapper>
-    </>
+          )
+        ) : (
+          <ImgSend />
+        )}
+      </ButtonBox>
+      <DropdownMenu ref={dropdownRef} show={showDropdown}>
+        <DropdownItem
+          onClick={() =>
+            navigate("/personal-info", { state: { user: loginUser } })
+          }
+        >
+          개인정보 확인
+        </DropdownItem>
+        <hr style={{ margin: "5px 0px" }} />
+        <DropdownItem onClick={() => handleOptionClick("비밀번호 변경")}>
+          비밀번호 변경
+        </DropdownItem>
+        <hr style={{ margin: "5px 0px" }} />
+        <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
+        <hr style={{ margin: "5px 0px" }} />
+        <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
+        {LogoutModalOpen && (
+          <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
+        )}
+        {SecretModalOpen && (
+          <SecretMode
+            secretModalOpen={SecretModalOpen}
+            closeModal={closeModal}
+          />
+        )}
+      </DropdownMenu>
+    </Wrapper>
   );
 };
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect } from "react";
 import VisitedCard from "../components/review/VisitedCard";
-import { visitedCards } from "../util/mockDatas";
+import { visitedCards } from "../util/visitedDatas";
 
 const Wrapper = styled.div``;
 export default function VisitedPage() {

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { GoShareAndroid } from "react-icons/go";
 import { BiEditAlt } from "react-icons/bi";
 
-
 const InfoBox = styled.div`
   margin-left: 30px;
   margin-right: 30px;
@@ -103,10 +102,10 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ name, introduce }) => {
+const InfoComponent = ({ currentUser, loginUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newIntroduce, setNewIntroduce] = useState(introduce);
-  const [tempIntroduce, setTempIntroduce] = useState(introduce);
+  const [newIntroduce, setNewIntroduce] = useState(currentUser.introduce);
+  const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduce);
 
   const openModal = () => {
     setTempIntroduce(newIntroduce);
@@ -129,8 +128,13 @@ const InfoComponent = ({ name, introduce }) => {
 
   return (
     <InfoBox>
-      <NameInfo>{name} <ImgShare /></NameInfo>
-      <IntroduceInfo>{newIntroduce} &nbsp; <ImgEdit onClick={openModal} /></IntroduceInfo>
+      <NameInfo>{currentUser.nickname} <ImgShare /></NameInfo>
+      <IntroduceInfo>
+        {newIntroduce} &nbsp;
+        {currentUser.nickname === loginUser.nickname ? (
+          <ImgEdit onClick={openModal} />
+        ) : ("")}
+      </IntroduceInfo>
 
       {isModalOpen && (
         <ModalOverlay>

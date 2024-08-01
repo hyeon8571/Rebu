@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { visitedCards } from "../util/mockDatas";
+import { useLocation } from 'react-router-dom';
+import { postCards } from "../util/postDatas";
+import { scrapCards } from "../util/scrapDatas";
+import { storeCards } from "../util/storeDatas";
 import TabComponent from "../components/common/Tab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
 import Img from "../assets/images/cha.png";
@@ -9,13 +12,6 @@ import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
-import ChaImg from "../assets/images/cha.png";
-import nail1Img from "../assets/images/nail1.png";
-import nail2Img from "../assets/images/nail2.png";
-import nailartImg from "../assets/images/nailart.png";
-import nail3Img from "../assets/images/nail3.png";
-import manImg from "../assets/images/man.png";
-import hairImg from "../assets/images/hair.png";
 
 export const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -27,11 +23,28 @@ export const Wrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   max-width: 768px;
+  margin-bottom: 70px;
 `;
 
 const ProfileContainer = styled.div`
   max-width: 768px;
   width: 100%;
+`;
+
+const StickyTabContainer = styled.div`
+  position: ${(props) => (props.isSticky ? "fixed" : "relative")};
+  top: ${(props) => (props.isSticky ? '50px' : 'auto')}; 
+  right: ${(props) => (props.isSticky ? "25%" : "0px")};
+  transition: background-color 0.5s linear;
+  z-index: 4;
+  @media (max-width: 768px) {
+    width: 100%;
+    right: 0%;
+  };
+  width: ${(props) => (props.isSticky ? "50%" : "100%")};
+  max-width: 768px;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#ffffff" : props.theme.body};
 `;
 
 const GridContainer = styled.div`
@@ -51,50 +64,70 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? "fixed" : "relative")};
-  top: 50px;
-  right: ${(props) => (props.isSticky ? "50%" : "0px")};
-  transition: background-color 0.5s linear;
-  @media (max-width: 768px) {
-    width: 100%;
-    right: 0%;
+// 예시 - 현재 프로필의 유저
+let currentUser = {
+  profile_src: Img,
+  introduce : "나는 차은우 나는 뷰티 마스터 V",
+  type: "COMMON",
+  name: "차은우",
+  nickname: "Cha_Cha",
+  email: "cha0730@naver.com",
+  birth: "1997-07-30",
+  phone: "010-1234-5678",
+  gender: "true",
+  following: {
+    nickname: "jiwon",
+  },
+  follower: {
+    nickname: "jiwon",
   }
-  width: ${(props) => (props.isSticky ? "50%" : "100%")};
-  max-width: 768px;
-  /* left: ${(props) => (props.isSticky ? "16px" : "0")}; */
-  grid-column: 2 / 3;
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#ffffff" : props.theme.body};
-`;
+};
 
-const ReviewPhotos = [ChaImg, nail3Img, hairImg];
-const ScrapPhotos = [manImg, nail1Img, nail2Img, nailartImg];
-const name = "Cha_Cha";
-const introduce = "나는 차은우 나는 뷰티 마스터 V";
-const ReviewCount = ReviewPhotos.length;
-const ScrapCount = ScrapPhotos.length;
-const LikesCount = visitedCards.length;
+// 예시 - 로그인한 유저
+let loginUser = {
+  profile_src: Img,
+  introduce : "나는 차은우 나는 뷰티 마스터 V",
+  type: "COMMON",
+  name: "차은우",
+  nickname: "Cha_Cha",
+  email: "cha0730@naver.com",
+  birth: "1997-07-30",
+  phone: "010-1234-5678",
+  gender: "true",
+  following: {
+    nickname: "jiwon",
+  },
+  follower: {
+    nickname: "jiwon",
+  }
+};
+
+const ReviewCount = postCards.length;
+const ScrapCount = scrapCards.length;
+const LikesCount = storeCards.length;
+
 const FollowersCount = 10;
 const FollowingCount = 12;
 
-const ProfilePage = ({ theme, toggleTheme, children }) => {
+const ProfilePage = ({ theme, toggleTheme }) => {
+  const location = useLocation();
+  const updatedUser = location.state?.user;
   const [currentTab, setCurrentTab] = useState(0);
-  const [key, setKey] = useState(0);
+  const [reviewPhotos, setReviewPhotos] = useState([]);
+  const [scrapPhotos, setScrapPhotos] = useState([]);
   const [isSticky, setIsSticky] = useState(false);
-
-  const tabTitle = [
-    { name: "Reviews", content: "Reviews", count: ReviewCount },
-    { name: "Scraps", content: "Scraps", count: ScrapCount },
-    { name: "Likes", content: "Likes", count: LikesCount },
-  ];
-
+  const [key, setKey] = useState(0);
   const tabRef = useRef(null);
+
+  if (updatedUser) {
+    currentUser = updatedUser
+    loginUser = updatedUser
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       if (tabRef.current) {
-        setIsSticky(tabRef.current.getBoundingClientRect().top <= 50); // 60 is the height of the header
+        setIsSticky(tabRef.current.getBoundingClientRect().top <= 50);
       }
     };
 
@@ -104,16 +137,30 @@ const ProfilePage = ({ theme, toggleTheme, children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const reviewPhotos = postCards.flatMap(postcard => postcard.img);
+    const scrapPhotos = scrapCards.flatMap(scrapcard => scrapcard.img);
+    setReviewPhotos(reviewPhotos);
+    setScrapPhotos(scrapPhotos);
+  },[])
+
+  const tabTitle = [
+    { name: "Post", content: "Post", count: ReviewCount },
+    { name: "Scrap", content: "Scrap", count: ScrapCount },
+    { name: "Likes", content: "Likes", count: LikesCount },
+  ];
+
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
-    if (content === "Reviews") {
-      return <ReviewGrid key={key} uploadedPhotos={ReviewPhotos} />;
-    } else if (content === "Scraps") {
-      return <ScrapGrid key={key} uploadedPhotos={ScrapPhotos} />;
+
+    if (content === "Post") {
+      return <ReviewGrid key={key} uploadedPhotos={reviewPhotos} Card={postCards} currentUser={currentUser} />;
+    } else if (content === "Scrap") {
+      return <ScrapGrid key={key} uploadedPhotos={scrapPhotos} Card={scrapCards} currentUser={currentUser} />;
     } else if (content === "Likes") {
       return (
         <React.Fragment key={key}>
-          {visitedCards.map((item) => (
+          {storeCards.map((item) => (
             <LikesCard key={item.id} Card={item} button={item.button} />
           ))}
         </React.Fragment>
@@ -123,81 +170,30 @@ const ProfilePage = ({ theme, toggleTheme, children }) => {
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
-    setKey((prevKey) => prevKey + 1); // 추가된 부분: 같은 탭을 클릭해도 리렌더링
+    setKey(prevKey => prevKey + 1); // 같은 탭을 클릭해도 리렌더링
   };
 
   return (
     <Wrapper>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <Header theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} loginUser={loginUser} />
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage
-            img={Img}
+            currentUser={currentUser}
             time={130}
             followers={FollowersCount}
             following={FollowingCount}
           />
-          <ProfileInfo name={name} introduce={introduce} />
+          <ProfileInfo currentUser={currentUser} loginUser={loginUser} />
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>
             <TabComponent
               tabTitle={tabTitle}
               currentTab={currentTab}
-              onTabChange={setCurrentTab}
+              onTabChange={handleTabChange}
             />
           </StickyTabContainer>
-        </div>
-        <div>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
         </div>
       </ProfileContainer>
       <GridContainer>{renderGrid()}</GridContainer>
