@@ -13,12 +13,15 @@ const Button = styled.button`
   height: 2rem;
   float: left;
   max-width: 320px;
-  background-color: ${(props) => props.theme.primary};
+  background: ${(props) => props.theme.primary};
   color: #fff;
   margin-bottom: 0;
   border: 0;
   border-radius: 0.5rem;
   &:hover {
+    box-shadow: ${(props) => props.theme.boxShadow};
+  }
+  @media (max-width: 768px) {
     box-shadow: ${(props) => props.theme.boxShadow};
   }
 `;

@@ -11,10 +11,6 @@ body {
   ::-webkit-scrollbar {
     display: none;
   }
-
-  @media (max-width: 768px) {
-    margin-bottom: 4rem;
-  }
 }
 
 code {

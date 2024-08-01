@@ -1,13 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import Img from "../../assets/images/img.webp";
-import { CgAddR, CgSearch } from "react-icons/cg";
-import { IoHome, IoSearch } from "react-icons/io5";
+import { CgAddR } from "react-icons/cg";
+import { CgSearch } from "react-icons/cg";
+import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
-
-import { NavLink } from "react-router-dom";
+import Img from "./img.jpg";
 
 const GridContainer = styled.div`
   display: grid;
@@ -15,18 +14,18 @@ const GridContainer = styled.div`
   height: 100vh;
 `;
 
-const Rail = styled.nav`
+const Rail = styled.div`
   position: fixed;
   right: 0;
   left: calc(25% - 96px);
-  top: 10%;
+  top: 12.5%;
   bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   border-radius: 1rem;
-  height: 80vh;
+  height: 66.66%;
   min-height: 320px;
   width: 64px;
   background-color: ${(props) =>
@@ -36,71 +35,45 @@ const Rail = styled.nav`
   padding: 8px;
   box-shadow: ${(props) => props.theme.boxShadow};
   grid-column: 1 / 2;
-  transition: background-color 0.3s ease-in-out;
 `;
 
 const Content = styled.div`
   padding: 16px;
   grid-column: 2 / 3;
-  overflow: auto;
 `;
 
 const RightWrapper = styled.div`
   grid-column: 3 / 4;
 `;
 
-const StyledNavLink = styled(NavLink)`
-  color: ${(props) => (props.theme.value === "light" ? "" : props.theme.text)};
-  transition: background-color 0.3s ease-in-out;
-  border-radius: 1rem;
-  &.active {
-    color: ${(props) => props.theme.primary};
-    background-color: ${(props) => props.theme.body};
-  }
-`;
+const iconSize = 36;
 
-const ProfileNavLink = styled(NavLink)``;
-
-const ICON_SIZE = 36;
-
-const Navigation = ({ children }) => (
-  <>
-    <GridContainer>
-      <Rail>
-        <StyledNavLink to="/Login">
+export default function NavigationRail({ handleClick, children }) {
+  return (
+    <>
+      <GridContainer>
+        <Rail>
           <NavigationItem>
-            <IoHome size={ICON_SIZE} />
+            <IoHome size={iconSize}></IoHome>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/calendar">
           <NavigationItem>
-            <IoSearch size={ICON_SIZE} />
+            <CgSearch size={iconSize}></CgSearch>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/visited">
           <NavigationItem>
-            <CgAddR size={ICON_SIZE} />
+            <CgAddR size={iconSize}></CgAddR>
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/component">
           <NavigationItem>
-            <RiCalendarScheduleLine size={ICON_SIZE} />
+            <RiCalendarScheduleLine size={iconSize}></RiCalendarScheduleLine>
           </NavigationItem>
-        </StyledNavLink>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <ProfileNavLink to="/profile">
-          <ProfileMedium img={Img} time={0} />
-        </ProfileNavLink>
-      </Rail>
-      <Content>{children}</Content>
-      <RightWrapper />
-    </GridContainer>
-  </>
-);
-
-export default function NavigationRail({ theme, toggleTheme, children }) {
-  return <Navigation theme={theme} children={children} />;
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <ProfileMedium img={Img} time={0}></ProfileMedium>
+        </Rail>
+        <Content>{children}</Content>
+        <RightWrapper />
+      </GridContainer>
+    </>
+  );
 }

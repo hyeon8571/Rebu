@@ -12,7 +12,7 @@ const Button = styled.button`
   box-sizing: border-box;
   border: 0;
   color: ${(props) => (props.highlight ? "#fff" : props.theme.text)};
-  background-color: ${(props) =>
+  background: ${(props) =>
     props.highlight
       ? props.theme.primary
       : props.theme.value === "dark" && props.theme.secondary};
@@ -25,9 +25,11 @@ const Button = styled.button`
   font-weight: 600;
 
   @media (max-width: 768px) {
+    font-size: 0.7rem;
     width: 100px;
     height: 40px;
     line-height: 30px;
+    box-shadow: ${(props) => props.theme.boxShadow};
   }
 `;
 
