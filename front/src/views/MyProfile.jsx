@@ -18,7 +18,6 @@ export const Wrapper = styled.div`
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
   transition: background-color 0.5s linear;
   display: flex;
-  position: relative;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;

@@ -5,14 +5,10 @@ const ModalDiv = styled.div`
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   padding: 0;
   margin: 0;
-  position: fixed;
-  width: 50%;
+  width: 100%;
   height: 100%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
   display: flex;
+  z-index: 1;
   justify-content: center;
   align-items: center;
 `;
@@ -31,25 +27,22 @@ const Close = styled.span`
 `;
 const ModalContent = styled.div`
   overflow: auto;
-  padding-left: 25%;
-  padding-right: 25%;
-  @media (max-width: 768px) {
-    padding-left: 6.25%;
-    padding-right: 6.25%;
-  }
+  padding-left: 5vw;
+  padding-right: 5vw;
+  padding-top: 5%;
 `;
 
 const ModalBox = styled.div`
   display: flex;
-  position: absolute;
+  position: fixed;
   top: 20vh;
   @media (max-width: 768px) {
-    top: 10vh;
+    top: 20vh;
   }
   flex-direction: column;
   background-color: ${(props) => props.theme.background};
-  max-width: 320px;
-  max-height: 320px;
+  max-width: 640px;
+  max-height: 70%;
   width: 75%;
   height: auto;
   background-color: ${({ theme }) => theme.body};
@@ -67,6 +60,7 @@ export default function ModalNoBackground({ isOpen, setIsOpen, children }) {
   const closeModal = () => {
     setIsOpen(false);
   };
+
 
   return (
     <React.Fragment>

@@ -37,15 +37,15 @@ const CostContainer = styled.div`
   font-size: 0.8rem;
   color: ${(props) => props.theme.text};
 `;
-export default function MenuDetail(props) {
+export default function MenuDetail({menu}) {
   return (
     <ModalContentWrapper>
-      <PhotoContainer src={props.menu.img} />
+      <PhotoContainer src={menu.img} />
       <ModalContent>
-        <MenuTitleContainer>{props.menu.title}</MenuTitleContainer>
-        <ModalDescription>{props.menu.description}</ModalDescription>
-        <DurationContainer>소요시간 : {props.menu.duration}</DurationContainer>
-        <CostContainer>가격 : {props.menu.cost}</CostContainer>
+        <MenuTitleContainer>{menu.title}</MenuTitleContainer>
+        <ModalDescription>{menu.description}</ModalDescription>
+        <DurationContainer>소요시간 : {menu.duration}</DurationContainer>
+        <CostContainer>가격 : {menu.cost}</CostContainer>
       </ModalContent>
       <ButtonSmall
         button={{

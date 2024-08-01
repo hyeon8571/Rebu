@@ -115,7 +115,11 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__month-view__days__day--neighboringMonth {
-    color: #757575;
+    color: #d3d3d3;
+    font-weight: 300;
+  }
+  .react-calendar__month-view__days__day--neighboringMonth:disabled {
+    background: #fff;
   }
 
   .react-calendar__year-view .react-calendar__tile,
@@ -131,6 +135,7 @@ const StyledCalendar = styled(Calendar)`
     box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px 0px;
     background: none;
     text-align: center;
+    font-weight: 600;
     line-height: 36px;
 
     @media (max-width: 768px) {
@@ -289,7 +294,7 @@ export default function ReservationCalendar() {
           next2Label={null}
           formatDay={(locale, date) => moment(date).format("D")}
           calendarType="gregory" // 일요일 부터 시작
-          showNeighboringMonth={false} // 전달, 다음달 날짜 숨기기
+          showNeighboringMonth={true} // 전달, 다음달 날짜 숨기기
           formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
           tileDisabled={({ activeStartDate, date, view }) =>
             date.getDay() === 2

@@ -4,12 +4,12 @@ import styled, { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./util/theme";
 import { GlobalStyles } from "./util/GlobalStyles";
 import { useMediaQuery } from "react-responsive";
+import { BrowserRouter } from "react-router-dom";
 import NavigationBar from "./components/common/NavigationBar";
 import NavigationRail from "./components/common/NavigationRail";
 import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
-import { Provider } from "react-redux";
-import store from "./app/store";
+
 
 const Grid = styled.div`
   @media (min-width: 769px) {
@@ -37,8 +37,8 @@ function App() {
   };
 
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+        <BrowserRouter> 
         <GlobalStyles />
         <Grid>
           {isMobile ? <NavigationBar /> : <NavigationRail />}
@@ -47,8 +47,8 @@ function App() {
             <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
           </Layout>
         </Grid>
+        </BrowserRouter>
       </ThemeProvider>
-    </Provider>
   );
 }
 export default App;

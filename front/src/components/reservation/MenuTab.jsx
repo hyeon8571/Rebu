@@ -2,8 +2,10 @@ import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
 import ModalNoBackground from "../common/ModalNoBackground";
 import { useRef, useState } from "react";
+import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
-import MenuDetail from "./MenuDetail";
+import ButtonSmall from "../common/ButtonSmall";
+
 
 const Wrapper = styled.div`
   padding-left: 1rem;
@@ -50,10 +52,33 @@ const CostContainer = styled.div`
   font-size: 0.8rem;
   color: ${(props) => props.theme.text};
 `;
+const ModalContent = styled.div`
+  justify-content: start;
+  align-self: start;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+`;
+const ModalDescription = styled.div`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+`;
+
+const ModalContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+`;
 
 export default function MenuTab() {
-  const [isOpen, setIsOpen] = useState(false);
-  const modalContent = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  const [isSettingMode, setIsSettingMode] = useState(false);
 
   const MockData = [
     {
@@ -121,26 +146,67 @@ export default function MenuTab() {
     },
   ];
 
+  const SettingIcon = styled(IoSettings)`
+  
+  `;
+
+  const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+
+  `;
+
   function handleModalContent(item) {
-    modalContent.current = item;
-    setIsOpen(true);
+    setModalContent(<ModalContentWrapper>
+        <PhotoContainer src={item.img} />
+        <ModalContent>
+          <MenuTitleContainer>{item.title}</MenuTitleContainer>
+          <ModalDescription>{item.description}</ModalDescription>
+          <DurationContainer>소요시간 : {item.duration}</DurationContainer>
+          <CostContainer>가격 : {item.cost}</CostContainer>
+        </ModalContent>
+        <ButtonSmall button={{id: 1,
+          onClick: ()=>(window.alert("예약하기")),
+          highlight: true,
+          title: "예약하기",
+        }}/>
+      </ModalContentWrapper>);
+    setIsModalOpen(true);
   }
 
   return (
     <>
       <ModalPortal>
-        <ModalNoBackground isOpen={isOpen} setIsOpen={setIsOpen}>
-          <MenuDetail menu={modalContent}></MenuDetail>
+        <ModalNoBackground isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          {modalContent}
         </ModalNoBackground>
       </ModalPortal>
       <Wrapper>
+
+        {!isSettingMode ?
+          <IconWrapper onClick={()=>setIsSettingMode(true)}>
+            <IoSettings size={32} ></IoSettings>
+          </IconWrapper> : <ButtonWrapper> 
+            <ButtonSmall button={{
+              id :1,
+              onClick: () => { },
+              highlight: true,
+              title: "메뉴 추가",}}></ButtonSmall>
+            <ButtonSmall button={{
+              id :2,
+              onClick: () => { },
+              highlight: true,
+              title: "메뉴 삭제",}}></ButtonSmall>
+          </ButtonWrapper>}
+        
         <Grid>
           {MockData.map((item) => (
             <Card
               key={item.id}
               onClick={() => {
-                console.log(item);
-                handleModalContent(item);
+                if (!isSettingMode) {
+                  handleModalContent(item);
+                }
               }}
             >
               <PhotoContainer src={item.img} />

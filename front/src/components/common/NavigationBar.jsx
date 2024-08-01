@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import ProfileSmall from "./ProfileSmall";
-import Img from "./img.jpg";
 import NavigationItem from "./NavigationItem";
 import { CgAddR } from "react-icons/cg";
-import { CgSearch } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
