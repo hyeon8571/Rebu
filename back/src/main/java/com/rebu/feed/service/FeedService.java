@@ -31,13 +31,6 @@ public class FeedService {
 
     /**
      * FeedService :: createByEmployee method
-     * 복수 파일을 스토리지에 저장하고, FeedImage를 데이터 베이스에 저장
-     * @param files 저장할 MultipartFile 리스트
-     * @param feed FeedImage를 저장할 대상 Feed
-     */
-
-    /**
-     * FeedService :: createByEmployee method
      * 직원이 작성하는 피드
      * @param dto 등록할 피드 정보
      */
