@@ -76,7 +76,7 @@ export default function Components({ theme, toggleTheme }) {
       onClick: () => {
         navigate("/designertab");
       },
-      title: "디자이너탭",
+      title: "예약하기(디자이너부터)",
       highlight: true,
     },
   ];
@@ -115,8 +115,6 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
       <ButtonFull buttons={buttons4}></ButtonFull>
-      <ButtonFull buttons={buttons5}></ButtonFull>
-      <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
