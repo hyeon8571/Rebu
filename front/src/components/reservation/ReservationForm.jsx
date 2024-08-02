@@ -51,9 +51,9 @@ const ButtonContainer = styled.div`
 `;
 
 const ButtonBigContainer = styled.div`
-  padding: 0.5rem;
+  padding: 0.4rem;
   justify-self: start;
-  width: 90px;
+  width: 85px;
 `;
 
 const ButtonLabel = styled.label`

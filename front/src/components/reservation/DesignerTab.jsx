@@ -168,7 +168,7 @@ export default function DesignerTab() {
   }
 
   function handleChosenDesigner(value) {
-    if (chosenDesigner && value === chosenDesigner.nickname) {
+    if (chosenDesigner && value.nickname === chosenDesigner.nickname) {
       setChosenDesigner(null);
     } else {
       setChosenDesigner(value);

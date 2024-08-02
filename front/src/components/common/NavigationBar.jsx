@@ -42,7 +42,7 @@ export default function NavigationBar() {
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/calendar">
+        <StyledNavLink to="/designertab">
           <NavigationItem>
             <IoSearch size={ICON_SIZE} />
           </NavigationItem>

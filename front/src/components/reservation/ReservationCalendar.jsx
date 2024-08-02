@@ -202,12 +202,17 @@ const SelectedWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
-const ReservationInfo = styled.div`
+const ReservationInfoText = styled.div`
   width: calc(100% - 1rem);
   font-size: 20px;
   font-weight: 600;
   padding-left: 1rem;
   padding-top: 1rem;
+`;
+
+const ReservationInfo = styled.div`
+  border-bottom: 2px solid ${(props) => props.theme.primary};
+  padding-bottom: 0.3rem;
 `;
 
 const SelectedTitle = styled.span`
@@ -322,22 +327,23 @@ export default function ReservationCalendar() {
           value={date}
         />
       </CalendarWrapper>
-      <ReservationInfo>예약정보</ReservationInfo>
-      <ShopCard Card={card}></ShopCard>
+      <ReservationInfo>
+        <ReservationInfoText>예약정보</ReservationInfoText>
+        <ShopCard Card={card}></ShopCard>
 
-      <SelectedWrapper
-        style={{ visibility: chosenTime ? "visible" : "hidden" }}
-      >
-        <SelectedTitle>선택 날짜 : </SelectedTitle>
-        <SelectedTime>
-          {chosenDay +
-            " (" +
-            weekday[date.getDay()] +
-            ") " +
-            (chosenTime ? chosenTime : "")}
-        </SelectedTime>
-      </SelectedWrapper>
-
+        <SelectedWrapper
+          style={{ visibility: chosenTime ? "visible" : "hidden" }}
+        >
+          <SelectedTitle>선택 날짜 : </SelectedTitle>
+          <SelectedTime>
+            {chosenDay +
+              " (" +
+              weekday[date.getDay()] +
+              ") " +
+              (chosenTime ? chosenTime : "")}
+          </SelectedTime>
+        </SelectedWrapper>
+      </ReservationInfo>
       <ReservationForm
         timeInfo={shopTimeInfo}
         chosenTime={chosenTime}

@@ -11,7 +11,7 @@ const MenuCardContainer = styled.div`
   background-color: ${(props) =>
     props.theme.value === "light" ? props.theme.body : props.theme.secondary};
   padding: 1rem;
-  border-bottom: 2px solid ${(props) => props.theme.primary};
+  border-top: 2px solid ${(props) => props.theme.primary};
 `;
 
 const MenuContent = styled.div`
@@ -54,6 +54,12 @@ const PriceText = styled.div`
   padding-top: 0.2rem;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  padding-right: 1rem;
+  padding-top: 1rem;
+`;
 export default function MenuTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
   const [menuType, setMenuType] = useState(null);
@@ -86,38 +92,40 @@ export default function MenuTab() {
                 {item.title}
               </MenuTitle>
               <MenuIntroduction>{item.description}</MenuIntroduction>
-              <ServiceTimeText>시술 시간 : {item.duration}</ServiceTimeText>
-              <PriceText>가격 : {item.cost}</PriceText>
+              <ServiceTimeText>시술 시간 : {item.duration}분</ServiceTimeText>
+              <PriceText>가격 : {item.cost}원</PriceText>
             </MenuContent>
             <MenuPhotoContainer>
               <MenuPhoto src={item.img} />
             </MenuPhotoContainer>
           </MenuCardContainer>
         ))}
-      <ButtonSmall
-        button={{
-          id: 1,
-          title: "다음",
-          onClick: () => {
-            if (chosenMenu) {
-              navigate("/calendar", {
-                state: {
-                  info: {
-                    ...info,
-                    menu: chosenMenu.title,
-                    nickname: chosenMenu.nickname,
-                    serviceTime: chosenMenu.duration,
-                    cost: chosenMenu.cost,
+      <ButtonWrapper>
+        <ButtonSmall
+          button={{
+            id: 1,
+            title: "다음",
+            onClick: () => {
+              if (chosenMenu) {
+                navigate("/calendar", {
+                  state: {
+                    info: {
+                      ...info,
+                      menu: chosenMenu.title,
+                      nickname: chosenMenu.nickname,
+                      serviceTime: chosenMenu.duration,
+                      cost: chosenMenu.cost,
+                    },
                   },
-                },
-              });
-            } else {
-              window.alert("시술을 선택해주세요");
-            }
-          },
-          highlight: true,
-        }}
-      ></ButtonSmall>
+                });
+              } else {
+                window.alert("시술을 선택해주세요");
+              }
+            },
+            highlight: true,
+          }}
+        />
+      </ButtonWrapper>
     </>
   );
 }

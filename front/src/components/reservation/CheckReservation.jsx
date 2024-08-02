@@ -17,7 +17,7 @@ export default function CheckReservation({ setIsModalOpen, children }) {
   const Button1 = {
     id: 1,
     title: "예약",
-    onClick: () => {},
+    onClick: () => <div>ㅇㅇ</div>,
     highlight: true,
   };
 
