@@ -24,7 +24,11 @@ const MenuTitle = styled.div`
   display: flex;
   font-size: 18px;
   font-weight: 500;
-  padding-bottom: 1rem;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 const MenuPhotoContainer = styled.div`
@@ -41,7 +45,8 @@ const MenuPhoto = styled.img`
 
 const MenuIntroduction = styled.li`
   font-size: 12px;
-  padding-top: 0.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 `;
 
 const ServiceTimeText = styled.div`
@@ -60,6 +65,11 @@ const ButtonWrapper = styled.div`
   padding-right: 1rem;
   padding-top: 1rem;
 `;
+
+const MenuTitleWrapper = styled.div`
+  cursor: pointer;
+`;
+
 export default function MenuTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
   const [menuType, setMenuType] = useState(null);
@@ -89,7 +99,9 @@ export default function MenuTab() {
                   value={chosenMenu ? item.menuId === chosenMenu.menuId : false}
                   onChange={() => handleChosenMenu(item)}
                 />
-                {item.title}
+                <MenuTitleWrapper onClick={() => handleChosenMenu(item)}>
+                  {item.title}
+                </MenuTitleWrapper>
               </MenuTitle>
               <MenuIntroduction>{item.description}</MenuIntroduction>
               <ServiceTimeText>시술 시간 : {item.duration}분</ServiceTimeText>

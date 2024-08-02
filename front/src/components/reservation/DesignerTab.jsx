@@ -48,12 +48,18 @@ const DesignerTitle = styled.div`
   display: flex;
   font-size: 18px;
   font-weight: 500;
-  padding-bottom: 1rem;
+  cursor: pointer;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 const DesignerIntroduction = styled.li`
   font-size: 12px;
-  padding-top: 0.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 `;
 
 const DesignerPhotoContainer = styled.div`
@@ -211,10 +217,12 @@ export default function DesignerTab() {
                       chosenDesigner &&
                       item.nickname === chosenDesigner.nickname
                     }
-                    onChange={() => handleChosenDesigner(item)}
+                    onChange={(e) => handleChosenDesigner(item)}
                   />
                 )}
-                {item.workingName} {item.role}
+                <div onClick={() => handleChosenDesigner(item)}>
+                  {item.workingName} {item.role}
+                </div>
               </DesignerTitle>
               <DesignerIntroduction>
                 {item.workingIntroduction}

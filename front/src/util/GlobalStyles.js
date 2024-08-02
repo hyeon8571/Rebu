@@ -2,6 +2,9 @@
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
+*{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
   body {
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};

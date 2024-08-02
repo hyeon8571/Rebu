@@ -15,7 +15,7 @@ const ripple = keyframes`
 const CheckboxWrapper = styled.div`
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
-  --border-width: 1px;
+  --border-width: 2px;
   --c-primary: #943aee;
   --c-primary-20-percent-opacity: rgba(95, 17, 232, 0.2);
   --c-primary-10-percent-opacity: rgba(95, 17, 232, 0.1);
