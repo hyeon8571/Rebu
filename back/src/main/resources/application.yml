@@ -23,3 +23,12 @@ spring:
     redis:
       host: localhost
       port: 6379
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 10MB
+
+feed:
+  cnt_image_max_limit: 5
+  cnt_hashtag_max_limit: 5
+  storage_base_url: "/feeds"
