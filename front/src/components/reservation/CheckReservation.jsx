@@ -21,9 +21,7 @@ export default function CheckReservation({
   const Button1 = {
     id: 1,
     title: "예약",
-    onClick: () => {
-      setIsConfirmed(true);
-    },
+    onClick: () => setIsConfirmed(true),
     highlight: true,
   };
 

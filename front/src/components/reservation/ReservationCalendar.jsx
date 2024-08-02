@@ -259,8 +259,6 @@ export default function ReservationCalendar() {
   const location = useLocation();
   const { info } = location.state;
 
-  console.log(info);
-
   const card = {
     id: 1,
     img: Img,
