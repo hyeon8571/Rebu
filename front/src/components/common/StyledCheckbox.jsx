@@ -19,8 +19,8 @@ const CheckboxWrapper = styled.div`
   --c-primary: #943aee;
   --c-primary-20-percent-opacity: rgba(95, 17, 232, 0.2);
   --c-primary-10-percent-opacity: rgba(95, 17, 232, 0.1);
-  --t-base: 0.4s;
-  --t-fast: 0.2s;
+  --t-base: 0.3s;
+  --t-fast: 0.15s;
   --e-in: ease-in;
   --e-out: cubic-bezier(0.11, 0.29, 0.18, 0.98);
 `;

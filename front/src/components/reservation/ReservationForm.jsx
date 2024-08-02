@@ -4,6 +4,7 @@ import ButtonSmall from "../common/ButtonSmall";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import CheckReservation from "./CheckReservation";
 import ModalPortal from "../../util/ModalPortal";
+import ConfirmReservation from "./ConfirmReservation";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -96,6 +97,11 @@ const SubmitButtonWrapper = styled.div`
   padding-bottom: 4rem;
 `;
 
+const DivideLine = styled.div`
+  border-bottom: 2px solid ${(props) => props.theme.primary};
+  padding-top: 1rem;
+`;
+
 //date = 해당날짜, startTime = 매장 시작시각, endTime= 매장 종료시각, intervalMinutes = 예약 간격 최소시간, serviceDuration = 시술 소요시간, scheulerData = 기존 예약 시간들 (객체형태)
 function generateTimeIntervals(
   date,
@@ -181,10 +187,32 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
   const [isHourChosen, setIsHourChosen] = useState(false);
   const [isTimeChosen, setIsTimeChosen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   const RequestInput = useRef("");
 
   let idCount = 1;
+
+  function handleIsHourChosen(item) {
+    setIsTimeChosen(false);
+    setChosenTime(null);
+    setChosenHour(item);
+    if (!isHourChosen) {
+      setTimeout(() => {
+        scrollDown();
+      }, 100);
+    }
+  }
+
+  function handleChosenTime(item) {
+    setChosenTime(item);
+    setIsTimeChosen(true);
+    if (!isTimeChosen) {
+      setTimeout(() => {
+        scrollDown();
+      }, 100);
+    }
+  }
 
   //useMemo 사용 (불필요 계산 방지)
   const intervals = useMemo(() => {
@@ -208,29 +236,26 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
 
   useEffect(() => {
     setChosenHour(null);
+    setChosenTime(null);
     setIsHourChosen(false);
     setIsTimeChosen(false);
   }, [timeInfo.date]);
 
-  useEffect(() => {
-    if (!isHourChosen && chosenHour) {
-      scrollDown();
-      setIsHourChosen(true);
-    }
-    if (!isTimeChosen && chosenTime) {
-      scrollDown();
-      setIsTimeChosen(true);
-    }
-  }, [chosenTime, chosenHour]);
   return (
     <>
       <ModalPortal>
         <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-          {
+          {!isConfirmed ? (
             <CheckReservation
+              setIsConfirmed={setIsConfirmed}
               setIsModalOpen={setIsModalOpen}
             ></CheckReservation>
-          }
+          ) : (
+            <ConfirmReservation
+              setIsConfirmed={setIsConfirmed}
+              setIsModalOpen={setIsModalOpen}
+            ></ConfirmReservation>
+          )}
         </ModalNoBackNoExit>
       </ModalPortal>
       <ButtonWrapper className="button">
@@ -242,7 +267,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
                 <ButtonInput
                   id={`radio+${idCount}`}
                   onClick={() => {
-                    setChosenHour(item);
+                    handleIsHourChosen(item);
                   }}
                   name="radioGroup"
                 />
@@ -264,7 +289,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
               <ButtonBigContainer key={timeInfo.date + idCount}>
                 <ButtonInput
                   id={`radio+${idCount}`}
-                  onClick={() => setChosenHour(item)}
+                  onClick={() => handleIsHourChosen(item)}
                   name="radioGroup"
                 />
                 <ButtonLabel htmlFor={`radio+${idCount++}`}>
@@ -278,6 +303,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
         })}
       </ButtonWrapper>
 
+      {chosenHour && <DivideLine></DivideLine>}
       <ButtonWrapper>
         {chosenHour && <Title>예약 가능 시간</Title>}
         {chosenHour &&
@@ -286,7 +312,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
               <ButtonInput
                 id={`radios+${item}+${idCount}`}
                 onClick={() => {
-                  setChosenTime(item);
+                  handleChosenTime(item);
                 }}
                 name="radioGroup2"
               />
@@ -296,7 +322,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
             </ButtonContainer>
           ))}
       </ButtonWrapper>
-      {chosenTime && (
+      {isTimeChosen && (
         <>
           <Title>요청사항</Title>
           <RequestTextArea
@@ -310,7 +336,12 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
               button={{
                 title: "예약하기",
                 onClick: () => {
-                  setIsModalOpen(true);
+                  if (isTimeChosen) {
+                    console.log(chosenTime);
+                    setIsModalOpen(true);
+                  } else {
+                    window.alert("예약 시간을 선택해주세요");
+                  }
                 },
                 highlight: true,
               }}
