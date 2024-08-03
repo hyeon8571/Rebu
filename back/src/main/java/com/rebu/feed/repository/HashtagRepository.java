@@ -11,12 +11,10 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
     void deleteByFeedId(Long feedId);
 
     @Query(value = """
-                    SELECT new com.rebu.feed.dto.HashtagCountDTO(h.tag, COUNT(h))
-                    FROM Hashtag h 
-                    WHERE h.tag LIKE :keyword% 
+                    SELECT new com.rebu.feed.dto.HashtagCountDto(h.tag, COUNT(*))
+                    FROM Hashtag h
+                    WHERE h.tag LIKE :keyword%
                     GROUP BY h.tag
-                   """,
-
-            nativeQuery = true)
+                   """)
     List<HashtagCountDto> countHashtagsByPrefix(String keyword);
 }

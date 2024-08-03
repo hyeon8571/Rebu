@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HashtagCountDto {
     private String hashtag;
-    private int cnt;
+    private Long cnt;
 }
