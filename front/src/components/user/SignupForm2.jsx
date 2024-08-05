@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../views/Signup";
 import styled from "styled-components";
@@ -92,6 +93,8 @@ const SignupForm2 = ({
   handleChange,
   handleSubmit: parentHandleSubmit,
 }) => {
+  const nav = useNavigate();
+
   // 닉네임
   const [nicknameMsg, setNicknameMsg] = useState("");
   const [isNicknameValid, setIsNicknameValid] = useState(false);
@@ -324,10 +327,16 @@ const SignupForm2 = ({
     return true;
   };
   // 폼 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      parentHandleSubmit();
+      try {
+        await parentHandleSubmit();
+        navigate("/signupComp"); // SignupComp 페이지로 이동
+      } catch (error) {
+        console.error("Form submission error:", error);
+        // 에러 처리 로직 추가 필요!
+      }
     }
   };
 
