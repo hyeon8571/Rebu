@@ -101,6 +101,16 @@ export default function Components({ theme, toggleTheme }) {
       highlight: true,
     },
   ];
+  const buttons9 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/");
+      },
+      title: "시술 보기",
+      highlight: true,
+    },
+  ];
 
   function handleModal() {
     setIsModalOpen(true);
@@ -146,7 +156,7 @@ export default function Components({ theme, toggleTheme }) {
       <ButtonFull buttons={buttons7}></ButtonFull>
       <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons8}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonFull buttons={buttons9}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonLarge button={buttons2}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>
