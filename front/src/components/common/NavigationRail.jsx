@@ -18,7 +18,7 @@ const GridContainer = styled.div`
 const Rail = styled.nav`
   position: fixed;
   right: 0;
-  left: calc(25% - 96px);
+  left: calc(25% - 120px);
   top: 10%;
   bottom: 0;
   display: flex;

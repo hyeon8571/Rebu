@@ -27,9 +27,6 @@ export default function Components({ theme, toggleTheme }) {
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/timetable");
-  };
   const buttons = [
     {
       id: 1,
@@ -48,7 +45,7 @@ export default function Components({ theme, toggleTheme }) {
 
   const buttons3 = {
     id: 1,
-    onClick: handleFollowingModal,
+    onClick: () => {},
     highlight: false,
     title: "버튼",
   };
@@ -56,7 +53,9 @@ export default function Components({ theme, toggleTheme }) {
   const buttons4 = [
     {
       id: 1,
-      onClick: handleClick,
+      onClick: () => {
+        navigate("/timetable");
+      },
       title: "시간표",
       highlight: true,
     },
@@ -66,9 +65,9 @@ export default function Components({ theme, toggleTheme }) {
     {
       id: 1,
       onClick: () => {
-        navigate("/menutab");
+        navigate("/myreservation");
       },
-      title: "메뉴탭",
+      title: "내 예약 보기",
       highlight: true,
     },
   ];
@@ -76,9 +75,29 @@ export default function Components({ theme, toggleTheme }) {
     {
       id: 1,
       onClick: () => {
-        navigate("/designertab");
+        navigate("/setrev");
       },
-      title: "예약하기(디자이너부터)",
+      title: "예약 설정",
+      highlight: true,
+    },
+  ];
+  const buttons7 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/addmenu");
+      },
+      title: "시술 추가",
+      highlight: true,
+    },
+  ];
+  const buttons8 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/menudisplay");
+      },
+      title: "시술 보기",
       highlight: true,
     },
   ];
@@ -117,13 +136,16 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
 
-      <Lottie animationData={confirmLottie} />
+      <Lottie
+        style={{ width: 100, height: 100 }}
+        animationData={confirmLottie}
+      />
 
       <ButtonFull buttons={buttons4}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonFull buttons={buttons5}></ButtonFull>
+      <ButtonFull buttons={buttons7}></ButtonFull>
+      <ButtonFull buttons={buttons6}></ButtonFull>
+      <ButtonFull buttons={buttons8}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonLarge button={buttons2}></ButtonLarge>

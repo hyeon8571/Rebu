@@ -11,6 +11,7 @@ export const GlobalStyles = createGlobalStyle`
       user-select: none;
 }
   body {
+    margin : 0;
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
     transition: background-color 0.50s linear;

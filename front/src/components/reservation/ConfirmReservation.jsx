@@ -40,6 +40,7 @@ export default function ConfirmReservation({ setIsModalOpen }) {
         loop={false}
         autoplay={true}
         animationData={confirmLottie}
+        width={100}
       ></Lottie>
       <ButtonWrapper>
         <ButtonSmall
@@ -48,7 +49,7 @@ export default function ConfirmReservation({ setIsModalOpen }) {
             title: "확인",
             onClick: () => {
               setIsModalOpen(false);
-              navigate("/profile");
+              navigate("/myreservation");
             },
             highlight: true,
           }}
