@@ -1,5 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../features/auth/authSlice";
+import axios from "axios";
+import styled from "styled-components";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -16,7 +20,7 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background-color: ${(props) =>
-      props.theme.value === "light" ? '#ffffff' : '#e5e5e5'};
+    props.theme.value === "light" ? "#ffffff" : "#e5e5e5"};
   padding: 20px;
   border-radius: 8px;
   width: 300px;
@@ -42,7 +46,7 @@ const CloseButton = styled.button`
   font-size: 20px;
   cursor: pointer;
   &:hover {
-    color: #943AEE;
+    color: #943aee;
   }
 `;
 
@@ -52,7 +56,7 @@ const ModalButtonContainer = styled.div`
 `;
 
 const LogoutButton = styled.button`
-  background: #943AEE;
+  background: #943aee;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -61,7 +65,7 @@ const LogoutButton = styled.button`
   cursor: pointer;
 `;
 
-  const CancelButton = styled.button`
+const CancelButton = styled.button`
   background: #cccccc;
   color: black;
   border: none;
@@ -71,12 +75,41 @@ const LogoutButton = styled.button`
   cursor: pointer;
 `;
 
+const Logout = ({ LogoutModalOpen, closeModal }) => {
+  // const logout = () => {
+  //   //로그아웃 로직//
+  //   closeModal();
+  // };
 
-const Logout = ({LogoutModalOpen, closeModal}) => {
-  
-  const logout = () => {
-    //로그아웃 로직//
-    closeModal();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    //로그아웃하자...
+    try {
+      // 로그아웃 API 호출 - header로 받음
+      // api - body로 받음 // {access: localStorage.getItem("accessToken"),}
+      await axios.post(
+        "http://localhost:80/api/auths/logout",
+        {},
+        {
+          headers: {
+            access: `Bearer ${localStorage.getItem(accessToken)}`,
+          },
+        }
+      );
+
+      localStorage.removeItem("accessToken");
+
+      // Dispatch the logout action
+      dispatch(logout());
+      alert("logout");
+      navigate("/login"); //로그아웃 후 로그인 페이지로 이동
+      closeModal();
+    } catch (error) {
+      console.log("로그아웃 중 오류 발생: ", error);
+      alert("로그아웃 실패");
+    }
   };
 
   const cancel = () => {
@@ -85,22 +118,22 @@ const Logout = ({LogoutModalOpen, closeModal}) => {
 
   return (
     <>
-    {LogoutModalOpen && (
-      <ModalOverlay>
-        <ModalContent>
-          <ModalHeader>
-            <CloseButton onClick={closeModal}>&times;</CloseButton>
-          </ModalHeader>
-          <ModalText>로그아웃 하시겠습니까?</ModalText>
-          <ModalButtonContainer>
-              <LogoutButton onClick={logout}>로그아웃</LogoutButton>
+      {LogoutModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalHeader>
+              <CloseButton onClick={closeModal}>&times;</CloseButton>
+            </ModalHeader>
+            <ModalText>로그아웃 하시겠습니까?</ModalText>
+            <ModalButtonContainer>
+              <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
               <CancelButton onClick={cancel}>취소</CancelButton>
-          </ModalButtonContainer>
-        </ModalContent>
-      </ModalOverlay>
+            </ModalButtonContainer>
+          </ModalContent>
+        </ModalOverlay>
       )}
     </>
-  )
+  );
 };
 
 export default Logout;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SignupForm1 from "../components/forms/SignupForm1";
-import SignupForm2 from "../components/forms/SignupForm2";
+import SignupForm1 from "../components/user/SignupForm1";
+import SignupForm2 from "../components/user/SignupForm2";
 import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
 

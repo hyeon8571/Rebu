@@ -8,7 +8,7 @@ import "./Login.css";
 import ButtonBack from "../components/common/ButtonBack";
 import { ButtonStyles, ButtonHover } from "../components/common/ButtonLogin";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import SignupForm1 from "../components/forms/SignupForm1";
+import SignupForm1 from "../components/user/SignupForm1";
 
 const Container = styled.div`
   align-items: center;

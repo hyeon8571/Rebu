@@ -8,7 +8,7 @@ import FindEmail from "../views/FindEmail";
 import ChangePassword from "../views/ChangePassword";
 import Signup from "../views/Signup";
 import ChangePasswordCompl from "../views/ChangePasswordCompl";
-import SignupForm2 from "../components/forms/SignupForm2";
+import SignupForm2 from "../components/user/SignupForm2";
 
 const AppRoutes = () => (
   <Routes>
