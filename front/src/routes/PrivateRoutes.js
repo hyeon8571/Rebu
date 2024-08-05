@@ -11,6 +11,11 @@ import DesignerTab from "../components/reservation/DesignerTab";
 import PersonalInfo from "../views/PersonalInfo";
 import PostModify from "../views/PostModify";
 import MyReservationCalendar from "../components/MyReservation/MyReservationCalendar";
+import AddMenu from "../views/AddMenu";
+import SettingReservation from "../views/SettingReservation";
+import MenuDisplay from "../components/reservation/MenuDisPlay";
+import DesignerDisplay from "../components/reservationTab/DesignerDisplay";
+import PostReview1 from "../components/review/PostReview1";
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
@@ -33,6 +38,11 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     <Route path="/designertab" element={<DesignerTab />} />
     <Route path="/post-modify" element={<PostModify />} />
     <Route path="/myreservation" element={<MyReservationCalendar />} />
+    <Route path="/menudisplay" element={<MenuDisplay />} />
+    <Route path="/addmenu" element={<AddMenu />} />
+    <Route path="/setrev" element={<SettingReservation />} />
+    <Route path="/designerdisplay" element={<DesignerDisplay />} />
+    <Route path="/postrevw" element={<PostReview1 />} />
   </Routes>
 );
 

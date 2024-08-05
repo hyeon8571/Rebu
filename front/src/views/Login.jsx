@@ -75,7 +75,7 @@ const Login = () => {
   };
 
   return (
-    <Container>
+    <Container className="page">
       <ButtonBack />
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleSubmit}>

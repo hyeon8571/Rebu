@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
-import ModalNoBackground from "../common/ModalNoBackground";
+import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import { useRef, useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
-
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding-left: 1rem;
@@ -27,7 +27,10 @@ const Card = styled.div`
 `;
 
 const PhotoContainer = styled.img`
-  width: 80%;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+  width: 50%;
   border-radius: 0.3rem;
 `;
 
@@ -35,7 +38,10 @@ const ContentContainer = styled.div`
   justify-content: start;
   align-self: start;
   padding-top: 1rem;
-  padding-left: 11%;
+  @media (max-width: 768px) {
+    padding-left: 10%;
+  }
+  padding-left: 25%;
 `;
 
 const MenuTitleContainer = styled.div`
@@ -75,8 +81,16 @@ const IconWrapper = styled.div`
   justify-content: end;
 `;
 
-const SelectedItem = styled.div`
-  
+const InsturctionText = styled.div`
+  display: flex;
+  justify-content: center;
+  color: ${(props) => props.theme.primary};
+  font-weight: 600;
+  vertical-align: middle;
+`;
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
 `;
 
 export default function MenuDisplay() {
@@ -84,10 +98,13 @@ export default function MenuDisplay() {
   const [modalContent, setModalContent] = useState(null);
   const [isSettingMode, setIsSettingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const navigation = useNavigate();
 
   const MockData = [
     {
-      id : 1,
+      id: 1,
       nickname: "yuseon",
       img: Img,
       title: "시그니처 세팅펌",
@@ -97,7 +114,7 @@ export default function MenuDisplay() {
       cost: "110,000",
     },
     {
-      id : 2,
+      id: 2,
       nickname: "yuseong",
       img: Img,
       title: "시그니처 S컬펌",
@@ -107,8 +124,8 @@ export default function MenuDisplay() {
       cost: "100,000",
     },
     {
-      id : 3,
-      nickname : "jinseo",
+      id: 3,
+      nickname: "jinseo",
       img: Img,
       title: "밀크브라운 염색",
       description:
@@ -154,67 +171,142 @@ export default function MenuDisplay() {
     },
   ];
 
-  const SettingIcon = styled(IoSettings)`
-  `;
-
-  const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: space-around;
-
-  `;
+  function handleSettingMode() {
+    if (isSettingMode) {
+      setIsDeleteMode(false);
+      setIsSettingMode(false);
+      setIsEditMode(false);
+    } else {
+      setIsSettingMode(true);
+    }
+  }
+  const SettingIcon = styled(IoSettings)``;
 
   function handleModalContent(item) {
-    setModalContent(<ModalContentWrapper>
-        <PhotoContainer src={item.img} />
-        <ModalContent>
-          <MenuTitleContainer>{item.title}</MenuTitleContainer>
-          <ModalDescription>{item.description}</ModalDescription>
-          <DurationContainer>소요시간 : {item.duration}</DurationContainer>
-          <CostContainer>가격 : {item.cost}</CostContainer>
-        </ModalContent>
-        <ButtonSmall button={{id: 1,
-          onClick: ()=>(window.alert("예약하기")),
-          highlight: true,
-          title: "예약하기",
-        }}/>
-      </ModalContentWrapper>);
+    if (!isDeleteMode && !isEditMode) {
+      setModalContent(
+        <>
+          <ModalContentWrapper>
+            <PhotoContainer src={item.img} />
+            <ModalContent>
+              <MenuTitleContainer>{item.title}</MenuTitleContainer>
+              <ModalDescription>{item.description}</ModalDescription>
+              <DurationContainer>소요시간 : {item.duration}</DurationContainer>
+              <CostContainer>가격 : {item.cost}</CostContainer>
+            </ModalContent>
+          </ModalContentWrapper>
+          <ButtonWrapper>
+            <ButtonSmall
+              button={{
+                id: 1,
+                onClick: () => window.alert("예약하기"),
+                highlight: true,
+                title: "예약하기",
+              }}
+            />
+
+            <ButtonSmall
+              button={{
+                id: 2,
+                onClick: () => setIsModalOpen(false),
+                highlight: false,
+                title: "확인",
+              }}
+            />
+          </ButtonWrapper>
+        </>
+      );
+    } else if (isDeleteMode) {
+      setModalContent(
+        <ModalContentWrapper>
+          <ModalContent>
+            <MenuTitleContainer>
+              해당 항목을 삭제하시겠습니까?
+            </MenuTitleContainer>
+          </ModalContent>
+          <ButtonSmall
+            button={{
+              id: 1,
+              onClick: () => {
+                window.alert("삭제");
+                setIsModalOpen(false);
+              },
+              highlight: true,
+              title: "삭제",
+            }}
+          />
+        </ModalContentWrapper>
+      );
+    } else if (isEditMode) {
+      navigation("/addMenu");
+    }
     setIsModalOpen(true);
   }
 
   return (
     <>
       <ModalPortal>
-        <ModalNoBackground isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+        <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
           {modalContent}
-        </ModalNoBackground>
+        </ModalNoBackNoExit>
       </ModalPortal>
       <Wrapper>
+        <IconWrapper onClick={handleSettingMode}>
+          <IoSettings
+            style={{ paddingRight: "12px" }}
+            size={24}
+            fill={isSettingMode ? "#999999" : "#000"}
+          ></IoSettings>
+        </IconWrapper>
+        {!isSettingMode || isDeleteMode || isEditMode ? (
+          <></>
+        ) : (
+          <ButtonWrapper>
+            <ButtonSmall
+              button={{
+                id: 1,
+                onClick: () => {
+                  navigation("/addmenu");
+                },
+                highlight: true,
+                title: "메뉴 추가",
+              }}
+            ></ButtonSmall>
+            <ButtonSmall
+              button={{
+                id: 2,
+                onClick: () => {
+                  setIsEditMode(true);
+                },
+                highlight: true,
+                title: "메뉴 수정",
+              }}
+            ></ButtonSmall>
+            <ButtonSmall
+              button={{
+                id: 3,
+                onClick: () => {
+                  setIsDeleteMode(true);
+                },
+                highlight: true,
+                title: "메뉴 삭제",
+              }}
+            ></ButtonSmall>
+          </ButtonWrapper>
+        )}
+        {isDeleteMode && (
+          <InsturctionText>삭제할 항목을 클릭해주세요</InsturctionText>
+        )}
+        {isEditMode && (
+          <InsturctionText>수정할 항목을 클릭해주세요</InsturctionText>
+        )}
 
-        <IconWrapper onClick={()=>setIsSettingMode(!isSettingMode)}>
-            <IoSettings size={32} fill={isSettingMode?"#999999":"#000"} ></IoSettings>
-          </IconWrapper> 
-        {!isSettingMode ?
-          <></>: <ButtonWrapper> 
-            <ButtonSmall button={{
-              id :1,
-              onClick: () => { },
-              highlight: true,
-              title: "메뉴 추가",}}></ButtonSmall>
-            <ButtonSmall button={{
-              id :2,
-              onClick: () => { },
-              highlight: true,
-              title: "메뉴 삭제",}}></ButtonSmall>
-          </ButtonWrapper>}
-        
         <Grid>
           {MockData.map((item) => (
             <Card
               key={item.id}
               onClick={() => {
-                if (!isSettingMode) {
-                  handleModalContent(item);
-                }
+                handleModalContent(item);
               }}
             >
               <PhotoContainer src={item.img} />

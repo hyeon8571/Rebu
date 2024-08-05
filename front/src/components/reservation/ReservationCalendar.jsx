@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import ReservationForm from "./ReservationForm";
-import ShopCard from "./ShopCard";
+import ReservationCard from "./ReservationCard";
 import Img from "../../assets/images/img.webp";
 
 const CalendarWrapper = styled.div`
@@ -259,8 +259,6 @@ export default function ReservationCalendar() {
   const location = useLocation();
   const { info } = location.state;
 
-  console.log(info);
-
   const card = {
     id: 1,
     img: Img,
@@ -329,7 +327,7 @@ export default function ReservationCalendar() {
       </CalendarWrapper>
       <ReservationInfo>
         <ReservationInfoText>예약정보</ReservationInfoText>
-        <ShopCard Card={card}></ShopCard>
+        <ReservationCard Card={card}></ReservationCard>
 
         <SelectedWrapper
           style={{ visibility: chosenTime ? "visible" : "hidden" }}

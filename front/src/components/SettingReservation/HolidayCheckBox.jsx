@@ -1,21 +1,16 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
-
-const ripple = keyframes`
-  from {
-    transform: scale(0);
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: scale(20);
-  }
-`;
+import styled from "styled-components";
 
 const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: center; /* Center the checkbox vertically */
+  justify-content: center; /* Center the checkbox horizontally */
+  height: 100%; /* Take the full height of the container */
+  width: 100%; /* Ensure full width */
+  text-align: center;
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
-  --border-width: 2px;
+  --border-width: 1px;
   --c-primary: #943aee;
   --c-primary-20-percent-opacity: rgba(95, 17, 232, 0.2);
   --c-primary-10-percent-opacity: rgba(95, 17, 232, 0.1);
@@ -39,12 +34,9 @@ const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* Center the checkbox content horizontally */
   cursor: pointer;
-
-  &:not(:first-of-type) {
-    margin-top: var(--s-small);
-  }
+  margin: 0; /* Remove any default margins */
 `;
 
 const CheckboxSymbol = styled.span`
@@ -53,8 +45,8 @@ const CheckboxSymbol = styled.span`
   border: var(--border-width) solid var(--c-primary);
   position: relative;
   border-radius: 0.1em;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1em;
+  height: 1em;
   transition: box-shadow var(--t-base) var(--e-out),
     background-color var(--t-base);
   box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
@@ -79,10 +71,6 @@ const CheckboxSymbol = styled.span`
       stroke-dashoffset: ${(props) => (props.checked ? "0px" : "31px")};
     }
   }
-`;
-
-const CheckboxTextWrapper = styled.p`
-  margin: 0;
 `;
 
 const Checkbox = ({ value, onChange }) => (

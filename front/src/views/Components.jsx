@@ -75,9 +75,39 @@ export default function Components({ theme, toggleTheme }) {
     {
       id: 1,
       onClick: () => {
-        navigate("/designertab");
+        navigate("/setrev");
       },
-      title: "예약하기(디자이너부터)",
+      title: "예약 설정",
+      highlight: true,
+    },
+  ];
+  const buttons7 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/addmenu");
+      },
+      title: "시술 추가",
+      highlight: true,
+    },
+  ];
+  const buttons8 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/menudisplay");
+      },
+      title: "시술 보기",
+      highlight: true,
+    },
+  ];
+  const buttons9 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/");
+      },
+      title: "시술 보기",
       highlight: true,
     },
   ];
@@ -123,10 +153,10 @@ export default function Components({ theme, toggleTheme }) {
 
       <ButtonFull buttons={buttons4}></ButtonFull>
       <ButtonFull buttons={buttons5}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonFull buttons={buttons7}></ButtonFull>
+      <ButtonFull buttons={buttons6}></ButtonFull>
+      <ButtonFull buttons={buttons8}></ButtonFull>
+      <ButtonFull buttons={buttons9}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonLarge button={buttons2}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>
