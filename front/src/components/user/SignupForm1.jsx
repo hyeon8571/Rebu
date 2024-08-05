@@ -211,28 +211,29 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
     }
   };
 
-  const handleNext = (event) => {
-    event.preventDefault();
-    if (
-      isEmailVerified &&
-      isPasswordValid &&
-      formData.password === passwordConfirm
-    ) {
-      nextStep();
-    } else {
-      alert("모든 필드를 올바르게 입력하고 이메일 인증을 완료해주세요.");
-    }
-  };
-
-  // 테스트용 handleNext.. 테스트 끝나면 위에 있는 코드로 바꾸기
   // const handleNext = (event) => {
   //   event.preventDefault();
-  //   // Temporarily allowing the Next button to work without validation checks
-  //   nextStep();
+  //   if (
+  //     isEmailVerified &&
+  //     isPasswordValid &&
+  //     formData.password === passwordConfirm
+  //   ) {
+  //     nextStep();
+  //   } else {
+  //     alert("모든 필드를 올바르게 입력하고 이메일 인증을 완료해주세요.");
+  //   }
   // };
 
-  // 이메일 인증
+  // 테스트용 handleNext.. 테스트 끝나면 위에 있는 코드로 바꾸기
+  const handleNext = (event) => {
+    event.preventDefault();
+    // Temporarily allowing the Next button to work without validation checks
+    nextStep();
+  };
+
+  // 이메일 인증 - 405 error
   const handleVerifyEmail = async () => {
+    console.log("formData.email:", formData.email);
     if (formData.email && isEmailValid) {
       // if (email && isEmailValid) {
       try {
