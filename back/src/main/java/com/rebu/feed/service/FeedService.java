@@ -6,6 +6,8 @@ import com.rebu.feed.entity.Feed;
 import com.rebu.feed.exception.FeedNotFoundException;
 import com.rebu.feed.repository.FeedRepository;
 import com.rebu.feed.repository.HashtagRepository;
+import com.rebu.profile.employee.entity.EmployeeProfile;
+import com.rebu.profile.employee.repository.EmployeeProfileRepository;
 import com.rebu.profile.entity.Profile;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;

@@ -31,4 +31,5 @@ spring:
 feed:
   cnt_image_max_limit: 5
   cnt_hashtag_max_limit: 5
+  cnt_review_keyword_max_limit: 5
   storage_base_url: "/feeds"

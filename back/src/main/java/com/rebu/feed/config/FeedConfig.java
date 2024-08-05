@@ -15,4 +15,7 @@ public class FeedConfig {
 
     @Value("${feed.storage_base_url}")
     private String baseUrl;
+
+    @Value("${feed.cnt_review_keyword_max_limit}")
+    private int cntReviewKeywordMaxLimit;
 }

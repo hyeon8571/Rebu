@@ -16,7 +16,7 @@ public class FeedImagesValidator implements ConstraintValidator<FeedImages, List
 
     @Override
     public boolean isValid(List<MultipartFile> feedImages, ConstraintValidatorContext constraintValidatorContext) {
-        if(feedImages.get(0).isEmpty() || feedImages.size() > feedConfig.getCntImageMaxLimit() || feedImages.isEmpty())
+        if(feedImages == null || feedImages.get(0).isEmpty() || feedImages.size() > feedConfig.getCntImageMaxLimit() || feedImages.isEmpty())
             throw new FeedImageMismatchException();
         return true;
     }

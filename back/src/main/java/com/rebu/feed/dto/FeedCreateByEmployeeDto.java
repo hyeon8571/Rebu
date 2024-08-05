@@ -9,11 +9,13 @@ import com.rebu.profile.entity.Profile;
 import com.rebu.profile.validation.annotation.Nickname;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 public class FeedCreateByEmployeeDto {
     @FeedImages

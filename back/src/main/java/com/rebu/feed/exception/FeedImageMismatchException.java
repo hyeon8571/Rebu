@@ -4,6 +4,6 @@ import com.rebu.common.exception.CustomException;
 
 public class FeedImageMismatchException extends CustomException {
     public FeedImageMismatchException() {
-        super(FeedExceptionConstants.CONTENT_MISMATCH);
+        super(FeedExceptionConstants.IMAGE_MISMATCH);
     }
 }
