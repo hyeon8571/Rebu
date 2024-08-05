@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 // import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 import { setIsLogin } from "../features/auth/authSlice";
-
+import { BASE_URL } from "./Signup";
 //css
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
@@ -39,7 +39,7 @@ const Login = () => {
     e.preventDefault(); //0ㅅ0
     try {
       // 서버에 로그인 요청 - 비동기
-      const response = await axios.post("http://localhost:80/api/auths/login", {
+      const response = await axios.post(`${BASE_URL}/api/auths/login`, {
         email,
         password,
       });

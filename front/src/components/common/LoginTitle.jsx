@@ -3,6 +3,10 @@ import styled from "styled-components";
 const Section = styled.section`
   display: flex;
   margin-bottom: 1rem;
+  @media (max-width: 375px) {
+    flex-direction: column; /* 320px 이하에서 세로 배치 */
+    align-items: center; /* 중앙 정렬 */
+  }
 `;
 
 const Img = styled.img`
@@ -18,6 +22,7 @@ const Div = styled.div`
 const Title = styled.h1`
   margin: 0;
   padding: 0;
+  text-align: center; /* 중앙 정렬 */
 `;
 
 const Description = styled.p`

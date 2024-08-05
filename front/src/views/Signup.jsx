@@ -6,7 +6,7 @@ import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
 import styled from "styled-components";
 
-export const BASE_URL = "http://www.rebu.kro.kr";
+export const BASE_URL = "https://www.rebu.kro.kr";
 
 const Container = styled.div`
   align-items: center;
