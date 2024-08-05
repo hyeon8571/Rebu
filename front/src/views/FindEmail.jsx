@@ -1,8 +1,24 @@
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonBack from "../components/common/ButtonBack";
 import { useState } from "react";
-import styled from "styled-components";
+// import styled from "styled-components";
+// import { ButtonStyles } from "../components/common/ButtonLogin";
 import "../views/Login.css";
+import styled, { css } from "styled-components";
+
+const ButtonStyles = css`
+  background-color: #a55eea;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  height: 2rem;
+  /* margin: auto; */
+  padding: auto;
+  /* width: 100%; */
+  cursor: pointer;
+  white-space: nowrap;
+  /*   버튼안에 있는 텍스트가 화면이 줄어들더라도 줄바꿈되지 않도록 설정해줌*/
+`;
 
 const Container = styled.div`
   align-items: center;
@@ -11,12 +27,17 @@ const Container = styled.div`
 `;
 const Div = styled.div`
   display: flex;
-  /* align-items:  */
-  /* align-items: center; */
-  /* justify-content: start; */
-  /* justify-items: flex-start;
-  justify-self: start; */
 `;
+const Button = styled.button`
+  ${ButtonStyles}
+`;
+const Button2 = styled.button`
+  ${ButtonStyles}
+  height:3.1rem;
+  margin-top: 0.15rem;
+  margin-left: 0.7rem;
+`;
+
 const SubmitButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -107,7 +128,7 @@ const FindEmail = () => {
       <LoginTitle text={"이메일 찾기"} />
       <h3
         style={{
-          maxWidth: "70%",
+          // maxWidth: "95%",
           minWidth: "30%",
           color: "gray",
           padding: "auto 30 0",
@@ -164,7 +185,7 @@ const FindEmail = () => {
       {/* 전화번호 인증 요청 */}
       <div>
         {!isVerificationFieldVisible && (
-          <button onClick={showVerificationField}>인증번호 요청</button>
+          <Button onClick={showVerificationField}>인증번호 요청</Button>
         )}
         <Div>
           {isVerificationFieldVisible && (
@@ -196,12 +217,17 @@ const FindEmail = () => {
                   </Div>
                 </div>
                 <p
-                  style={{ padding: "0 1rem", margin: "0 auto", color: "red" }}
+                  style={{
+                    padding: "0 1rem",
+                    margin: "0 auto",
+                    color: "red",
+                    fontSize: "12px",
+                  }}
                 >
                   인증번호를 문자 메시지로 전송하였습니다
                 </p>
               </div>
-              <button style={{ whiteSpace: "nowrap" }}>인증하기</button>
+              <Button2 style={{ whiteSpace: "nowrap" }}>인증하기</Button2>
               {/* <br /> */}
             </>
           )}
@@ -210,9 +236,9 @@ const FindEmail = () => {
 
       <SubmitButtonContainer>
         {/* <button type="submit">확인</button> */}
-        <button type="submit" onClick={handleSubmit}>
+        <Button type="submit" onClick={handleSubmit}>
           확인
-        </button>
+        </Button>
       </SubmitButtonContainer>
     </Container>
   );
