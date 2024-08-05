@@ -45,11 +45,10 @@ const Login = () => {
     try {
       // 서버에 로그인 요청 - 비동기
       const response = await axios.post(`${BASE_URL}/api/auths/login`, {
-        headers: {
-          email: email,
-          password: password,
-        },
+        email: email,
+        password: password,
       });
+      console.log("response:", response);
       // 서버에서 jwt 토큰 받기
       const accessToken = response.headers["access"];
       console.log("access token: ", accessToken);
