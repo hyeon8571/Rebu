@@ -110,7 +110,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       setIsChecking(true);
 
       const response = await axios.get(
-        ``{BASE_URL}/pi/members/check-email?ema`l=${email}&purpose=signup`
+        `${BASE_URL}/pi/members/check-email?email=${email}&purpose=signup`
       );
       if (!response.data.body) {
         //true면 중복
