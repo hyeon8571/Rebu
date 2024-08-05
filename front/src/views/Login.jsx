@@ -48,6 +48,7 @@ const Login = () => {
         email: email,
         password: password,
       });
+
       console.log("response:", response);
       // 서버에서 jwt 토큰 받기
       const accessToken = response.headers["access"];
@@ -66,7 +67,14 @@ const Login = () => {
       // 로그인 실패 처리
       alert("로그인 실패");
       console.log("로그인 실패: ", error);
-      setError("로그인 실패. 다시 시도해 주세요.");
+      // setError("로그인 실패. 다시 시도해 주세요.");
+      if (error.response && error.response.status === 404) {
+        console.error("리소스를 찾을 수 없음: ", error);
+        setError("요청한 리소스를 찾을 수 없습니다.");
+      } else {
+        console.error("오류 발생: ", error);
+        setError("오류가 발생했습니다. 다시 시도해 주세요.");
+      }
     }
   };
 
