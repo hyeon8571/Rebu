@@ -1,11 +1,8 @@
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 import styled from "styled-components";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import LoginTitle from "../common/LoginTitle";
-// import ButtonLogin from "../components/common/ButtonLogin";
 import "../../views/Login.css";
-import ButtonBack from "../common/ButtonBack";
 import { ButtonStyles, ButtonHover } from "../common/ButtonLogin";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 
@@ -13,45 +10,31 @@ const Container = styled.div`
   align-items: center;
   margin: 2rem 3rem;
 `;
-const Container2 = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 2rem 3rem;
-  position: relative;
-  /* max-width: 30%; */
-`;
 
 const Div = styled.div`
   display: flex;
   justify-content: space-around;
 `;
-
 const SmallButton = styled.button`
   ${ButtonStyles}
-  width: 30%;
+  width: 5rem;
+  height: 1.8rem;
   justify-content: end;
   white-space: nowrap;
-  margin-left: 10px;
+  margin-left: 0;
   font-size: 11px;
 `;
 
-const SubmitButton = styled.button`
+const MidiumButton = styled.button`
   ${ButtonStyles}
   width: 30%;
-  /* justify-content: end; */
-  white-space: nowrap;
-  margin-left: 10px;
-  font-size: 11px;
-  height: 50px;
 `;
 
-// info icon - hover
 const Tooltip = styled.div`
   position: absolute;
   background-color: whitesmoke;
   color: gray;
   padding: 0.5rem;
-  /* border: 1px solid lightgray; */
   border-radius: 1rem;
   top: -2.5rem;
   transform: translateX(-50%);
@@ -71,120 +54,327 @@ const InfoIconContainer = styled.div`
   }
 `;
 
-const SmallButtonHover = styled(ButtonHover)`
-  width: 30%;
+const Msg = styled.p`
+  font-size: 11px;
+  padding: 0;
+  margin: 0;
+  color: ${(props) => (props.isValid ? "blue" : "red")};
 `;
 
-const SubmitButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem;
-  white-space: nowrap;
-`;
-
-const PwdIcon = styled("div")`
+// 버튼처럼 보이게 하는 스타일
+const RadioButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-self: stretch;
+  justify-content: start;
   align-items: center;
+  margin-bottom: 0.3rem;
+  flex: 1;
 `;
 
-const SignupForm2 = () => {
-  // const isActive = useState(false);
-  const [name, setName] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [phone, setPhone] = useState("");
-  const [phoneVeri, setPhoneVeri] = useState("");
-  // hover
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  // 비밀번호 변경하기-변경완료 페이지 이동
-  const nav = useNavigate();
-  const onClickChangedPwd = () => {
-    return nav("/login/passwordChanged");
-  };
+const Button = styled.button`
+  background-color: ${(props) => (props.checked ? "#a55eea" : "#f0f0f0")};
+  color: ${(props) => (props.checked ? "#fff" : "#000")};
+  border: 1px solid ${(props) => (props.checked ? "#a55eea" : "#ccc")};
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  flex: 1;
+  margin: 0;
+  cursor: pointer;
+  font-size: 14px;
 
-  const nameChange = (e) => {
-    setName(e.target.value);
-  };
-  const nicknameChange = (e) => {
-    setNickname(e.target.value);
-  };
-  const birthdayChange = (e) => {
-    setBirthday(e.target.value);
-  };
-  const phoneChange = (e) => {
-    setPhone(e.target.value);
-  };
-  const phoneVeriChange = (e) => {
-    setPhoneVeri(e.target.value);
-  };
+  &:hover {
+    background-color: ${(props) => (props.checked ? "#8117eb" : "#e0e0e0")};
+  }
+`;
 
-  // 인증요청시 인증번호 입력할 칸 나오게하기
+const SignupForm2 = ({
+  formData,
+  handleChange,
+  handleSubmit: parentHandleSubmit,
+}) => {
+  // 닉네임
+  const [nicknameMsg, setNicknameMsg] = useState("");
+  const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const [debounceTimeout, setDebounceTimeout] = useState(null); //입력 후 닉네임 중복체크 용 타이머
+
+  // 전화번호 중복 체크 결과를 저장하기 위한 상태 추가
+  const [phoneMsg, setPhoneMsg] = useState(""); //ptag
+  const [isPhoneValid, setIsPhoneValid] = useState(false);
+
+  // phone 인증요청시 인증코드 입력할 칸 나오게하기
   const [isVerificationFieldVisible, setIsVerificationFieldVisible] =
     useState(false);
 
+  // code 6자리 인증용
+  const [phoneVeriCode, setPhoneVeriCode] = useState("");
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  // 성별
+  const [gender, setGender] = useState(formData.gender || "FEMALE");
+
+  const handleNameChange = (e) => {
+    const { value } = e.target;
+    // 정규식: 영어 또는 한글로 구성된 1자 이상 16자 이하
+    const regex = /^[A-Za-z]{1,16}$|^[가-힣]{1,16}$/;
+
+    if (regex.test(value) || value === "") {
+      handleChange("name")(e);
+    }
+  };
+
+  // 닉네임 정규식 체크 및 상태 업데이트
+  const handleNicknameChange = (e) => {
+    const { value } = e.target;
+    // 정규식: 영문, 한글, 숫자, 특수문자(-_^*)의 조합으로 2~15자
+    const regex = /^[A-Za-z가-힣0-9\-_^\*]{0,15}$/;
+
+    console.log(value);
+
+    // 정규식에 맞거나 비어 있을 경우에만 상태 업데이트
+    if (regex.test(value) || value === "") {
+      handleChange("nickname")(e);
+    }
+
+    // 기존 타이머 제거
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    // 닉네임 중복 체크를 위한 디바운싱 처리 (500ms)
+    setDebounceTimeout(
+      setTimeout(() => {
+        if (value) {
+          checkNicknameAvailability(value);
+        }
+      }, 500)
+    );
+  };
+
+  // cleanup function to clear timeout
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+    };
+  }, [debounceTimeout]);
+
+  // 닉네임 중복확인 axios-get
+  const checkNicknameAvailability = async (nickname) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:80/api/members/check-nickname?nickname=${nickname}&purpose=signup`
+      );
+      if (response.data.body) {
+        // true가 중복이 있는 경우
+        setNicknameMsg("중복된 닉네임입니다");
+        setIsNicknameValid(false);
+      } else {
+        setNicknameMsg("사용 가능한 닉네임입니다");
+        setIsNicknameValid(true);
+      }
+    } catch (error) {
+      console.error("Error checking nickname availability:", error);
+      setNicknameMsg("닉네임 확인 중 오류가 발생했습니다.");
+      setIsNicknameValid(false);
+    }
+  };
+
+  // 생년월일 정규식 체크 및 상태 업데이트
+  const handleBirthChange = (e) => {
+    const { value } = e.target;
+    // 정규식: 숫자만 허용하고 8자리로 제한
+    const regex = /^\d{0,8}$/;
+    console.log("birth: ", value);
+
+    // 정규식에 맞을 경우에만 상태 업데이트
+    if (regex.test(value)) {
+      handleChange("birth")({ target: { value } });
+    }
+  };
+
+  // phone 입력 + 중복 체크
+  const handlePhoneChange = (e) => {
+    const { value } = e.target;
+    const formattedValue = formatPhoneNumber(value);
+    handleChange("phone")({ target: { value: formattedValue } });
+
+    // 전화번호가 11자리가 되었을 때 중복 체크
+    if (formattedValue.length === 13) {
+      // 010-0000-0000 형식은 13자
+      checkPhoneAvailability(formattedValue);
+    }
+  };
+
+  const formatPhoneNumber = (value) => {
+    // 숫자만 남기기: 정규식을 사용하여 숫자가 아닌 모든 문자를 제거하고 최대 11자리까지 허용
+    const cleaned = value.replace(/\D/g, "").slice(0, 11);
+
+    // 010-0000-0000 형식으로 포맷팅
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+
+    // 010-0000 또는 010-000-0000 형식으로 포맷팅
+    const partialMatch = cleaned.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
+    if (partialMatch) {
+      if (partialMatch[2]) {
+        return `${partialMatch[1]}-${partialMatch[2]}${
+          partialMatch[3] ? `-${partialMatch[3]}` : ""
+        }`;
+      }
+      return partialMatch[1];
+    }
+
+    return value;
+  };
+
+  // phone number 중복 체크
+  const checkPhoneAvailability = async (phone) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:80/api/users/check-phone`,
+        {
+          params: { phone, purpose: "signup" },
+        }
+      );
+      if (response.data.body) {
+        // true가 중복이 있는 경우
+        setPhoneMsg("중복된 전화번호입니다");
+        setIsPhoneValid(false);
+      } else {
+        setPhoneMsg("사용 가능한 전화번호입니다");
+        setIsPhoneValid(true);
+      }
+    } catch (error) {
+      console.error("Error checking phone availability:", error);
+      setPhoneMsg("전화번호 확인 중 오류가 발생했습니다.");
+      setIsPhoneValid(false);
+    }
+  };
+
+  // phone 코드인증(6자리)요청 POST -> 인증코드 폰으로 전송
+  const sendPhoneVerification = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:80/api/auths/phone/send`,
+        {
+          phone: formData.phone,
+          purpose: "signup",
+        }
+      );
+      if (response.data.success) {
+        alert("인증번호가 발송되었습니다.");
+        setIsVerificationFieldVisible(true);
+      } else {
+        alert("인증번호 발송에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Error sending phone verification:", error);
+      alert("인증번호 발송 중 오류가 발생했습니다.");
+    }
+  };
+
+  //phone 번호인증 버튼->코드 인증번호 input나옴
   const showVerificationField = () => {
-    setIsVerificationFieldVisible(true);
+    setIsVerificationFieldVisible(true); // ... 지워야하나
+    sendPhoneVerification(); // phone 인증번호 전송 함수 호출 POST- phone/send
+  };
+
+  // 인증번호 확인 input 6자리수 제한
+  const phoneVeriCodeChange = (e) => {
+    const newCode = e.target.value.replace(/[^0-9]/g, "").slice(0, 6); // 숫자만 허용하고 6자리로 제한
+    setPhoneVeriCode(newCode);
+    // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
+  };
+
+  // 코드번호 인증하기(6자리)
+  // axios - POST phone/verify
+  const verifyPhoneCode = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:80/api/auths/phone/verify`,
+        {
+          phone: formData.phone,
+          purpose: "signup",
+          verifyCode: phoneVeriCode,
+        }
+      );
+      if (response.data.success) {
+        alert("전화번호 인증이 완료되었습니다.");
+        setIsCodeVerified(true);
+      } else {
+        alert("전화번호 인증에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Error verifying phone code:", error);
+      alert("전화번호 인증 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 성별
+  const handleGenderChange = (value) => {
+    handleChange("gender")({ target: { value } });
+  };
+
+  // 폼 제출 전 유효성 검사
+  const validateForm = () => {
+    if (
+      !formData.name ||
+      !isNicknameValid ||
+      !formData.birth ||
+      !formData.gender ||
+      !isPhoneValid ||
+      !isCodeVerified
+    ) {
+      alert("모든 필드를 올바르게 입력하고 전화번호 인증을 완료해주세요.");
+      return false;
+    }
+    return true;
+  };
+  // 폼 제출 핸들러
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      parentHandleSubmit();
+    }
   };
 
   return (
     <Container>
-      <ButtonBack />
-      <LoginTitle text={"회원가입2"} description={"REBU 가입을 환영합니다!"} />
-      <h3
-        style={{
-          maxWidth: "70%",
-          minWidth: "30%",
-          color: "gray",
-          padding: "auto 30 0",
-        }}
-      >
-        REBU가입을 환영합니다! :3
-      </h3>
-
-      {/* 이름 */}
       <Div>
         <div
           className="emailBox"
           style={{ maxWidth: "100%", justifyContent: "start" }}
         >
-          {/* <EmailBox> */}
           <label htmlFor="name" className="label">
             이름
           </label>
           <input
-            type="name"
+            type="text"
             id="name"
             className="loginInput"
-            value={name}
-            onChange={nameChange}
+            value={formData.name}
+            onChange={handleNameChange}
             placeholder="이름을 입력하세요"
-            // style={{ padding: "auto 20" }}
           />
         </div>
-        {/* <SmallButton>인증하기</SmallButton> */}
-        {/* 그냥 보라색 버튼-0- */}
-        {/* <SmallButtonHover>인증하기</SmallButtonHover> */}
       </Div>
 
-      {/* 닉네임 */}
-      {/* <Div> */}
-      <PwdIcon>
+      <Div>
         <div
           className="emailBox"
           style={{ maxWidth: "100%", justifyContent: "start" }}
         >
-          {/* <EmailBox> */}
           <label htmlFor="nickname" className="label">
             닉네임
           </label>
           <input
-            type="nickname"
+            type="text"
             id="nickname"
             className="loginInput"
-            value={nickname}
-            onChange={nicknameChange}
+            value={formData.nickname}
+            onChange={handleNicknameChange}
             placeholder="닉네임을 입력하세요"
           />
         </div>
@@ -195,38 +385,49 @@ const SignupForm2 = () => {
             문자열로 구성되어야 합니다.
           </Tooltip>
         </InfoIconContainer>
-      </PwdIcon>
-      {/* <SmallButton>인증하기</SmallButton> */}
-      {/* 그냥 보라색 버튼-0- */}
-      {/* <SmallButtonHover>확인</SmallButtonHover> */}
-      {/* </Div> */}
+      </Div>
+      <Msg style={{ color: isNicknameValid ? "blue" : "red" }}>
+        {nicknameMsg}
+      </Msg>
 
       {/* 생년월일 */}
-      {/* <Div> */}
-
-      <div
-        className="emailBox"
-        style={{ maxWidth: "100%", justifyContent: "start" }}
-      >
-        {/* <EmailBox> */}
-        <label htmlFor="birthday" className="label">
-          생년월일
-        </label>
-        <input
-          type="birthday"
-          id="birthday"
-          className="loginInput"
-          value={birthday}
-          onChange={birthdayChange}
-          placeholder="YYYYMMDD"
-        />
-      </div>
-      {/* 비밀번호 필수요건 설명창 */}
-
-      {/* <SmallButton>인증하기</SmallButton> */}
-      {/* 그냥 보라색 버튼-0- */}
-      {/* <SmallButtonHover>확인</SmallButtonHover> */}
-      {/* </Div> */}
+      <Div>
+        <div
+          className="emailBox"
+          style={{ maxWidth: "100%", justifyContent: "start" }}
+        >
+          <label htmlFor="birthday" className="label">
+            생년월일
+          </label>
+          <input
+            type="text"
+            id="birthday"
+            className="loginInput"
+            value={formData.birth}
+            onChange={handleBirthChange}
+            placeholder="YYYYMMDD"
+          />
+        </div>
+      </Div>
+      {/* 성별 선택 */}
+      <Div style={{ margin: 0, padding: 0 }}>
+        <RadioButtonContainer>
+          <Button
+            type="button"
+            checked={formData.gender === "FEMALE"}
+            onClick={() => handleGenderChange("FEMALE")}
+          >
+            여성
+          </Button>
+          <Button
+            type="button"
+            checked={formData.gender === "MALE"}
+            onClick={() => handleGenderChange("MALE")}
+          >
+            남성
+          </Button>
+        </RadioButtonContainer>
+      </Div>
 
       {/* 전화번호 */}
       <Div>
@@ -234,24 +435,28 @@ const SignupForm2 = () => {
           className="emailBox"
           style={{ maxWidth: "100%", justifyContent: "start" }}
         >
-          {/* <EmailBox> */}
           <label htmlFor="phone" className="label">
             전화번호
           </label>
           <input
-            type="phone"
+            type="text"
             id="phone"
             className="loginInput"
-            value={phone}
-            onChange={phoneChange}
-            placeholder="01012345678"
+            value={formData.phone}
+            onChange={handlePhoneChange}
+            placeholder="010-0000-0000"
           />
         </div>
-        {/* 전화번호 끝 */}
       </Div>
+      <Msg style={{ color: isPhoneValid ? "blue" : "red" }}>{phoneMsg}</Msg>
+
+      {/* 인증코드 6자리 */}
       <div>
         {!isVerificationFieldVisible && (
-          <button onClick={showVerificationField}>번호인증</button>
+          <SmallButton onClick={showVerificationField} disabled={!isPhoneValid}>
+            {/* <SmallButton onClick={showVerificationField}>번호인증 */}{" "}
+            {/* ㄴtest용 */}
+          </SmallButton>
         )}
         <Div>
           {isVerificationFieldVisible && (
@@ -269,21 +474,29 @@ const SignupForm2 = () => {
                   type="phoneVeri"
                   id="phoneVeri"
                   className="loginInput"
-                  value={phoneVeri}
-                  onChange={phoneVeriChange}
+                  value={phoneVeriCode}
+                  onChange={phoneVeriCodeChange}
                   placeholder="000000"
                 />
               </div>
 
-              <button style={{ whiteSpace: "nowrap" }}>인증하기</button>
+              <MidiumButton
+                onClick={verifyPhoneCode}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                인증하기
+              </MidiumButton>
             </>
           )}
         </Div>
       </div>
 
-      <SubmitButtonContainer>
-        <button type="submit">CREATE</button>
-      </SubmitButtonContainer>
+      {/* 생성 버튼 */}
+      <div style={{ display: "flex", justifyContent: "end" }}>
+        <SmallButton type="button" onClick={handleSubmit}>
+          CREATE
+        </SmallButton>
+      </div>
     </Container>
   );
 };

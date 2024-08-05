@@ -19,7 +19,7 @@ const AppRoutes = () => (
     <Route path="login/passwordChanged" element={<ChangePasswordCompl />} />
     <Route path="/login/email" element={<FindEmail />} />
     <Route path="/signup" element={<Signup />} />
-    <Route path="/signup/step2" element={<SignupForm2 />} />
+    {/* <Route path="/signup/step2" element={<SignupForm2 />} /> */}
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>
 );
