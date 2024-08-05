@@ -108,6 +108,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   const checkEmailAvailability = async (email) => {
     try {
       setIsChecking(true);
+      console.log("test check email: ", email);
       // /api/members/check-email?email=rebu@naver.com?purpose=signup
       const response = await axios.get(
         `${BASE_URL}/api/members/check-email?email=${email}&purpose=signup`
@@ -233,13 +234,22 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   // 이메일 인증
   const handleVerifyEmail = async () => {
     if (formData.email && isEmailValid) {
+      // if (email && isEmailValid) {
       try {
         // 이메일 인증 API 호출
-        setIsChecking(true);
-        const response = await axios.post(`${BASE_URL}/api/auths/email/send`, {
-          email: formData.email,
-          purpose: "signup",
+        const response = await axios({
+          method: "post",
+          url: `${BASE_URL}/api/auths/email/send`,
+          data: {
+            email: formData.email,
+            purpose: "signup",
+          },
+          headers: {
+            "Content-Type": "application/json",
+            // 필요한 경우 추가 헤더를 여기에 포함시키세요
+          },
         });
+
         if (response.data.success) {
           alert("인증 이메일이 발송되었습니다. 이메일을 확인해주세요.");
           setIsEmailVerified(true);
@@ -248,6 +258,11 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
         }
       } catch (error) {
         console.error("이메일 인증 오류:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+          console.error("Response headers:", error.response.headers);
+        }
         alert("이메일 인증 중 오류가 발생했습니다.");
       } finally {
         setIsChecking(false);
@@ -347,6 +362,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
                 required
               />
             </div>
+            {/* 코드인증 */}
             <SmallButtonHover
               type="button"
               onClick={handleVerifyEmailCode}

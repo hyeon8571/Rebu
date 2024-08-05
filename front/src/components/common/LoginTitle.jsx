@@ -22,7 +22,9 @@ const Div = styled.div`
 const Title = styled.h1`
   margin: 0;
   padding: 0;
-  text-align: center; /* 중앙 정렬 */
+  @media (max-width: 375px) {
+    text-align: center; /* 중앙 정렬 */
+  }
 `;
 
 const Description = styled.p`
