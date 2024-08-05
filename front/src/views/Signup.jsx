@@ -54,7 +54,7 @@ const Signup = () => {
             text={"회원가입"}
             description={"REBU 가입을 환영합니다!"}
           />
-          <h3
+          {/* <h3
             style={{
               maxWidth: "70%",
               minWidth: "30%",
@@ -63,7 +63,7 @@ const Signup = () => {
             }}
           >
             REBU가입을 환영합니다! :3
-          </h3>
+          </h3> */}
         </Container>
         {step === 1 && (
           <SignupForm1

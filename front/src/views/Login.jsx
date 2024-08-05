@@ -8,6 +8,7 @@ import { BASE_URL } from "./Signup";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
+import { ButtonStyles } from "../components/common/ButtonLogin";
 import ButtonBack from "../components/common/ButtonBack";
 import axios from "axios";
 import "./Login.css";
@@ -23,6 +24,10 @@ const Ptag = styled.p`
   margin-bottom: 0.3rem;
   color: red;
   font-size: 12px;
+`;
+
+const Button = styled.button`
+  ${ButtonStyles}
 `;
 
 const Login = () => {
@@ -108,7 +113,7 @@ const Login = () => {
           />
         </div>
         {passwordError && <Ptag>비밀번호를 입력해주세요.</Ptag>}
-        <button type="submit">Login</button>
+        <Button type="submit">Login</Button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div

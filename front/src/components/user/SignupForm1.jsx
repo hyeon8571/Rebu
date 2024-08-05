@@ -108,9 +108,9 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   const checkEmailAvailability = async (email) => {
     try {
       setIsChecking(true);
-
+      // /api/members/check-email?email=rebu@naver.com?purpose=signup
       const response = await axios.get(
-        `${BASE_URL}/pi/members/check-email?email=${email}&purpose=signup`
+        `${BASE_URL}/api/members/check-email?email=${email}&purpose=signup`
       );
       if (!response.data.body) {
         //true면 중복
