@@ -3,6 +3,7 @@ package com.rebu.member.entity;
 import com.rebu.member.enums.Gender;
 import com.rebu.member.enums.Status;
 import com.rebu.profile.entity.Profile;
+import com.rebu.profile.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,7 +20,6 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -52,8 +52,12 @@ public class Member {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'ROLE_NORMAL'")
     private Status status;
+
+    @PrePersist
+    protected void onCreate() {
+        status = Status.ROLE_NORMAL;
+    }
 
     public void changePassword(String newPassword) {
         password = newPassword;

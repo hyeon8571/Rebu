@@ -1,17 +1,16 @@
 package com.rebu.auth.dto;
 
-import com.rebu.auth.validation.annotation.LicenseNumAuthPurpose;
-import com.rebu.profile.validation.annotation.LicenseNum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class LicenseNumSendDto {
-    @LicenseNum
+    private String nickname;
     private String licenseNum;
-    @LicenseNumAuthPurpose
     private String purpose;
 }

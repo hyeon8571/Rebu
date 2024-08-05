@@ -28,7 +28,6 @@ public class MailAuthService {
     private final RedisService redisService;
     private final ResourceLoader resourceLoader;
     private static final String senderEmail = "w01085914442@gmail.com";
-    private static final String PREFIX = "MailAuth:";
 
     private String createCode() {
         int leftLimit = 48; // number '0'
@@ -71,7 +70,7 @@ public class MailAuthService {
             message.setSubject("REBU 인증번호");
             message.setFrom(senderEmail);
             message.setText(emailContent, "utf-8", "html");
-            redisService.setDataExpire(generatePrefixedKey(email), authCode, 60 * 5 * 1000L);
+            redisService.setDataExpire(generatePrefixedKey(email, purpose), authCode, 60 * 5 * 1000L);
             return message;
         } catch (Exception e) {
             throw new MailSendException();
@@ -80,15 +79,15 @@ public class MailAuthService {
 
     public void sendMail(MailSendDto mailSendDto) {
 
-        if (redisService.existData(generatePrefixedKey(mailSendDto.getEmail()))) {
-            redisService.deleteData(generatePrefixedKey(mailSendDto.getEmail()));
+        if (redisService.existData(generatePrefixedKey(mailSendDto.getEmail(), mailSendDto.getPurpose()))) {
+            redisService.deleteData(generatePrefixedKey(mailSendDto.getEmail(), mailSendDto.getPurpose()));
         }
         MimeMessage emailForm = createEmailForm(mailSendDto.getEmail(), mailSendDto.getPurpose());
         javaMailSender.send(emailForm);
     }
 
     public Boolean verifyEmailCode(MailAuthDto mailAuthDto) {
-        String issuedCode = redisService.getData(generatePrefixedKey(mailAuthDto.getEmail()));
+        String issuedCode = redisService.getData(generatePrefixedKey(mailAuthDto.getEmail(), mailAuthDto.getPurpose()));
         if (issuedCode == null) {
             throw new MailSessionNotFoundException();
         }
@@ -96,22 +95,12 @@ public class MailAuthService {
         if (!issuedCode.equals(mailAuthDto.getVerifyCode())) {
             throw new MailCodeMismatchException();
         }
-        redisService.deleteData(generatePrefixedKey(mailAuthDto.getEmail()));
-
-        redisService.setDataExpire(generateForAuthKey(mailAuthDto), "success", 60 * 15 * 1000L);
+        redisService.deleteData(generatePrefixedKey(mailAuthDto.getEmail(), mailAuthDto.getPurpose()));
         return true;
     }
 
-    public Boolean checkEmailAuthState(String purpose, String email) {
-        String key = purpose + ":MailAuth:" + email;
-        return redisService.existData(key);
+    private String generatePrefixedKey(String email, String purpose) {
+        return "AuthCode:" + purpose + ":" + email;
     }
 
-    private String generatePrefixedKey(String key) {
-        return PREFIX + key;
-    }
-
-    private String generateForAuthKey(MailAuthDto mailAuthDto) {
-        return mailAuthDto.getPurpose() + ":MailAuth:" + mailAuthDto.getEmail();
-    }
 }

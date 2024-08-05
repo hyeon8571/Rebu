@@ -15,7 +15,7 @@ public class RefreshTokenController {
 
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/refresh")
+    @PostMapping("/auths/refresh")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         refreshTokenService.reissue(request, response);
         return ResponseEntity.ok(new ApiResponse<>("리프레시 토큰 재발급 성공 코드", null));

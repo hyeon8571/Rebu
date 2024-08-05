@@ -86,7 +86,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String nickname = profile.getNickname();
         String type = profile.getType().toString();
 
-        String access = JWTUtil.createJWT("access", nickname, type, 600000L);
+        String access = JWTUtil.createJWT("access", nickname, type, 1800000L);
         String refresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -105,13 +105,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 
         setResponse(response, "로그인 에러 코드");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
         return cookie;
     }

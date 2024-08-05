@@ -18,7 +18,7 @@ public class ProfileDto {
     private String introduction;
     private LocalDateTime recentTime;
     private String phone;
-    private Boolean isPrivate;
+    private boolean isPrivate;
     private Status status;
 
     public static ProfileDto from(Profile profile) {
@@ -30,7 +30,7 @@ public class ProfileDto {
                 .introduction(profile.getIntroduction())
                 .recentTime(profile.getRecentTime())
                 .phone(profile.getPhone())
-                .isPrivate(profile.getIsPrivate())
+                .isPrivate(profile.isPrivate())
                 .status(profile.getStatus())
                 .build();
     }

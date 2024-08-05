@@ -54,7 +54,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
-
+ 
         AuthProfileInfo authProfileInfo = new AuthProfileInfo(profile);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(authProfileInfo, null, authProfileInfo.getAuthorities());

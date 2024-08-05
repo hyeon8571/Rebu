@@ -5,11 +5,11 @@ spring:
     include: secret
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  sql:
-#    init:
-#      data-locations: classpath:data.sql
-#      encoding: UTF-8
-#      mode: always
+  #  sql:
+  #    init:
+  #      data-locations: classpath:data.sql
+  #      encoding: UTF-8
+  #      mode: always
   jpa:
     defer-datasource-initialization: true
     hibernate:
@@ -27,6 +27,7 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 10MB
+      enabled: true
 
 feed:
   cnt_image_max_limit: 5

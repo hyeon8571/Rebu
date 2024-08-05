@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PhoneCheckPurpose {
-    SIGNUP("signup");
+    SIGNUP("signup"), FIND_EMAIL("findEmail"), FIND_PASSWORD("findPassword"), CHANGE_PHONE("changePhone");
 
     final String purpose;
 }

@@ -20,14 +20,16 @@ public class RefreshTokenService {
     private static final String PREFIX = "Refresh:";
     private final RedisService redisService;
 
-    @Transactional
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refreshToken = cookie.getValue();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refresh")) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
             }
         }
 
@@ -55,7 +57,7 @@ public class RefreshTokenService {
 
         String type = JWTUtil.getType(refreshToken);
 
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 600000L);
+        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
         String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
 
         redisService.deleteData(generatePrefixedKey(nickname));
@@ -71,7 +73,6 @@ public class RefreshTokenService {
         response.addCookie(createCookie("refresh", newRefresh));
     }
 
-    @Transactional
     public void saveRefreshToken(RefreshToken refreshToken, Long expired) {
 
         redisService.setDataExpire(generatePrefixedKey(refreshToken.getNickname()), refreshToken.getRefreshToken(), expired);
@@ -85,6 +86,7 @@ public class RefreshTokenService {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
         return cookie;
     }

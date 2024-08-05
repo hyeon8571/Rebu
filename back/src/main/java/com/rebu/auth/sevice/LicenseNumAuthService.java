@@ -1,9 +1,11 @@
 package com.rebu.auth.sevice;
 
-import com.rebu.auth.dto.LicenseNumAuthResult;
 import com.rebu.auth.dto.LicenseNumSendDto;
+import com.rebu.auth.dto.LicenseNumSendResponse;
 import com.rebu.auth.exception.LicenceNumInvalidException;
-import com.rebu.common.service.RedisService;
+import com.rebu.profile.entity.Profile;
+import com.rebu.profile.exception.ProfileNotFoundException;
+import com.rebu.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,9 +19,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LicenseNumAuthService {
 
-    private final RedisService redisService;
 
-    public LicenseNumAuthResult verifyLicenceNum(LicenseNumSendDto licenseNumSendDto) {
+    private final ProfileRepository profileRepository;
+
+    public LicenseNumSendResponse verifyLicenceNum(LicenseNumSendDto licenseNumSendDto) {
         String URL = "https://bizno.net/article/" + licenseNumSendDto.getLicenseNum();
         Document doc = null;
 
@@ -36,13 +39,22 @@ public class LicenseNumAuthService {
             String addressHtml = addressElement.html();
             String address = extractFirstAddress(addressHtml);
 
+            Element ownerElement = element.select("tr:has(th:contains(대표자)) td").first();
+            String ownerHtml = ownerElement.html();
+            String owner = extractFirstAddress(ownerHtml);
+
             if (shopName.isEmpty()) {
                 throw new LicenceNumInvalidException();
             }
 
-            redisService.setDataExpire(licenseNumSendDto.getPurpose() + ":LicenseNumAuth:" + licenseNumSendDto.getLicenseNum(), "success", 60 * 10 * 1000L);
+            Profile profile = profileRepository.findByNickname(licenseNumSendDto.getNickname())
+                    .orElseThrow(ProfileNotFoundException::new);
 
-            return LicenseNumAuthResult.builder()
+            if (!owner.equals(profile.getMember().getName())) {
+                throw new LicenceNumInvalidException();
+            }
+
+            return LicenseNumSendResponse.builder()
                     .shopName(shopName)
                     .phone(phone)
                     .address(address)
