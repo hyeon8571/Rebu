@@ -9,7 +9,6 @@ import com.rebu.menu.exception.MenuNotFoundException;
 import com.rebu.menu.repositoy.MenuRepository;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.employee.repository.EmployeeProfileRepository;
-import com.rebu.profile.employee.repository.EmployeeRepository;
 import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.exception.ProfileUnauthorizedException;
