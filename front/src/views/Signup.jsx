@@ -6,6 +6,8 @@ import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
 import styled from "styled-components";
 
+export const BASE_URL = "http://www.rebu.kro.kr";
+
 const Container = styled.div`
   align-items: center;
   margin: 2rem 3rem;
@@ -34,10 +36,7 @@ const Signup = () => {
   const handleSubmit = async () => {
     try {
       // Send the collected data to the server
-      const response = await axios.post(
-        "http://localhost:80/api/members",
-        formData
-      );
+      const response = await axios.post(`${BASE_URL}/api/members`, formData);
       console.log("Signup successful:", response.data);
       // Handle successful signup (e.g., redirect to login page)
     } catch (error) {

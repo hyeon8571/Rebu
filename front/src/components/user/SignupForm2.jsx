@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import BASE_URL from "../../views/Signup";
 import styled from "styled-components";
 import "../../views/Login.css";
 import { ButtonStyles, ButtonHover } from "../common/ButtonLogin";
@@ -162,7 +162,7 @@ const SignupForm2 = ({
   const checkNicknameAvailability = async (nickname) => {
     try {
       const response = await axios.get(
-        `http://localhost:80/api/members/check-nickname?nickname=${nickname}&purpose=signup`
+        `${BASE_URL}/api/members/check-nickname?nickname=${nickname}&purpose=signup`
       );
       if (response.data.body) {
         // true가 중복이 있는 경우
@@ -232,12 +232,9 @@ const SignupForm2 = ({
   // phone number 중복 체크
   const checkPhoneAvailability = async (phone) => {
     try {
-      const response = await axios.get(
-        `http://localhost:80/api/users/check-phone`,
-        {
-          params: { phone, purpose: "signup" },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/users/check-phone`, {
+        params: { phone, purpose: "signup" },
+      });
       if (response.data.body) {
         // true가 중복이 있는 경우
         setPhoneMsg("중복된 전화번호입니다");
@@ -256,13 +253,10 @@ const SignupForm2 = ({
   // phone 코드인증(6자리)요청 POST -> 인증코드 폰으로 전송
   const sendPhoneVerification = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:80/api/auths/phone/send`,
-        {
-          phone: formData.phone,
-          purpose: "signup",
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/auths/phone/send`, {
+        phone: formData.phone,
+        purpose: "signup",
+      });
       if (response.data.success) {
         alert("인증번호가 발송되었습니다.");
         setIsVerificationFieldVisible(true);
@@ -292,14 +286,11 @@ const SignupForm2 = ({
   // axios - POST phone/verify
   const verifyPhoneCode = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:80/api/auths/phone/verify`,
-        {
-          phone: formData.phone,
-          purpose: "signup",
-          verifyCode: phoneVeriCode,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/auths/phone/verify`, {
+        phone: formData.phone,
+        purpose: "signup",
+        verifyCode: phoneVeriCode,
+      });
       if (response.data.success) {
         alert("전화번호 인증이 완료되었습니다.");
         setIsCodeVerified(true);

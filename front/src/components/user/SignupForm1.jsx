@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { ButtonStyles, ButtonHover } from "../common/ButtonLogin";
 import "../../views/Login.css";
+import BASE_URL from "../../views/Signup";
 
 const Container = styled.div`
   align-items: center;
@@ -109,7 +110,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       setIsChecking(true);
 
       const response = await axios.get(
-        `http://localhost:80/api/members/check-email?email=${email}&purpose=signup`
+        ``{BASE_URL}/pi/members/check-email?ema`l=${email}&purpose=signup`
       );
       if (!response.data.body) {
         //true면 중복
@@ -235,10 +236,10 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       try {
         // 이메일 인증 API 호출
         setIsChecking(true);
-        const response = await axios.post(
-          "http://localhost:80//api/auths/email/send",
-          { email: formData.email, purpose: "signup" }
-        );
+        const response = await axios.post(`${BASE_URL}/api/auths/email/send`, {
+          email: formData.email,
+          purpose: "signup",
+        });
         if (response.data.success) {
           alert("인증 이메일이 발송되었습니다. 이메일을 확인해주세요.");
           setIsEmailVerified(true);
@@ -262,7 +263,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       try {
         // 이메일 인증 API 호출
         const response = await axios.post(
-          "http://localhost:80//api/auths/email/verify",
+          `${BASE_URL}/api/auths/email/verify`,
           {
             email: formData.email,
             purpose: "signup",
