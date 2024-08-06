@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@SQLDelete(sql = "UPDATE member SET status = ROLE_DELETED WHERE id = ?")
+@SQLDelete(sql = "UPDATE member SET status = 'ROLE_DELETED' WHERE id = ?")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
