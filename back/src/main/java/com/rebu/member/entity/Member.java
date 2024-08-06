@@ -6,6 +6,7 @@ import com.rebu.profile.entity.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Builder
 @SQLDelete(sql = "UPDATE member SET status = 'ROLE_DELETED' WHERE id = ?")
+@SQLRestriction("status != 'ROLE_DELETED'")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
