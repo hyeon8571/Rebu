@@ -110,26 +110,6 @@ public class ProfileService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<GetFollowingDto> getFollowings(String nickname) {
-        Profile profile = profileRepository.findByNickname(nickname)
-                .orElseThrow(ProfileNotFoundException::new);
-
-        List<Follow> followings = followRepository.findByFollowerId(profile.getId());
-
-        return followings.stream().map(GetFollowingDto::from).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<GetFollowerDto> getFollowers(String nickname) {
-        Profile profile = profileRepository.findByNickname(nickname)
-                .orElseThrow(ProfileNotFoundException::new);
-
-        List<Follow> followers = followRepository.findByFollowingId(profile.getId());
-
-        return followers.stream().map(GetFollowerDto::from).toList();
-    }
-
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);

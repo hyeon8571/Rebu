@@ -1,4 +1,4 @@
-package com.rebu.profile.dto;
+package com.rebu.follow.dto;
 
 import com.rebu.follow.entity.Follow;
 import lombok.AllArgsConstructor;
