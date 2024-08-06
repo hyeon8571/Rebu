@@ -89,9 +89,10 @@ const Button = styled.button`
 `;
 
 const SignupForm2 = ({
-  formData,
-  handleChange,
-  handleSubmit: parentHandleSubmit,
+  formData, // 부모 컴포넌트로부터 받은 formData
+  handleChange, // 부모 컴포넌트로부터 받은 handleChange
+  setFormData, // 부모 컴포넌트로부터 받은 setFormData
+  handleSubmit: parentHandleSubmit, // 부모 컴포넌트의 handleSubmit
 }) => {
   const nav = useNavigate();
 
@@ -115,13 +116,11 @@ const SignupForm2 = ({
   const [gender, setGender] = useState(formData.gender || "FEMALE");
 
   const handleNameChange = (e) => {
-    const { value } = e.target;
-    // 정규식: 영어 또는 한글로 구성된 1자 이상 16자 이하
-    const regex = /^[A-Za-z]{1,16}$|^[가-힣]{1,16}$/;
-
-    if (regex.test(value) || value === "") {
-      handleChange("name")(e);
-    }
+    const filteredValue = e.target.value.replace(
+      /[^a-zA-Z\u3131-\u318E\uAC00-\uD7A3\s]/g,
+      ""
+    );
+    setFormData({ ...formData, name: filteredValue }); // formData 상태 업데이트
   };
 
   // 닉네임 정규식 체크 및 상태 업데이트
@@ -182,16 +181,29 @@ const SignupForm2 = ({
     }
   };
 
-  // 생년월일 정규식 체크 및 상태 업데이트
   const handleBirthChange = (e) => {
     const { value } = e.target;
-    // 정규식: 숫자만 허용하고 8자리로 제한
-    const regex = /^\d{0,8}$/;
-    console.log("birth: ", value);
 
-    // 정규식에 맞을 경우에만 상태 업데이트
-    if (regex.test(value)) {
-      handleChange("birth")({ target: { value } });
+    // Remove any non-digit characters
+    const cleanValue = value.replace(/\D/g, "");
+
+    // Format the value as YYYY-MM-DD
+    let formattedValue = cleanValue;
+
+    if (cleanValue.length > 4) {
+      formattedValue = cleanValue.slice(0, 4) + "-" + cleanValue.slice(4);
+    }
+    if (cleanValue.length > 6) {
+      formattedValue = formattedValue.slice(0, 7) + "-" + cleanValue.slice(6);
+    }
+
+    // Regular expression: Only allow YYYY-MM-DD format
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    console.log("birth:", formattedValue);
+
+    // If the value matches the regex or is still in the middle of typing, update the state
+    if (regex.test(formattedValue) || cleanValue.length < 8) {
+      handleChange("birth")({ target: { value: formattedValue } });
     }
   };
 
@@ -329,6 +341,7 @@ const SignupForm2 = ({
   // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("폼제출", formData);
     if (validateForm()) {
       try {
         await parentHandleSubmit();
@@ -405,7 +418,7 @@ const SignupForm2 = ({
             className="loginInput"
             value={formData.birth}
             onChange={handleBirthChange}
-            placeholder="YYYYMMDD"
+            placeholder="YYYY-MM-DD"
           />
         </div>
       </Div>
@@ -450,14 +463,9 @@ const SignupForm2 = ({
       </Div>
       <Msg style={{ color: isPhoneValid ? "blue" : "red" }}>{phoneMsg}</Msg>
 
+      <SmallButton onClick={showVerificationField}>인증요청</SmallButton>
       {/* 인증코드 6자리 */}
       <div>
-        {!isVerificationFieldVisible && (
-          <SmallButton onClick={showVerificationField} disabled={!isPhoneValid}>
-            {/* <SmallButton onClick={showVerificationField}>번호인증 */}{" "}
-            {/* ㄴtest용 */}
-          </SmallButton>
-        )}
         <Div>
           {isVerificationFieldVisible && (
             <>

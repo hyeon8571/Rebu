@@ -57,7 +57,8 @@ const Timer = styled.p`
 const FindEmail = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [phoneVeri, setPhoneVeri] = useState("");
+  const [phoneVeriCode, setPhoneVeriCode] = useState("");
+
   // 인증요청시 인증번호 입력할 칸 나오게하기
   const [isVerificationFieldVisible, setIsVerificationFieldVisible] =
     useState(false);
@@ -77,9 +78,9 @@ const FindEmail = () => {
   const phoneChange = (e) => {
     setPhone(e.target.value);
   };
-  const phoneVeriChange = (e) => {
-    setPhoneVeri(e.target.value);
-  };
+  // const phoneVeriChange = (e) => {
+  //   setPhoneVeriCode(e.target.value);
+  // };
 
   const showVerificationField = () => {
     console.log(name, phone);
@@ -146,13 +147,44 @@ const FindEmail = () => {
       if (response.data.body) {
         // true가 중복이 있는 경우
         console.log("email:", response.data.body);
+        alert("email:", response.data.body);
       } else {
-        console.log("body가 비었음?", response.body);
+        console.log(response);
+        console.log("body가 비었음. 이메일 없음", response.data.body);
+        alert("이메일이 존재하지 않습니다.");
       }
     } catch (error) {
       console.error("Error while finding email:", error);
       console.log("이메일을 찾는 중 오류가 발생했습니다.");
-      // setIsNicknameValid(false);
+      console.log(phone, name);
+    }
+  };
+
+  // 인증번호 확인 input 6자리수 제한
+  const phoneVeriCodeChange = (e) => {
+    const newCode = e.target.value.replace(/[^0-9]/g, "").slice(0, 6); // 숫자만 허용하고 6자리로 제한
+    setPhoneVeriCode(newCode);
+    // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
+  };
+
+  // 코드번호 인증하기(6자리)
+  // axios - POST phone/verify
+  const verifyPhoneCode = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/auths/phone/verify`, {
+        phone: phone,
+        purpose: "signup",
+        verifyCode: phoneVeriCode,
+      });
+      if (response.data.success) {
+        alert("전화번호 인증이 완료되었습니다.");
+        setIsCodeVerified(true);
+      } else {
+        alert("전화번호 인증에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Error verifying phone code:", error);
+      alert("전화번호 인증 중 오류가 발생했습니다.");
     }
   };
 
@@ -173,7 +205,7 @@ const FindEmail = () => {
     }
 
     // 폼 데이터 제출 로직
-    console.log("폼 제출");
+    console.log("폼 제출", name, phone);
   };
 
   return (
@@ -259,8 +291,8 @@ const FindEmail = () => {
                       type="phoneVeri"
                       id="phoneVeri"
                       className="loginInput"
-                      value={phoneVeri}
-                      onChange={phoneVeriChange}
+                      value={phoneVeriCode}
+                      onChange={phoneVeriCodeChange}
                       placeholder="000000"
                     />
                     <Timer>
@@ -281,7 +313,12 @@ const FindEmail = () => {
                   인증번호를 문자 메시지로 전송하였습니다
                 </p>
               </div>
-              <Button2 style={{ whiteSpace: "nowrap" }}>인증하기</Button2>
+              <Button2
+                style={{ whiteSpace: "nowrap" }}
+                onClick={verifyPhoneCode}
+              >
+                인증하기
+              </Button2>
               {/* <br /> */}
             </>
           )}

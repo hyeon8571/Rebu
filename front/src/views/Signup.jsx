@@ -54,16 +54,6 @@ const Signup = () => {
             text={"회원가입"}
             description={"REBU 가입을 환영합니다!"}
           />
-          {/* <h3
-            style={{
-              maxWidth: "70%",
-              minWidth: "30%",
-              color: "gray",
-              padding: "auto 30 0",
-            }}
-          >
-            REBU가입을 환영합니다! :3
-          </h3> */}
         </Container>
         {step === 1 && (
           <SignupForm1
@@ -76,6 +66,7 @@ const Signup = () => {
           <SignupForm2
             formData={formData}
             handleChange={handleChange}
+            setFormData={setFormData} // setFormData 전달
             handleSubmit={handleSubmit}
           />
         )}
