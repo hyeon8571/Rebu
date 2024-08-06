@@ -115,9 +115,11 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       );
       if (!response.data.body) {
         //true면 중복
+        console.log(response.data.body);
         setEmailMsg("사용 가능한 이메일입니다.");
         setIsEmailValid(true);
       } else {
+        console.log(response.data.body);
         setEmailMsg("이미 사용 중인 이메일입니다.");
         setIsEmailValid(false);
       }
