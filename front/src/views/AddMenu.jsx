@@ -79,10 +79,12 @@ const SubmitButtonWrapper = styled.div`
 `;
 
 const ImgWrapper = styled.img`
-  border: 1px solid black;
+  border: 2px solid
+    ${(props) => (props.theme.value === "light" ? "black" : "white")};
   width: 200px;
   height: 200px;
   max-width: 200px;
+  border-radius: 1rem;
 `;
 
 const NumberInput = styled.input`

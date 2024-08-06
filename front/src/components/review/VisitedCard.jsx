@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
+import ButtonDisabled from "../common/ButtonDisabled";
 
 const Wrapper = styled.div`
   display: flex;
@@ -137,9 +138,13 @@ export default function VisitedCard({ Card, button }) {
           </TitleWrapper>
           <MenuWrapper>{Card.menu}</MenuWrapper>
           <DateWrapper>{Card.date}</DateWrapper>
-          {button !== null && (
+          {button.status ? (
             <ButtonWrapper>
-              <ButtonSmall button={button}></ButtonSmall>
+              <ButtonDisabled button={button}></ButtonDisabled>
+            </ButtonWrapper>
+          ) : (
+            <ButtonWrapper>
+              <ButtonDisabled button={button}></ButtonDisabled>
             </ButtonWrapper>
           )}
         </Content>

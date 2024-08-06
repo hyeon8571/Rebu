@@ -14,6 +14,8 @@ import ThemeToggler from "../util/ThemeToggler";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import confirmLottie from "../assets/images/confirmLottie.json";
+import ButtonDisabled from "../components/common/ButtonDisabled";
+import ModalPortal from "../util/ModalPortal";
 
 const Wrapper = styled.div``;
 const ProfilesDisplay = styled.div`
@@ -111,6 +113,14 @@ export default function Components({ theme, toggleTheme }) {
       highlight: true,
     },
   ];
+  const button10 = {
+    id: 1,
+    onClick: () => {
+      navigate("/");
+    },
+    title: "시술 보기",
+    disabled: true,
+  };
 
   function handleModal() {
     setIsModalOpen(true);
@@ -131,10 +141,12 @@ export default function Components({ theme, toggleTheme }) {
         setIsOpen={setIsModalOpen}
         children={"ㅇ"}
       ></Modal>
-      <ModalNoBackGround
-        isOpen={isModalNoBackgroundOpen}
-        setIsOpen={setIsModalNoBackgroundOpen}
-      ></ModalNoBackGround>
+      <ModalPortal>
+        <ModalNoBackGround
+          isOpen={isModalNoBackgroundOpen}
+          setIsOpen={setIsModalNoBackgroundOpen}
+        ></ModalNoBackGround>
+      </ModalPortal>
       <ThemeToggler theme={theme} toggleTheme={toggleTheme}></ThemeToggler>
       <ProfilesDisplay>
         <ProfileBig img={Img} time={0} />
@@ -158,6 +170,7 @@ export default function Components({ theme, toggleTheme }) {
       <ButtonFull buttons={buttons8}></ButtonFull>
       <ButtonFull buttons={buttons9}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonDisabled button={button10}></ButtonDisabled>
       <ButtonLarge button={buttons2}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>
       <ButtonSmall button={buttons2}></ButtonSmall>
