@@ -15,7 +15,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
             throw new PasswordMismatchException();
         }
 
-        String regex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[a-z\\d@$!%*?&]{8,15}$";
+        String regex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])(?=.*[A-Z]).{8,15}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         if (!matcher.matches()) {
