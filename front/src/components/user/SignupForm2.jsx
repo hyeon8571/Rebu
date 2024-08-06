@@ -452,7 +452,7 @@ const SignupForm2 = ({
             전화번호
           </label>
           <input
-            type="text"
+            type="tel"
             id="phone"
             className="loginInput"
             value={formData.phone}
