@@ -6,7 +6,6 @@ import com.rebu.member.dto.ChangePasswordDto;
 import com.rebu.member.dto.FindEmailDto;
 import com.rebu.member.dto.MemberJoinDto;
 import com.rebu.member.entity.Member;
-import com.rebu.member.enums.Status;
 import com.rebu.member.exception.EmailDuplicateException;
 import com.rebu.member.exception.FindEmailFailException;
 import com.rebu.member.exception.MemberNotFoundException;
@@ -80,7 +79,7 @@ public class MemberService {
 
         Member member = profile.getMember();
 
-        member.changeStatus(Status.ROLE_DELETED);
+        memberRepository.delete(member);
 
         profileRepository.deleteProfileByMemberId(member.getId());
     }
