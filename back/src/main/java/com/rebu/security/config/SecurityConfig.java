@@ -85,7 +85,7 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new CustomLogoutFilter(redisService), LogoutFilter.class);
         http
-                .addFilterAt(new AuthenticationFilter(authenticationManager(authenticationConfiguration), profileRepository, refreshTokenService, memberRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new AuthenticationFilter(authenticationManager(authenticationConfiguration), profileRepository, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
