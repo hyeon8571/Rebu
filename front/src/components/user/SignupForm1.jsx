@@ -116,9 +116,13 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       );
 
       const { code, body } = response.data;
-      console.log(response.data);
+
+      console.log("response", response);
+      console.log("response.data", response.data);
+      console.log("response.body", response.body);
+      console.log("response.data.body", response.data.body);
       console.log("response", code, body);
-      if (code === "1A03") {
+      if (code === "이메일 중복 검사 성공") {
         if (body) {
           // body가 true인 경우 중복된 이메일
           console.log("Email is already in use:", code, body);
