@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,6 +25,8 @@ import java.util.List;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE feed SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Feed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +56,13 @@ public class Feed {
 
     @Enumerated(EnumType.STRING)
     private Type type;
+
+    private Boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        isDeleted = false;
+    }
 
     public enum Type {
         NONE, REVIEW
