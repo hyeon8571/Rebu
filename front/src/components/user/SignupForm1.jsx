@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { ButtonStyles, ButtonHover } from "../common/ButtonLogin";
 import "../../views/Login.css";
-import BASE_URL from "../../views/Signup";
+import { BASE_URL } from "../../views/Signup";
 
 const Container = styled.div`
   align-items: center;

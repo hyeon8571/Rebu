@@ -5,6 +5,7 @@ import SignupForm2 from "../components/user/SignupForm2";
 import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
 import styled from "styled-components";
+import styled from "styled-components";
 
 export const BASE_URL = "https://www.rebu.kro.kr";
 
