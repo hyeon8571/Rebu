@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByFeedAndParentCommentIsNull(Feed feed);
+
     List<Comment> findByParentComment(Comment parentComment);
 
     @Modifying

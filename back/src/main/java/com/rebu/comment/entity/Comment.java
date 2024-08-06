@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE id = ?")
 @EntityListeners(AuditingEntityListener.class)
 public class Comment {
 
@@ -41,4 +43,5 @@ public class Comment {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    private boolean isDeleted = Boolean.FALSE;
 }

@@ -9,6 +9,7 @@ import com.rebu.comment.repository.CommentRepository;
 import com.rebu.feed.entity.Feed;
 import com.rebu.feed.exception.FeedNotFoundException;
 import com.rebu.feed.repository.FeedRepository;
+import com.rebu.like.repository.LikeCommentRepository;
 import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.exception.ProfileUnauthorizedException;
@@ -26,6 +27,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
     private final ProfileRepository profileRepository;
+    private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
     public boolean create(CommentCreateDto dto) {
@@ -65,9 +67,7 @@ public class CommentService {
         Profile profile = profileRepository.findByNickname(requestUserNickname).orElseThrow(ProfileNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!comment.getWriter().equals(profile)) { throw new ProfileUnauthorizedException();}
-        if (comment.getParentComment() == null) {
-            commentRepository.deleteByParentComment(comment);
-        }
+        if (comment.isDeleted()) { throw new CommentNotFoundException();}
         commentRepository.delete(comment);
         return true;
     }
@@ -79,7 +79,9 @@ public class CommentService {
                 .content(comment.getContent())
                 .createAt(comment.getCreatedAt())
                 .commentId(comment.getId())
-                .likeCount(1).build(); // 수정0000000000000000000000000000000000
+                .likeCount(likeCommentRepository.countByComment(comment))
+                .isDelete(comment.isDeleted())
+                .build();
         return dto;
     }
 }

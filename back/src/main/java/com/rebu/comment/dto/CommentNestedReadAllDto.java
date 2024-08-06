@@ -15,5 +15,6 @@ public class CommentNestedReadAllDto {
     private LocalDateTime createAt;
     private String content;
     private Long commentId;
-    private Integer likeCount;
+    private Long likeCount;
+    private boolean isDelete;
 }
