@@ -161,7 +161,7 @@ const SignupForm2 = ({
     };
   }, [debounceTimeout]);
 
-  // 닉네임 중복확인 axios-get
+  // 닉네임 중복확인 axios-get <- (nickname지워야할지도?)
   const checkNicknameAvailability = async (nickname) => {
     try {
       const response = await axios.get(
