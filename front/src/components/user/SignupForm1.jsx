@@ -108,19 +108,36 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   const checkEmailAvailability = async (email) => {
     try {
       setIsChecking(true);
-      console.log("test check email: ", email);
-      // /api/members/check-email?email=rebu@naver.com?purpose=signup
+      console.log("Checking email availability for: ", email);
+
+      // API 요청: 이메일 중복 확인
       const response = await axios.get(
         `${BASE_URL}/api/members/check-email?email=${email}&purpose=signup`
       );
-      if (!response.data.body) {
-        //true면 중복
-        console.log(response.data.body);
-        setEmailMsg("사용 가능한 이메일입니다.");
-        setIsEmailValid(true);
+
+      const { code, body } = response.data;
+
+      if (code === "1A03") {
+        if (body) {
+          // body가 true인 경우 중복된 이메일
+          console.log("Email is already in use:", body);
+          setEmailMsg("이미 사용 중인 이메일입니다.");
+          setIsEmailValid(false);
+        } else {
+          // body가 false인 경우 사용 가능한 이메일
+          console.log("Email is available:", body);
+          setEmailMsg("사용 가능한 이메일입니다.");
+          setIsEmailValid(true);
+        }
+      } else if (code === "0A00") {
+        // 이메일 형식 불일치
+        console.log("Invalid email format.");
+        setEmailMsg("이메일 형식이 올바르지 않습니다.");
+        setIsEmailValid(false);
       } else {
-        console.log(response.data.body);
-        setEmailMsg("이미 사용 중인 이메일입니다.");
+        // 예상치 못한 코드 처리
+        console.error("Unexpected response code:", code);
+        setEmailMsg("알 수 없는 오류가 발생했습니다.");
         setIsEmailValid(false);
       }
     } catch (error) {
