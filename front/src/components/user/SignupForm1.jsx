@@ -117,10 +117,8 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
 
       const { code, body } = response.data;
 
-      console.log("response", response);
-      console.log("response.data", response.data);
-      console.log("response.body", response.body);
-      console.log("response.data.body", response.data.body);
+      // console.log("response", response);
+      // console.log("response.data", response.data);
       console.log("response", code, body);
       if (code === "이메일 중복 검사 성공") {
         if (body) {
@@ -134,15 +132,12 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           setEmailMsg("사용 가능한 이메일입니다.");
           setIsEmailValid(true);
         }
-        // } else if (code === "0A00") {
-
-        //   setIsEmailValid(false);
       } else {
         // 예상치 못한 코드 처리
         // console.error("Unexpected response code:", code);
         // setEmailMsg("알 수 없는 오류가 발생했습니다.");
         //   // 이메일 형식 불일치
-        console.log("Invalid email format.", code);
+        console.log("Invalid email format.", code, body);
         setEmailMsg("이메일 형식이 올바르지 않습니다.");
         setIsEmailValid(false);
       }
