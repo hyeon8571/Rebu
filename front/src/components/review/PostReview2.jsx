@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import AddHashTag from "./addHashTag";
 
 const Container = styled.div`
   display: flex;
@@ -66,6 +67,19 @@ const TitleText = styled.div`
   align-items: center;
 `;
 
+const RequestTextArea = styled.textarea`
+  width: 80%;
+  max-width: 500px;
+  height: 240px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  justify-self: center;
+  border-radius: 0.3rem;
+  resize: none;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+`;
+
 export default function PostReview2() {
   const [uploadImgUrls, setUploadImgUrls] = useState([]);
   const [imgNum, setImgNum] = useState(0);
@@ -119,6 +133,9 @@ export default function PostReview2() {
       </ImgDisplayer>
 
       <TitleText>리뷰 내용</TitleText>
+      <RequestTextArea placeholder="리뷰를 작성해주세요"/>
+      <TitleText>해시 태그</TitleText>
+      <AddHashTag/>
     </Container>
   );
 }

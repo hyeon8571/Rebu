@@ -6,7 +6,7 @@ const ButtonWrapper = styled.div``;
 
 const Button = styled.button`
   @media (max-width: 768px) {
-    width: 45vw;
+    width: 42vw;
     font-size: 12px;
   }
   width: 15vw;

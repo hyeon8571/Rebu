@@ -10,8 +10,20 @@ import ButtonLarge from "../common/ButtonLarge";
 const ShopInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: calc(100% - 4rem);
+  color: white;
+  border-radius: 0.75rem;
+  padding : 1rem;
+  margin : 1rem;
 
-  margin-bottom: 2rem;
+   @media (max-width: 768px) {
+    padding :0.5rem;
+    margin : 0.5rem;
+    width: calc(100% - 2rem);
+  }
+  background-color: ${(props) => props.theme.value==="light" ? "#CFB5E9" : "#999999"};
+ 
+
 `;
 
 const ImgWrapper = styled.img`
@@ -45,11 +57,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding : 1rem;
   @media (max-width: 768px) {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding :1rem;
   }
 `;
 const RateContainer = styled.div`
