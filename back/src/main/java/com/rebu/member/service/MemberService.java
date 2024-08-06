@@ -74,8 +74,8 @@ public class MemberService {
 
     @Transactional
     public void withdraw(String nickname) {
-       Profile profile = profileRepository.findByNickname(nickname)
-               .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = profileRepository.findByNickname(nickname)
+                .orElseThrow(ProfileNotFoundException::new);
 
         Member member = profile.getMember();
 

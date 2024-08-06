@@ -18,5 +18,4 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Profile p set p.status = 'ROLE_DELETED' where p.member.id = :memberId")
     void deleteProfileByMemberId(Long memberId);
-
 }

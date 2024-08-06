@@ -6,6 +6,8 @@ import com.rebu.profile.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE profile SET status = 'ROLE_DELETED' WHERE id = ?")
+@SQLRestriction("status != 'ROLE_DELETED'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(of = "id")
