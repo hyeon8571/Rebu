@@ -47,7 +47,7 @@ const DesignerContent = styled.div`
 const DesignerTitle = styled.div`
   display: flex;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
