@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import AddHashTag from "./addHashTag";
 import ImgUploader from "./ImgUploader";
+import Lottie from "lottie-react";
+import Alert from "../../assets/images/validationAlert.json";
 
 const Container = styled.div`
   display: flex;
@@ -37,6 +39,11 @@ const RequestTextArea = styled.textarea`
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 `;
 
+const StyledLottie = styled(Lottie)`
+  padding-left: 0.5rem;
+`;
+
+
 const ConstraintText = styled.div`
   font-size: 16px;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
@@ -48,7 +55,7 @@ const photoInRow = (width) => {
   } else return Math.floor((width - 32) / 408);
 };
 
-export default function PostReview2({ review, setReview }) {
+export default function PostReview2({ animationKey, isImgAlert, setIsImgAlert, review, setReview }) {
   const [uploadImgUrls, setUploadImgUrls] = useState([]);
   const [imgNum, setImgNum] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -85,8 +92,11 @@ export default function PostReview2({ review, setReview }) {
 
   return (
     <Container>
-      <TitleText>
+      <TitleText id="img">
         사진 <ConstraintText>(최소 1장, 최대 5장)</ConstraintText>
+        {isImgAlert && (
+          <StyledLottie key={animationKey} animationData={Alert} loop={false} />
+        )}
       </TitleText>
       <ImgUploader
         list={list}
@@ -94,6 +104,7 @@ export default function PostReview2({ review, setReview }) {
         uploadImgUrls={uploadImgUrls}
         setImgNum={setImgNum}
         setUploadImgUrls={setUploadImgUrls}
+        setIsImgAlert ={setIsImgAlert}
         review={review}
         setReview={setReview}
       />

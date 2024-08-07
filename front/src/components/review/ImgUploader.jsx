@@ -84,6 +84,7 @@ export default function ImgUploader({
   uploadImgUrls,
   setUploadImgUrls,
   setImgNum,
+  setIsImgAlert,
   review,
   setReview,
 }) {
@@ -108,7 +109,7 @@ export default function ImgUploader({
         }
       };
     });
-
+    setIsImgAlert(false);
     setImgNum(imgNum + uploadFiles.length);
   };
 
