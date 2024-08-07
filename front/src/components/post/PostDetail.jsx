@@ -298,7 +298,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   const [shopdata, setShopData] = useState([]);
 
   useEffect(() => {
-    fetch('data/shopdata.json')
+    fetch('/mockdata/shopdata.json')
       .then(res => res.json())
       .then((data) => {
         setShopData(data.body);
@@ -306,7 +306,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   }, []);
 
   useEffect(() => {
-    fetch('data/comment.json')
+    fetch('/mockdata/comment.json')
       .then(res => res.json())
       .then((data) => {
         setComment(data.body);
