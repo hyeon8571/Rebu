@@ -2,6 +2,7 @@ package com.rebu.member.service;
 
 import com.rebu.auth.exception.EmailNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
+import com.rebu.common.service.RedisService;
 import com.rebu.member.dto.ChangePasswordDto;
 import com.rebu.member.dto.FindEmailDto;
 import com.rebu.member.dto.MemberJoinDto;
@@ -31,6 +32,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileService profileService;
     private final ProfileRepository profileRepository;
+    private final RedisService redisService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -82,6 +84,8 @@ public class MemberService {
         memberRepository.delete(member);
 
         profileRepository.deleteProfileByMemberId(member.getId());
+
+        redisService.deleteData("Refresh: " + nickname);
     }
 
     private Boolean checkSignupPreAuth(MemberJoinDto memberJoinDto, ProfileGenerateDto profileGenerateDto, HttpSession session) {
