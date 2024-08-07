@@ -225,6 +225,7 @@ const FindEmail = () => {
         // alert("이메일이 존재하지 않습니다."); //debug용
         setFindEmailResult("이메일이 존재하지 않습니다. 번호미인증");
       } else {
+        //프로필 낫 파운드
         alert("이메일이 존재하지 않습니다." + response.data.code);
       }
     } catch (error) {
