@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import ReactStars from "react-rating-stars-component";
-import ReviewKeywordButton from "./ReviewKeywordButton";
+
 import Lottie from "lottie-react";
 import Alert from "../../assets/images/validationAlert.json";
 import ButtonLarge from "../common/ButtonLarge";
+import ReviewStar from "./ReviewStar";
+import ReviewKeywords from "./ReviewKeywords";
+import ReservationInfo from "./ReservationInfo";
 
 const ShopInfoContainer = styled.div`
   display: flex;
@@ -13,17 +15,16 @@ const ShopInfoContainer = styled.div`
   width: calc(100% - 4rem);
   color: white;
   border-radius: 0.75rem;
-  padding : 1rem;
-  margin : 1rem;
+  padding: 1rem;
+  margin: 1rem;
 
-   @media (max-width: 768px) {
-    padding :0.5rem;
-    margin : 0.5rem;
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    margin: 0.5rem;
     width: calc(100% - 2rem);
   }
-  background-color: ${(props) => props.theme.value==="light" ? "#CFB5E9" : "#999999"};
- 
-
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#CFB5E9" : "#B7B7B7"};
 `;
 
 const ImgWrapper = styled.img`
@@ -57,61 +58,16 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  padding : 1rem;
+  padding: 1rem;
   @media (max-width: 768px) {
-    padding :1rem;
+    padding: 1rem;
   }
-`;
-const RateContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  border-radius: 1rem;
-  align-items: center;
-  margin-bottom: 1rem;
-  width: 70%;
-  height: 100px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#F7F8FA" : "#B7B7B7"};
-`;
-
-const RateTextContainer = styled.div`
-  display: flex;
-  padding-top: 0.5rem;
-  margin-left: 0.5rem;
-`;
-
-const RateTextWrapper = styled.div`
-  margin-right: 0.3rem;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
-  border-radius: 0.3rem;
-  vertical-align: middle;
-  border: 2px solid
-    ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
 `;
 
 const ConstraintsText = styled.div`
   font-size: 14px;
   padding-left: 0.3rem;
   vertical-align: bottom;
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  @media (max-width: 768px) {
-    justify-content: space-around;
-  }
-`;
-
-const InvisibleBlock = styled.div`
-  width: 15vw;
-  display: block;
-  @media (max-width: 768px) {
-    visibility: none;
-  }
 `;
 
 const StyledLottie = styled(Lottie)`
@@ -202,16 +158,13 @@ function scrollUp() {
   });
 }
 
-export default function PostReview1() {
+export default function PostReview1({ info, review, setReview }) {
   const [rate, setRate] = useState(0);
   const [selectedKeyword, setSelectedKeyword] = useState(0);
   const [keywords, setKeywords] = useState(keywordList);
   const [isAlert, setIsAlert] = useState(false);
   const [isRateAlert, setIsRateAlert] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
-  const location = useLocation();
-  const { info } = location.state;
-  const navigate = useNavigate();
 
   const LIMIT_KEYWORD_NUM = 4;
 
@@ -236,25 +189,14 @@ export default function PostReview1() {
       }
     });
 
-    navigate("/postrevw2", {
-      state: {
-        review: {
-          rating: rate,
-          reviewKeyworidlds: keywords.map((item) => {
-            if (item.checked) {
-              return item.id;
-            }
-          }),
-        },
-      },
+    setReview({
+      rating: rate,
+      reviewKeyworidlds: keywords.map((item) => {
+        if (item.checked) {
+          return item.id;
+        }
+      }),
     });
-
-    // console.log({
-    //   review: {
-    //     rating: rate,
-    //     reviewKeyworidlds: idList,
-    //   },
-    // });
   }
   function handleRate(rate) {
     setIsRateAlert(false);
@@ -283,12 +225,8 @@ export default function PostReview1() {
 
   return (
     <Container>
-      <ShopInfoContainer>
-        <ImgWrapper src={info.img}></ImgWrapper>
-        <TitleText>{info.title}</TitleText>
-        <DesignerText>{info.designer}</DesignerText>
-        <VisitDate>방문 날짜 : {info.date}</VisitDate>
-      </ShopInfoContainer>
+      <TitleText>예약 정보</TitleText>
+      <ReservationInfo info={info} />
 
       <TitleText>
         별점
@@ -296,22 +234,9 @@ export default function PostReview1() {
           <StyledLottie key={animationKey} animationData={Alert} loop={false} />
         )}
       </TitleText>
-      <RateContainer>
-        <ReactStars
-          count={5}
-          size={24}
-          isHalf={true}
-          value={rate}
-          onChange={handleRate}
-          emptyIcon={<i className="far fa-star"></i>}
-          halfIcon={<i className="fa fa-star-half-alt"></i>}
-          fullIcon={<i className="fa fa-star"></i>}
-          activeColor="#943AEE"
-        />
-        <RateTextContainer>
-          <RateTextWrapper>{rate === 0 ? "? " : rate}</RateTextWrapper> / 5
-        </RateTextContainer>
-      </RateContainer>
+
+      <ReviewStar rate={rate} handleRate={handleRate} />
+
       <TitleText>
         리뷰 키워드
         <ConstraintsText alert={isAlert}>(필수 1개, 최대 5개)</ConstraintsText>
@@ -319,33 +244,7 @@ export default function PostReview1() {
           <StyledLottie key={animationKey} loop={false} animationData={Alert} />
         )}
       </TitleText>
-
-      <ButtonsContainer>
-        {keywords.map((item, index) => (
-          <ReviewKeywordButton
-            key={item.id}
-            button={{
-              id: index,
-              title: item.keyword,
-              img: process.env.PUBLIC_URL + "keyword/" + item.imgURL,
-              onClick: () => handleChecked(index),
-              highlight: item.checked,
-            }}
-          />
-        ))}
-        <InvisibleBlock></InvisibleBlock>
-        <InvisibleBlock></InvisibleBlock>
-      </ButtonsContainer>
-      <ButtonWrapper>
-        <ButtonLarge
-          button={{
-            id: 1,
-            title: "다음",
-            onClick: checkProps,
-            highlight: true,
-          }}
-        ></ButtonLarge>
-      </ButtonWrapper>
+      <ReviewKeywords keywords={keywords} handleChecked={handleChecked} />
     </Container>
   );
 }

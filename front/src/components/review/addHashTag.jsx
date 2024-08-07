@@ -20,36 +20,35 @@ const HashTag = styled.button`
   color: white;
   padding: 5px 10px;
   border: none;
-  border-radius: 20px;
+  border-radius: 1rem;
   cursor: pointer; /* Make the button look clickable */
-  &:hover{
+  &:hover {
     background-color: #ff4545;
   }
 `;
 
 const isEmptyValue = (value) => {
-  return value === null || value === undefined || value.trim() === '';
+  return value === null || value === undefined || value.trim() === "";
 };
 
-export default function AddHashTag() {
-  const [inputHashTag, setInputHashTag] = useState('');
-  const [hashTags, setHashTags] = useState([]);
+export default function AddHashTag({ hashTags, setHashTags }) {
+  const [inputHashTag, setInputHashTag] = useState("");
 
   const addHashTag = (e) => {
-    const allowedCommand = ['Comma', 'Enter', 'Space', 'NumpadEnter'];
+    const allowedCommand = ["Comma", "Enter", "Space", "NumpadEnter"];
     if (!allowedCommand.includes(e.code)) return;
 
     if (isEmptyValue(e.target.value.trim())) {
-      return setInputHashTag('');
+      return setInputHashTag("");
     }
 
     let newHashTag = e.target.value.trim();
     const regExp = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     if (regExp.test(newHashTag)) {
-      newHashTag = newHashTag.replace(regExp, '');
+      newHashTag = newHashTag.replace(regExp, "");
     }
-    if (newHashTag.includes(',')) {
-      newHashTag = newHashTag.split(',').join('');
+    if (newHashTag.includes(",")) {
+      newHashTag = newHashTag.split(",").join("");
     }
 
     if (isEmptyValue(newHashTag)) return;
@@ -58,21 +57,23 @@ export default function AddHashTag() {
       return [...new Set([...prevHashTags, newHashTag])];
     });
 
-    setInputHashTag('');
+    setInputHashTag("");
   };
 
   const keyDownHandler = (e) => {
-    if (e.code !== 'Enter' && e.code !== 'NumpadEnter') return;
+    if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
     e.preventDefault();
 
     const regExp = /^[a-z|A-Z|가-힣|ㄱ-ㅎ|ㅏ-ㅣ|0-9| \t|]+$/g;
     if (!regExp.test(e.target.value)) {
-      setInputHashTag('');
+      setInputHashTag("");
     }
   };
 
   const deleteHashTag = (hashTagToDelete) => {
-    setHashTags((prevHashTags) => prevHashTags.filter(hashTag => hashTag !== hashTagToDelete));
+    setHashTags((prevHashTags) =>
+      prevHashTags.filter((hashTag) => hashTag !== hashTagToDelete)
+    );
   };
 
   const changeHashTagInput = (e) => {
@@ -81,11 +82,15 @@ export default function AddHashTag() {
 
   return (
     <HashTagContainer>
-      <div className='hashTags'>
+      <div className="hashTags">
         {hashTags.length > 0 &&
           hashTags.map((hashTag) => {
             return (
-              <HashTag key={hashTag} onClick={() => deleteHashTag(hashTag)} className='tag'>
+              <HashTag
+                key={hashTag}
+                onClick={() => deleteHashTag(hashTag)}
+                className="tag"
+              >
                 #{hashTag}
               </HashTag>
             );
@@ -96,8 +101,8 @@ export default function AddHashTag() {
           onChange={changeHashTagInput}
           onKeyUp={addHashTag}
           onKeyDown={keyDownHandler}
-          placeholder='#해시태그를 등록해보세요. (최대 10개)'
-          className='hashTagInput'
+          placeholder="#해시태그를 등록해보세요. (최대 10개)"
+          className="hashTagInput"
         />
       </div>
     </HashTagContainer>

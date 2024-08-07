@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddHashTag from "./addHashTag";
+import ImgUploader from "./ImgUploader";
 
 const Container = styled.div`
   display: flex;
@@ -12,51 +13,6 @@ const Container = styled.div`
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-`;
-const ImgDisplayer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-`;
-
-const UploadedImg = styled.img`
-  width: 200px;
-  height: 200px;
-  border: 2px solid gray;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  @media (max-width: 768px) {
-    width: 125px;
-    height: 125px;
-  }
-`;
-
-const ExampleImg = styled.img`
-  width: 200px;
-  height: 200px;
-  border: 2px dotted black;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  @media (max-width: 768px) {
-    width: 125px;
-    height: 125px;
-  }
-`;
-
-const InvisibleDiv = styled.div`
-  width: 200px;
-  height: 200px;
-  @media (max-width: 768px) {
-    width: 125px;
-    height: 125px;
-  }
-`;
-
-const InvisibleInput = styled.input`
-  display: none;
 `;
 
 const TitleText = styled.div`
@@ -80,62 +36,67 @@ const RequestTextArea = styled.textarea`
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 `;
 
+const ConstraintText = styled.div`
+  font-size: 16px;
+  color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
+`;
+
+const photoInRow = (width) => {
+  if (width < 768) {
+    return Math.floor((width - 16) / 128);
+  } else return Math.floor((width - 32) / 403);
+};
+
 export default function PostReview2() {
   const [uploadImgUrls, setUploadImgUrls] = useState([]);
   const [imgNum, setImgNum] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [hashTags, setHashTags] = useState([]);
+  const [reviewText, setReviewText] = useState("");
 
-  const photoInRow = () => {
-    if (window.width <= 768) {
-      return Math.floor(screen.width / 125) - 1;
-    } else return Math.floor(screen.width / 200) - 1;
-  };
+  const list = Array.from({
+    length:
+      photoInRow(windowWidth) -
+      (imgNum % photoInRow(windowWidth)) -
+      1 +
+      (imgNum === 5 ? 1 : 0),
+  });
 
-  console.log(photoInRow());
+  console.log(photoInRow(windowWidth));
 
-  const onchangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFiles = Array.from(files);
-    const newUrls = [];
+  console.log(windowWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-    uploadFiles.forEach((uploadFile) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
-      reader.onloadend = () => {
-        newUrls.push(reader.result);
-        // 모든 파일이 다 읽힌 후 상태 업데이트
-        if (newUrls.length === uploadFiles.length) {
-          setUploadImgUrls((prevUrls) => [...prevUrls, ...newUrls]);
-        }
-      };
-    });
-  };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <Container>
-      <TitleText>사진</TitleText>
-      <ImgDisplayer>
-        {uploadImgUrls.map((url, index) => (
-          <UploadedImg key={index} src={url} alt={`upload-${index}`} />
-        ))}
-
-        <label for="file">
-          <ExampleImg src={process.env.PUBLIC_URL + "/addphoto.png"} />
-        </label>
-        <InvisibleDiv></InvisibleDiv>
-        <InvisibleDiv></InvisibleDiv>
-        <InvisibleDiv></InvisibleDiv>
-        <InvisibleInput
-          type="file"
-          multiple
-          id="file"
-          onChange={onchangeImageUpload}
-        />
-      </ImgDisplayer>
-
+      <TitleText>
+        사진 <ConstraintText>(최소 1장, 최대 5장)</ConstraintText>
+      </TitleText>
+      <ImgUploader
+        list={list}
+        imgNum={imgNum}
+        uploadImgUrls={uploadImgUrls}
+        setImgNum={setImgNum}
+        setUploadImgUrls={setUploadImgUrls}
+      />
       <TitleText>리뷰 내용</TitleText>
-      <RequestTextArea placeholder="리뷰를 작성해주세요"/>
-      <TitleText>해시 태그</TitleText>
-      <AddHashTag/>
+      <RequestTextArea
+        placeholder="리뷰를 작성해주세요"
+        onChange={(e) => setReviewText(e.target.value)}
+      />
+
+      <TitleText>해시태그</TitleText>
+      <AddHashTag hashTags={hashTags} setHashTags={setHashTags} />
     </Container>
   );
 }

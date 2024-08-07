@@ -37,7 +37,7 @@ export default function VisitedPage() {
   }, []);
 
   useEffect(() => {
-    fetch("/data/reviewdata.json")
+    fetch("/mockdata/reviewdata.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -94,6 +94,7 @@ export default function VisitedPage() {
                             " " +
                             item.employee.role,
                           date: item.reservation.startTime,
+                          price: item.menu.price,
                         },
                       },
                     });
