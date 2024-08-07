@@ -78,7 +78,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [loginUser, setLoginUser] = useState([]);
 
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL+'data/loginuser.json')
+    fetch('/mockdata/loginuser.json')
       .then(res => res.json())
       .then((data) => {
         setLoginUser(data.body);
@@ -86,7 +86,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL+'data/followerlist.json')
+    fetch('/mockdata/followerlist.json')
       .then(res => res.json())
       .then((data) => {
         setFollowerData(data.body);
@@ -94,7 +94,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL+'data/followinglist.json')
+    fetch('/mockdata/followinglist.json')
       .then(res => res.json())
       .then((data) => {
         setFollowingData(data.body);
@@ -102,7 +102,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/data/scrapdata.json`)
+    fetch('/mockdata/scrapdata.json')
       .then(res => res.json())
       .then((data) => {
         setScrapData(data.body);
@@ -110,7 +110,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
  
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL+'data/reviewdata.json')
+    fetch('/mockdata/reviewdata.json')
       .then(res => res.json())
       .then((data) => {
         setReveiwData(data.body);
@@ -118,7 +118,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL+'data/likeshop.json')
+    fetch('/mockdata/likeshop.json')
       .then(res => res.json())
       .then((data) => {
         setLikeCard(data.body);
@@ -126,7 +126,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/data/personalprofile.json`)
+    fetch('/mockdata/personalprofile.json')
       .then(res => res.json())
       .then((data) => {
         setProfile(data.body);
