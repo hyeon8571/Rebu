@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonBack from "../components/common/ButtonBack";
 import axios from "axios";
@@ -72,8 +73,9 @@ const FindEmail = () => {
   const [ptagMessage, setPtagMessage] = useState(
     "인증번호를 문자 메시지로 전송하였습니다"
   ); //p태그 내용
+  const [isEmailFound, setIsEmailFound] = useState(false);
   const [findEmailResult, setFindEmailResult] = useState("");
-
+  const nav = useNavigate();
   const nameChange = (e) => {
     const filteredValue = e.target.value.replace(
       /[^a-zA-Z\u3131-\u318E\uAC00-\uD7A3\s]/g,
@@ -191,9 +193,18 @@ const FindEmail = () => {
       );
       console.log(response.data);
       const code = response.data.code;
+      console.log("phone", phone);
+
       if (code === "이메일 찾기 성공 코드") {
         // 이메일이 존재하고, 찾았을 때
-        alert(`Email: ${response.data.body}`);
+        alert(`Email: ${response.data.body}`); //debug
+
+        setIsEmailFound(true);
+
+        // const result = { email: response.data.body };
+        const result = response.data.body;
+
+        nav("/login/email-found", { state: result });
       } else if (code === "이름 형식 불일치") {
         // alert("이름을 형식에 맞게 입력해주세요. 한/영 2자이상 16자 이하"); //debug용
         setFindEmailResult(
