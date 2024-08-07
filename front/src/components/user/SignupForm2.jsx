@@ -164,10 +164,10 @@ const SignupForm2 = ({
   const checkNicknameAvailability = async (nickname) => {
     try {
       // const response = await axios.get(
-      //   `${BASE_URL}/api/members/check-nickname?nickname=${nickname}&purpose=signup`
+      //   `${BASE_URL}/api/profiles/check-nickname?nickname=${nickname}&purpose=signup`
       // );
       const response = await axios.get(
-        `${BASE_URL}/api/members/check-nickname`,
+        `${BASE_URL}/api/profiles/check-nickname`,
         {
           params: {
             nickname: nickname,
@@ -256,19 +256,23 @@ const SignupForm2 = ({
     return value;
   };
 
-  // phone number 중복 체크
+  // API-휴대폰 중복 확인(GET)
   const checkPhoneAvailability = async (phone) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/users/check-phone`, {
-        params: { phone, purpose: "signup" },
+      const response = await axios.get(`${BASE_URL}/api/profiles/check-phone`, {
+        params: { phone: phone, purpose: "signup" },
       });
-      if (response.data.body) {
-        // true가 중복이 있는 경우
-        setPhoneMsg("중복된 전화번호입니다");
-        setIsPhoneValid(false);
+      if (response.data.code === "전화번호 중복 검사 성공 코드") {
+        if (response.data.body === true) {
+          // true가 중복이 있는 경우
+          setPhoneMsg("중복된 전화번호입니다");
+          setIsPhoneValid(false);
+        } else {
+          setPhoneMsg("사용 가능한 전화번호입니다");
+          setIsPhoneValid(true);
+        }
       } else {
-        setPhoneMsg("사용 가능한 전화번호입니다");
-        setIsPhoneValid(true);
+        setPhoneMsg("전화번호 형식이 맞지 않습니다");
       }
     } catch (error) {
       console.error("Error checking phone availability:", error);
@@ -277,14 +281,15 @@ const SignupForm2 = ({
     }
   };
 
-  // phone 코드인증(6자리)요청 POST -> 인증코드 폰으로 전송
+  // API-인증-휴대폰인증 (6자리 코드)요청 POST -> 인증코드 폰으로 전송
   const sendPhoneVerification = async () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/auths/phone/send`, {
         phone: formData.phone,
         purpose: "signup",
       });
-      if (response.data.success) {
+      console.log(response.data);
+      if (response.data.code === "전화번호 인증 코드 전송 성공") {
         alert("인증번호가 발송되었습니다.");
         setIsVerificationFieldVisible(true);
       } else {
@@ -309,20 +314,29 @@ const SignupForm2 = ({
     // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
   };
 
-  // 코드번호 인증하기(6자리)
-  // axios - POST phone/verify
+  // API-인증-휴대폰 인증번호 확인 (6자리 코드 휴대폰으로 받은 것 인증)
   const verifyPhoneCode = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auths/phone/verify`, {
-        phone: formData.phone,
-        purpose: "signup",
-        verifyCode: phoneVeriCode,
-      });
-      if (response.data.success) {
+      const response = await axios.post(
+        `${BASE_URL}/api/auths/phone/verify`,
+        {
+          phone: formData.phone,
+          purpose: "signup",
+          verifyCode: phoneVeriCode,
+        },
+        {
+          withCredentials: true, //쿠키-세션 저장을 위한 옵션
+        }
+      );
+      console.log("인증번호확인", phoneVeriCode, response);
+      if (response.data.code === "전화번호 인증 성공 코드") {
         alert("전화번호 인증이 완료되었습니다.");
+        console.log("전화번호 인증이 완료되었습니다.");
+        setPtagMessage("전화번호 인증이 완료되었습니다.");
         setIsCodeVerified(true);
       } else {
-        alert("전화번호 인증에 실패했습니다.");
+        alert("전화번호 인증에 실패했습니다. 사유:" + response.data.code);
+        // alert(`전화번호 인증에 실패했습니다. 오류 코드: ${response.data.code}`); //
       }
     } catch (error) {
       console.error("Error verifying phone code:", error);
