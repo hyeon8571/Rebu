@@ -12,6 +12,8 @@ import ModalNoBackGround from "../components/common/ModalNoBackground";
 import Img from "../assets/images/img.webp";
 import ThemeToggler from "../util/ThemeToggler";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import confirmLottie from "../assets/images/confirmLottie.json";
 
 const Wrapper = styled.div``;
 const ProfilesDisplay = styled.div`
@@ -76,7 +78,7 @@ export default function Components({ theme, toggleTheme }) {
       onClick: () => {
         navigate("/designertab");
       },
-      title: "디자이너탭",
+      title: "예약하기(디자이너부터)",
       highlight: true,
     },
   ];
@@ -114,9 +116,10 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileMedium img={Img} time={3600} />
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
+
+      <Lottie animationData={confirmLottie} />
+
       <ButtonFull buttons={buttons4}></ButtonFull>
-      <ButtonFull buttons={buttons5}></ButtonFull>
-      <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>
       <ButtonFull buttons={buttons}></ButtonFull>

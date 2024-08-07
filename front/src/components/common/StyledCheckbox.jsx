@@ -16,11 +16,11 @@ const CheckboxWrapper = styled.div`
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
   --border-width: 1px;
-  --c-primary: #5f11e8;
+  --c-primary: #943aee;
   --c-primary-20-percent-opacity: rgba(95, 17, 232, 0.2);
   --c-primary-10-percent-opacity: rgba(95, 17, 232, 0.1);
-  --t-base: 0.4s;
-  --t-fast: 0.2s;
+  --t-base: 0.3s;
+  --t-fast: 0.15s;
   --e-in: ease-in;
   --e-out: cubic-bezier(0.11, 0.29, 0.18, 0.98);
 `;
@@ -58,6 +58,7 @@ const CheckboxSymbol = styled.span`
   transition: box-shadow var(--t-base) var(--e-out),
     background-color var(--t-base);
   box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
+  background-color: #fff;
 
   svg {
     width: 1em;

@@ -10,20 +10,22 @@ import NavigationRail from "./components/common/NavigationRail";
 import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
 
-
 const Grid = styled.div`
   @media (min-width: 769px) {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
   }
+  @media (max-width: 768px) {
+    padding-bottom: 4rem;
+  }
 `;
 
 const Layout = styled.div`
-  max-width: 768px;
   @media (min-width: 769px) {
     grid-column: 2 / 3;
     border-left: 1px solid lightgray;
     border-right: 1px solid lightgray;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
   }
 `;
 
@@ -37,7 +39,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-        <BrowserRouter> 
+      <BrowserRouter>
         <GlobalStyles />
         <Grid>
           {isMobile ? <NavigationBar /> : <NavigationRail />}
@@ -46,8 +48,8 @@ function App() {
             <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
           </Layout>
         </Grid>
-        </BrowserRouter>
-      </ThemeProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 export default App;

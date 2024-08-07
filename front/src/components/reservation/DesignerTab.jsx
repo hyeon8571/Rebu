@@ -105,14 +105,12 @@ const NextButtonWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-
 export default function DesignerTab() {
   const [isMale, setIsMale] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [chosenDesigner, setChosenDesigner] = useState(null);
-
 
   const navigate = useNavigate();
 
@@ -170,7 +168,7 @@ export default function DesignerTab() {
   }
 
   function handleChosenDesigner(value) {
-    if (value === chosenDesigner) {
+    if (chosenDesigner && value.nickname === chosenDesigner.nickname) {
       setChosenDesigner(null);
     } else {
       setChosenDesigner(value);
@@ -200,63 +198,75 @@ export default function DesignerTab() {
           </ButtonWrapper>
         )}
       </UpperTabWrapper>
-      {designerData.filter((item) => item.gender === isMale).map((item) => (
-        <DesignerCardContainer key={item.nickname}>
-          <DesignerContent>
-            <DesignerTitle>
-              {isReservation && (
-                <Checkbox
-                  key={item.nickname}
-                  value={item.nickname === chosenDesigner}
-                  onChange={() => handleChosenDesigner(item.nickname)}
-                />
-              )}
-              {item.workingName} {item.role}
-            </DesignerTitle>
-            <DesignerIntroduction>
-              {item.workingIntroduction}
-            </DesignerIntroduction>
-            <ReviewContainer>방문자 리뷰 {item.review}개</ReviewContainer>
-          </DesignerContent>
-          <DesignerPhotoContainer>
-            <DesignerPhoto src={Img} />
-          </DesignerPhotoContainer>
-          {isEditMode && (
-            <ButtonWrapper>
-              {isMine && (
-                <EditButton
-                  onClick={() =>
-                    handleModifyInstruction(item.workingIntroduction)
-                  }
-                >
-                  수정
-                </EditButton>
-              )}
-              {isShop || isMine ? (
-                <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
-              ) : null}
-            </ButtonWrapper>
-          )}
-        </DesignerCardContainer>
-      ))}
+      {designerData
+        .filter((item) => item.gender === isMale)
+        .map((item) => (
+          <DesignerCardContainer key={item.nickname}>
+            <DesignerContent>
+              <DesignerTitle>
+                {isReservation && (
+                  <Checkbox
+                    key={item.nickname}
+                    value={
+                      chosenDesigner &&
+                      item.nickname === chosenDesigner.nickname
+                    }
+                    onChange={() => handleChosenDesigner(item)}
+                  />
+                )}
+                {item.workingName} {item.role}
+              </DesignerTitle>
+              <DesignerIntroduction>
+                {item.workingIntroduction}
+              </DesignerIntroduction>
+              <ReviewContainer>방문자 리뷰 {item.review}개</ReviewContainer>
+            </DesignerContent>
+            <DesignerPhotoContainer>
+              <DesignerPhoto src={Img} />
+            </DesignerPhotoContainer>
+            {isEditMode && (
+              <ButtonWrapper>
+                {isMine && (
+                  <EditButton
+                    onClick={() =>
+                      handleModifyInstruction(item.workingIntroduction)
+                    }
+                  >
+                    수정
+                  </EditButton>
+                )}
+                {isShop || isMine ? (
+                  <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
+                ) : null}
+              </ButtonWrapper>
+            )}
+          </DesignerCardContainer>
+        ))}
       {isReservation && (
         <NextButtonWrapper>
           <ButtonSmall
             button={{
-                    id: 1,
-                    title: "다음",
+              id: 1,
+              title: "다음",
               onClick: () => {
-                
                 if (chosenDesigner) {
-                  navigate("/menutab", { state: { nickname: chosenDesigner } })
-                }
-                else {
+                  navigate("/menutab", {
+                    state: {
+                      info: {
+                        shopTitle: "싸피 헤어샵",
+                        nickname: chosenDesigner.nickname,
+                        workingName: chosenDesigner.workingName,
+                        role: chosenDesigner.role,
+                      },
+                    },
+                  });
+                } else {
                   window.alert("디자이너를 선택해주세요");
                 }
               },
-                    highlight: true,
-            }}>
-                    </ButtonSmall>
+              highlight: true,
+            }}
+          ></ButtonSmall>
         </NextButtonWrapper>
       )}
     </>

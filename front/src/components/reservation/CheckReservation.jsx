@@ -13,11 +13,15 @@ const DescriptionContainer = styled.div`
   text-align: center;
 `;
 
-export default function CheckReservation({ setIsModalOpen, children }) {
+export default function CheckReservation({
+  setIsConfirmed,
+  setIsModalOpen,
+  children,
+}) {
   const Button1 = {
     id: 1,
     title: "예약",
-    onClick: () => {},
+    onClick: () => setIsConfirmed(true),
     highlight: true,
   };
 

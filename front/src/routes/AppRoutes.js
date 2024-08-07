@@ -5,10 +5,12 @@ import Main from "../views/Main";
 import Notfound from "../views/Notfound";
 import Login from "../views/Login";
 import FindEmail from "../views/FindEmail";
+import FindEmailComp from "../views/FindEmailComp";
 import ChangePassword from "../views/ChangePassword";
 import Signup from "../views/Signup";
 import ChangePasswordCompl from "../views/ChangePasswordCompl";
-import SignupForm2 from "../components/forms/SignupForm2";
+// import SignupForm2 from "../components/user/SignupForm2";
+import SignupComp from "../views/SignupComp"
 
 const AppRoutes = () => (
   <Routes>
@@ -16,10 +18,12 @@ const AppRoutes = () => (
     <Route path="/main" element={<Main />} />
     <Route path="/login" element={<Login />} />
     <Route path="/login/password" element={<ChangePassword />} />
-    <Route path="login/passwordChanged" element={<ChangePasswordCompl />} />
+    <Route path="login/password-changed" element={<ChangePasswordCompl />} />
     <Route path="/login/email" element={<FindEmail />} />
+    <Route path="/login/email-found" element={<FindEmailComp />} />
     <Route path="/signup" element={<Signup />} />
-    <Route path="/signup/step2" element={<SignupForm2 />} />
+    <Route path="/signup-completed" element={<SignupComp />} />
+    {/* <Route path="/signup/step2" element={<SignupForm2 />} /> */}
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>
 );

@@ -10,6 +10,14 @@ export const GlobalStyles = createGlobalStyle`
     font-style: normal;
 }
 
+*{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+      user-select: none;
+}
   body {
     margin: 0;
     background: ${({ theme }) => theme.body};
@@ -17,4 +25,5 @@ export const GlobalStyles = createGlobalStyle`
     transition: background-color 0.50s linear;
     font-family: 'SUIT-Regular';
   }
+  
 `;
