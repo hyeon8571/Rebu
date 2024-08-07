@@ -98,7 +98,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [shopPost, setShopPost] = useState([]);
 
   useEffect(() => {
-    fetch('data/shoppost.json')
+    fetch(process.env.PUBLIC_URL+'data/shoppost.json')
       .then(res => res.json())
       .then((data) => {
         setShopPost(data.body);
