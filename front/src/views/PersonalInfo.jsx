@@ -173,27 +173,28 @@ const DeleteButton = styled(Button)`
 
 const PersonalInfo = () => {
   const location = useLocation();
-  const user = location.state.user;
+  const user = location.state?.user;
+  const profile = location.state?.profile;
   const navigate = useNavigate();
-  const [profileImg, setProfileImg] = useState(user.profile_src);
+  const [profileImg, setProfileImg] = useState(profile.imageSrc);
   const [nickname, setNickname] = useState(user.nickname);
   const email = user.email;
   const birth = user.birth;
   const phone = user.phone;
-
-  let type = user.type;
-  if (user.type === "COMMON") {
+  
+  let type = profile.type;
+  if (profile.type === "COMMON") {
     type = "일반 사용자";
-  } else if (user.type === "EMPLOYEE") {
+  } else if (profile.type === "EMPLOYEE") {
     type = "디자이너";
-  } else if (user.type === "SHOP") {
+  } else if (profile.type === "SHOP") {
     type = "매장";
   }
 
   let gender = user.gender;
-  if (user.gender === "true") {
+  if (user.gender === "MALE") {
     gender = "남";
-  } else if (user.gender === "false") {
+  } else if (user.gender === "FEMALE") {
     gender = "여";
   }
 
@@ -227,10 +228,14 @@ const PersonalInfo = () => {
   const handleSave = () => {
     const updatedUser = {
       ...user,
-      profile_src: profileImg,
       nickname: nickname,
     };
-    navigate('/profile', { state: { user: updatedUser } });
+    const updatedProfile = {
+      ...profile,
+      nickname: nickname,
+      imageSrc: profileImg,
+    };
+    navigate('/profile', { state: { user: updatedUser, profile: updatedProfile}});
     console.log(updatedUser);
   };
 

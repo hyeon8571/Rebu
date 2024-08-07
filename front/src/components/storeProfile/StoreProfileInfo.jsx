@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GoShareAndroid } from "react-icons/go";
+import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
+import StoreMark from "../../assets/images/storemark.png";
 
 const InfoBox = styled.div`
   margin-left: 30px;
@@ -18,17 +20,16 @@ const NameInfo = styled.div`
   align-items: center;
 `;
 
-const ImgShare = styled(GoShareAndroid)`
-  width: 20px;
-  height: 20px;
-  margin-top: 5px;
-  cursor: pointer;
+const LeftContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
-const ImgEdit = styled(BiEditAlt)`
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 const Name = styled.h2`
@@ -38,6 +39,48 @@ const Name = styled.h2`
   @media (max-width: 375px) {
     font-size: 22px;
   }
+`;
+
+const StoreMarkBox = styled.img`
+  width: 22px;
+  height: 22px;
+`;
+
+const Rating = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  color: #ffcc00;
+  @media (max-width: 375px) {
+    font-size: 16px;
+  }
+`;
+
+const RatingText = styled.span`
+  color: ${(props) => (props.theme.value === "light" ? "#777777" : "#ffffff")};
+`;
+
+const ImgLike = styled(FaRegHeart)`
+  font-size: 20px;
+  color: #943Aee;
+  cursor: pointer;
+`;
+
+const ImgLikeActive = styled(FaHeart)`
+  font-size: 20px;
+  color: #943aee;
+  cursor: pointer;
+`;
+
+const ImgShare = styled(GoShareAndroid)`
+  font-size: 20px;
+  cursor: pointer;
+`;
+
+const ImgEdit = styled(BiEditAlt)`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 `;
 
 const IntroduceInfo = styled.div`
@@ -97,7 +140,6 @@ const ModalButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-
 const ModalButton = styled.button`
   background: #943AEE;
   color: white;
@@ -120,15 +162,15 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ currentUser, loginUser }) => {
+const InfoComponent = ({ currentUser, loginUser, updateLikes }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
 
-  useEffect(() => {
-    setNewIntroduce(currentUser.introduction);
-    setTempIntroduce(currentUser.introduction);
-  }, [currentUser.introduction]);
+  // useEffect(() => {
+  //   setNewIntroduce(currentUser.introduction);
+  //   setTempIntroduce(currentUser.introduction);
+  // }, [currentUser.introduction]);
 
   const openModal = () => {
     setTempIntroduce(newIntroduce);
@@ -149,17 +191,42 @@ const InfoComponent = ({ currentUser, loginUser }) => {
     closeModal();
   };
 
+  const handleLikeToggle = () => {
+    const updatedLikes = loginUser.likes.includes(currentUser.nickname)
+      ? loginUser.likes.filter(like => like !== currentUser.nickname)
+      : [...loginUser.likes, currentUser.nickname];
+    
+    updateLikes(updatedLikes);
+  };
+
   return (
     <InfoBox>
       <NameInfo>
-        <Name>{currentUser.nickname}</Name>
-        <ImgShare />
+        <LeftContainer>
+          <Name>{currentUser.nickname}</Name>
+          <StoreMarkBox src={StoreMark} />
+          <Rating>
+            <FaRegStar />
+            &nbsp;
+            <RatingText>{currentUser.rank}</RatingText>
+          </Rating>
+        </LeftContainer>
+        <RightContainer>
+          {/* {currentUser.nickname !== loginUser.nickname && (
+            loginUser.likes.includes(currentUser.nickname) ? (
+              <ImgLikeActive onClick={handleLikeToggle} />
+            ) : (
+              <ImgLike onClick={handleLikeToggle} />
+            ))} */}
+          <ImgShare />
+        </RightContainer>
       </NameInfo>
+
       <IntroduceInfo>
         <Introduction>{newIntroduce}</Introduction> &nbsp;
-        {currentUser.nickname === loginUser.nickname ? (
+        {currentUser.nickname === loginUser.nickname && (
           <ImgEdit onClick={openModal} />
-        ) : ("")}
+        )}
       </IntroduceInfo>
 
       {isModalOpen && (
@@ -171,7 +238,7 @@ const InfoComponent = ({ currentUser, loginUser }) => {
             </ModalHeader>
             <ModalInput value={tempIntroduce} onChange={handleIntroduceChange} />
             <ModalButtonContainer>
-                <ModalButton onClick={saveIntroduce}>저장</ModalButton>
+              <ModalButton onClick={saveIntroduce}>저장</ModalButton>
             </ModalButtonContainer>
           </ModalContent>
         </ModalOverlay>

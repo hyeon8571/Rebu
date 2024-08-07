@@ -16,11 +16,10 @@ const Grid = styled.div`
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
   }
-  height: 100vh;
 `;
 
 const Layout = styled.div`
-  height: 100%;
+  max-width: 768px;
   @media (min-width: 769px) {
     grid-column: 2 / 3;
     border-left: 1px solid lightgray;

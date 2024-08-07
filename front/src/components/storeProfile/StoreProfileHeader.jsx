@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Logout from "./ModalLogout";
-import SecretMode from "./ModalSecretMode";
 import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 import ThemeToggler from "../../util/ThemeToggler";
@@ -17,7 +15,7 @@ const Wrapper = styled.div`
   max-width: 768px;
   width: 100%;
   top: 0;
-  z-index: 2;
+  z-index: 1;
 
   /* 색상 */
   background-color: ${(props) =>
@@ -49,15 +47,15 @@ const ImgSend = styled(FiSend)`
 `;
 
 const ImgSetting = styled(IoSettingsOutline)`
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   margin-left: 10px;
   cursor: pointer;
 `;
 
 const ImgSettingActive = styled(IoSettings)`
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   margin-left: 10px;
   cursor: pointer;
 `;
@@ -81,7 +79,7 @@ const DropdownMenu = styled.div`
   color: black;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(21, 17, 17, 0.1);
-  
+  z-index: 10;
   width: 140px;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
@@ -151,43 +149,12 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
     
       <Wrapper>
         <ImgBack onClick={handleBackClick} />
-        <HeaderText>My Profile</HeaderText>
+        <HeaderText>Store Profile</HeaderText>
         <ButtonBox>
           <ThemeSwitch theme={theme} toggleTheme={toggleTheme} />
-          {currentUser.nickname === loginUser.nickname ? (
-            isSettingActive ? (
-              <ImgSettingActive onClick={handleSettingClick} />
-            ) : (
-              <ImgSetting onClick={handleSettingClick} />
-            )
-          ) : (
-            <ImgSend />
-          )}
+          <ImgSend />
         </ButtonBox>
-        <DropdownMenu ref={dropdownRef} show={showDropdown}>
-          <DropdownItem onClick={() => navigate("/personal-info", {state : {user: loginUser, profile: currentUser}})}>
-            개인정보 확인
-          </DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={() => handleOptionClick("비밀번호 변경")}>
-            비밀번호 변경
-          </DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
-          <hr style={{ margin: "5px 0px" }} />
-          <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
-          {LogoutModalOpen && (
-            <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
-          )}
-          {SecretModalOpen && (
-            <SecretMode
-              secretModalOpen={SecretModalOpen}
-              closeModal={closeModal}
-            />
-          )}
-        </DropdownMenu>
       </Wrapper>
-    
   );
 };
 

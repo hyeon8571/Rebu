@@ -1,0 +1,30 @@
+{
+  "code" : "????",
+  "body" : [
+    {
+      "nickname" : "yuseung",
+      "imgSrc" : "images/man.png",
+      "introduction" : "안녕하세요! 반갑습니다!"
+    },
+    {
+      "nickname" : "madong",
+      "imgSrc" : "images/ma.png",
+      "introduction" : "네일 추천받아요!"
+    },
+    {
+      "nickname" : "fafafa",
+      "imgSrc" : "images/fa.png",
+      "introduction" : "미용실 추천해주세요!"
+    },
+    {
+      "nickname" : "ganadara",
+      "imgSrc" : "images/da.png",
+      "introduction" : "뷰티는 나야나!"
+    },
+    {
+      "nickname" : "hyeon",
+      "imgSrc" : "images/hh.png",
+      "introduction" : "뷰린이 입니당!"
+    }
+  ]
+}

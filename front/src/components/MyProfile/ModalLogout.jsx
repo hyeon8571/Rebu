@@ -84,9 +84,9 @@ const Logout = ({LogoutModalOpen, closeModal}) => {
   };
 
   return (
-    <>
+    <ModalOverlay>
     {LogoutModalOpen && (
-      <ModalOverlay>
+      
         <ModalContent>
           <ModalHeader>
             <CloseButton onClick={closeModal}>&times;</CloseButton>
@@ -97,9 +97,9 @@ const Logout = ({LogoutModalOpen, closeModal}) => {
               <CancelButton onClick={cancel}>취소</CancelButton>
           </ModalButtonContainer>
         </ModalContent>
-      </ModalOverlay>
+     
       )}
-    </>
+    </ModalOverlay>
   )
 };
 

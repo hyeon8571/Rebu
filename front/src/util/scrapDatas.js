@@ -76,7 +76,7 @@ export const scrapCards = [
     userimg: Img,
     shop: "싸피 네일샵",
     isScrapped: true,
-    isLiked: false,
+    isLiked: true,
     rank: "4.8",
     content: "네일 관리는 싸피 네일!",
     created_at: "2024-07-07 14:39:04",

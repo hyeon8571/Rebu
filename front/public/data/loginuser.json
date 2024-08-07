@@ -1,0 +1,13 @@
+{
+  "code" : "????",
+  "body" :
+    {
+      "email" : "rebu@naver.com",
+      "password" : "qwerty12345",
+      "name" : "차은우",
+      "nickname" : "cha_cha",
+      "birth" : "1997-04-29",
+      "phone" : "010-1212-3434",
+      "gender" : "MALE"
+    }
+}

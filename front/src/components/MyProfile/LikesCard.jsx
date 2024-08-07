@@ -4,6 +4,7 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import ButtonSmall from "../common/ButtonSmall";
 import { FaRegStar } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,12 +47,14 @@ const PhotoSection = styled.div`
 `;
 
 const Photo = styled.img`
-  max-width: 70px;
-  max-height: 70px;
+  width: 70px;
+  height: 70px;
+  /* max-width: 70px;
+  max-height: 70px; */
   border-radius: 8rem;
-  @media (max-width: 768px) {
-    max-width: 90%;
-    max-height: 90%;
+  @media (max-width: 425px) {
+    max-width: 60px;
+    max-height: 60px;
   }
 `;
 
@@ -138,52 +141,58 @@ const ButtonWrapper = styled.div`
   padding-top: 0.5rem;
 `;
 
-export default function VisitedCard({ Card, button }) {
-  if (!Card || !button) {
-    console.log("카드 컴포넌트 불러오기 실패");
-    return null;
-  }
+
+export default function VisitedCard({ Card }) {
+
+  const button = {
+    onClick: () => {
+      window.alert("버튼 클릭!");
+    },
+    title: "예약하기",
+    highlight: true,
+  };
+  
   return (
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.img} />
+          <Photo src={Card.imageSrc} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
             <TitleText>
-              {Card.title}
+              {Card.name}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>
             <Rating>
               <FaRegStar />&nbsp;
-              <Ratingtext>{Card.rank}</Ratingtext>
+              <Ratingtext>{Card.ratingAvg}</Ratingtext>
             </Rating>
           </TitleWrapper>
-          <IntroWrapper>{Card.introduce}</IntroWrapper>
+          <IntroWrapper>{Card.introduction}</IntroWrapper>
         </Content>
       </GridContainer>
       <IntroContainer>
         
             <TabItem>
-              <Count>{Card.post}</Count>
+              <Count>{Card.feedCnt}</Count>
               <TabName>Post</TabName>
             </TabItem>
             <TabItem>
-              <Count>{Card.reviews}</Count>
+              <Count>{Card.reviewCnt}</Count>
               <TabName>Reviews</TabName>
             </TabItem>
             <TabItem>
-              <Count>{Card.reservation}</Count>
+              <Count>{Card.reservationCnt}</Count>
               <TabName>Reservaion</TabName>
             </TabItem>
           
        
-          {button !== null && (
+     
             <ButtonWrapper>
               <ButtonSmall button={button}></ButtonSmall>
             </ButtonWrapper>
-          )}
+       
       </IntroContainer>
       
     </Wrapper>

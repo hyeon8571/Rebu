@@ -1,0 +1,83 @@
+{
+  "code" : "????",
+  "body" : [
+      {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 5,
+        "followerCnt" : 4,
+        "nickname" : "ssafy_nail_shop",
+        "name" : "싸피 네일",
+        "address" : "경북 구미시 인동동",
+        "phone" : "010-0000-0000",
+        "introduction" : "안녕하세요! 반갑습니다.",
+        "feedCnt" : 5,
+        "reviewCnt" : 6,
+        "reservationCnt" : 7
+    },
+    {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 10,
+        "followerCnt" : 15,
+        "nickname" : "glamour_nails_shop",
+        "name" : "네일 아티스트",
+        "address" : "서울특별시 강남구",
+        "phone" : "010-1111-1111",
+        "introduction" : "최고의 네일 서비스를 제공합니다.",
+        "feedCnt" : 20,
+        "reviewCnt" : 18,
+        "reservationCnt" : 25
+    },
+    {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 7,
+        "followerCnt" : 9,
+        "nickname" : "beauty_haven_shop",
+        "name" : "뷰티 네일",
+        "address" : "부산광역시 해운대구",
+        "phone" : "010-2222-2222",
+        "introduction" : "예쁜 네일아트로 보답하겠습니다.",
+        "feedCnt" : 12,
+        "reviewCnt" : 15,
+        "reservationCnt" : 10
+    },
+    {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 8,
+        "followerCnt" : 6,
+        "nickname" : "chic_hair_shop",
+        "name" : "치크 헤어",
+        "address" : "대구광역시 수성구",
+        "phone" : "010-3333-3333",
+        "introduction" : "편안한 헤어샵 입니다.",
+        "feedCnt" : 8,
+        "reviewCnt" : 5,
+        "reservationCnt" : 7
+    },
+    {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 12,
+        "followerCnt" : 14,
+        "nickname" : "glamour_nails_shop",
+        "name" : "글램 네일",
+        "address" : "인천광역시 남동구",
+        "phone" : "010-4444-4444",
+        "introduction" : "스타일리시한 네일을 만나보세요.",
+        "feedCnt" : 22,
+        "reviewCnt" : 20,
+        "reservationCnt" : 18
+    },
+    {
+        "imageSrc" : "images/ssafynail.png",
+        "followingCnt" : 9,
+        "followerCnt" : 8,
+        "nickname" : "nail_world_shop",
+        "name" : "네일 월드",
+        "address" : "경기도 성남시 분당구",
+        "phone" : "010-5555-5555",
+        "introduction" : "네일 아트의 모든 것을 제공합니다.",
+        "feedCnt" : 16,
+        "reviewCnt" : 13,
+        "reservationCnt" : 11
+    }
+  ]
+}

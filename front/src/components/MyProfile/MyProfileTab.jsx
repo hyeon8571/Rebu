@@ -2,31 +2,20 @@ import React from "react";
 import styled from "styled-components";
 
 const TabMenu = styled.ul`
-  /* background-color: #e6e6e6; */
   background-color: ${(props) =>
     props.theme.value === "light" ? "#ffffff" : props.theme.secondary};
   color: ${(props) =>
     props.theme.value === "light" ? "#000000" : props.theme.text};
   display: flex;
   margin: auto;
-  /* margin-left: 4px; */
-  /* margin-right: 8px; */
   max-width: 768px;
   height: 60px;
   flex-direction: row;
   align-items: center;
   list-style: none;
-  border-top: ${(props) =>
-    props.theme.value === "light" ? "" : "2px solid #000000"};
   transition: border 0.5s linear;
-  /* margin-top: 1rem; */
   padding-left: 0px;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
-  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
-
-  /* @media (min-width: 768px) {
-      width: calc(100% /3);
-  } */
 
   .submenu {
     // 기본 Tabmenu 에 대한 CSS를 구현
@@ -46,7 +35,6 @@ const TabMenu = styled.ul`
     font-weight: bold;
     color: rgb(21, 20, 20);
   }
-
   & div.desc {
     text-align: center;
   }

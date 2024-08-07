@@ -1,0 +1,63 @@
+{
+  "code": "1M01",
+  "body": [
+      {
+          "comment": {
+              "imageSrc": "images/man.png",
+              "nickname": "jdock",
+              "createAt": "2024-08-03T23:01:06.884459",
+              "content": "여기 엄청 잘해요",
+              "commentId": 1,
+              "likeCount": 1
+          },
+          "commentNested": [
+              {
+                  "imageSrc": "images/girl.png",
+                  "nickname": "fafafa",
+                  "createAt": "2024-08-03T23:01:39.101072",
+                  "content": "아님 여기 그냥 그래여....",
+                  "commentId": 3,
+                  "likeCount": 1
+              },
+              {
+                  "imageSrc": "images/ma.png",
+                  "nickname": "dong",
+                  "createAt": "2024-08-03T23:01:49.462331",
+                  "content": "ㅇㅈㅇㅈ",
+                  "commentId": 4,
+                  "likeCount": 1
+              }
+          ]
+      },
+      {
+          "comment": {
+              "imageSrc": "images/fa.png",
+              "nickname": "fafafa",
+              "createAt": "2024-08-03T23:01:19.677649",
+              "content": "여기 엄청 그저 그래요...",
+              "commentId": 2,
+              "likeCount": 1
+          },
+          "commentNested": [
+            {
+                "imageSrc": "images/da.png",
+                "nickname": "ganadara",
+                "createAt": "2024-08-03T23:02:07.454952",
+                "content": "ㅋㅋ개잘하던데",
+                "commentId": 5,
+                "likeCount": 1
+            },
+            {
+                "imageSrc": "images/man.png",
+                "nickname": "jdock",
+                "createAt": "2024-08-03T23:02:14.606895",
+                "content": "ㅋㅋ잘하긴 함",
+                "commentId": 6,
+                "likeCount": 1
+            }
+        ]
+      }
+    ]
+}
+
+

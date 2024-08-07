@@ -1,0 +1,15 @@
+{
+	"code" : "????",
+	"body" : 
+	{
+		"type" : "COMMON",
+		"imageSrc" : "images/cha.png",
+		"followingCnt" : 5,
+		"followerCnt" : 5,
+		"nickname" : "cha_cha",
+		"introduction" : "나는 차은우 나는 뷰티 마스터!",
+		"reviewCnt" : 4,
+		"scrapCnt" : 5,
+		"likeCnt" : 6
+	}
+}

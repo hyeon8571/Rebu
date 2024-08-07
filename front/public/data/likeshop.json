@@ -1,0 +1,71 @@
+{
+	"code": "????",
+	"body": [
+		{
+			"imageSrc": "images/ssafynail.png",
+			"nickname": "ssafy_shop",
+			"name": "블링블링 네일샵",
+			"ratingAvg": 4.75,
+			"isFavorite": true,
+			"introduction": "저희 매장에 오시면 할인해 드립니다.",
+			"feedCnt": 5,
+			"reviewCnt": 20,
+			"reservationCnt": 30
+		},
+		{
+			"imageSrc": "images/ssafyhair.png",
+			"nickname": "beauty_haven",
+			"name": "뷰티 헤이븐",
+			"ratingAvg": 4.6,
+			"isFavorite": false,
+			"introduction": "최고의 미용 서비스를 제공합니다.",
+			"feedCnt": 8,
+			"reviewCnt": 25,
+			"reservationCnt": 45
+		},
+		{
+			"imageSrc": "images/nailart.png",
+			"nickname": "glamour_nails",
+			"name": "글래머 네일스",
+			"ratingAvg": 4.8,
+			"isFavorite": true,
+			"introduction": "스타일리시한 네일 아트를 만나보세요.",
+			"feedCnt": 10,
+			"reviewCnt": 30,
+			"reservationCnt": 50
+		},
+		{
+			"imageSrc": "images/nail1.png",
+			"nickname": "nail_spa",
+			"name": "네일 스파",
+			"ratingAvg": 4.5,
+			"isFavorite": false,
+			"introduction": "편안한 네일 케어를 제공해 드립니다.",
+			"feedCnt": 7,
+			"reviewCnt": 18,
+			"reservationCnt": 40
+		},
+		{
+			"imageSrc": "images/man.png",
+			"nickname": "chic_nails",
+			"name": "시크 네일스",
+			"ratingAvg": 4.9,
+			"isFavorite": true,
+			"introduction": "세련된 네일 아트를 경험해 보세요.",
+			"feedCnt": 12,
+			"reviewCnt": 35,
+			"reservationCnt": 60
+		},
+		{
+			"imageSrc": "images/ssafynail.png",
+			"nickname": "nail_experts",
+			"name": "네일 엑스퍼트",
+			"ratingAvg": 4.7,
+			"isFavorite": false,
+			"introduction": "전문가들이 제공하는 네일 서비스를 즐겨보세요.",
+			"feedCnt": 9,
+			"reviewCnt": 22,
+			"reservationCnt": 55
+		}
+	]
+}

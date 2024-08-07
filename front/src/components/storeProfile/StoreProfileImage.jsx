@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef }from "react";
 import styled, { keyframes } from "styled-components";
-import FollowList from "./FollowList";
 
 // 그라디언트 애니메이션을 정의합니다.
 const rotateGradient = keyframes`
@@ -123,23 +122,19 @@ const FollowCount = styled.span`
   font-size: 15px;
 `;
 
-const FollowListContainer = styled.div`
+const FollowList = styled.div`
+  height: 60px;
+  border: 1px solid;
   margin-top: 10px;
   margin-bottom: 10px;
 `;
 
 const ModalOverlay = styled.div`
   position: absolute;
-  top: 70%;
+  top: 80%;
   left: 50%;
-  @media (min-width: 768px) {
-    left: 55%;
-  }
   transform: translateX(-50%);
-  width: 90%;
-  @media (min-width: 768px) {
-    width: 80%;
-  }
+  width: 80%;
   max-width: 500px;
   z-index: 1000;
 `;
@@ -148,10 +143,10 @@ const ModalContent = styled.div`
   background: ${(props) =>
       props.theme.value === "light" ? '#ffffff' : '#e5e5e5'};
   color: black;
-  padding: 10px;
+  padding: 10px 20px;
   border: 1.5px solid #943AEE;
   border-radius: 8px;
-  width: 90%;
+  width: 80%;
 `;
 
 const ModalHeader = styled.div`
@@ -163,9 +158,6 @@ const ModalHeader = styled.div`
 
 const ModalTitle = styled.h3`
   font-size: 18px;
-  @media (max-width: 375px) {
-    font-size: 16px;
-  }
   margin: 0 auto;
 `;
 
@@ -181,7 +173,7 @@ const CloseButton = styled.button`
 `;
 
 
-export default function ProfileLarge({ currentUser, time, followingdata, followerdata }) {
+export default function ProfileLarge({ currentUser, time, followers, following }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
@@ -255,11 +247,13 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
               <CloseButton onClick={handleCloseFollowersModal}>&times;</CloseButton>
             </ModalHeader>
             <hr style={{borderColor: '#EDE0FB'}}/>
-            <FollowListContainer>
-              {followerdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
-              ))}
-            </FollowListContainer>
+            {/* 팔로워 목록을 여기에 렌더링 */}
+            <FollowList>팔로워 1</FollowList>
+            <FollowList>팔로워 2</FollowList>
+            <FollowList>팔로워 3</FollowList>
+            <FollowList>팔로워 4</FollowList>
+            <FollowList>팔로워 5</FollowList>
+            {/* 추가 팔로워 */}
           </ModalContent>
         </ModalOverlay>
       )}
@@ -272,11 +266,12 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
               <CloseButton onClick={handleCloseFollowingModal}>&times;</CloseButton>
             </ModalHeader>
             <hr style={{borderColor: '#EDE0FB'}}/>
-            <FollowListContainer>
-              {followingdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
-              ))}
-            </FollowListContainer>
+            {/* 팔로잉 목록을 여기에 렌더링 */}
+            <FollowList>팔로잉 1</FollowList>
+            <FollowList>팔로잉 2</FollowList>
+            <FollowList>팔로잉 3</FollowList>
+            <FollowList>팔로잉 4</FollowList>
+            {/* 추가 팔로잉 */}
           </ModalContent>
         </ModalOverlay>
       )}

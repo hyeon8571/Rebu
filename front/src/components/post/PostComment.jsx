@@ -52,6 +52,7 @@ const ReplyLink = styled.span`
   cursor: pointer;
   font-size: 12px;
   margin-top: 5px;
+  margin-right: 5px;
   &:hover {
     text-decoration: underline;
   }
@@ -66,6 +67,10 @@ const CommentInputWrapper = styled.div`
 const CommentImage = styled.img`
   width: 40px;
   height: 40px;
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
   border-radius: 50%;
   margin-right: 10px;
 `;
@@ -75,6 +80,10 @@ const CommentTextInput = styled.input`
   padding: 10px 15px;
   border: 2px solid #d1a6f7;
   width: calc(100% - 50px);
+  height: 17px;
+  @media (max-width: 768px) {
+    height: 12px;
+  }
   border-radius: 20px;
   outline: none;
   font-size: 16px;
@@ -164,18 +173,12 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostComment = ({
-  item,
-  information,
-  posts,
-  setPosts,
-  currentUser,
-  index,
-}) => {
+const PostComment = ({ comment, information, posts, setPosts, currentUser, index }) => {
   const [newComments, setNewComments] = useState(
     Array(information.length).fill("")
   );
   const [replyingTo, setReplyingTo] = useState(null);
+  const [showReplies, setShowReplies] = useState({});
   const [replies, setReplies] = useState({});
   const [likes, setLikes] = useState({});
 
@@ -196,10 +199,10 @@ const PostComment = ({
     const updatedPosts = [...posts];
     const newComment = {
       id: new Date().getTime(), // Unique ID for each comment
-      writer: currentUser.name,
+      nickname: currentUser.nickname,
       content: newComments[index],
-      created_at: new Date().toISOString(),
-      img: currentUser.profile_src, // Assuming currentUser has an img property
+      createAt: new Date().toISOString(),
+      imageSrc: currentUser.imageSrc, // Assuming currentUser has an img property
       likes: 0,
     };
     updatedPosts[index].comment.push(newComment);
@@ -218,7 +221,7 @@ const PostComment = ({
       writer: currentUser.name,
       content: replies[commentId] || "",
       created_at: new Date().toISOString(),
-      img: currentUser.profile_src, // Assuming currentUser has an img property
+      img: currentUser.imageSrc, // Assuming currentUser has an img property
       likes: 0,
     };
 
@@ -254,6 +257,13 @@ const PostComment = ({
 
   const handleReplyToggle = (commentId) => {
     setReplyingTo(replyingTo === commentId ? null : commentId);
+  };
+
+  const handleShowRepliesToggle = (commentId) => {
+    setShowReplies({
+      ...showReplies,
+      [commentId]: !showReplies[commentId],
+    });
   };
 
   const handleLikeToggle = (
@@ -295,76 +305,60 @@ const PostComment = ({
 
   return (
     <>
-      {item.comment.map((comment, idx) => (
+      {comment.map((comment, idx) => (
         <div key={idx}>
           <CommentItem>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <CommentUserImage src={comment.img} alt="User" />
+              <CommentUserImage src={comment.comment.imageSrc} alt="User" />
               <CommnetDetails>
                 <CommentHeader>
-                  <CommentUsername>{comment.writer}</CommentUsername>
+                  <CommentUsername>{comment.comment.nickname}</CommentUsername>
                   <CommentTime>
-                    {timeSince(new Date(comment.created_at))}
+                    {timeSince(new Date(comment.comment.createAt))}
                   </CommentTime>
                 </CommentHeader>
-                <CommentContent>{comment.content}</CommentContent>
-                <ReplyLink onClick={() => handleReplyToggle(comment.id)}>
-                  답글달기
-                </ReplyLink>
+                <CommentContent>{comment.comment.content}</CommentContent>
+                <div style={{ display: "flex" }}>
+                  <ReplyLink onClick={() => handleShowRepliesToggle(comment.comment.id)}>
+                    {showReplies[comment.comment.id] ? "답글숨기기" : "답글보기"}
+                  </ReplyLink> &nbsp;&nbsp;
+                  <ReplyLink onClick={() => handleReplyToggle(comment.comment.id)}>
+                    답글달기
+                  </ReplyLink>
+                </div>
               </CommnetDetails>
             </div>
             <div>
-              {comment.writer === currentUser.name && (
+              {comment.comment.nickname === currentUser.nickname && (
                 <DeleteButton onClick={() => handleDeleteComment(index, idx)}>
                   <FaTrashAlt />
                 </DeleteButton>
               )}
               <LikeButton onClick={() => handleLikeToggle(index, idx)}>
-                {likes[comment.id] ? <FaHeart color="red" /> : <FaRegHeart />}
+                {likes[comment.comment.id] ? <FaHeart color="red" /> : <FaRegHeart />}
               </LikeButton>
-              {comment.likes > 0 && <LikeCount>{comment.likes}</LikeCount>}
+              {comment.comment.likeCount > 0 && <LikeCount>{comment.comment.likeCount}</LikeCount>}
             </div>
           </CommentItem>
-          {replyingTo === comment.id && (
-            <CommentInputWrapper>
-              <CommentImage src={currentUser.profile_src} alt="User" />
-              <CommentInputContainer>
-                <CommentTextInput
-                  type="text"
-                  placeholder="답글 추가"
-                  value={replies[comment.id] || ""}
-                  onChange={(e) =>
-                    handleReplyChange(comment.id, e.target.value)
-                  }
-                  onKeyPress={(e) =>
-                    handleKeyPress(e, index, "reply", comment.id)
-                  }
-                />
-                <NewCommentButton
-                  onClick={() => handleAddReply(index, comment.id)}
-                >
-                  <FaArrowRight />
-                </NewCommentButton>
-              </CommentInputContainer>
-            </CommentInputWrapper>
-          )}
-          {comment.replies &&
-            comment.replies.map((reply, replyIdx) => (
+
+          {showReplies[comment.comment.id] &&
+            comment.commentNested &&
+            comment.commentNested.map((reply, replyIdx) => (
               <CommentItem key={replyIdx} style={{ marginLeft: "40px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <CommentUserImage src={reply.img} alt="User" />
+                  <CommentUserImage src={reply.imageSrc} alt="User" />
                   <CommnetDetails>
                     <CommentHeader>
-                      <CommentUsername>{reply.writer}</CommentUsername>
+                      <CommentUsername>{reply.nickname}</CommentUsername>
                       <CommentTime>
-                        {timeSince(new Date(reply.created_at))}
+                        {timeSince(new Date(reply.createAt))}
                       </CommentTime>
                     </CommentHeader>
                     <CommentContent>{reply.content}</CommentContent>
                   </CommnetDetails>
                 </div>
                 <div>
-                  {reply.writer === currentUser.name && (
+                  {reply.nickname === currentUser.nickname && (
                     <DeleteButton
                       onClick={() => handleDeleteReply(index, idx, replyIdx)}
                     >
@@ -372,18 +366,44 @@ const PostComment = ({
                     </DeleteButton>
                   )}
                   <LikeButton
-                    onClick={() => handleLikeToggle(index, idx, true, replyIdx)}
+                    onClick={() =>
+                      handleLikeToggle(index, idx, true, replyIdx)
+                    }
                   >
                     {likes[reply.id] ? <FaHeart color="red" /> : <FaRegHeart />}
                   </LikeButton>
-                  {reply.likes > 0 && <LikeCount>{reply.likes}</LikeCount>}
+                  {reply.likeCount > 0 && <LikeCount>{reply.likeCount}</LikeCount>}
                 </div>
               </CommentItem>
             ))}
+
+          {replyingTo === comment.comment.id && (
+            <CommentInputWrapper>
+              <CommentImage src={currentUser.imageSrc} alt="User" />
+              <CommentInputContainer>
+                <CommentTextInput
+                  type="text"
+                  placeholder="답글 추가"
+                  value={replies[comment.comment.id] || ""}
+                  onChange={(e) =>
+                    handleReplyChange(comment.comment.id, e.target.value)
+                  }
+                  onKeyPress={(e) =>
+                    handleKeyPress(e, index, "reply", comment.comment.id)
+                  }
+                />
+                <NewCommentButton
+                  onClick={() => handleAddReply(index, comment.comment.id)}
+                >
+                  <FaArrowRight />
+                </NewCommentButton>
+              </CommentInputContainer>
+            </CommentInputWrapper>
+          )}
         </div>
       ))}
       <CommentInputWrapper>
-        <CommentImage src={currentUser.profile_src} alt="User" />
+        <CommentImage src={currentUser.imageSrc} alt="User" />
         <CommentInputContainer>
           <CommentTextInput
             type="text"
