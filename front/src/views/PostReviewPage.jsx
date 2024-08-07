@@ -22,13 +22,15 @@ export default function PostReview() {
   return (
     <>
       <PostReview1 info={info} review={review} setReview={setReview} />
-      <PostReview2 setReview={setReview} />
+      <PostReview2 review={review} setReview={setReview} />
       <ButtonWrapper>
         <ButtonLarge
           button={{
             id: 1,
             title: "작성",
-            onClick: () => {},
+            onClick: () => {
+              console.log(review);
+            },
             highlight: true,
           }}
         />

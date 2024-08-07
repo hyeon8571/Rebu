@@ -3,15 +3,15 @@ import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import ButtonDisabled from "../common/ButtonDisabled";
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 3fr;
   height: 175px;
+  max-width: 500px;
   width: calc(100% - 4rem);
+  @media (max-width: 768px) {
+    width: calc(100% - 2rem);
+  }
   background: ${(props) =>
     props.theme.value === "light"
       ? "linear-gradient(0deg,rgba(255, 255, 255, 1) 65%,rgba(243, 237, 250, 1) 100%)"
@@ -22,7 +22,7 @@ const GridContainer = styled.div`
       ? "rgba(0, 0, 0, 0.15) 0px 6px 0px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"
       : "none"};
   margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 3rem;
   margin-left: 1rem;
   margin-right: 1rem;
   border-radius: 0.7rem;
@@ -84,7 +84,7 @@ const TitleText = styled.div`
 `;
 
 const DateWrapper = styled.div`
-  padding-top: 0.2rem;
+  padding-top: 1%;
   font-size: 12px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
@@ -93,7 +93,7 @@ const DateWrapper = styled.div`
 `;
 
 const MenuWrapper = styled.div`
-  padding-top: 0.3rem;
+  padding-top: 3%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -107,11 +107,20 @@ const MenuWrapper = styled.div`
 const PriceWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  padding-top: 0.3rem;
+  padding-top: 3%;
   font-size: 14px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
     font-size: 12px;
+  }
+`;
+
+const DesignerWrapper = styled.div`
+  padding-top: 0.3rem;
+  color: ${(props) => (props.theme.value === "light" ? "#ef4f91" : "#cfcfcf")};
+  font-weight: 600;
+  @media (max-width: 768px) {
+    font-size: 14px;
   }
 `;
 
@@ -134,9 +143,9 @@ export default function Reservation({ info, button }) {
             <HiOutlineChevronRight></HiOutlineChevronRight>
           </TitleText>
         </TitleWrapper>
-        <div>{info.designer}</div>
+        <DesignerWrapper>{info.designer}</DesignerWrapper>
         <MenuWrapper>{info.menu}</MenuWrapper>
-        <PriceWrapper>{info.price.toLocaleString()}원</PriceWrapper>
+        <PriceWrapper>{info.price.toLocaleString()} ￦</PriceWrapper>
         <DateWrapper>{info.date}</DateWrapper>
       </Content>
     </GridContainer>

@@ -1,57 +1,18 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import Lottie from "lottie-react";
 import Alert from "../../assets/images/validationAlert.json";
-import ButtonLarge from "../common/ButtonLarge";
 import ReviewStar from "./ReviewStar";
 import ReviewKeywords from "./ReviewKeywords";
 import ReservationInfo from "./ReservationInfo";
 
-const ShopInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 4rem);
-  color: white;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  margin: 1rem;
-
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-    margin: 0.5rem;
-    width: calc(100% - 2rem);
-  }
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#CFB5E9" : "#B7B7B7"};
-`;
-
-const ImgWrapper = styled.img`
-  width: 150px;
-  height: 150px;
-  max-width: 120px;
-  max-height: 120px;
-
-  @media (max-width: 768px) {
-    max-width: 100px;
-    max-height: 100px;
-  }
-
-  border-radius: 8rem;
-`;
-
 const TitleText = styled.div`
   display: flex;
   font-size: 20px;
+  margin-top: 1rem;
   margin-bottom: 0.2rem;
   font-weight: 600;
   align-items: center;
-`;
-
-const VisitDate = styled.div`
-  color: gray;
-  font-size: 14px;
 `;
 
 const Container = styled.div`
@@ -72,19 +33,6 @@ const ConstraintsText = styled.div`
 
 const StyledLottie = styled(Lottie)`
   padding-left: 0.5rem;
-`;
-
-const ButtonWrapper = styled.div`
-  width: calc(100% - 1rem);
-  display: flex;
-  justify-content: end;
-  padding-top: 3rem;
-`;
-
-const DesignerText = styled.div`
-  color: ${(props) => props.theme.primary};
-  font-weight: 600;
-  margin-bottom: 0.1rem;
 `;
 
 const keywordList = [
@@ -188,18 +136,15 @@ export default function PostReview1({ info, review, setReview }) {
         idList.push(item.id);
       }
     });
-
-    setReview({
-      rating: rate,
-      reviewKeyworidlds: keywords.map((item) => {
-        if (item.checked) {
-          return item.id;
-        }
-      }),
-    });
   }
+
   function handleRate(rate) {
+    const doubleRate = rate * 2;
     setIsRateAlert(false);
+    setReview({
+      ...review,
+      rate: Number(doubleRate),
+    });
     setRate(rate);
   }
   function handleChecked(index) {
@@ -216,6 +161,15 @@ export default function PostReview1({ info, review, setReview }) {
       });
       setSelectedKeyword(selectedKeyword + (keywords[index].checked ? -1 : 1));
       setKeywords(newKeywords);
+
+      const keywordIds = newKeywords
+        .filter((item) => item.checked)
+        .map((item) => item.id);
+
+      setReview({
+        ...review,
+        keywords: keywordIds,
+      });
       setIsAlert(false);
     } else {
       setAnimationKey(animationKey + 1);
@@ -225,7 +179,7 @@ export default function PostReview1({ info, review, setReview }) {
 
   return (
     <Container>
-      <TitleText>예약 정보</TitleText>
+      <TitleText>방문 정보</TitleText>
       <ReservationInfo info={info} />
 
       <TitleText>

@@ -6,12 +6,14 @@ const HashTagContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-left: 1rem;
   }
   .hashTagInput {
     border: 1px solid #ccc;
     padding: 5px 10px;
     border-radius: 5px;
     margin-top: 10px;
+    margin-left: 1rem;
   }
 `;
 
@@ -31,7 +33,12 @@ const isEmptyValue = (value) => {
   return value === null || value === undefined || value.trim() === "";
 };
 
-export default function AddHashTag({ hashTags, setHashTags }) {
+export default function AddHashTag({
+  review,
+  setReview,
+  hashTags,
+  setHashTags,
+}) {
   const [inputHashTag, setInputHashTag] = useState("");
 
   const addHashTag = (e) => {
@@ -54,7 +61,12 @@ export default function AddHashTag({ hashTags, setHashTags }) {
     if (isEmptyValue(newHashTag)) return;
 
     setHashTags((prevHashTags) => {
-      return [...new Set([...prevHashTags, newHashTag])];
+      const newSet = [...new Set([...prevHashTags, newHashTag])];
+      setReview({
+        ...review,
+        hashTags: newSet,
+      });
+      return newSet;
     });
 
     setInputHashTag("");
@@ -71,9 +83,13 @@ export default function AddHashTag({ hashTags, setHashTags }) {
   };
 
   const deleteHashTag = (hashTagToDelete) => {
-    setHashTags((prevHashTags) =>
-      prevHashTags.filter((hashTag) => hashTag !== hashTagToDelete)
-    );
+    const newHashTags = (prevHashTags) =>
+      prevHashTags.filter((hashTag) => hashTag !== hashTagToDelete);
+    setHashTags(newHashTags);
+    setReview({
+      ...review,
+      hashtags: newHashTags,
+    });
   };
 
   const changeHashTagInput = (e) => {

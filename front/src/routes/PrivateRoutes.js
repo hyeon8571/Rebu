@@ -15,7 +15,7 @@ import AddMenu from "../views/AddMenu";
 import SettingReservation from "../views/SettingReservation";
 import MenuDisplay from "../components/reservation/MenuDisPlay";
 import DesignerDisplay from "../components/reservationTab/DesignerDisplay";
-import PostReview from "../views/PostReview";
+import PostReview from "../views/PostReviewPage";
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>

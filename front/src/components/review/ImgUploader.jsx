@@ -33,7 +33,7 @@ const UploadedImg = styled.img`
   }
 
   &:hover {
-    opacity: 0.25;
+    opacity: 0.33;
   }
 `;
 
@@ -53,8 +53,8 @@ const ExampleImg = styled.img`
 `;
 
 const InvisibleDiv = styled.div`
-  width: 203px;
-  height: 203px;
+  width: 204px;
+  height: 204px;
   @media (max-width: 768px) {
     width: 128px;
     height: 128px;
@@ -84,6 +84,8 @@ export default function ImgUploader({
   uploadImgUrls,
   setUploadImgUrls,
   setImgNum,
+  review,
+  setReview,
 }) {
   const onchangeImageUpload = (e) => {
     const { files } = e.target;
@@ -97,15 +99,26 @@ export default function ImgUploader({
         newUrls.push(reader.result);
         // 모든 파일이 다 읽힌 후 상태 업데이트
         if (newUrls.length === uploadFiles.length) {
-          setUploadImgUrls((prevUrls) => [...prevUrls, ...newUrls]);
+          const allUrls = [...uploadImgUrls, ...newUrls];
+          setUploadImgUrls(allUrls);
+          setReview({
+            ...review,
+            images: allUrls,
+          });
         }
       };
     });
-    setImgNum(imgNum + 1);
+
+    setImgNum(imgNum + uploadFiles.length);
   };
 
   const handleDelete = (index) => {
-    setUploadImgUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
+    const newUrls = uploadImgUrls.filter((_, i) => i !== index);
+    setUploadImgUrls(newUrls);
+    setReview({
+      ...review,
+      images: newUrls,
+    });
     setImgNum(imgNum - 1);
   };
 
@@ -131,6 +144,7 @@ export default function ImgUploader({
         type="file"
         multiple
         id="file"
+        accept="image/*"
         onChange={onchangeImageUpload}
       />
     </ImgDisplayer>

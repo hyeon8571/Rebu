@@ -19,7 +19,6 @@ const InvisibleBlock = styled.div`
 `;
 
 export default function ReviewKeywords({ keywords, handleChecked }) {
-  console.log(process.env.PUBLIC_URL);
   return (
     <ButtonsContainer>
       {keywords.map((item, index) => (

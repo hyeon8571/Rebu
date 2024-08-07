@@ -18,6 +18,7 @@ const Container = styled.div`
 const TitleText = styled.div`
   display: flex;
   font-size: 20px;
+  margin-top: 2rem;
   margin-bottom: 0.2rem;
   font-weight: 600;
   align-items: center;
@@ -44,10 +45,10 @@ const ConstraintText = styled.div`
 const photoInRow = (width) => {
   if (width < 768) {
     return Math.floor((width - 16) / 128);
-  } else return Math.floor((width - 32) / 403);
+  } else return Math.floor((width - 32) / 408);
 };
 
-export default function PostReview2() {
+export default function PostReview2({ review, setReview }) {
   const [uploadImgUrls, setUploadImgUrls] = useState([]);
   const [imgNum, setImgNum] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -62,9 +63,14 @@ export default function PostReview2() {
       (imgNum === 5 ? 1 : 0),
   });
 
-  console.log(photoInRow(windowWidth));
+  function handleReviewContent(e) {
+    setReviewText(e.target.value);
+    setReview({
+      ...review,
+      content: e.target.value,
+    });
+  }
 
-  console.log(windowWidth);
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -88,15 +94,22 @@ export default function PostReview2() {
         uploadImgUrls={uploadImgUrls}
         setImgNum={setImgNum}
         setUploadImgUrls={setUploadImgUrls}
+        review={review}
+        setReview={setReview}
       />
       <TitleText>리뷰 내용</TitleText>
       <RequestTextArea
         placeholder="리뷰를 작성해주세요"
-        onChange={(e) => setReviewText(e.target.value)}
+        onChange={(e) => handleReviewContent(e)}
       />
 
       <TitleText>해시태그</TitleText>
-      <AddHashTag hashTags={hashTags} setHashTags={setHashTags} />
+      <AddHashTag
+        review={review}
+        setReview={setReview}
+        hashTags={hashTags}
+        setHashTags={setHashTags}
+      />
     </Container>
   );
 }
