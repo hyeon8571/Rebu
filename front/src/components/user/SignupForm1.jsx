@@ -87,9 +87,10 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   const nav = useNavigate();
   const [emailMsg, setEmailMsg] = useState(""); //pTag
   const [isEmailValid, setIsEmailValid] = useState(false); //이메일중복
-  const [isEmailVerified, setIsEmailVerified] = useState(false); //이메일인증번호
+  const [isEmailVerified, setIsEmailVerified] = useState(false); //이메일인증 확인
   const [isChecking, setIsChecking] = useState(false);
   const [emailVerifyCode, setEmailVerifyCode] = useState(""); //이메일 인증코드
+  const [emailVeriMsg, setEmailVeriMsg] = useState(""); //이메일 인증코드 input 밑에 글
   const [passwordMsg, setPasswordMsg] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState(""); // 비밀번호 확인
@@ -118,32 +119,31 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
 
       console.log("이메일 중복 확인 API", response);
       if (code === "이메일 중복 검사 성공") {
-        if (body) {
+        if (body === true) {
           // body가 true인 경우 중복된 이메일
           console.log("Email is already in use:", code, body);
           setEmailMsg("이미 사용 중인 이메일입니다.");
-          setIsEmailValid(false);
+          // setIsEmailValid(false);
         } else {
           // body가 false인 경우 사용 가능한 이메일
-          console.log("Email is available:", body);
-          setEmailMsg("사용 가능한 이메일입니다.");
           setIsEmailValid(true);
+          setEmailMsg("사용 가능한 이메일입니다.");
         }
       } else {
         console.log("Invalid email format.", code);
         setEmailMsg("이메일 형식이 올바르지 않습니다.");
-        setIsEmailValid(false);
+        // setIsEmailValid(false);
       }
     } catch (error) {
       console.error("Error checking email availability:", error);
       setEmailMsg("이메일 확인 중 오류가 발생했습니다.");
-      setIsEmailValid(false);
+      // setIsEmailValid(false);
     } finally {
       setIsChecking(false);
     }
   };
 
-  // API 이메일 인증(POST)
+  // API 이메일 인증(POST) -> 이메일로 인증코드 전송
   const handleVerifyEmail = async () => {
     console.log("formData.email:", formData.email);
     if (formData.email && isEmailValid) {
@@ -239,6 +239,10 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
         if (response.data.code === "이메일 인증 성공 코드") {
           alert("이메일 인증이 완료되었습니다.");
           setIsEmailVerified(true);
+          setEmailVeriMsg("이메일 인증이 완료되었습니다.");
+        } else if (response.data.code === "이메일 인증 코드 불일치") {
+          console.log("이메일 인증코드 불일치");
+          setEmailVeriMsg("이메일 인증코드가 일치하지 않습니다.");
         } else {
           alert(response.data.message || "이메일 인증에 실패했습니다.");
         }
@@ -349,7 +353,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
               onClick={handleVerifyEmail}
               disabled={!formData.email || !isEmailValid || isChecking}
             >
-              인증하기
+              코드요청
             </SmallButtonHover>
           </Div>
           <Msg isValid={isEmailValid}>
@@ -381,16 +385,19 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
             <SmallButtonHover
               type="button"
               onClick={handleVerifyEmailCode}
-              disabled={
-                !formData.email ||
-                !isEmailValid ||
-                isChecking ||
-                isEmailVerified
-              }
+              // disabled={
+              //   !formData.email ||
+              //   !isEmailValid ||
+              //   isChecking ||
+              //   isEmailVerified
+              // }
             >
-              {isEmailVerified ? "인증완료" : "인증하기"}
+              {isEmailVerified ? "인증완료" : "인증요청"}
             </SmallButtonHover>
           </Div>
+          <p style={{ fontSize: "12px", padding: "0", margin: "0" }}>
+            {emailVeriMsg}
+          </p>
           {/* <Msg isValid={isEmailVerified}>
             {isEmailVerified
               ? "이메일 인증 완료"

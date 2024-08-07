@@ -160,13 +160,25 @@ const SignupForm2 = ({
     };
   }, [debounceTimeout]);
 
-  // 닉네임 중복확인 axios-get <- (nickname지워야할지도?)
+  // API - 닉네임 중복확인 GET <- (nickname지워야할지도?)
   const checkNicknameAvailability = async (nickname) => {
     try {
+      // const response = await axios.get(
+      //   `${BASE_URL}/api/members/check-nickname?nickname=${nickname}&purpose=signup`
+      // );
       const response = await axios.get(
-        `${BASE_URL}/api/members/check-nickname?nickname=${nickname}&purpose=signup`
+        `${BASE_URL}/api/members/check-nickname`,
+        {
+          params: {
+            nickname: nickname,
+            purpose: "signup",
+          },
+        }
       );
-      if (response.data.body) {
+
+      console.log("닉네임 중복 확인", response);
+      if (response.data.code === "닉네임 중복 검사 성공 코드") {
+        console.log("닉네임 중복 검사 성공");
         // true가 중복이 있는 경우
         setNicknameMsg("중복된 닉네임입니다");
         setIsNicknameValid(false);

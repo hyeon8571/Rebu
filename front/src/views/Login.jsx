@@ -47,21 +47,29 @@ const Login = () => {
         email: email,
         password: password,
       });
-
       console.log("response:", response);
-      // 서버에서 jwt 토큰 받기
-      const accessToken = response.headers["access"];
-      console.log("access token: ", accessToken);
-      localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
+      if (response.data.code === "로그인 성공 코드") {
+        // 서버에서 jwt 토큰 받기
+        const accessToken = response.headers["access"];
+        console.log("access token: ", accessToken);
+        localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
 
-      // 로그인 성공 표시
-      console.log("로그인 성공");
-      console.log(email, password);
-      console.log("data", response);
-      alert("로그인 성공");
-      dispatch(setIsLogin(true)); //isLogin = true 로 설정
+        // 로그인 성공 표시
+        console.log("로그인 성공");
+        console.log(email, password);
+        console.log("data", response);
+        alert("로그인 성공");
+        dispatch(setIsLogin(true)); //isLogin = true 로 설정
 
-      navigate("/profile"); //프로필로 임시 이동..
+        navigate("/profile"); //프로필로 임시 이동..
+      } else {
+        //로그인 에러 코드
+        console.log("로그인 실패:", response.data.code);
+        alert(
+          "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요."
+        );
+        // console.log(response)
+      }
     } catch (error) {
       // 로그인 실패 처리
       alert("로그인 실패");
