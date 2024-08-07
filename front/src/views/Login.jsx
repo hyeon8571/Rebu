@@ -43,10 +43,19 @@ const Login = () => {
     e.preventDefault(); //0ㅅ0
     try {
       // 서버에 로그인 요청 - 비동기
-      const response = await axios.post(`${BASE_URL}/api/auths/login`, {
-        email: email,
-        password: password,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/api/auths/login`,
+        {
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // if the server expects cookies to be sent along with the request
+        }
+      );
       console.log("response:", response);
       if (response.data.code === "로그인 성공 코드") {
         // 서버에서 jwt 토큰 받기
