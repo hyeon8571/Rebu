@@ -20,10 +20,10 @@ public class WorkingInfoController {
 
     private final WorkingInfoService workingInfoService;
 
-    @PutMapping
-    @Authorized(allowed = {Type.SHOP})
+    @PutMapping("{nickname}")
+    @Authorized(allowed = {Type.SHOP, Type.EMPLOYEE})
     public ResponseEntity<?> update(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
-        @Valid @RequestBody WorkingInfoUpdateRequest workingInfoUpdateRequest) {
+        @PathVariable String nickname, @Valid @RequestBody WorkingInfoUpdateRequest workingInfoUpdateRequest) {
         String requestUserNickname =  authProfileInfo.getNickname();
         workingInfoService.update(workingInfoUpdateRequest.toDto(requestUserNickname));
         return new ResponseEntity<>(new ApiResponse<>("1K01",null), HttpStatus.OK);
