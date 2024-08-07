@@ -1,4 +1,5 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import LoginTitle from "../components/common/LoginTitle";
 import styled from "styled-components";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -14,7 +15,15 @@ const Div = styled.div`
 `;
 const SignupComp = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = location.state; // 전달된 데이터
+
+  useEffect(() => {
+    // 이메일 찾기를 거치지 않고 접근할 경우 홈으로 리다이렉트
+    if (!email) {
+      navigate("/", { replace: true });
+    }
+  }, [email, navigate]);
 
   return (
     // <div>
@@ -29,7 +38,9 @@ const SignupComp = () => {
         <h3>♪~ᕕ( ᐛ )ᕗ~♪</h3>
       </div>
       <div>
+        <h4>고객님의 이메일은</h4>
         <h3>{email}</h3>
+        <h4>입니다</h4>
       </div>
       <Div>
         <ButtonLogin text={"로그인하기"} destination={"/login"}></ButtonLogin>

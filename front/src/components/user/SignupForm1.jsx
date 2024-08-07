@@ -104,24 +104,19 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   // 디바운스 타이머 관리
   let debounceTimeout;
 
-  // 이메일 중복 체크 함수(GET)
+  // API - 이메일 중복 확인 (GET)
   const checkEmailAvailability = async (email) => {
     try {
       setIsChecking(true);
       console.log("Checking email availability for: ", email);
 
-      // API 요청: 이메일 중복 확인
       const response = await axios.get(
         `${BASE_URL}/api/members/check-email?email=${email}&purpose=signup`
       );
 
       const { code, body } = response.data;
 
-      console.log("response", response);
-      console.log("response.data", response.data);
-      console.log("response.body", response.body);
-      console.log("response.data.body", response.data.body);
-      console.log("response", code, body);
+      console.log("이메일 중복 확인 API", response);
       if (code === "이메일 중복 검사 성공") {
         if (body) {
           // body가 true인 경우 중복된 이메일
@@ -134,14 +129,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           setEmailMsg("사용 가능한 이메일입니다.");
           setIsEmailValid(true);
         }
-        // } else if (code === "0A00") {
-
-        //   setIsEmailValid(false);
       } else {
-        // 예상치 못한 코드 처리
-        // console.error("Unexpected response code:", code);
-        // setEmailMsg("알 수 없는 오류가 발생했습니다.");
-        //   // 이메일 형식 불일치
         console.log("Invalid email format.", code);
         setEmailMsg("이메일 형식이 올바르지 않습니다.");
         setIsEmailValid(false);
@@ -152,6 +140,48 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
       setIsEmailValid(false);
     } finally {
       setIsChecking(false);
+    }
+  };
+
+  // API 이메일 인증(POST)
+  const handleVerifyEmail = async () => {
+    console.log("formData.email:", formData.email);
+    if (formData.email && isEmailValid) {
+      // if (email && isEmailValid) {
+      try {
+        // 이메일 인증 API 호출
+        const response = await axios({
+          method: "post",
+          url: `${BASE_URL}/api/auths/email/send`,
+          data: {
+            email: formData.email,
+            purpose: "signup",
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("이메일 인증:", response);
+
+        if (response.data.code === "이메일 인증 코드 전송 성공 코드") {
+          alert("인증 이메일이 발송되었습니다. 이메일을 확인해주세요.");
+          setIsEmailVerified(true);
+        } else {
+          alert(response.data.message || "이메일 발송에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이메일 인증 오류:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+          console.error("Response headers:", error.response.headers);
+        }
+        alert("이메일 인증 중 오류가 발생했습니다.");
+      } finally {
+        setIsChecking(false);
+      }
+    } else {
+      alert("유효한 이메일을 입력해주세요.");
     }
   };
 
@@ -179,9 +209,9 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
     }
   };
 
-  // 이메일 코드 인증용
+  // 이메일 인증번호 확인 - 인증번호 6자리 받기
   const handleEmailVerifyCodeChange = (e) => {
-    const newCode = e.target.value.replace(/[^0-9]/g, "").slice(0, 6); // 숫자만 허용하고 6자리로 제한
+    const newCode = e.target.value.slice(0, 6); // 6자리로 제한
     setEmailVerifyCode(newCode);
     setEmptyFieldsMsg((prev) => ({ ...prev, emailVerifyCode: false }));
   };
@@ -189,6 +219,35 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
   const handleEmailVerifyCodeBlur = () => {
     if (!emailVerifyCode) {
       setEmptyFieldsMsg((prev) => ({ ...prev, emailVerifyCode: true }));
+    }
+  };
+
+  // API - 이메일 인증번호 확인 (POST)
+  const handleVerifyEmailCode = async () => {
+    if (formData.email && emailVerifyCode) {
+      try {
+        // 이메일 인증 API 호출
+        const response = await axios.post(
+          `${BASE_URL}/api/auths/email/verify`,
+          {
+            email: formData.email,
+            purpose: "signup",
+            verifyCode: emailVerifyCode,
+          }
+        );
+        console.log("이메일인증", response);
+        if (response.data.code === "이메일 인증 성공 코드") {
+          alert("이메일 인증이 완료되었습니다.");
+          setIsEmailVerified(true);
+        } else {
+          alert(response.data.message || "이메일 인증에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이메일 인증 코드 확인 오류:", error);
+        alert("이메일 인증 코드 확인 중 오류가 발생했습니다.");
+      }
+    } else {
+      alert("이메일과 인증 코드를 입력해주세요.");
     }
   };
 
@@ -254,76 +313,6 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
     event.preventDefault();
     // Temporarily allowing the Next button to work without validation checks
     nextStep();
-  };
-
-  // 이메일 인증 - 405 error
-  const handleVerifyEmail = async () => {
-    console.log("formData.email:", formData.email);
-    if (formData.email && isEmailValid) {
-      // if (email && isEmailValid) {
-      try {
-        // 이메일 인증 API 호출
-        const response = await axios({
-          method: "post",
-          url: `${BASE_URL}/api/auths/email/send`,
-          data: {
-            email: formData.email,
-            purpose: "signup",
-          },
-          headers: {
-            "Content-Type": "application/json",
-            // 필요한 경우 추가 헤더를 여기에 포함시키세요
-          },
-        });
-
-        if (response.data.success) {
-          alert("인증 이메일이 발송되었습니다. 이메일을 확인해주세요.");
-          setIsEmailVerified(true);
-        } else {
-          alert(response.data.message || "이메일 발송에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이메일 인증 오류:", error);
-        if (error.response) {
-          console.error("Response data:", error.response.data);
-          console.error("Response status:", error.response.status);
-          console.error("Response headers:", error.response.headers);
-        }
-        alert("이메일 인증 중 오류가 발생했습니다.");
-      } finally {
-        setIsChecking(false);
-      }
-    } else {
-      alert("유효한 이메일을 입력해주세요.");
-    }
-  };
-
-  // 이메일 인증번호
-  const handleVerifyEmailCode = async () => {
-    if (formData.email && emailVerifyCode) {
-      try {
-        // 이메일 인증 API 호출
-        const response = await axios.post(
-          `${BASE_URL}/api/auths/email/verify`,
-          {
-            email: formData.email,
-            purpose: "signup",
-            verifyCode: emailVerifyCode,
-          }
-        );
-        if (response.data.success) {
-          alert("이메일 인증이 완료되었습니다.");
-          setIsEmailVerified(true);
-        } else {
-          alert(response.data.message || "이메일 인증에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이메일 인증 코드 확인 오류:", error);
-        alert("이메일 인증 코드 확인 중 오류가 발생했습니다.");
-      }
-    } else {
-      alert("이메일과 인증 코드를 입력해주세요.");
-    }
   };
 
   const validatePassword = (password) => {

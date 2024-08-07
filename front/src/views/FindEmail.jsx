@@ -155,7 +155,6 @@ const FindEmail = () => {
 
   // 인증번호 확인 input 6자리수 제한
   const phoneVeriCodeChange = (e) => {
-    // const newCode = e.target.value.replace(/[^0-9]/g, "").slice(0, 6); // 숫자만 허용하고 6자리로 제한
     const newCode = e.target.value.slice(0, 6); // 6자리로 제한
     setPhoneVeri(newCode);
     // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
@@ -164,12 +163,18 @@ const FindEmail = () => {
   // API 휴대폰 인증번호 확인 (6자리 코드 휴대폰으로 받은 것 인증)
   const verifyPhoneCode = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auths/phone/verify`, {
-        phone: phone,
-        purpose: "findEmail",
-        verifyCode: phoneVeri,
-      });
-      console.log(phoneVeri, response.data);
+      const response = await axios.post(
+        `${BASE_URL}/api/auths/phone/verify`,
+        {
+          phone: phone,
+          purpose: "findEmail",
+          verifyCode: phoneVeri,
+        },
+        {
+          withCredentials: true, //쿠키-세션 저장을 위한 옵션
+        }
+      );
+      console.log("인증번호확인", phoneVeri, response);
       if (response.data.code === "전화번호 인증 성공 코드") {
         alert("전화번호 인증이 완료되었습니다.");
         console.log("전화번호 인증이 완료되었습니다.");
@@ -189,9 +194,14 @@ const FindEmail = () => {
   const findEmail = async () => {
     try {
       const response = await axios.get(
+        `${BASE_URL}/api/members/find-email?name=${name}&phone=${phone}`,
+        { withCredentials: true } // 쿠키-세션을 함께 전송
+      );
+      console.log(
         `${BASE_URL}/api/members/find-email?name=${name}&phone=${phone}`
       );
-      console.log(response.data);
+      console.log("이메일찾기");
+      console.log(response);
       const code = response.data.code;
       console.log("phone", phone);
 
