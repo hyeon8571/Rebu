@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setIsLogin } from "../features/auth/authSlice";
+import { isLogin, setIsLogin } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
 // import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 //css
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
-import ButtonBack from "../components/common/ButtonBack";
 import { ButtonStyles } from "../components/common/ButtonLogin";
 import "./Login.css";
 
@@ -70,7 +69,7 @@ const Login = () => {
         console.log("data", response);
         alert("로그인 성공");
         dispatch(setIsLogin(true)); //isLogin = true 로 설정
-
+        console.log("로그인 상태", isLogin);
         navigate("/profile"); //프로필로 임시 이동..
       } else {
         //로그인 에러 코드
@@ -97,7 +96,8 @@ const Login = () => {
 
   return (
     <Container className="page">
-      <ButtonBack />
+      {/* <ButtonBack /> */}
+
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleLogin}>
         <div className="emailBox">
@@ -159,7 +159,7 @@ const Login = () => {
           to="/login/password"
           style={{ textDecoration: "none", color: "black" }}
         >
-          비밀번호 변경
+          비밀번호 재설정
         </Link>
       </div>
       <div className="socialConnect">

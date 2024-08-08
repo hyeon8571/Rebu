@@ -34,11 +34,12 @@ const SmallButton = styled.button`
 
 const SubmitButton = styled.button`
   ${ButtonStyles}
-  width: 30%;
+  width: auto;
   white-space: nowrap;
   margin-left: 10px;
   font-size: 11px;
   height: 50px;
+  padding: 1rem;
 `;
 
 const Tooltip = styled.div`
@@ -83,7 +84,13 @@ const Msg = styled.p`
   color: ${(props) => (props.isValid ? "blue" : "red")};
 `;
 
-const SignupForm1 = ({ formData, handleChange, nextStep }) => {
+const SignupForm1 = ({
+  formData,
+  handleChange,
+  nextStep,
+  purpose,
+  buttonTitle,
+}) => {
   const nav = useNavigate();
   const [emailMsg, setEmailMsg] = useState(""); //pTag
   const [isEmailValid, setIsEmailValid] = useState(false); //이메일중복
@@ -155,7 +162,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           url: `${BASE_URL}/api/auths/email/send`,
           data: {
             email: formData.email,
-            purpose: "signup",
+            purpose: purpose,
           },
           headers: {
             "Content-Type": "application/json",
@@ -231,7 +238,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           `${BASE_URL}/api/auths/email/verify`,
           {
             email: formData.email,
-            purpose: "signup",
+            purpose: purpose,
             verifyCode: emailVerifyCode,
           }
         );
@@ -299,25 +306,25 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
     }
   };
 
-  // const handleNext = (event) => {
-  //   event.preventDefault();
-  //   if (
-  //     isEmailVerified &&
-  //     isPasswordValid &&
-  //     formData.password === passwordConfirm
-  //   ) {
-  //     nextStep();
-  //   } else {
-  //     alert("모든 필드를 올바르게 입력하고 이메일 인증을 완료해주세요.");
-  //   }
-  // };
-
-  // 테스트용 handleNext.. 테스트 끝나면 위에 있는 코드로 바꾸기
   const handleNext = (event) => {
     event.preventDefault();
-    // Temporarily allowing the Next button to work without validation checks
-    nextStep();
+    if (
+      isEmailVerified &&
+      isPasswordValid &&
+      formData.password === passwordConfirm
+    ) {
+      nextStep();
+    } else {
+      alert("모든 필드를 올바르게 입력하고 이메일 인증을 완료해주세요.");
+    }
   };
+
+  // 테스트용 handleNext.. 테스트 끝나면 위에 있는 코드로 바꾸기
+  // const handleNext = (event) => {
+  //   event.preventDefault();
+  //   // Temporarily allowing the Next button to work without validation checks
+  //   nextStep();
+  // };
 
   const validatePassword = (password) => {
     const passwordRegex =
@@ -470,7 +477,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           )}
 
           <div style={{ display: "flex", justifyContent: "end" }}>
-            <SubmitButton type="submit">Next</SubmitButton>
+            <SubmitButton type="submit">{buttonTitle}</SubmitButton>
           </div>
         </div>
       </form>

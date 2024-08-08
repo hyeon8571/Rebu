@@ -1,130 +1,95 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setIsLogin } from "../features/auth/authSlice";
-import { BASE_URL } from "./Signup";
-// import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
-//css
-import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import SignupForm1 from "../components/user/SignupForm1";
+import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
-import ButtonLogin from "../components/common/ButtonLogin";
-import { ButtonStyles } from "../components/common/ButtonLogin";
-import "./Login.css";
+import styled from "styled-components";
+import { BASE_URL } from "./Signup";
+import { isLogin } from "../features/auth/authSlice";
 
 const Container = styled.div`
   align-items: center;
   margin: 2rem 3rem;
-  height: 100vh;
-`;
-
-const Ptag = styled.p`
-  margin: 0;
-  margin-bottom: 0.3rem;
-  color: red;
-  font-size: 12px;
-`;
-
-const Button = styled.button`
-  ${ButtonStyles}
 `;
 
 const ChangePassword = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [error, setError] = useState("");
-
-  const dispatch = useDispatch();
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); //0ㅅ0
+  const nextStep = async () => {
+    // setStep(step + 1);
+    // API 사용자 - 사용자 비밀번호 변경(PATCH)
     try {
-      // 서버에 로그인 요청 - 비동기
-      const response = await axios.post(`${BASE_URL}/api/auths/login`, {
-        email: email,
-        password: password,
-      });
-
-      console.log("response:", response);
-      // 서버에서 jwt 토큰 받기
-      const accessToken = response.headers["access"];
-      console.log("access token: ", accessToken);
-      localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
-
-      // 로그인 성공 표시
-      console.log("로그인 성공");
-      console.log(email, password);
-      console.log("data", response);
-      alert("로그인 성공");
-      dispatch(setIsLogin(true)); //isLogin = true 로 설정
-
-      navigate("/profile"); //프로필로 임시 이동..
-    } catch (error) {
-      // 로그인 실패 처리
-      alert("로그인 실패");
-      console.log("로그인 실패: ", error);
-      // setError("로그인 실패. 다시 시도해 주세요.");
-      if (error.response && error.response.status === 404) {
-        console.error("리소스를 찾을 수 없음: ", error);
-        setError("요청한 리소스를 찾을 수 없습니다.");
+      // Send the collected data to the server
+      const response = await axios.patch(
+        `${BASE_URL}/api/members/${email}/password`,
+        { password: password }
+      );
+      console.log("비밀번호 재설정:", response);
+      if (response.data.code === "비밀번호 변경 성공 코드") {
+        // Handle successful password reset (e.g., redirect to login page)
+        alert("비밀번호 변경 성공");
+        console.log("비밀번호 변경 성공", password);
+        console.log("로그인상태", isLogin);
+        if (isLogin) {
+          // 로그인 상태이면 프로필로
+          navigate("/profile");
+        } else {
+          // 비로그인 상태면 로그인 화면으로
+          navigate("/login");
+        }
       } else {
-        console.error("오류 발생: ", error);
-        setError("오류가 발생했습니다. 다시 시도해 주세요.");
+        alert("비밀번호 변경 실패: ", response.data.code);
+        console.log("비밀번호 변경 실패: ", response.data.code);
       }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      // Handle password reset error
     }
   };
+  const handleChange = (input) => (e) => {
+    setFormData({ ...formData, [input]: e.target.value });
+  };
+
+  // const handleSubmit = async () => {
+  //   try {
+  //     // Send the collected data to the server
+  //     const response = await axios.post(`${BASE_URL}/api/members`, formData);
+  //     console.log("Signup successful:", response.data);
+  //     // Handle successful signup (e.g., redirect to login page)
+  //   } catch (error) {
+  //     console.error("Signup error:", error);
+  //     // Handle signup error
+  //   }
+  // };
 
   return (
-    <Container>
-      <div style={{ padding: "1rem" }}></div> {/* 높이 맞추기 */}
-      {/* <ButtonBack /> */}
-      <LoginTitle text="비밀번호 찾기" description="이메일과 전화번호 이용" />
-      <form onSubmit={handleLogin}>
-        <div className="emailBox">
-          <label htmlFor="email" className="label">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="loginInput"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => {
-              if (email === "") setEmailError(true);
-              else setEmailError(false);
-            }}
-            placeholder="rebu@mail.com"
-            required
+    <>
+      <div>
+        <Container>
+          <ButtonBack />
+          <LoginTitle
+            text={"비밀번호 재설정"}
+            description={"가입할 때 사용하신 이메일로 인증코드를 보내드릴게요."}
           />
-        </div>
-        {emailError && <Ptag>이메일 주소를 입력해주세요.</Ptag>}
-        <div className="emailBox">
-          <label htmlFor="password" className="label">
-            Phone number
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="loginInput"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={() => {
-              if (password === "") setPasswordError(true);
-              else setPasswordError(false);
-            }}
-            placeholder="010-0000-0000"
-            required
+        </Container>
+        {step === 1 && (
+          <SignupForm1
+            formData={formData}
+            handleChange={handleChange}
+            nextStep={nextStep}
+            purpose={"changePassword"}
+            buttonTitle={"비밀번호 재설정"}
           />
-        </div>
-        {passwordError && <Ptag>전화번호를 입력해주세요.</Ptag>}
-        <Button type="submit">비밀번호 찾기</Button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </Container>
+        )}
+      </div>
+      {/* <button>비밀번호 재설정하기</button> */}
+    </>
   );
 };
 

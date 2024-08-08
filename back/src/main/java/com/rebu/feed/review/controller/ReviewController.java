@@ -6,12 +6,10 @@ import com.rebu.feed.review.controller.dto.ReviewCreateRequest;
 import com.rebu.feed.review.controller.dto.ReviewModifyRequest;
 import com.rebu.feed.review.dto.ReviewDeleteDto;
 import com.rebu.feed.review.service.ReviewService;
-//import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
