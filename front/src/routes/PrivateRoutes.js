@@ -17,6 +17,7 @@ import MenuDisplay from "../components/reservation/MenuDisPlay";
 import DesignerDisplay from "../components/reservationTab/DesignerDisplay";
 import PostReview from "../views/PostReviewPage";
 import PostFeedPage from "../views/PostFeedPage";
+import ReviewKeywordStat from "../components/review/ReviewKeywordStat";
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
   <Routes>
@@ -48,6 +49,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     <Route path="/designerdisplay" element={<DesignerDisplay />} />
     <Route path="/postrevw" element={<PostReview />} />
     <Route path="/postfeed" element={<PostFeedPage />} />
+    <Route path="/stat" element={<ReviewKeywordStat reviewNum={83} />} />
   </Routes>
 );
 

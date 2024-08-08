@@ -4,6 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import PostReview1 from "../components/review/PostReview1";
 import PostReview2 from "../components/review/PostReview2";
 import ButtonLarge from "../components/common/ButtonLarge";
+import ModalPortal from "../util/ModalPortal";
+import ModalNoBackNoExit from "../components/common/ModalNoBackNoExit";
+import CheckReview from "../components/review/ModalChekcReview";
 
 const ButtonWrapper = styled.div`
   margin-top: 3rem;
@@ -32,11 +35,13 @@ export default function PostReview() {
   const [isKeywordsAlert, setIsKeywordsAlert] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
   const [isImgAlert, setIsImgAlert] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const { info } = location.state;
   const navigate = useNavigate();
 
   function ValidationReview() {
+    let Check = true;
     const ratePosition =
       document.getElementById("rate").getBoundingClientRect().top + scrollY;
     const keywordPosition =
@@ -48,6 +53,7 @@ export default function PostReview() {
       setIsRateAlert(true);
       setAnimationKey(animationKey + 1);
       setTimeout(() => scrollUp(ratePosition), 100);
+      Check = false;
     }
     if (review.keywords.length === 0) {
       setIsKeywordsAlert(true);
@@ -55,6 +61,7 @@ export default function PostReview() {
       if (review.rate !== 0) {
         setTimeout(() => scrollUp(keywordPosition), 100);
       }
+      Check = false;
     }
     if (review.images.length === 0) {
       setIsImgAlert(true);
@@ -62,6 +69,10 @@ export default function PostReview() {
       if (review.rate !== 0 && review.keywords.length !== 0) {
         setTimeout(() => scrollUp(imgPosition), 100);
       }
+      Check = false;
+    }
+    if (Check) {
+      setIsModalOpen(true);
     }
   }
 
@@ -72,6 +83,11 @@ export default function PostReview() {
 
   return (
     <>
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          <CheckReview setIsModalOpen={setIsModalOpen}></CheckReview>
+        </ModalNoBackNoExit>
+      </ModalPortal>
       <PostReview1
         isRateAlert={isRateAlert}
         setIsRateAlert={setIsRateAlert}
