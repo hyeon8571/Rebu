@@ -17,7 +17,7 @@ const AppRoutes = () => (
     <Route path="/start" element={<AppStart />} />
     <Route path="/main" element={<Main />} />
     <Route path="/login" element={<Login />} />
-    <Route path="/login/password" element={<ChangePassword />} />
+    <Route path="/user/password" element={<ChangePassword />} />
     <Route path="login/password-changed" element={<ChangePasswordCompl />} />
     <Route path="/login/email" element={<FindEmail />} />
     <Route path="/login/email-found" element={<FindEmailComp />} />

@@ -119,8 +119,8 @@ const SignupForm2 = ({
     useState(false);
 
   // code 6자리 인증용
-  const [phoneVeriCode, setPhoneVeriCode] = useState("");
-  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  // const [isPhoneVerified, setPhoneVeriCode] = useState("");
   // 성별
   const [gender, setGender] = useState(formData.gender || "FEMALE");
 
@@ -232,9 +232,9 @@ const SignupForm2 = ({
     setFormData({ ...formData, phone });
   };
 
-  const setIsPhoneVerified = (value) => {
-    setIsCodeVerified(value);
-  };
+  // const setIsPhoneVerified = (value) => {
+  //   isPhoneVerified(value);
+  // };
 
   // 성별
   const handleGenderChange = (value) => {
@@ -255,22 +255,22 @@ const SignupForm2 = ({
       alert("생년월일을 입력하세요.");
       return false;
     }
-    if (!formData.gender) {
-      alert("성별을 선택하세요.");
-      return false;
-    }
+    // if (!formData.gender) {
+    //   alert("성별을 선택하세요.");
+    //   return false;
+    // }
     if (!formData.phone) {
       alert("전화번호를 입력하세요.");
       return false;
     }
     if (!isPhoneValid) {
-      alert("전화번호를 올바르게 입력하세요.");
-      return false;
-    }
-    if (!isCodeVerified) {
       alert("전화번호 인증을 완료하세요.");
       return false;
     }
+    // if (!isCodeVerified) {
+    //   alert("전화번호를 올바르게 입력하세요.");
+    //   return false;
+    // }
     return true;
   };
 
