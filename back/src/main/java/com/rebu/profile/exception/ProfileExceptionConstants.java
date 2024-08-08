@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ProfileExceptionConstants implements ExceptionConstants {
-
     NICKNAME_MISMATCH("닉네임 형식 불일치"),
     PHONE_MISMATCH("폰 형식 불일치"),
     PROFILE_NOTFOUND("프로필 낫 파운드"),

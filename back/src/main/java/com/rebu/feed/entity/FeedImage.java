@@ -3,10 +3,15 @@ package com.rebu.feed.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.Objects;
+
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -25,5 +30,18 @@ public class FeedImage {
     @PrePersist
     protected void onCreate() {
         isDeleted = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        FeedImage feedImage = (FeedImage) o;
+        return Objects.equals(id, feedImage.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

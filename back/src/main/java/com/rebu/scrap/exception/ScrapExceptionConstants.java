@@ -9,5 +9,5 @@ import lombok.Getter;
 public enum ScrapExceptionConstants implements ExceptionConstants {
     SCRAP_EXIST("0N00"),
     SCRAP_NOT_EXIST("0N01");
-    String code;
+    final String code;
 }

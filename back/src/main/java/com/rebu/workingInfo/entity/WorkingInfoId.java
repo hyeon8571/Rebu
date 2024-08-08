@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class WorkingInfoId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         WorkingInfoId that = (WorkingInfoId) o;
         return day == that.day && Objects.equals(profileId, that.profileId);
     }

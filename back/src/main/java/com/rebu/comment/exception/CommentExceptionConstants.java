@@ -9,5 +9,5 @@ import lombok.Getter;
 public enum CommentExceptionConstants implements ExceptionConstants {
     COMMENT_NOTFOUND("0M00"),
     COMMENT_CONTENTMISMATCH("0M01");
-    String code;
+    final String code;
 }

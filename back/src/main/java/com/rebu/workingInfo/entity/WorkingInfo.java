@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -32,4 +34,17 @@ public class WorkingInfo {
 
     @Column(nullable = false)
     private LocalTime closeAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        WorkingInfo workingInfo = (WorkingInfo) o;
+        return Objects.equals(id, workingInfo.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

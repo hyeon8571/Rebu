@@ -6,6 +6,7 @@ import com.rebu.profile.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -94,9 +95,9 @@ public class Profile {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Profile profile = (Profile) o;
-        return Objects.equals(id, profile.id);
+        return Objects.equals(id, profile.getId());
     }
 
     @Override

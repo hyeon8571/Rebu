@@ -9,5 +9,4 @@ import java.util.Optional;
 
 public interface LikeFeedRepository extends JpaRepository<LikeFeed, Long> {
     Optional<LikeFeed> findByFeedAndProfile(Feed feed, Profile profile);
-    Long countByFeed(Feed feed);
 }
