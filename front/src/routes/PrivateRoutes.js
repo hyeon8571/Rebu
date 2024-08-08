@@ -10,7 +10,6 @@ import MenuTab from "../components/reservation/MenuTab";
 import DesignerTab from "../components/reservation/DesignerTab";
 import PersonalInfo from "../views/PersonalInfo";
 import StoreProfile from "../views/StoreProfile";
-import PostModify from "../views/PostModify";
 import MyReservationCalendar from "../components/MyReservation/MyReservationCalendar";
 import AddMenu from "../views/AddMenu";
 import SettingReservation from "../views/SettingReservation";
@@ -42,7 +41,6 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     <Route path="/timetable" element={<TimeTable />} />
     <Route path="/menutab" element={<MenuTab />} />
     <Route path="/designertab" element={<DesignerTab />} />
-    <Route path="/post-modify" element={<PostModify />} />
     <Route path="/myreservation" element={<MyReservationCalendar />} />
     <Route path="/menudisplay" element={<MenuDisplay />} />
     <Route path="/addmenu" element={<AddMenu />} />
