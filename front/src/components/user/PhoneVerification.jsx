@@ -18,6 +18,7 @@ const PhoneVerification = ({
   phone,
   setPhone,
   setIsPhoneVerified,
+  purpose,
   checkDuplicate = false,
 }) => {
   // const [phone, setPhone] = useState(""); //phone
@@ -62,7 +63,7 @@ const PhoneVerification = ({
   const checkPhoneAvailability = async (phone) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/profiles/check-phone`, {
-        params: { phone: phone, purpose: "signup" },
+        params: { phone: phone, purpose: purpose },
       });
       if (response.data.code === "전화번호 중복 검사 성공 코드") {
         if (response.data.body === true) {
@@ -87,7 +88,7 @@ const PhoneVerification = ({
     try {
       const response = await axios.post(`${BASE_URL}/api/auths/phone/send`, {
         phone: phone,
-        purpose: "findEmail",
+        purpose: purpose,
       });
       console.log(response.data);
       if (response.data.code === "전화번호 인증 코드 전송 성공") {
@@ -147,7 +148,7 @@ const PhoneVerification = ({
         `${BASE_URL}/api/auths/phone/verify`,
         {
           phone: phone,
-          purpose: "findEmail",
+          purpose: purpose,
           verifyCode: phoneCode,
         },
         {

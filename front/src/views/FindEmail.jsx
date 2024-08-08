@@ -153,6 +153,7 @@ const FindEmail = () => {
         phone={phone}
         setPhone={setPhone}
         setIsPhoneVerified={setIsPhoneVerified}
+        purpose={"findEmail"}
         // checkDuplicate={false}
       />
 

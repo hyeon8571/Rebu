@@ -118,7 +118,7 @@ const ChangePassword = () => {
   return (
     <Container>
       <ButtonBack />
-      <LoginTitle text={"비밀번호 찾기"} />
+      <LoginTitle text={"비밀번호 재설정"} />
       <h3
         style={{
           maxWidth: "70%",
@@ -127,7 +127,7 @@ const ChangePassword = () => {
           padding: "auto 30 0",
         }}
       >
-        가입할 때 사용하신 이메일로 인증코드를 보내드릴게요.
+        가입 할 때 사용하신 이메일로 인증코드를 보내드릴게요.
       </h3>
 
       {/* 이메일 */}
