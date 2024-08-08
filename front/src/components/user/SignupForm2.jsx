@@ -181,16 +181,19 @@ const SignupForm2 = ({
           },
         }
       );
-
       console.log("닉네임 중복 확인", response);
+
       if (response.data.code === "닉네임 중복 검사 성공 코드") {
         console.log("닉네임 중복 검사 성공");
-        // true가 중복이 있는 경우
-        setNicknameMsg("중복된 닉네임입니다");
-        setIsNicknameValid(false);
-      } else {
-        setNicknameMsg("사용 가능한 닉네임입니다");
-        setIsNicknameValid(true);
+        if (response.data.body === true) {
+          // true가 중복이 있는 경우
+          setNicknameMsg("중복된 닉네임입니다");
+          setIsNicknameValid(false);
+        } else {
+          // 중복 검사 성공 + 중복 닉네임 없음
+          setNicknameMsg("사용 가능한 닉네임입니다");
+          setIsNicknameValid(true);
+        }
       }
     } catch (error) {
       console.error("Error checking nickname availability:", error);
