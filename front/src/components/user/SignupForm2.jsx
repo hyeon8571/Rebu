@@ -110,7 +110,7 @@ const SignupForm2 = ({
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [debounceTimeout, setDebounceTimeout] = useState(null); //입력 후 닉네임 중복체크 용 타이머
 
-  // 전화번호 중복 체크 결과를 저장하기 위한 상태 추가
+  const [isPhoneDuplicate, setIsPhoneDuplicate] = useState(false); // 전화번호 중복 체크 결과를 저장하기 위한 상태 추가
   const [phoneMsg, setPhoneMsg] = useState(""); //ptag
   // const [isPhoneValid, setIsPhoneValid] = useState(false); // code 6자리 인증용
   const [isPhoneVerified, setIsPhoneVerified] = useState(false); //전화번호 코드 인증 완료
@@ -261,6 +261,10 @@ const SignupForm2 = ({
       alert("전화번호 인증을 완료하세요.");
       return false;
     }
+    if (isPhoneDuplicate) {
+      alert("이미 회원가입한 전화번호입니다.");
+      return false;
+    }
     // if (!isCodeVerified) {
     //   alert("전화번호를 올바르게 입력하세요.");
     //   return false;
@@ -382,6 +386,7 @@ const SignupForm2 = ({
         setIsPhoneVerified={setIsPhoneVerified}
         purpose={"signup"}
         checkDuplicate={true}
+        setIsPhoneDuplicate={setIsPhoneDuplicate}
       />
 
       {/* 생성 버튼 */}

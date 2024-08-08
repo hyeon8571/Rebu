@@ -20,6 +20,7 @@ const PhoneVerification = ({
   setIsPhoneVerified,
   purpose,
   checkDuplicate = false,
+  setIsPhoneDuplicate,
 }) => {
   // const [phone, setPhone] = useState(""); //phone
   const [errors, setErrors] = useState({ name: "", phone: "" });
@@ -69,10 +70,10 @@ const PhoneVerification = ({
         if (response.data.body === true) {
           // true가 중복이 있는 경우
           setPhoneMsg("중복된 전화번호입니다");
-          setIsPhoneValid(false);
+          setIsPhoneDuplicate(false);
         } else {
           setPhoneMsg("사용 가능한 전화번호입니다");
-          setIsPhoneValid(true);
+          setIsPhoneDuplicate(true);
         }
       } else {
         setPhoneMsg("전화번호 형식이 맞지 않습니다");
