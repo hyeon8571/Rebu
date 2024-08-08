@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
@@ -27,10 +28,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
             """)
     List<Follow> findByFollowingId(@Param("followingId") Long followingId);
 
-//
-//    @EntityGraph(attributePaths = {"follower", "following"})
-//    List<Follow> findByFollowerId(Long followerId);
-//
-//    @EntityGraph(attributePaths = {"follower", "following"})
-//    List<Follow> findByFollowingId(Long followingId);
+    Optional<Follow> findByFollowerIdAndFollowingId(Long followerId, Long followingId);
+
 }

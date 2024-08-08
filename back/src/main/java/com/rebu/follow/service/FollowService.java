@@ -1,15 +1,11 @@
 package com.rebu.follow.service;
 
-import com.rebu.follow.dto.FollowDeleteDto;
-import com.rebu.follow.dto.FollowDto;
-import com.rebu.follow.dto.GetFollowersTargetDto;
-import com.rebu.follow.dto.GetFollowingsTargetDto;
+import com.rebu.follow.dto.*;
 import com.rebu.follow.entity.Follow;
+import com.rebu.follow.exception.AlreadyFollowingException;
 import com.rebu.follow.exception.FollowNotExistException;
 import com.rebu.follow.repository.FollowRepository;
 import com.rebu.member.enums.Status;
-import com.rebu.follow.dto.GetFollowerDto;
-import com.rebu.follow.dto.GetFollowingDto;
 import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.ProfileCantAccessException;
 import com.rebu.profile.exception.ProfileNotFoundException;
@@ -37,6 +33,10 @@ public class FollowService {
 
         if (receiver.getId().equals(sender.getId()) || receiver.getStatus() == Status.ROLE_DELETED) {
             throw new ProfileCantAccessException();
+        }
+
+        if (followRepository.findByFollowerIdAndFollowingId(sender.getId(), receiver.getId()).isPresent()) {
+            throw new AlreadyFollowingException();
         }
 
         followRepository.save(followDto.toEntity(sender, receiver));
