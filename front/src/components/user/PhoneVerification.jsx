@@ -70,10 +70,10 @@ const PhoneVerification = ({
         if (response.data.body === true) {
           // true가 중복이 있는 경우
           setPhoneMsg("중복된 전화번호입니다");
-          setIsPhoneDuplicate(false);
+          setIsPhoneDuplicate(true);
         } else {
           setPhoneMsg("사용 가능한 전화번호입니다");
-          setIsPhoneDuplicate(true);
+          setIsPhoneDuplicate(false);
         }
       } else {
         setPhoneMsg("전화번호 형식이 맞지 않습니다");
@@ -194,6 +194,7 @@ const PhoneVerification = ({
         </div>
         {errors.phone && <ErrorText>{errors.phone}</ErrorText>}
       </Div>
+      <p>{phoneMsg}</p>
 
       {/* 전화번호 인증 요청 */}
       <div>
