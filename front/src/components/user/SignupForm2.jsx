@@ -64,7 +64,7 @@ const InfoIconContainer = styled.div`
   }
 `;
 
-const Msg = styled.p`
+export const Msg = styled.p`
   font-size: 11px;
   padding: 0;
   margin: 0;

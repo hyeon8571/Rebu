@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../../views/Signup";
 import styled, { css } from "styled-components";
 import ButtonLarge from "../common/ButtonDisabled";
+import { Msg } from "./SignupForm2";
 // import { ButtonStyles } from "../common/ButtonLogin";
 
 const Div = styled.div`
@@ -194,7 +195,7 @@ const PhoneVerification = ({
         </div>
         {errors.phone && <ErrorText>{errors.phone}</ErrorText>}
       </Div>
-      <p>{phoneMsg}</p>
+      <Msg>{phoneMsg}</Msg>
 
       {/* 전화번호 인증 요청 */}
       <div>
