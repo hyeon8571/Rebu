@@ -243,19 +243,37 @@ const SignupForm2 = ({
 
   // 폼 제출 전 유효성 검사
   const validateForm = () => {
-    if (
-      !formData.name ||
-      !isNicknameValid ||
-      !formData.birth ||
-      !formData.gender ||
-      !isPhoneValid ||
-      !isCodeVerified
-    ) {
-      alert("모든 필드를 올바르게 입력하고 전화번호 인증을 완료해주세요.");
+    if (!formData.name) {
+      alert("이름을 입력하세요.");
+      return false;
+    }
+    if (!isNicknameValid) {
+      alert("닉네임을 올바르게 입력하세요.");
+      return false;
+    }
+    if (!formData.birth) {
+      alert("생년월일을 입력하세요.");
+      return false;
+    }
+    if (!formData.gender) {
+      alert("성별을 선택하세요.");
+      return false;
+    }
+    if (!formData.phone) {
+      alert("전화번호를 입력하세요.");
+      return false;
+    }
+    if (!isPhoneValid) {
+      alert("전화번호를 올바르게 입력하세요.");
+      return false;
+    }
+    if (!isCodeVerified) {
+      alert("전화번호 인증을 완료하세요.");
       return false;
     }
     return true;
   };
+
   // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();

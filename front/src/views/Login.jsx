@@ -159,7 +159,7 @@ const Login = () => {
           to="/login/password"
           style={{ textDecoration: "none", color: "black" }}
         >
-          비밀번호 변경
+          비밀번호 찾기
         </Link>
       </div>
       <div className="socialConnect">

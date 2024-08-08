@@ -81,7 +81,10 @@ const ChangePassword = () => {
     <Container>
       <div style={{ padding: "1rem" }}></div> {/* 높이 맞추기 */}
       {/* <ButtonBack /> */}
-      <LoginTitle text="비밀번호 찾기" description="이메일과 전화번호 이용" />
+      <LoginTitle
+        text="비밀번호 찾기"
+        description="이메일과 전화번호를 이용하여 비밀번호 재설정"
+      />
       <form onSubmit={handleLogin}>
         <div className="emailBox">
           <label htmlFor="email" className="label">
