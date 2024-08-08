@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import axios from "axios";
 import styled from "styled-components";
+import { BASE_URL } from "../../views/Signup";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -90,16 +91,17 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
       // 로그아웃 API 호출 - header로 받음
       // api - body로 받음 // {access: localStorage.getItem("accessToken"),}
       await axios.post(
-        "http://localhost:80/api/auths/logout",
-        {},
-        {
-          headers: {
-            access: `Bearer ${localStorage.getItem(accessToken)}`,
-          },
-        }
+        `${BASE_URL}/api/auths/logout`
+        // {},
+        // {
+        //   headers: {
+        //     access: `Bearer ${localStorage.getItem(accessToken)}`,
+        //   },
+        // }
       );
 
-      localStorage.removeItem("accessToken");
+      // localStorage.removeItem("accessToken");
+      localStorage.removeItem("access");
 
       // Dispatch the logout action
       dispatch(logout());
