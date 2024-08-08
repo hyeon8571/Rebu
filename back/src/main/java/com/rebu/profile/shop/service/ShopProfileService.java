@@ -15,6 +15,7 @@ import com.rebu.profile.shop.dto.GenerateShopProfileDto;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.security.util.JWTUtil;
+import com.rebu.workingInfo.service.WorkingInfoService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ShopProfileService {
     private final ShopProfileRepository shopProfileRepository;
     private final ProfileService profileService;
     private final ConvertAddressService convertAddressService;
+    private final WorkingInfoService workingInfoService;
 
     @Transactional
     public void generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
@@ -40,6 +42,8 @@ public class ShopProfileService {
         ConvertAddressDto convertAddressDto = convertAddressService.convert(generateShopProfileDto.getAddress());
 
         shopProfileRepository.save(generateShopProfileDto.toEntity(member, convertAddressDto));
+
+        workingInfoService.create(generateShopProfileDto.getNickname());
 
         ChangeImgDto changeImgDto = new ChangeImgDto(generateShopProfileDto.getImgFile(), generateShopProfileDto.getNickname());
 

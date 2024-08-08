@@ -7,9 +7,11 @@ import com.rebu.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
 @SuperBuilder
 @NoArgsConstructor
