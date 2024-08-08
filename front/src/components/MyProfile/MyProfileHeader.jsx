@@ -7,6 +7,7 @@ import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 import ThemeToggler from "../../util/ThemeToggler";
 import ThemeSwitch from "../../util/ThemeSwitch";
+import ProfileChangeModal from "./ProfileChangeModal";
 
 const Wrapper = styled.div`
   /* 레이아웃 */
@@ -98,6 +99,7 @@ const DropdownItem = styled.div`
 const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
   const [LogoutModalOpen, setLogoutModalOpen] = useState(false);
   const [SecretModalOpen, setSecretModalOpen] = useState(false);
+  const [ProfileChangeModalOpen, setProfileChangeModalOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSettingActive, setIsSettingActive] = useState(false);
   const dropdownRef = useRef(null);
@@ -110,6 +112,10 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
   const secretModalOpen = () => {
     setSecretModalOpen(true);
   };
+
+  const profileChangeModalOpen = () => {
+    setProfileChangeModalOpen(true);
+  }
 
   const closeModal = () => {
     setLogoutModalOpen(false);
@@ -173,9 +179,12 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
             비밀번호 변경
           </DropdownItem>
           <hr style={{ margin: "5px 0px" }} />
+          <DropdownItem onClick={profileChangeModalOpen}>프로필 전환</DropdownItem>
+          <hr style={{ margin: "5px 0px" }} />
           <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
           <hr style={{ margin: "5px 0px" }} />
           <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
+    
           {LogoutModalOpen && (
             <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
           )}
@@ -184,6 +193,9 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
               secretModalOpen={SecretModalOpen}
               closeModal={closeModal}
             />
+          )}
+          {ProfileChangeModalOpen && (
+            <ProfileChangeModal />
           )}
         </DropdownMenu>
       </Wrapper>

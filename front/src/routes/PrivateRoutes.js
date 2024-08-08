@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
@@ -11,7 +11,12 @@ import DesignerTab from "../components/reservation/DesignerTab";
 import PersonalInfo from "../views/PersonalInfo";
 import StoreProfile from "../views/StoreProfile";
 
+
+
+  
+
 const PrivateRoutes = ({ theme, toggleTheme }) => (
+
   <Routes>
     <Route
       path="/personal-info"

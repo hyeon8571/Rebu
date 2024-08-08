@@ -1,13 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useLocation } from 'react-router-dom';
-import { postCards } from "../util/postDatas";
-import { scrapCards } from "../util/scrapDatas";
-import { storeCards } from "../util/storeDatas";
 import TabComponent from "../components/storeProfile/StoreProfileTab";
 import ProfileImage from "../components/storeProfile/StoreProfileImage";
-import Img from "../assets/images/ssafyhair.png";
-import userImg from "../assets/images/cha.png";
 import ProfileInfo from "../components/storeProfile/StoreProfileInfo";
 import Header from "../components/storeProfile/StoreProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
@@ -60,28 +55,6 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-// 예시 - 현재 프로필
-let currentUser = {
-  profile_src: Img,
-  introduction: "싸피 앞 메가박스 건물에 위치하고 있습니다:)",
-  type: "store",
-  category: "헤어",
-  name: "사피 헤어샵",
-  license_num: "12345678",
-  nickname: "SSAFY_hair",
-  address: "경북 구미시 인동",
-  rank: 4.8,
-  reservation_interval: 10,
-  phone: "010-1234-5678",
-  following: {
-    nickname: "jiwon",
-  },
-  follower: {
-    nickname: "cha_cha",
-  }
-};
-
-
 
 const ProfilePage = ({ theme, toggleTheme }) => {
   const location = useLocation();
@@ -90,13 +63,57 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const loginUser = location.state?.user;
   const [likesUser, setLikesUser] = useState(loginUser);
   const [currentTab, setCurrentTab] = useState(0);
-  // const [reviewPhotos, setReviewPhotos] = useState([]);
-  // const [scrapPhotos, setScrapPhotos] = useState([]);
   const [isSticky, setIsSticky] = useState(false);
   const [key, setKey] = useState(0);
   const tabRef = useRef(null);
   const [shopPost, setShopPost] = useState([]);
+  const [reviewdata, setReviewdata] = useState([]);
+  const [ratingAvg, setRatingAvg] = useState(0);
+  const [followerdata, setFollowerData] = useState([]);
+  const [followingdata, setFollowingData] =useState([]);
+  const [likeshop, setLikeshop] = useState([]);
 
+  useEffect(() => {
+    fetch('/mockdata/likeshop.json')
+      .then(res => res.json())
+      .then((data) => {
+        setLikeshop(data.body);
+      })      
+  }, []);
+  
+  useEffect(() => {
+    fetch('/mockdata/followerlist.json')
+      .then(res => res.json())
+      .then((data) => {
+        setFollowerData(data.body);
+      })      
+  }, []);
+
+  useEffect(() => {
+    fetch('/mockdata/followinglist.json')
+      .then(res => res.json())
+      .then((data) => {
+        setFollowingData(data.body);
+      })      
+  }, []);
+
+  useEffect(() => {
+    fetch('/mockdata/reviewdata.json')
+      .then(res => res.json())
+      .then((data) => {
+        const shopReview = data.body.filter(review => shopProfile.nickname === review.shopNickname && shopProfile.nickname !== review.nickname);
+        setReviewdata(shopReview || data.body);
+      })      
+  }, [reviewdata, shopProfile]);
+
+  useEffect(() => {
+    if (reviewdata.length > 0) {
+      const totalRating = reviewdata.reduce((acc, review) => acc + review.rating, 0);
+      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(2) : 0;
+      setRatingAvg(averageRating);
+    }
+  });
+  
   useEffect(() => {
     fetch('/mockdata/shoppost.json')
       .then(res => res.json())
@@ -132,12 +149,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const reviewPhotos = postCards.flatMap(postcard => postcard.img);
-  //   const scrapPhotos = scrapCards.flatMap(scrapcard => scrapcard.img);
-  //   setReviewPhotos(reviewPhotos);
-  //   setScrapPhotos(scrapPhotos);
-  // }, []);
 
   const tabTitle = [
     { name: "Post", content: "Post", count: shopProfile.feedCnt},
@@ -145,13 +156,14 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     { name: "Reservation", content: "Reservation", count: shopProfile.reservationCnt},
   ];
 
+
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
 
     if (content === "Post") {
       return <PostGrid key={key} Card={shopPost} currentUser={shopProfile} loginUser={loginUser}/>;
     } else if (content === "Review") {
-      return <ReviewGrid key={key} loginUser={loginUser}/>;
+      return <ReviewGrid key={key} Card={reviewdata} currentUser={shopProfile} loginUser={loginUser}/>;
     } else if (content === "Reservation") {
       return <TimeTable />;
     }
@@ -170,8 +182,10 @@ const ProfilePage = ({ theme, toggleTheme }) => {
           <ProfileImage
             currentUser={shopProfile}
             time={130}
+            followerdata={followerdata}
+            followingdata={followingdata}
           />
-          <ProfileInfo currentUser={shopProfile} loginUser={likesUser} updateLikes={updateLikes} />
+          <ProfileInfo currentUser={shopProfile} loginUser={likesUser} updateLikes={updateLikes} rating={ratingAvg} likeshop={likeshop}/>
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>

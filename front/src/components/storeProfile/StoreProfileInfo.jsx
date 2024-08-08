@@ -162,7 +162,7 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ currentUser, loginUser, updateLikes }) => {
+const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
@@ -208,16 +208,15 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes }) => {
           <Rating>
             <FaRegStar />
             &nbsp;
-            <RatingText>{currentUser.rank}</RatingText>
+            <RatingText>{rating}</RatingText>
           </Rating>
         </LeftContainer>
         <RightContainer>
-          {/* {currentUser.nickname !== loginUser.nickname && (
-            loginUser.likes.includes(currentUser.nickname) ? (
+          {currentUser.nickname !== loginUser.nickname ? (
+            likeshop.map((shop) => {shop.nickname === currentUser.nickname}) ? (
               <ImgLikeActive onClick={handleLikeToggle} />
-            ) : (
-              <ImgLike onClick={handleLikeToggle} />
-            ))} */}
+            ) : (<ImgLike onClick={handleLikeToggle} />)
+          ) : ("")}
           <ImgShare />
         </RightContainer>
       </NameInfo>
