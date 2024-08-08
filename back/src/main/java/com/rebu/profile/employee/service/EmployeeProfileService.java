@@ -45,6 +45,7 @@ public class EmployeeProfileService {
         profileService.changePhoto(changeImgDto);
 
         redisService.deleteData("Refresh:" + generateEmployeeProfileDto.getNowNickname());
+        System.out.println("===================" + generateEmployeeProfileDto.getNowNickname());
 
         resetToken(generateEmployeeProfileDto.getNickname(), Type.EMPLOYEE.toString(), response);
     }
