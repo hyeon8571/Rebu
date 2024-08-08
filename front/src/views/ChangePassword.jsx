@@ -1,92 +1,142 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setIsLogin } from "../features/auth/authSlice";
-import { BASE_URL } from "./Signup";
-// import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
-//css
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styled from "styled-components";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import LoginTitle from "../components/common/LoginTitle";
-import ButtonLogin from "../components/common/ButtonLogin";
-import { ButtonStyles } from "../components/common/ButtonLogin";
+// import ButtonLogin from "../components/common/ButtonLogin";
 import "./Login.css";
+import ButtonBack from "../components/common/ButtonBack";
+import { ButtonStyles, ButtonHover } from "../components/common/ButtonLogin";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 
 const Container = styled.div`
   align-items: center;
   margin: 2rem 3rem;
-  height: 100vh;
+`;
+const Container2 = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 2rem 3rem;
+  position: relative;
+  /* max-width: 30%; */
 `;
 
-const Ptag = styled.p`
-  margin: 0;
-  margin-bottom: 0.3rem;
-  color: red;
-  font-size: 12px;
+const Div = styled.div`
+  display: flex;
+  justify-content: space-around;
 `;
 
-const Button = styled.button`
+const SmallButton = styled.button`
   ${ButtonStyles}
+  width: 30%;
+  justify-content: end;
+  white-space: nowrap;
+  margin-left: 10px;
+  font-size: 11px;
+`;
+
+const SubmitButton = styled.button`
+  ${ButtonStyles}
+  width: 30%;
+  /* justify-content: end; */
+  white-space: nowrap;
+  margin-left: 10px;
+  font-size: 11px;
+  height: 50px;
+`;
+
+// info icon - hover
+const Tooltip = styled.div`
+  position: absolute;
+  background-color: white;
+  color: gray;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  top: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
+  opacity: ${(props) => (props.$visible ? "1" : "0")};
+  transition: opacity 0.2s;
+`;
+
+const InfoIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+// //
+// const smallButtonStyles = {
+//   backgroundColor: { email } !== "" ? "blue" : "#a55eea",
+//   border: "none",
+//   borderRadius: "25px",
+//   color: "white",
+//   height: "3rem",
+//   width: "30%",
+//   cursor: "pointer",
+//   whiteSpace: "nowrap",
+// };
+
+// //
+// const SmallButtonDisabled = styled.button`
+//   ${ButtonStyles}
+//   background-color:gray;
+//   width: 30%;
+//   justify-content: end;
+//   white-space: nowrap;
+//   margin-left: 10px;
+//   font-size: 11px;
+// `;
+const SmallButtonHover = styled(ButtonHover)`
+  width: 30%;
 `;
 
 const ChangePassword = () => {
+  // const isActive = useState(false);
   const [email, setEmail] = useState("");
+  const [emailVeri, setEmailVeri] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [error, setError] = useState("");
+  const [passwordVeri, setPasswordVeri] = useState("");
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); //0ㅅ0
-    try {
-      // 서버에 로그인 요청 - 비동기
-      const response = await axios.post(`${BASE_URL}/api/auths/login`, {
-        email: email,
-        password: password,
-      });
-
-      console.log("response:", response);
-      // 서버에서 jwt 토큰 받기
-      const accessToken = response.headers["access"];
-      console.log("access token: ", accessToken);
-      localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
-
-      // 로그인 성공 표시
-      console.log("로그인 성공");
-      console.log(email, password);
-      console.log("data", response);
-      alert("로그인 성공");
-      dispatch(setIsLogin(true)); //isLogin = true 로 설정
-
-      navigate("/profile"); //프로필로 임시 이동..
-    } catch (error) {
-      // 로그인 실패 처리
-      alert("로그인 실패");
-      console.log("로그인 실패: ", error);
-      // setError("로그인 실패. 다시 시도해 주세요.");
-      if (error.response && error.response.status === 404) {
-        console.error("리소스를 찾을 수 없음: ", error);
-        setError("요청한 리소스를 찾을 수 없습니다.");
-      } else {
-        console.error("오류 발생: ", error);
-        setError("오류가 발생했습니다. 다시 시도해 주세요.");
-      }
-    }
+  const emailChange = (e) => {
+    setEmail(e.target.value);
+  };
+  const emailVeriChange = (e) => {
+    setEmailVeri(e.target.value);
+  };
+  const passwordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const passwordVeriChange = (e) => {
+    setPassword(e.target.value);
   };
 
   return (
     <Container>
-      <div style={{ padding: "1rem" }}></div> {/* 높이 맞추기 */}
-      {/* <ButtonBack /> */}
-      <LoginTitle
-        text="비밀번호 찾기"
-        description="이메일과 전화번호를 이용하여 비밀번호 재설정"
-      />
-      <form onSubmit={handleLogin}>
-        <div className="emailBox">
+      <ButtonBack />
+      <LoginTitle text={"비밀번호 찾기"} />
+      <h3
+        style={{
+          maxWidth: "70%",
+          minWidth: "30%",
+          color: "gray",
+          padding: "auto 30 0",
+        }}
+      >
+        가입할 때 사용하신 이메일로 인증코드를 보내드릴게요.
+      </h3>
+
+      {/* 이메일 */}
+      <Div>
+        <div
+          className="emailBox"
+          style={{ maxWidth: "100%", justifyContent: "start" }}
+        >
+          {/* <EmailBox> */}
           <label htmlFor="email" className="label">
             Email address
           </label>
@@ -95,38 +145,108 @@ const ChangePassword = () => {
             id="email"
             className="loginInput"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => {
-              if (email === "") setEmailError(true);
-              else setEmailError(false);
-            }}
-            placeholder="rebu@mail.com"
-            required
+            onChange={emailChange}
+            placeholder="이메일을 입력하세요"
+            // style={{ padding: "auto 20" }}
           />
         </div>
-        {emailError && <Ptag>이메일 주소를 입력해주세요.</Ptag>}
-        <div className="emailBox">
+        {/* <SmallButton>인증하기</SmallButton> */}
+        {/* 그냥 보라색 버튼-0- */}
+        <SmallButtonHover>인증하기</SmallButtonHover>
+      </Div>
+
+      {/* 이메일인증코드 */}
+      <Div>
+        <div
+          className="emailBox"
+          style={{ maxWidth: "100%", justifyContent: "start" }}
+        >
+          {/* <EmailBox> */}
+          <label htmlFor="emailVerification" className="label">
+            Email Verification
+          </label>
+          <input
+            type="emailVerification"
+            id="emailVerification"
+            className="loginInput"
+            value={emailVeri}
+            onChange={emailVeriChange}
+            placeholder="인증코드를 입력하세요"
+          />
+        </div>
+        {/* <SmallButton>인증하기</SmallButton> */}
+        {/* 그냥 보라색 버튼-0- */}
+        <SmallButtonHover>확인</SmallButtonHover>
+      </Div>
+
+      {/* 비밀번호 */}
+      <Div>
+        <div
+          className="emailBox"
+          style={{ maxWidth: "100%", justifyContent: "start" }}
+        >
+          {/* <EmailBox> */}
           <label htmlFor="password" className="label">
-            Phone number
+            Password
           </label>
           <input
             type="password"
             id="password"
             className="loginInput"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={() => {
-              if (password === "") setPasswordError(true);
-              else setPasswordError(false);
-            }}
-            placeholder="010-0000-0000"
-            required
+            onChange={passwordChange}
+            placeholder="비밀번호를 입력하세요"
           />
         </div>
-        {passwordError && <Ptag>전화번호를 입력해주세요.</Ptag>}
-        <Button type="submit">비밀번호 찾기</Button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {/* 비밀번호 필수요건 설명창 */}
+        <Container2>
+          <InfoIconContainer
+            onMouseEnter={() => setTooltipVisible(true)}
+            onMouseLeave={() => setTooltipVisible(false)}
+          >
+            <IoMdInformationCircleOutline size="30" color="gray" />
+            <Tooltip $visible={tooltipVisible}>
+              비밀번호: 영문, 숫자, 특수문자 조합으로 이루어진 8~15자의 문자열로
+              구성되어야 합니다.
+            </Tooltip>
+          </InfoIconContainer>
+        </Container2>
+
+        {/* <SmallButton>인증하기</SmallButton> */}
+        {/* 그냥 보라색 버튼-0- */}
+        {/* <SmallButtonHover>확인</SmallButtonHover> */}
+      </Div>
+
+      {/* 비밀번호 인증 */}
+      <Div>
+        <div
+          className="emailBox"
+          style={{ maxWidth: "100%", justifyContent: "start" }}
+        >
+          {/* <EmailBox> */}
+          <label htmlFor="passwordVerification" className="label">
+            Password
+          </label>
+          <input
+            type="passwordVerification"
+            id="passwordVerification"
+            className="loginInput"
+            value={passwordVeri}
+            onChange={passwordVeriChange}
+            placeholder="비밀번호를 입력하세요"
+          />
+        </div>
+        {/* 그냥 보라색 버튼-0- */}
+        {/* <SmallButtonHover>확인</SmallButtonHover> */}
+      </Div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+        }}
+      >
+        <SubmitButton>변경하기</SubmitButton>
+      </div>
     </Container>
   );
 };

@@ -26,7 +26,7 @@ const PhoneVerification = ({
   const [isVerificationFieldVisible, setIsVerificationFieldVisible] =
     useState(false); //phone
   const [timeRemaining, setTimeRemaining] = useState(0); //phone 남은시간
-  // const [isCodeVerified, setIsCodeVerified] = useState(false); //phone
+
   const [isPtagVisible, setIsPtagVisible] = useState(false); // p태그 보이게하기
   const [isTimeout, setIsTimeout] = useState(false); // 시간 초과 상태 추가
   const [ptagMessage, setPtagMessage] = useState(

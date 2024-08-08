@@ -112,17 +112,11 @@ const SignupForm2 = ({
 
   // 전화번호 중복 체크 결과를 저장하기 위한 상태 추가
   const [phoneMsg, setPhoneMsg] = useState(""); //ptag
-  const [isPhoneValid, setIsPhoneValid] = useState(false);
+  // const [isPhoneValid, setIsPhoneValid] = useState(false); // code 6자리 인증용
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false); //전화번호 코드 인증 완료
 
-  // phone 인증요청시 인증코드 입력할 칸 나오게하기
-  const [isVerificationFieldVisible, setIsVerificationFieldVisible] =
-    useState(false);
-
-  // code 6자리 인증용
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-  // const [isPhoneVerified, setPhoneVeriCode] = useState("");
   // 성별
-  const [gender, setGender] = useState(formData.gender || "FEMALE");
+  // const [gender, setGender] = useState(formData.gender || "FEMALE");
 
   const handleNameChange = (e) => {
     const filteredValue = e.target.value.replace(
@@ -263,7 +257,7 @@ const SignupForm2 = ({
       alert("전화번호를 입력하세요.");
       return false;
     }
-    if (!isPhoneValid) {
+    if (!isPhoneVerified) {
       alert("전화번호 인증을 완료하세요.");
       return false;
     }
