@@ -34,11 +34,12 @@ const SmallButton = styled.button`
 
 const SubmitButton = styled.button`
   ${ButtonStyles}
-  width: 30%;
+  width: auto;
   white-space: nowrap;
   margin-left: 10px;
   font-size: 11px;
   height: 50px;
+  padding: 1rem;
 `;
 
 const Tooltip = styled.div`
@@ -83,7 +84,13 @@ const Msg = styled.p`
   color: ${(props) => (props.isValid ? "blue" : "red")};
 `;
 
-const SignupForm1 = ({ formData, handleChange, nextStep }) => {
+const SignupForm1 = ({
+  formData,
+  handleChange,
+  nextStep,
+  purpose,
+  buttonTitle,
+}) => {
   const nav = useNavigate();
   const [emailMsg, setEmailMsg] = useState(""); //pTag
   const [isEmailValid, setIsEmailValid] = useState(false); //이메일중복
@@ -155,7 +162,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           url: `${BASE_URL}/api/auths/email/send`,
           data: {
             email: formData.email,
-            purpose: "signup",
+            purpose: purpose,
           },
           headers: {
             "Content-Type": "application/json",
@@ -231,7 +238,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           `${BASE_URL}/api/auths/email/verify`,
           {
             email: formData.email,
-            purpose: "signup",
+            purpose: purpose,
             verifyCode: emailVerifyCode,
           }
         );
@@ -470,7 +477,7 @@ const SignupForm1 = ({ formData, handleChange, nextStep }) => {
           )}
 
           <div style={{ display: "flex", justifyContent: "end" }}>
-            <SubmitButton type="submit">Next</SubmitButton>
+            <SubmitButton type="submit">{buttonTitle}</SubmitButton>
           </div>
         </div>
       </form>

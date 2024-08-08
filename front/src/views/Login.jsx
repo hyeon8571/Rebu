@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setIsLogin } from "../features/auth/authSlice";
+import { isLogin, setIsLogin } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
 // import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 //css
@@ -69,7 +69,7 @@ const Login = () => {
         console.log("data", response);
         alert("로그인 성공");
         dispatch(setIsLogin(true)); //isLogin = true 로 설정
-
+        console.log("로그인 상태", isLogin);
         navigate("/profile"); //프로필로 임시 이동..
       } else {
         //로그인 에러 코드
