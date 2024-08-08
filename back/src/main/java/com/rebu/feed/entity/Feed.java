@@ -3,10 +3,12 @@ package com.rebu.feed.entity;
 import com.rebu.profile.entity.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -22,6 +25,8 @@ import java.util.List;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE feed SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Feed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +57,13 @@ public class Feed {
     @Enumerated(EnumType.STRING)
     private Type type;
 
+    private Boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        isDeleted = false;
+    }
+
     public enum Type {
         NONE, REVIEW
     }
@@ -60,4 +72,16 @@ public class Feed {
         this.content = content;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Feed feed = (Feed) o;
+        return Objects.equals(id, feed.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

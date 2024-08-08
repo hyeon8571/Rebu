@@ -1,12 +1,15 @@
 package com.rebu.profile.controller;
 
+import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
+import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.controller.dto.ChangeNicknameRequest;
 import com.rebu.profile.controller.dto.ChangeIntroRequest;
 import com.rebu.profile.controller.dto.ChangeIsPrivateRequest;
 import com.rebu.profile.controller.dto.ChangePhoneRequest;
 import com.rebu.profile.dto.*;
+import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
 import com.rebu.profile.exception.PhoneDuplicateException;
 import com.rebu.profile.service.ProfileService;
@@ -20,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -103,16 +104,24 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("전화번호 변경 완료 코드", null));
     }
 
-    @GetMapping("/{nickname}/followings")
-    public ResponseEntity<?> getFollowings(@PathVariable String nickname) {
-        List<GetFollowingDto> followings = profileService.getFollowings(nickname);
-        return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followings));
+    @Authorized(allowed = {Type.SHOP, Type.EMPLOYEE})
+    @DeleteMapping("/{nickname}")
+    public ResponseEntity<?> deleteProfile(@PathVariable String nickname,
+                                           @SessionAttribute(name = "AuthPassword:profileDelete", required = false) String authPassword,
+                                           HttpServletResponse response) {
+        if (authPassword == null || !authPassword.equals(nickname)) {
+            throw new PasswordNotVerifiedException();
+        }
+        profileService.deleteProfile(nickname, response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", null));
     }
 
-    @GetMapping("/{nickname}/followers")
-    public ResponseEntity<?> getFollowers(@PathVariable String nickname) {
-        List<GetFollowerDto> followers = profileService.getFollowers(nickname);
-        return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followers));
+    @GetMapping("/switch-profile")
+    public ResponseEntity<?> switchProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                           @Nickname @RequestParam String nickname,
+                                           HttpServletResponse response) {
+        profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", null));
     }
 
 }

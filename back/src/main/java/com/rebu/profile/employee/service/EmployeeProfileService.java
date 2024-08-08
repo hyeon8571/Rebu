@@ -14,6 +14,7 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.service.ProfileService;
 import com.rebu.security.util.JWTUtil;
+import com.rebu.workingInfo.service.WorkingInfoService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class EmployeeProfileService {
     private final ProfileService profileService;
     private final MemberRepository memberRepository;
     private final RedisService redisService;
+    private final WorkingInfoService workingInfoService;
 
     @Transactional
     public void generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
@@ -35,6 +37,8 @@ public class EmployeeProfileService {
                 .orElseThrow(MemberNotFoundException::new);
 
         employeeProfileRepository.save(generateEmployeeProfileDto.toEntity(member));
+
+        workingInfoService.create(generateEmployeeProfileDto.getNickname());
 
         ChangeImgDto changeImgDto = new ChangeImgDto(generateEmployeeProfileDto.getImgFile(), generateEmployeeProfileDto.getNickname());
 

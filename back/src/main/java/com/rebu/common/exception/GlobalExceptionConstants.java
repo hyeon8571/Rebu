@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GlobalExceptionConstants implements ExceptionConstants{
     NullPointer("0000");
-    private final String code;
+    final String code;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ public class SelectedReviewKeywordId {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         SelectedReviewKeywordId that = (SelectedReviewKeywordId) o;
         return Objects.equals(reviewId, that.reviewId) &&
                 Objects.equals(reviewKeywordId, that.reviewKeywordId);

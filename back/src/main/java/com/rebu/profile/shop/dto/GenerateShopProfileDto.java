@@ -25,7 +25,7 @@ public class GenerateShopProfileDto {
     private String nowNickname;
     private String email;
 
-    public ShopProfile toEntity(Member member) {
+    public ShopProfile toEntity(Member member, ConvertAddressDto convertAddressDto) {
         return ShopProfile.builder()
                 .member(member)
                 .type(Type.SHOP)
@@ -35,6 +35,8 @@ public class GenerateShopProfileDto {
                 .address(address)
                 .phone(phone)
                 .category(category)
+                .lat(convertAddressDto.getLat())
+                .lng(convertAddressDto.getLng())
                 .build();
     }
 }
