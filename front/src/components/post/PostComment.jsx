@@ -226,7 +226,7 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
     };
 
     const commentIndex = updatedPosts[postIndex].comment.findIndex(
-      (comment) => comment.id === commentId
+      (comment) => comment.commentId === commentId
     );
 
     if (commentIndex >= 0) {
@@ -283,10 +283,10 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
       });
     } else {
       const comment = updatedPosts[postIndex].comment[commentIndex];
-      comment.likes = (comment.likes || 0) + (likes[comment.id] ? -1 : 1);
+      comment.likes = (comment.likes || 0) + (likes[comment.commentId] ? -1 : 1);
       setLikes({
         ...likes,
-        [comment.id]: !likes[comment.id],
+        [comment.commentId]: !likes[comment.commentId],
       });
     }
     setPosts(updatedPosts);
@@ -319,10 +319,10 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
                 </CommentHeader>
                 <CommentContent>{comment.comment.content}</CommentContent>
                 <div style={{ display: "flex" }}>
-                  <ReplyLink onClick={() => handleShowRepliesToggle(comment.comment.id)}>
-                    {showReplies[comment.comment.id] ? "답글숨기기" : "답글보기"}
+                  <ReplyLink onClick={() => handleShowRepliesToggle(comment.comment.commentId)}>
+                    {showReplies[comment.comment.commentId] ? "답글숨기기" : "답글보기"}
                   </ReplyLink> &nbsp;&nbsp;
-                  <ReplyLink onClick={() => handleReplyToggle(comment.comment.id)}>
+                  <ReplyLink onClick={() => handleReplyToggle(comment.comment.commentId)}>
                     답글달기
                   </ReplyLink>
                 </div>
@@ -335,13 +335,13 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
                 </DeleteButton>
               )}
               <LikeButton onClick={() => handleLikeToggle(index, idx)}>
-                {likes[comment.comment.id] ? <FaHeart color="red" /> : <FaRegHeart />}
+                {likes[comment.comment.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
               </LikeButton>
               {comment.comment.likeCount > 0 && <LikeCount>{comment.comment.likeCount}</LikeCount>}
             </div>
           </CommentItem>
 
-          {showReplies[comment.comment.id] &&
+          {showReplies[comment.comment.commentId] &&
             comment.commentNested &&
             comment.commentNested.map((reply, replyIdx) => (
               <CommentItem key={replyIdx} style={{ marginLeft: "40px" }}>
@@ -370,30 +370,30 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
                       handleLikeToggle(index, idx, true, replyIdx)
                     }
                   >
-                    {likes[reply.id] ? <FaHeart color="red" /> : <FaRegHeart />}
+                    {likes[reply.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
                   </LikeButton>
                   {reply.likeCount > 0 && <LikeCount>{reply.likeCount}</LikeCount>}
                 </div>
               </CommentItem>
             ))}
 
-          {replyingTo === comment.comment.id && (
+          {replyingTo === comment.comment.commentId && (
             <CommentInputWrapper>
               <CommentImage src={currentUser.imageSrc} alt="User" />
               <CommentInputContainer>
                 <CommentTextInput
                   type="text"
                   placeholder="답글 추가"
-                  value={replies[comment.comment.id] || ""}
+                  value={replies[comment.comment.commentId] || ""}
                   onChange={(e) =>
-                    handleReplyChange(comment.comment.id, e.target.value)
+                    handleReplyChange(comment.comment.commentId, e.target.value)
                   }
                   onKeyPress={(e) =>
-                    handleKeyPress(e, index, "reply", comment.comment.id)
+                    handleKeyPress(e, index, "reply", comment.comment.commentId)
                   }
                 />
                 <NewCommentButton
-                  onClick={() => handleAddReply(index, comment.comment.id)}
+                  onClick={() => handleAddReply(index, comment.comment.commentId)}
                 >
                   <FaArrowRight />
                 </NewCommentButton>

@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import ScrapDetail from "../post/ScrapDetail";
-
+import PropTypes from 'prop-types';
+import PostDetail from "../post/PostDetail";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GridContainer = styled.div`
-  display: grid;
   width: 100%;
   max-width: 768px;
+  margin: 0 auto; /* 중앙 정렬을 위한 추가 */
 `;
 
 const GridItem = styled.div`
@@ -28,41 +28,37 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ uploadedPhotos, Card, currentUser }) {
+function GridComponent({ Card, currentUser, loginUser }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
+  
+  const generateLayout = useCallback((photos) => {
+    return photos.map((photo, index) => ({
+      i: `photo-${index}`,
+      x: index % 3,
+      y: Math.floor(index / 3),
+      w: 1,
+      h: 1,
+      minW: 1,
+      maxW: 1,
+      minH: 1,
+      maxH: 1,
+      static: false,
+    }));
+  }, []);
 
   useEffect(() => {
-    const generateLayout = (photos) => {
-      return photos.map((photo, index) => ({
-        i: `photo-${index}`,
-        x: index % 3,
-        y: Math.floor(index / 3),
-        w: 1,
-        h: 1,
-        minW: 1,
-        maxW: 1,
-        minH: 1,
-        maxH: 1,
-        static: true,
-      }));
-    };
-
-    const newLayout = generateLayout(uploadedPhotos);
     setLayouts({
-      lg: newLayout,
-      md: newLayout,
+      lg: generateLayout(Card),
+      md: generateLayout(Card),
     });
-  }, [uploadedPhotos]);
 
-  useEffect(() => {
     const updateRowHeight = () => {
       if (containerRef.current) {
         const gridWidth = containerRef.current.clientWidth / 3;
-        const newHeight = gridWidth;
-        setRowHeight(newHeight);
+        setRowHeight(gridWidth);
       }
     };
 
@@ -72,26 +68,24 @@ function GridComponent({ uploadedPhotos, Card, currentUser }) {
     return () => {
       window.removeEventListener("resize", updateRowHeight);
     };
-  }, []);
+  }, [Card, generateLayout]);
 
   const handlePhotoClick = (index) => {
-    const selectedPhotos = Card.slice(index);
-    setSelectedPhotos(selectedPhotos);
+    setSelectedPhotos(Card.slice(index));
   };
 
   return (
     <>
-      {selectedPhotos !== null ? (
-        <ScrapDetail information={selectedPhotos} currentUser={currentUser} />
+      {selectedPhotos ? (
+        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
       ) : (
         <GridContainer ref={containerRef}>
           <ResponsiveGridLayout
-            className="layout"
             layouts={layouts}
-            breakpoints={{ lg: 1200, md: 1024 }}
+            breakpoints={{ lg: 768, md: 425 }}
             cols={{ lg: 3, md: 3 }}
             rowHeight={rowHeight}
-            width={containerRef.current ? containerRef.current.clientWidth : 0}
+            width={containerRef.current ? containerRef.current.clientWidth : 768}
             isDraggable={false}
             isResizable={false}
           >
@@ -101,7 +95,7 @@ function GridComponent({ uploadedPhotos, Card, currentUser }) {
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={item.img} alt={`uploaded-${index}`} />
+                <Photo src={item.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>
@@ -110,5 +104,11 @@ function GridComponent({ uploadedPhotos, Card, currentUser }) {
     </>
   );
 }
+
+// GridComponent.propTypes = {
+//   uploadedPhotos: PropTypes.arrayOf(PropTypes.object).isRequired,
+//   Card: PropTypes.arrayOf(PropTypes.object).isRequired,
+//   currentUser: PropTypes.object.isRequired,
+// };
 
 export default GridComponent;

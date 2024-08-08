@@ -1,15 +1,27 @@
 {
 	"code" : "????",
-	"body" : 
-	{
-		"type" : "COMMON",
-		"imageSrc" : "images/cha.png",
-		"followingCnt" : 5,
-		"followerCnt" : 5,
-		"nickname" : "cha_cha",
-		"introduction" : "나는 차은우 나는 뷰티 마스터!",
-		"reviewCnt" : 4,
-		"scrapCnt" : 5,
-		"likeCnt" : 6
-	}
+	"body" : [
+		{
+			"type" : "COMMON",
+			"imageSrc" : "images/cha.png",
+			"followingCnt" : 5,
+			"followerCnt" : 5,
+			"nickname" : "cha_cha",
+			"introduction" : "나는 차은우 나는 뷰티 마스터!",
+			"reviewCnt" : 4,
+			"scrapCnt" : 5,
+			"likeCnt" : 6
+		},
+		{
+			"type" : "COMMON",
+			"imageSrc" : "images/ma.png",
+			"followingCnt" : 5,
+			"followerCnt" : 5,
+			"nickname" : "madong",
+			"introduction" : "마! 내가 뷰티 마동석이다",
+			"reviewCnt" : 2,
+			"scrapCnt" : 5,
+			"likeCnt" : 6
+		}
+	]
 }

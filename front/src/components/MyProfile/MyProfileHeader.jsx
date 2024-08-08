@@ -164,46 +164,41 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
             <ImgSettingActive onClick={handleSettingClick} />
           ) : (
             <ImgSetting onClick={handleSettingClick} />
-          )
-        ) : (
-          <ImgSend />
-        )}
-      </ButtonBox>
-      <DropdownMenu ref={dropdownRef} show={showDropdown}>
-        <DropdownItem
-          onClick={() =>
-            navigate("/personal-info", {
-              state: { user: loginUser, profile: currentUser },
-            })
-          }
-        >
-          개인정보 확인
-        </DropdownItem>
-        <hr style={{ margin: "5px 0px" }} />
-        <DropdownItem onClick={() => handleOptionClick("비밀번호 변경")}>
-          비밀번호 변경
-        </DropdownItem>
-        <hr style={{ margin: "5px 0px" }} />
-        <DropdownItem onClick={profileChangeModalOpen}>
-          프로필 전환
-        </DropdownItem>
-        <hr style={{ margin: "5px 0px" }} />
-        <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
-        <hr style={{ margin: "5px 0px" }} />
-        <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
-
-        {LogoutModalOpen && (
-          <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
-        )}
-        {SecretModalOpen && (
-          <SecretMode
-            secretModalOpen={SecretModalOpen}
-            closeModal={closeModal}
-          />
-        )}
-        {ProfileChangeModalOpen && <ProfileChangeModal />}
-      </DropdownMenu>
-    </Wrapper>
+            )
+          ) : (
+            <ImgSend />
+          )}
+        </ButtonBox>
+        <DropdownMenu ref={dropdownRef} show={showDropdown}>
+          <DropdownItem onClick={() => navigate("/personal-info", {state : {user: loginUser, profile: currentUser}})}>
+            개인정보 확인
+          </DropdownItem>
+          <hr style={{ margin: "5px 0px" }} />
+          <DropdownItem onClick={() => handleOptionClick("비밀번호 변경")}>
+            비밀번호 변경
+          </DropdownItem>
+          <hr style={{ margin: "5px 0px" }} />
+          <DropdownItem onClick={profileChangeModalOpen}>프로필 전환</DropdownItem>
+          <hr style={{ margin: "5px 0px" }} />
+          <DropdownItem onClick={secretModalOpen}>공개 설정</DropdownItem>
+          <hr style={{ margin: "5px 0px" }} />
+          <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
+    
+          {LogoutModalOpen && (
+            <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
+          )}
+          {SecretModalOpen && (
+            <SecretMode
+              secretModalOpen={SecretModalOpen}
+              closeModal={closeModal}
+            />
+          )}
+          {ProfileChangeModalOpen && (
+            <ProfileChangeModal />
+          )}
+        </DropdownMenu>
+      </Wrapper>
+    
   );
 };
 

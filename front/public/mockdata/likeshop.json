@@ -3,8 +3,8 @@
 	"body": [
 		{
 			"imageSrc": "images/ssafynail.png",
-			"nickname": "ssafy_shop",
-			"name": "블링블링 네일샵",
+			"nickname": "ssafy_nail_shop",
+			"name": "싸피 네일샵",
 			"ratingAvg": 4.75,
 			"isFavorite": true,
 			"introduction": "저희 매장에 오시면 할인해 드립니다.",
@@ -58,8 +58,8 @@
 		},
 		{
 			"imageSrc": "images/ssafynail.png",
-			"nickname": "nail_experts",
-			"name": "네일 엑스퍼트",
+			"nickname": "bling_nail",
+			"name": "블링블링 네일샵",
 			"ratingAvg": 4.7,
 			"isFavorite": false,
 			"introduction": "전문가들이 제공하는 네일 서비스를 즐겨보세요.",

@@ -1,0 +1,13 @@
+{
+  "code" : "????",
+  "body" :
+    {
+      "email" : "dong@naver.com",
+      "password" : "qwerty12345",
+      "name" : "마동석",
+      "nickname" : "madong",
+      "birth" : "1984-08-20",
+      "phone" : "010-7979-8282",
+      "gender" : "MALE"
+    }
+}

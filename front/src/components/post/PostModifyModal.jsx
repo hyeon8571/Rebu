@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IoIosClose } from "react-icons/io";
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 가져옵니다.
+import { useNavigate, useLocation } from 'react-router-dom'; // useNavigate 훅을 가져옵니다.
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -209,13 +209,14 @@ const SaveButton = styled(Button)`
   cursor: pointer;
 `;
 
-const PostModify = ({ postModifyModalOpen, closeModal, index, post }) => {
+const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser, onSave }) => {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const [current, setCurrent] = useState(0);
   const length = post.imageSrcs?.length;
   const [content, setContent] = useState(post.content);
   const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+  const location = useLocation();
 
   const nextSlide = () => {
     if (current < length - 1) {
@@ -237,22 +238,22 @@ const PostModify = ({ postModifyModalOpen, closeModal, index, post }) => {
     const updatedPost = {
       ...post,
       content: content,
-      modifiedDate: today
+      // modifiedDate: today
     };
 
-    // 수정된 게시글을 서버에 저장하는 함수
-    // Modifypost(updatedPost);
+    // 부모 컴포넌트에 수정된 게시글을 전달
+    onSave(updatedPost, index);
 
     // 게시글 상세 페이지로 이동
-    navigate(`/profile/`, { state: { post: updatedPost, postId: index } });
-
+    if (currentUser.type === "COMMON") {
+      navigate('/profile', { state: { post: updatedPost, postId: index } });
+    } else if (currentUser.type === "SHOP") {
+      navigate('/store-profile', { state: { post: updatedPost, postId: index } });
+    };
+    
     // 모달 닫기
     closeModal();
   };
-
-  useEffect(() => {
-    // 여기서 게시글 데이터를 받아오는 API 호출 로직 추가 가능
-  }, []);
 
   return (
     <ModalOverlay>

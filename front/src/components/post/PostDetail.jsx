@@ -143,16 +143,33 @@ const ShareIcon = styled(RiSendPlaneLine)`
 const Likes = styled.div`
   margin: 5px;
   font-weight: bold;
+  font-size: 15px;
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+`;
+
+const PostDescription = styled.div`
+  font-size: 16px;
+  margin-left: 5px;
+  padding-top: 10px;
   @media (max-width: 375px) {
     font-size: 14.5px;
   }
 `;
 
-const PostDescription = styled.div`
+const HashtagContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+`;
+
+const PostHashtag = styled.div`
+  font-size: 15px;
   margin-left: 5px;
   padding-top: 10px;
   @media (max-width: 375px) {
-    font-size: 14.5px;
+    font-size: 14px;
   }
 `;
 
@@ -290,12 +307,13 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   const [PostDeleteModalOpen, setPostDeleteModalOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [isCommnetActive, setIsCommentActive] = useState(false);
+  const [isCommnetActive, setIsCommentActive] = useState(Array(information.length).fill(false));
   const [posts, setPosts] = useState(information.map((post) => ({ ...post, currentIndex: 0 })));
   const [expandedComments, setExpandedComments] = useState(Array(information.length).fill(false));
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
+
 
   useEffect(() => {
     fetch('/mockdata/shopdata.json')
@@ -373,6 +391,14 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
     });
   }, []);
 
+  const handlePostSave = (updatedPost, index) => {
+    setPosts(prevPosts => {
+      const newPosts = [...prevPosts];
+      newPosts[index] = updatedPost;
+      return newPosts;
+    });
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -398,12 +424,16 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
 
   const toggleComments = useCallback((index) => {
     setExpandedComments((prevExpandedComments) => {
-      const updatedExpandedComments = [...prevExpandedComments];
-      updatedExpandedComments[index] = !updatedExpandedComments[index];
+      const updatedExpandedComments = Array(information.length).fill(false);
+      updatedExpandedComments[index] = !prevExpandedComments[index];
       return updatedExpandedComments;
     });
-    setIsCommentActive((prevIsCommentActive) => !prevIsCommentActive);
-  }, []);
+    setIsCommentActive((prevIsCommentActive) => {
+      const updatedIsCommentActive = Array(information.length).fill(false);
+      updatedIsCommentActive[index] = !prevIsCommentActive[index];
+      return updatedIsCommentActive;
+    });
+  }, [information.length]);
 
   const handleShopNameClick = (nickname) => {
     const shopProfile = shopdata.find(shop => shop.nickname === nickname);
@@ -414,7 +444,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
 
   const scrollDown = () => {
     window.scrollBy({
-      top: 250,
+      top: 200,
       left: 0,
       behavior: "smooth",
     });
@@ -438,7 +468,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
               </ProfileDetails>
             </div>
             <div style={{ position: "relative" }}>
-              {item.nickname === currentUser.nickname ? (
+              {item.nickname === loginUser.nickname ? (
                 <IconBox onClick={() => handleMoreOptionToggle(index)}>
                   <FiMoreVertical />
                 </IconBox>
@@ -460,6 +490,9 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
                       postModifyModalOpen={postModifyModalOpen}
                       closeModal={closeModal}
                       post={selectedPost}
+                      currentUser={currentUser}
+                      index={index}
+                      onSave={handlePostSave}
                     />
                   </ModalPortal>
                 )}
@@ -503,7 +536,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
                 {item.isLiked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
               </ActionIcon>
               <ActionIcon>
-                {isCommnetActive ? (
+                {isCommnetActive[index] ? (
                   <CommentIcon onClick={() => toggleComments(index)} />
                 ) : (
                   <FaRegComment onClick={() => { toggleComments(index); scrollDown(); }} />
@@ -523,8 +556,13 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
           </PostActions>
           <Likes>좋아요 {item.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.nickname === currentUser.nickname ? updatedPost.content : item.content}
+            {updatedPost && modifyPostId === index && item.nickname === loginUser.nickname ? updatedPost.content : item.content}
           </PostDescription>
+          <HashtagContainer>
+            {item.hashTags.map((hashtag) => (
+              <PostHashtag>#{hashtag}</PostHashtag>
+            ))}
+          </HashtagContainer>
           <BottomWrapper>
             <CommentText onClick={() => {toggleComments(index); scrollDown();}} >
               댓글 {item.commentCnt}개
