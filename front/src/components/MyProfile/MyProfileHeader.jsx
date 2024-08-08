@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   max-width: 768px;
   width: 100%;
   top: 0;
-  z-index: 2;
+  z-index: 5;
 
   /* 색상 */
   background-color: ${(props) =>

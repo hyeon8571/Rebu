@@ -8,6 +8,7 @@ import Header from "../components/storeProfile/StoreProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
 import PostGrid from "../components/storeProfile/PostGrid";
 import TimeTable from "../components/reservation/TimeTable";
+import DesignerGrid from "../components/reservation/TimeTable"; // 새로운 컴포넌트를 import 합니다.
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -55,16 +56,15 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-
 const ProfilePage = ({ theme, toggleTheme }) => {
   const location = useLocation();
-  // const updatedUser = location.state?.user;
   const shopProfile = location.state?.shop;
   const loginUser = location.state?.user;
   const [likesUser, setLikesUser] = useState(loginUser);
   const [currentTab, setCurrentTab] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
   const [key, setKey] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState('예약현황'); // 중첩된 탭의 상태를 추가합니다.
   const tabRef = useRef(null);
   const [shopPost, setShopPost] = useState([]);
   const [reviewdata, setReviewdata] = useState([]);
@@ -129,11 +129,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     });
   };
 
-  // if (updatedUser) {
-  //   currentUser = updatedUser;
-  //   loginUser = updatedUser;
-  // }
-
   const handleScroll = () => {
     if (tabRef.current) {
       const tabTop = tabRef.current.getBoundingClientRect().top;
@@ -149,13 +144,13 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []);
 
-
   const tabTitle = [
     { name: "Post", content: "Post", count: shopProfile.feedCnt},
     { name: "Review", content: "Review", count: shopProfile.reviewCnt},
     { name: "Reservation", content: "Reservation", count: shopProfile.reservationCnt},
   ];
 
+  const tabName = ['예약현황', "디자이너"];
 
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
@@ -165,13 +160,17 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     } else if (content === "Review") {
       return <ReviewGrid key={key} Card={reviewdata} currentUser={shopProfile} loginUser={loginUser}/>;
     } else if (content === "Reservation") {
-      return <TimeTable />;
+      return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
     }
   };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
     setKey(prevKey => prevKey + 1);
+  };
+
+  const handleSubTabChange = (tab) => {
+    setActiveSubTab(tab);
   };
 
   return (
@@ -193,6 +192,9 @@ const ProfilePage = ({ theme, toggleTheme }) => {
               tabTitle={tabTitle}
               currentTab={currentTab}
               onTabChange={handleTabChange}
+              tabName={tabName}
+              onSubTabChange={handleSubTabChange} // 서브탭 변경 함수를 전달합니다.
+              activeSubTab={activeSubTab} // 현재 활성화된 서브탭을 전달합니다.
             />
           </StickyTabContainer>
         </div>

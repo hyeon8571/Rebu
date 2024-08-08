@@ -231,11 +231,12 @@ const SlideImg = styled.div`
 
 const SlideBack = styled(IoIosArrowBack)`
   position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  left: 10px;
-  background-color: rgba(141, 141, 141, 0.5);
+  width: 25px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  color: #5b5b5b;
+  /* background-color: rgba(141, 141, 141, 0.5); */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.5s ease;
@@ -244,11 +245,12 @@ const SlideBack = styled(IoIosArrowBack)`
 
 const SlideFront = styled(IoIosArrowForward)`
   position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  right: 10px;
-  background-color: rgba(141, 141, 141, 0.5);
+  width: 25px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  color: #5b5b5b;
+  /* background-color: rgba(141, 141, 141, 0.5); */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.5s ease;

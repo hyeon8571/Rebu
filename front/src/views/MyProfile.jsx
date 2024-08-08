@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import styled from "styled-components";
 import { useLocation } from 'react-router-dom';
 import TabComponent from "../components/MyProfile/MyProfileTab";
@@ -70,6 +71,45 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] =useState([]);
   const [loginUser, setLoginUser] = useState([]);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('토큰을 찾지 못했습니다');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${BASE_URL}/api/members`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setUser(response.data.body);
+        // const profileUser = response.data.body.find(member => member.nickname === user.nickname)
+      } catch (error) {
+        setError('사용자 정보를 찾지 못했습니다');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  };
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  };
+
 
   useEffect(() => {
     fetch('/mockdata/loginuser.json')
