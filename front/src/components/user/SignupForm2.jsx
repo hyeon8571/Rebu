@@ -16,6 +16,14 @@ const Div = styled.div`
   display: flex;
   justify-content: space-around;
 `;
+
+const LargeButton = styled.button`
+  ${ButtonStyles}
+  font-size:18px;
+  /* font-weight: bold; */
+  margin-top: 3rem;
+`;
+
 const SmallButton = styled.button`
   ${ButtonStyles}
   width: 5rem;
@@ -94,7 +102,7 @@ const SignupForm2 = ({
   setFormData, // 부모 컴포넌트로부터 받은 setFormData
   handleSubmit: parentHandleSubmit, // 부모 컴포넌트의 handleSubmit
 }) => {
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   // 닉네임
   const [nicknameMsg, setNicknameMsg] = useState("");
@@ -126,8 +134,9 @@ const SignupForm2 = ({
   // 닉네임 정규식 체크 및 상태 업데이트
   const handleNicknameChange = (e) => {
     const { value } = e.target;
-    // 정규식: 영문, 한글, 숫자, 특수문자(-_^*)의 조합으로 2~15자
-    const regex = /^[A-Za-z가-힣0-9\-_^\*]{0,15}$/;
+    // 정규식: 영문, 숫자, 특수문자(-_)의 조합으로 2~15자
+    const regex =
+      /^(?![_-])[A-Za-z0-9](?:[A-Za-z0-9]|[-_](?![_-])){0,14}[A-Za-z0-9]?$/;
 
     console.log(value);
 
@@ -163,9 +172,6 @@ const SignupForm2 = ({
   // API - 닉네임 중복확인 GET <- (nickname지워야할지도?)
   const checkNicknameAvailability = async (nickname) => {
     try {
-      // const response = await axios.get(
-      //   `${BASE_URL}/api/profiles/check-nickname?nickname=${nickname}&purpose=signup`
-      // );
       const response = await axios.get(
         `${BASE_URL}/api/profiles/check-nickname`,
         {
@@ -309,7 +315,7 @@ const SignupForm2 = ({
 
   // 인증번호 확인 input 6자리수 제한
   const phoneVeriCodeChange = (e) => {
-    const newCode = e.target.value.replace(/[^0-9]/g, "").slice(0, 6); // 숫자만 허용하고 6자리로 제한
+    const newCode = e.target.value.slice(0, 6); // 6자리로 제한
     setPhoneVeriCode(newCode);
     // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
   };
@@ -415,13 +421,18 @@ const SignupForm2 = ({
             value={formData.nickname}
             onChange={handleNicknameChange}
             placeholder="닉네임을 입력하세요"
+            maxLength={16}
+            minLength={3}
           />
         </div>
         <InfoIconContainer>
           <IoMdInformationCircleOutline size="30" color="gray" />
           <Tooltip>
-            닉네임: 영문, 한글, 숫자, 특수문자(-_^*) 조합으로 이루어진 2~15자의
-            문자열로 구성되어야 합니다.
+            <li>길이는 3자 이상 16자 이하입니다.</li>
+            <li>알파벳 소문자, 대문자, 숫자, _, -만을 포함합니다.</li>
+            <li>_ 또는 -로 시작하지 않습니다.</li>
+            <li>_ 또는 -가 연속해서 두 번 이상 나오지 않습니다.</li>
+            <li>_ 또는 -로 끝나지 않습니다.</li>
           </Tooltip>
         </InfoIconContainer>
       </Div>
@@ -527,9 +538,7 @@ const SignupForm2 = ({
 
       {/* 생성 버튼 */}
       <div style={{ display: "flex", justifyContent: "end" }}>
-        <SmallButton type="button" onClick={handleSubmit}>
-          CREATE
-        </SmallButton>
+        <LargeButton onClick={handleSubmit}>CREATE</LargeButton>
       </div>
     </Container>
   );
