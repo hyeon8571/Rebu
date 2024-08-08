@@ -81,6 +81,7 @@ public class CommentService {
                 .commentId(comment.getId())
                 .likeCount(likeCommentRepository.countByComment(comment))
                 .isDelete(comment.isDeleted())
+                .type(profile.getType())
                 .build();
         return dto;
     }
