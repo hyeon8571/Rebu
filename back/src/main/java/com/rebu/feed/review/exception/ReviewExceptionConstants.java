@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ReviewExceptionConstants implements ExceptionConstants {
-    SELECT_MISMATCH("0E00"), RATING_MISMATCH("0E01");
+    SELECT_MISMATCH("0E00"), RATING_MISMATCH("0E01"), NOTALLOWED("0E02");
     private final String code;
 }

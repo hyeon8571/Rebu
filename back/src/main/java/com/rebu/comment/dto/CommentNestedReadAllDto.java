@@ -1,5 +1,6 @@
 package com.rebu.comment.dto;
 
+import com.rebu.profile.enums.Type;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,7 @@ public class CommentNestedReadAllDto {
     private LocalDateTime createAt;
     private String content;
     private Long commentId;
-    private Integer likeCount;
+    private Long likeCount;
+    private boolean isDelete;
+    private Type type;
 }

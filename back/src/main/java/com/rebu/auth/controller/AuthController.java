@@ -31,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/password/verify")
     public ResponseEntity<?> verifyPassword(@AuthenticationPrincipal AuthProfileInfo authDto,
-                                            @RequestBody PasswordSendRequest passwordSendRequest,
+                                            @Valid @RequestBody PasswordSendRequest passwordSendRequest,
                                             HttpSession session) {
         passwordAuthService.verifyPassword(passwordSendRequest.toDto(authDto.getNickname(), authDto.getPassword()));
         session.setAttribute("AuthPassword:" + passwordSendRequest.getPurpose(), authDto.getNickname());

@@ -6,13 +6,19 @@ import com.rebu.profile.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
 @SuperBuilder
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE profile SET status = 'ROLE_DELETED' WHERE id = ?")
+@SQLRestriction("status != 'ROLE_DELETED'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(of = "id")
@@ -84,5 +90,18 @@ public class Profile {
     @PreUpdate
     protected void onUpdate() {
         recentTime = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Profile profile = (Profile) o;
+        return Objects.equals(id, profile.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

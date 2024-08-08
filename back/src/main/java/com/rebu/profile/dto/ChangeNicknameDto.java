@@ -1,6 +1,5 @@
 package com.rebu.profile.dto;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

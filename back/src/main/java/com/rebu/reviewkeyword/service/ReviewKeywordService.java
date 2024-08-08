@@ -9,7 +9,6 @@ import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.reviewkeyword.dto.ReviewKeywordCountDto;
 import com.rebu.reviewkeyword.dto.ReviewKeywordDto;
 import com.rebu.reviewkeyword.entity.ReviewKeyword;
-import com.rebu.reviewkeyword.exception.ReviewKeywordNotFoundException;
 import com.rebu.reviewkeyword.repository.ReviewKeywordRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
