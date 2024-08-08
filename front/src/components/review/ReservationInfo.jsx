@@ -3,16 +3,15 @@ import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import ButtonDisabled from "../common/ButtonDisabled";
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 3fr;
-  height: 150px;
-  width: 85%;
+  height: 175px;
   max-width: 500px;
+  width: calc(100% - 4rem);
+  @media (max-width: 768px) {
+    width: calc(100% - 2rem);
+  }
   background: ${(props) =>
     props.theme.value === "light"
       ? "linear-gradient(0deg,rgba(255, 255, 255, 1) 65%,rgba(243, 237, 250, 1) 100%)"
@@ -23,7 +22,9 @@ const GridContainer = styled.div`
       ? "rgba(0, 0, 0, 0.15) 0px 6px 0px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"
       : "none"};
   margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 3rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   border-radius: 0.7rem;
 `;
 
@@ -79,76 +80,73 @@ const TitleText = styled.div`
   text-overflow: ellipsis;
   @media (max-width: 768px) {
     font-size: 14px;
+    padding-top: 3%;
   }
 `;
 
 const DateWrapper = styled.div`
-  padding-top: 0.2rem;
+  padding-top: 1%;
   font-size: 12px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
     font-size: 10px;
+    padding-top: 3%;
   }
 `;
 
 const MenuWrapper = styled.div`
-  padding-top: 0.5rem;
+  padding-top: 2%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${(props) => (props.theme.value === "light" ? "#943AEE" : "#e9d7fb")};
   font-weight: 600;
   @media (max-width: 768px) {
-    font-size: 12px;
+    font-size: 16px;
+    padding-top: 3%;
   }
 `;
 
-const VisitStatus = styled.div`
-  padding: 0;
-  margin: 0;
-  font-size: 10px;
-  color: lightgrey;
-  text-align: center;
-`;
-
-const ButtonWrapper = styled.div`
+const PriceWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
-  padding-top: 0.5rem;
+  flex-direction: row;
+  padding-top: 3%;
+  font-size: 14px;
+  color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding-top: 4%;
+  }
 `;
 
-export default function VisitedCard({ Card, button }) {
-  if (!Card || !button) {
-    console.log("카드 컴포넌트 불러오기 실패");
-    return null;
+const DesignerWrapper = styled.div`
+  padding-top: 0.3rem;
+  color: ${(props) => (props.theme.value === "light" ? "#ef4f91" : "#cfcfcf")};
+  font-weight: 600;
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-top: 5%;
   }
+`;
+
+export default function Reservation({ info, button }) {
   return (
-    <Wrapper>
-      <GridContainer>
-        <PhotoSection>
-          <Photo src={Card.img} />
-        </PhotoSection>
-        <Content>
-          <TitleWrapper>
-            <TitleText>
-              {Card.title}
-              <HiOutlineChevronRight></HiOutlineChevronRight>
-            </TitleText>
-            <VisitStatus>방문완료</VisitStatus>
-          </TitleWrapper>
-          <MenuWrapper>{Card.menu}</MenuWrapper>
-          <DateWrapper>{Card.date}</DateWrapper>
-          {button.status ? (
-            <ButtonWrapper>
-              <ButtonDisabled button={button}></ButtonDisabled>
-            </ButtonWrapper>
-          ) : (
-            <ButtonWrapper>
-              <ButtonDisabled button={button}></ButtonDisabled>
-            </ButtonWrapper>
-          )}
-        </Content>
-      </GridContainer>
-    </Wrapper>
+    <GridContainer>
+      <PhotoSection>
+        <Photo src={info.img} />
+      </PhotoSection>
+      <Content>
+        <TitleWrapper>
+          <TitleText>
+            {info.title}
+            <HiOutlineChevronRight></HiOutlineChevronRight>
+          </TitleText>
+        </TitleWrapper>
+        <DesignerWrapper>{info.designer}</DesignerWrapper>
+        <MenuWrapper>{info.menu}</MenuWrapper>
+        <PriceWrapper>{info.price.toLocaleString()} ￦</PriceWrapper>
+        <DateWrapper>{info.date}</DateWrapper>
+      </Content>
+    </GridContainer>
   );
 }

@@ -14,6 +14,8 @@ import ThemeToggler from "../util/ThemeToggler";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import confirmLottie from "../assets/images/confirmLottie.json";
+import ButtonDisabled from "../components/common/ButtonDisabled";
+import ModalPortal from "../util/ModalPortal";
 
 const Wrapper = styled.div``;
 const ProfilesDisplay = styled.div`
@@ -27,9 +29,6 @@ export default function Components({ theme, toggleTheme }) {
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/timetable");
-  };
   const buttons = [
     {
       id: 1,
@@ -48,7 +47,7 @@ export default function Components({ theme, toggleTheme }) {
 
   const buttons3 = {
     id: 1,
-    onClick: handleFollowingModal,
+    onClick: () => {},
     highlight: false,
     title: "버튼",
   };
@@ -56,7 +55,9 @@ export default function Components({ theme, toggleTheme }) {
   const buttons4 = [
     {
       id: 1,
-      onClick: handleClick,
+      onClick: () => {
+        navigate("/timetable");
+      },
       title: "시간표",
       highlight: true,
     },
@@ -66,9 +67,9 @@ export default function Components({ theme, toggleTheme }) {
     {
       id: 1,
       onClick: () => {
-        navigate("/menutab");
+        navigate("/myreservation");
       },
-      title: "메뉴탭",
+      title: "내 예약 보기",
       highlight: true,
     },
   ];
@@ -76,10 +77,50 @@ export default function Components({ theme, toggleTheme }) {
     {
       id: 1,
       onClick: () => {
-        navigate("/designertab");
+        navigate("/setrev");
       },
-      title: "예약하기(디자이너부터)",
+      title: "예약 설정",
       highlight: true,
+    },
+  ];
+  const buttons7 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/addmenu");
+      },
+      title: "시술 추가",
+      highlight: true,
+    },
+  ];
+  const buttons8 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/menudisplay");
+      },
+      title: "시술 보기",
+      highlight: true,
+    },
+  ];
+  const buttons9 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/");
+      },
+      title: "시술 보기",
+      highlight: true,
+    },
+  ];
+  const button10 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/postfeed");
+      },
+      title: "매장 피드 작성",
+      disabled: true,
     },
   ];
 
@@ -102,10 +143,12 @@ export default function Components({ theme, toggleTheme }) {
         setIsOpen={setIsModalOpen}
         children={"ㅇ"}
       ></Modal>
-      <ModalNoBackGround
-        isOpen={isModalNoBackgroundOpen}
-        setIsOpen={setIsModalNoBackgroundOpen}
-      ></ModalNoBackGround>
+      <ModalPortal>
+        <ModalNoBackGround
+          isOpen={isModalNoBackgroundOpen}
+          setIsOpen={setIsModalNoBackgroundOpen}
+        ></ModalNoBackGround>
+      </ModalPortal>
       <ThemeToggler theme={theme} toggleTheme={toggleTheme}></ThemeToggler>
       <ProfilesDisplay>
         <ProfileBig img={Img} time={0} />
@@ -117,15 +160,19 @@ export default function Components({ theme, toggleTheme }) {
         <ProfileSmall img={Img} />
       </ProfilesDisplay>
 
-      <Lottie animationData={confirmLottie} />
+      <Lottie
+        style={{ width: 100, height: 100 }}
+        animationData={confirmLottie}
+      />
 
       <ButtonFull buttons={buttons4}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
+      <ButtonFull buttons={buttons5}></ButtonFull>
+      <ButtonFull buttons={buttons7}></ButtonFull>
+      <ButtonFull buttons={buttons6}></ButtonFull>
+      <ButtonFull buttons={buttons8}></ButtonFull>
+      <ButtonFull buttons={buttons9}></ButtonFull>
+      <ButtonFull buttons={button10}></ButtonFull>
+      <ButtonDisabled button={buttons9}></ButtonDisabled>
       <ButtonLarge button={buttons2}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>
       <ButtonSmall button={buttons2}></ButtonSmall>

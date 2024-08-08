@@ -337,6 +337,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
                 title: "예약하기",
                 onClick: () => {
                   if (isTimeChosen) {
+                    console.log(RequestInput);
                     setIsModalOpen(true);
                   } else {
                     window.alert("예약 시간을 선택해주세요");

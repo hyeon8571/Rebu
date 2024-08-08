@@ -95,9 +95,8 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <div style={{ padding: "1rem" }}></div> {/* 높이 맞추기 */}
-      {/* <ButtonBack /> */}
+    <Container className="page">
+      <ButtonBack />
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleLogin}>
         <div className="emailBox">

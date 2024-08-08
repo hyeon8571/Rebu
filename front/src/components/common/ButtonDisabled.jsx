@@ -7,7 +7,6 @@ const ButtonWrapper = styled.div``;
 const Button = styled.button`
   width: 150px;
   height: 50px;
-  /* height: 3rem; */
   line-height: 50px;
   align-self: center;
   box-sizing: border-box;
@@ -21,12 +20,11 @@ const Button = styled.button`
     box-shadow: ${(props) => props.theme.boxShadow};
   }
   margin-bottom: 10px;
-  font-weight: 500;
+  font-weight: 600;
 
   @media (max-width: 768px) {
     width: 100px;
-    /* height: 40px; */
-    height: 3rem;
+    height: 40px;
     line-height: 30px;
   }
 `;

@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import Checkbox from "../common/StyledCheckbox";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import Img from "../../assets/images/img.webp";
-import InviteDesigner from "./InviteDesigner";
-import EditDesignerIntroduction from "./EditDesignerIntroduction";
-import AlertDeleteDesigner from "./AlertDeleteDesigner";
+import InviteDesigner from "../reservation/InviteDesigner";
+import EditDesignerIntroduction from "../reservation/EditDesignerIntroduction";
+import AlertDeleteDesigner from "../reservation/AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
 import ModalPortal from "../../util/ModalPortal";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ const DesignerContent = styled.div`
 const DesignerTitle = styled.div`
   display: flex;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
@@ -111,7 +111,7 @@ const NextButtonWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-export default function DesignerTab() {
+export default function DesignerDisplay() {
   const [isMale, setIsMale] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -120,10 +120,7 @@ export default function DesignerTab() {
 
   const navigate = useNavigate();
 
-  // 예약화면일때
-  const isReservation = true;
-
-  // 디자이너일때
+  // 디자이너인데 자기 항목일때
   const isDesigner = false;
 
   // 가게 프로필 일떄
@@ -132,11 +129,7 @@ export default function DesignerTab() {
   // 손님일때
   const isCustomer = true;
 
-  // 디자이너인데 자기자신 항목인지 (테스트용 변수 실제로는 map 내부에서 판단해야함)
-  const isMine = false;
-
   const toggleHandler = () => {
-    // isMale의 상태를 변경하는 메소드를 구현
     setIsMale(!isMale);
   };
 
@@ -234,7 +227,7 @@ export default function DesignerTab() {
             </DesignerPhotoContainer>
             {isEditMode && (
               <ButtonWrapper>
-                {isMine && (
+                {isDesigner && (
                   <EditButton
                     onClick={() =>
                       handleModifyInstruction(item.workingIntroduction)
@@ -243,7 +236,7 @@ export default function DesignerTab() {
                     수정
                   </EditButton>
                 )}
-                {isShop || isMine ? (
+                {isShop || isDesigner ? (
                   <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
                 ) : null}
               </ButtonWrapper>
