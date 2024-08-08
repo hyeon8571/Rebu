@@ -113,14 +113,16 @@ export default function Components({ theme, toggleTheme }) {
       highlight: true,
     },
   ];
-  const button10 = {
-    id: 1,
-    onClick: () => {
-      navigate("/");
+  const button10 = [
+    {
+      id: 1,
+      onClick: () => {
+        navigate("/postfeed");
+      },
+      title: "매장 피드 작성",
+      disabled: true,
     },
-    title: "시술 보기",
-    disabled: true,
-  };
+  ];
 
   function handleModal() {
     setIsModalOpen(true);
@@ -169,8 +171,8 @@ export default function Components({ theme, toggleTheme }) {
       <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons8}></ButtonFull>
       <ButtonFull buttons={buttons9}></ButtonFull>
-      <ButtonFull buttons={buttons}></ButtonFull>
-      <ButtonDisabled button={button10}></ButtonDisabled>
+      <ButtonFull buttons={button10}></ButtonFull>
+      <ButtonDisabled button={buttons9}></ButtonDisabled>
       <ButtonLarge button={buttons2}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>
       <ButtonSmall button={buttons2}></ButtonSmall>

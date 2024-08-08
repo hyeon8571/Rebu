@@ -80,6 +80,7 @@ const TitleText = styled.div`
   text-overflow: ellipsis;
   @media (max-width: 768px) {
     font-size: 14px;
+    padding-top: 3%;
   }
 `;
 
@@ -89,18 +90,20 @@ const DateWrapper = styled.div`
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
     font-size: 10px;
+    padding-top: 3%;
   }
 `;
 
 const MenuWrapper = styled.div`
-  padding-top: 3%;
+  padding-top: 2%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${(props) => (props.theme.value === "light" ? "#943AEE" : "#e9d7fb")};
   font-weight: 600;
   @media (max-width: 768px) {
-    font-size: 12px;
+    font-size: 16px;
+    padding-top: 3%;
   }
 `;
 
@@ -112,6 +115,7 @@ const PriceWrapper = styled.div`
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
     font-size: 12px;
+    padding-top: 4%;
   }
 `;
 
@@ -120,14 +124,9 @@ const DesignerWrapper = styled.div`
   color: ${(props) => (props.theme.value === "light" ? "#ef4f91" : "#cfcfcf")};
   font-weight: 600;
   @media (max-width: 768px) {
-    font-size: 14px;
+    font-size: 16px;
+    padding-top: 5%;
   }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 0.5rem;
 `;
 
 export default function Reservation({ info, button }) {

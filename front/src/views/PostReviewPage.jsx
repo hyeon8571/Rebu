@@ -21,7 +21,13 @@ function scrollUp(top) {
 }
 
 export default function PostReview() {
-  const [review, setReview] = useState({rate : 0, keywords : [], images : [], contents : "", hashTags : [] });
+  const [review, setReview] = useState({
+    rate: 0,
+    keywords: [],
+    images: [],
+    contents: "",
+    hashTags: [],
+  });
   const [isRateAlert, setIsRateAlert] = useState(false);
   const [isKeywordsAlert, setIsKeywordsAlert] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
@@ -31,10 +37,12 @@ export default function PostReview() {
   const navigate = useNavigate();
 
   function ValidationReview() {
-
-    const ratePosition = document.getElementById('rate').getBoundingClientRect().top+scrollY;
-    const keywordPosition = document.getElementById('keyword').getBoundingClientRect().top+scrollY;
-    const imgPosition = document.getElementById('img').getBoundingClientRect().top+scrollY;
+    const ratePosition =
+      document.getElementById("rate").getBoundingClientRect().top + scrollY;
+    const keywordPosition =
+      document.getElementById("keyword").getBoundingClientRect().top + scrollY;
+    const imgPosition =
+      document.getElementById("img").getBoundingClientRect().top + scrollY;
 
     if (review.rate === 0) {
       setIsRateAlert(true);
@@ -55,9 +63,7 @@ export default function PostReview() {
         setTimeout(() => scrollUp(imgPosition), 100);
       }
     }
-
   }
-
 
   function handleSubmit() {
     ValidationReview();
@@ -66,14 +72,23 @@ export default function PostReview() {
 
   return (
     <>
-      <PostReview1 isRateAlert={isRateAlert} setIsRateAlert={setIsRateAlert}
+      <PostReview1
+        isRateAlert={isRateAlert}
+        setIsRateAlert={setIsRateAlert}
         setAnimationKey={setAnimationKey}
-        isAlert={isKeywordsAlert} setIsAlert={setIsKeywordsAlert}
-        info={info} animationKey={animationKey} review={review}
-        setReview={setReview} />
-      <PostReview2 review={review} setReview={setReview}
-        isImgAlert={isImgAlert} setIsImgAlert={setIsImgAlert}
-         animationKey={animationKey}
+        isAlert={isKeywordsAlert}
+        setIsAlert={setIsKeywordsAlert}
+        info={info}
+        animationKey={animationKey}
+        review={review}
+        setReview={setReview}
+      />
+      <PostReview2
+        review={review}
+        setReview={setReview}
+        isImgAlert={isImgAlert}
+        setIsImgAlert={setIsImgAlert}
+        animationKey={animationKey}
       />
       <ButtonWrapper>
         <ButtonLarge
