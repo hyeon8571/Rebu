@@ -9,7 +9,6 @@ import { BASE_URL } from "./Signup";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
-import ButtonBack from "../components/common/ButtonBack";
 import { ButtonStyles } from "../components/common/ButtonLogin";
 import "./Login.css";
 
