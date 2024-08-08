@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import PhoneVerification from "./PhoneVerification";
 import { BASE_URL } from "../../views/Signup";
 import styled from "styled-components";
 import "../../views/Login.css";
@@ -227,130 +228,12 @@ const SignupForm2 = ({
       handleChange("birth")({ target: { value: formattedValue } });
     }
   };
-
-  // phone 입력 + 중복 체크
-  const handlePhoneChange = (e) => {
-    const { value } = e.target;
-    const formattedValue = formatPhoneNumber(value);
-    handleChange("phone")({ target: { value: formattedValue } });
-
-    // 전화번호가 11자리가 되었을 때 중복 체크
-    if (formattedValue.length === 13) {
-      // 010-0000-0000 형식은 13자
-      checkPhoneAvailability(formattedValue);
-    }
+  const handlePhoneChange = (phone) => {
+    setFormData({ ...formData, phone });
   };
 
-  const formatPhoneNumber = (value) => {
-    // 숫자만 남기기: 정규식을 사용하여 숫자가 아닌 모든 문자를 제거하고 최대 11자리까지 허용
-    const cleaned = value.replace(/\D/g, "").slice(0, 11);
-
-    // 010-0000-0000 형식으로 포맷팅
-    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
-    if (match) {
-      return `${match[1]}-${match[2]}-${match[3]}`;
-    }
-
-    // 010-0000 또는 010-000-0000 형식으로 포맷팅
-    const partialMatch = cleaned.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
-    if (partialMatch) {
-      if (partialMatch[2]) {
-        return `${partialMatch[1]}-${partialMatch[2]}${
-          partialMatch[3] ? `-${partialMatch[3]}` : ""
-        }`;
-      }
-      return partialMatch[1];
-    }
-
-    return value;
-  };
-
-  // API-휴대폰 중복 확인(GET)
-  const checkPhoneAvailability = async (phone) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/profiles/check-phone`, {
-        params: { phone: phone, purpose: "signup" },
-      });
-      if (response.data.code === "전화번호 중복 검사 성공 코드") {
-        if (response.data.body === true) {
-          // true가 중복이 있는 경우
-          setPhoneMsg("중복된 전화번호입니다");
-          setIsPhoneValid(false);
-        } else {
-          setPhoneMsg("사용 가능한 전화번호입니다");
-          setIsPhoneValid(true);
-        }
-      } else {
-        setPhoneMsg("전화번호 형식이 맞지 않습니다");
-      }
-    } catch (error) {
-      console.error("Error checking phone availability:", error);
-      setPhoneMsg("전화번호 확인 중 오류가 발생했습니다.");
-      setIsPhoneValid(false);
-    }
-  };
-
-  // API-인증-휴대폰인증 (6자리 코드)요청 POST -> 인증코드 폰으로 전송
-  const sendPhoneVerification = async () => {
-    try {
-      const response = await axios.post(`${BASE_URL}/api/auths/phone/send`, {
-        phone: formData.phone,
-        purpose: "signup",
-      });
-      console.log(response.data);
-      if (response.data.code === "전화번호 인증 코드 전송 성공") {
-        alert("인증번호가 발송되었습니다.");
-        setIsVerificationFieldVisible(true);
-      } else {
-        alert("인증번호 발송에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("Error sending phone verification:", error);
-      alert("인증번호 발송 중 오류가 발생했습니다.");
-    }
-  };
-
-  //phone 번호인증 버튼->코드 인증번호 input나옴
-  const showVerificationField = () => {
-    setIsVerificationFieldVisible(true); // ... 지워야하나
-    sendPhoneVerification(); // phone 인증번호 전송 함수 호출 POST- phone/send
-  };
-
-  // 인증번호 확인 input 6자리수 제한
-  const phoneVeriCodeChange = (e) => {
-    const newCode = e.target.value.slice(0, 6); // 6자리로 제한
-    setPhoneVeriCode(newCode);
-    // setEmptyFieldsMsg((prev) => ({ ...prev, phoneVeriCode: false }));
-  };
-
-  // API-인증-휴대폰 인증번호 확인 (6자리 코드 휴대폰으로 받은 것 인증)
-  const verifyPhoneCode = async () => {
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/api/auths/phone/verify`,
-        {
-          phone: formData.phone,
-          purpose: "signup",
-          verifyCode: phoneVeriCode,
-        },
-        {
-          withCredentials: true, //쿠키-세션 저장을 위한 옵션
-        }
-      );
-      console.log("인증번호확인", phoneVeriCode, response);
-      if (response.data.code === "전화번호 인증 성공 코드") {
-        alert("전화번호 인증이 완료되었습니다.");
-        console.log("전화번호 인증이 완료되었습니다.");
-        setPtagMessage("전화번호 인증이 완료되었습니다.");
-        setIsCodeVerified(true);
-      } else {
-        alert("전화번호 인증에 실패했습니다. 사유:" + response.data.code);
-        // alert(`전화번호 인증에 실패했습니다. 오류 코드: ${response.data.code}`); //
-      }
-    } catch (error) {
-      console.error("Error verifying phone code:", error);
-      alert("전화번호 인증 중 오류가 발생했습니다.");
-    }
+  const setIsPhoneVerified = (value) => {
+    setIsCodeVerified(value);
   };
 
   // 성별
@@ -408,7 +291,6 @@ const SignupForm2 = ({
           />
         </div>
       </Div>
-
       <Div>
         <div
           className="emailBox"
@@ -442,7 +324,6 @@ const SignupForm2 = ({
       <Msg style={{ color: isNicknameValid ? "blue" : "red" }}>
         {nicknameMsg}
       </Msg>
-
       {/* 생년월일 */}
       <Div>
         <div
@@ -481,63 +362,14 @@ const SignupForm2 = ({
           </Button>
         </RadioButtonContainer>
       </Div>
-
-      {/* 전화번호 */}
-      <Div>
-        <div
-          className="emailBox"
-          style={{ maxWidth: "100%", justifyContent: "start" }}
-        >
-          <label htmlFor="phone" className="label">
-            전화번호
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            className="loginInput"
-            value={formData.phone}
-            onChange={handlePhoneChange}
-            placeholder="010-0000-0000"
-          />
-        </div>
-      </Div>
-      <Msg style={{ color: isPhoneValid ? "blue" : "red" }}>{phoneMsg}</Msg>
-
-      <SmallButton onClick={showVerificationField}>인증요청</SmallButton>
-      {/* 인증코드 6자리 */}
-      <div>
-        <Div>
-          {isVerificationFieldVisible && (
-            <>
-              <br />
-              <div
-                className="emailBox"
-                style={{ maxWidth: "100%", justifyContent: "start" }}
-              >
-                {/* <EmailBox> */}
-                <label htmlFor="phoneVeri" className="label">
-                  인증번호
-                </label>
-                <input
-                  type="phoneVeri"
-                  id="phoneVeri"
-                  className="loginInput"
-                  value={phoneVeriCode}
-                  onChange={phoneVeriCodeChange}
-                  placeholder="000000"
-                />
-              </div>
-
-              <MidiumButton
-                onClick={verifyPhoneCode}
-                style={{ whiteSpace: "nowrap" }}
-              >
-                인증하기
-              </MidiumButton>
-            </>
-          )}
-        </Div>
-      </div>
+      {/* // 전화번호 중복체크 및 인증 */}
+      <PhoneVerification
+        name={formData.name}
+        phone={formData.phone}
+        setPhone={handlePhoneChange}
+        setIsPhoneVerified={setIsPhoneVerified}
+        checkDuplicate={true}
+      />
 
       {/* 생성 버튼 */}
       <div style={{ display: "flex", justifyContent: "end" }}>

@@ -13,7 +13,13 @@ const Timer = styled.p`
   font-weight: bold;
 `;
 
-const PhoneVerification = ({ name, phone, setPhone, setIsPhoneVerified }) => {
+const PhoneVerification = ({
+  name,
+  phone,
+  setPhone,
+  setIsPhoneVerified,
+  checkDuplicate = false,
+}) => {
   // const [phone, setPhone] = useState(""); //phone
   const [errors, setErrors] = useState({ name: "", phone: "" });
   const [phoneCode, setPhoneCode] = useState(""); //phone
@@ -26,10 +32,17 @@ const PhoneVerification = ({ name, phone, setPhone, setIsPhoneVerified }) => {
   const [ptagMessage, setPtagMessage] = useState(
     "인증번호를 문자 메시지로 전송하였습니다"
   ); //p태그 내용
+  const [phoneMsg, setPhoneMsg] = useState(""); // 전화번호 중복 확인 메시지를 관리
 
   const handlePhoneChange = (e) => {
     const formattedValue = formatPhoneNumber(e.target.value);
     setPhone(formattedValue);
+
+    // 전화번호가 11자리가 되었을 때 중복 체크
+    if (checkDuplicate === true && formattedValue.length === 13) {
+      // 010-0000-0000 형식은 13자
+      checkPhoneAvailability(formattedValue);
+    }
   };
 
   const formatPhoneNumber = (value) => {
@@ -45,6 +58,30 @@ const PhoneVerification = ({ name, phone, setPhone, setIsPhoneVerified }) => {
     return value;
   };
 
+  // API-휴대폰 중복 확인(GET)
+  const checkPhoneAvailability = async (phone) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/profiles/check-phone`, {
+        params: { phone: phone, purpose: "signup" },
+      });
+      if (response.data.code === "전화번호 중복 검사 성공 코드") {
+        if (response.data.body === true) {
+          // true가 중복이 있는 경우
+          setPhoneMsg("중복된 전화번호입니다");
+          setIsPhoneValid(false);
+        } else {
+          setPhoneMsg("사용 가능한 전화번호입니다");
+          setIsPhoneValid(true);
+        }
+      } else {
+        setPhoneMsg("전화번호 형식이 맞지 않습니다");
+      }
+    } catch (error) {
+      console.error("Error checking phone availability:", error);
+      setPhoneMsg("전화번호 확인 중 오류가 발생했습니다.");
+      setIsPhoneValid(false);
+    }
+  };
   // API: 휴대폰인증 (6자리 코드)요청 POST -> 인증코드 폰으로 전송
   const sendPhoneVerification = async () => {
     try {
