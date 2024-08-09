@@ -106,7 +106,7 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
       // Dispatch the logout action
       dispatch(logout());
       alert("logout");
-      navigate("/login"); //로그아웃 후 로그인 페이지로 이동
+      navigate("/login", (replace = true)); //로그아웃 후 로그인 페이지로 이동
       closeModal();
     } catch (error) {
       console.log("로그아웃 중 오류 발생: ", error);
