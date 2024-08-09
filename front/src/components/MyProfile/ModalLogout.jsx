@@ -83,6 +83,7 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
   // };
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     //로그아웃 기능
@@ -91,6 +92,7 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
       await axios.post(`${BASE_URL}/api/auths/logout`);
 
       dispatch(logout()); // Dispatch the logout action
+      navigate("/login", { replace: true });
       closeModal();
     } catch (error) {
       console.log("로그아웃 중 오류 발생: ", error);
