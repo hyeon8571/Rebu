@@ -9,7 +9,8 @@ const initialState = {
   // 로그인할때, 프로필 전환할 때 변경하기
   isLogin: false,
   nickname: "",
-  type: 1 // 1:일반, 2:디자이너, 3:매장 //BE에서 로그인 할 때 받음
+  type: 1, // 1:일반, 2:디자이너, 3:매장 //BE에서 로그인 할 때 받음
+  profile: null, //현재 프로필 데이터를 저장할 수 있는 상태 추가
 };
 
 //loginSlice
@@ -28,15 +29,19 @@ const authSlice = createSlice({
       state.isLogin = false;
       state.nickname = "";
       state.type = 1;
+      state.profile = null; // 로그아웃 시 프로필도 초기화
       localStorage.removeItem("access")
       console.log("redux-logout 성공") //debug
 
     },
+    setProfile(state, action) {
+      state.profile = action.payload; // 프로필 데이터 저장
+    }
     // add other reducers
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, setProfile } = authSlice.actions;
 // export default authSlice.reducer;
 
 
@@ -75,6 +80,24 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
+// Thunk action to get profile
+export const getProfile = (nickname) => async (dispatch) => {
+  const access = localStorage.getItem("access");
+  try {
+    const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
+      headers: {
+        access: access, // 토큰 전달
+        "Content-Type": "application/json",
+      },
+    });
 
+    console.log("프로필 성공?", response);
+    dispatch(setProfile(response.data)); // 프로필 데이터를 상태에 저장
+    return { success: true };
+  } catch (error) {
+    console.error("프로필 가져오기 실패: ", error);
+    return { success: false, error: "프로필을 가져오는데 실패했습니다." };
+  }
+};
 
 export default authSlice.reducer;

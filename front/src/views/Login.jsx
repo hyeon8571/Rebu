@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { login } from "../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { login, getProfile } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
 //css
 import styled from "styled-components";
@@ -38,7 +37,6 @@ const Login = () => {
 
   const dispatch = useDispatch(); //redux
   const navigate = useNavigate();
-  const nickname = useSelector((state) => state.auth.nickname); // 컴포넌트 내부에서 useSelector 사용
 
   const handleLogin = async (e) => {
     // dispatch(login(loginParam))
@@ -50,6 +48,18 @@ const Login = () => {
 
       // 로그인 성공 시 프로필조회 후 currentProfile에 데이터 저장
       // const currentProfile = await dispatch(getProfile(nickname));
+      // result.payload에서 nickname을 가져옴
+      const nickname = result.payload.nickname; //로그인 성공 시 닉네임 가져옴
+      // const { nickname, type, isLogin } = useSelector((state) => state.auth);
+
+      // 프로필 데이터 가져오기
+      const profile = await dispatch(getProfile(nickname));
+      if (profile.success) {
+        console.log("프로필 조회 성공:", profile.payload);
+        // navigate("/profile", { replace: true }); // 프로필 페이지로 이동
+      } else {
+        alert("프로필 조회에 실패했습니다.");
+      }
       console.log("nickname", nickname);
       navigate("/error", { replace: true });
     } else {

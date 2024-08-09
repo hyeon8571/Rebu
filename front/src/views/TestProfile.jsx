@@ -11,7 +11,7 @@ const TestProfile = () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
         headers: {
-          access: access,
+          access: access, //우리는 token을 access로 받기로 했다
           // Authorization: `Bearer ${access}`,
           "Content-Type": "application/json", // 헤더에 Content-Type 추가
         },
