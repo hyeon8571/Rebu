@@ -4,9 +4,9 @@ import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
-import com.rebu.profile.controller.dto.ChangeNicknameRequest;
 import com.rebu.profile.controller.dto.ChangeIntroRequest;
 import com.rebu.profile.controller.dto.ChangeIsPrivateRequest;
+import com.rebu.profile.controller.dto.ChangeNicknameRequest;
 import com.rebu.profile.controller.dto.ChangePhoneRequest;
 import com.rebu.profile.dto.*;
 import com.rebu.profile.enums.Type;
@@ -15,6 +15,7 @@ import com.rebu.profile.exception.PhoneDuplicateException;
 import com.rebu.profile.service.ProfileService;
 import com.rebu.profile.validation.annotation.*;
 import com.rebu.security.dto.AuthProfileInfo;
+import com.rebu.security.dto.ProfileInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -114,16 +115,16 @@ public class ProfileController {
         if (authPassword == null || !authPassword.equals(nickname)) {
             throw new PasswordNotVerifiedException();
         }
-        String type = profileService.deleteProfile(nickname, response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", type));
+        ProfileInfo profileInfo = profileService.deleteProfile(nickname, response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", profileInfo));
     }
 
     @GetMapping("/switch-profile")
     public ResponseEntity<?> switchProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                            @Nickname @RequestParam String nickname,
                                            HttpServletResponse response) {
-        String type = profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", type));
+        ProfileInfo profileInfo = profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", profileInfo));
     }
 
     @GetMapping("/{nickname}")

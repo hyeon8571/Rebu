@@ -9,6 +9,7 @@ import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.MemberNotMatchException;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
+import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.storage.exception.FileUploadFailException;
 import com.rebu.storage.service.StorageService;
@@ -111,7 +112,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public String deleteProfile(String nickname, HttpServletResponse response) {
+    public ProfileInfo deleteProfile(String nickname, HttpServletResponse response) {
         Profile targetProfile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -123,11 +124,14 @@ public class ProfileService {
 
         resetToken(profileToSwitch.getNickname(), profileToSwitch.getType().toString(), response);
 
-        return profileToSwitch.getType().toString();
+        return ProfileInfo.builder()
+                .nickname(profileToSwitch.getNickname())
+                .type(profileToSwitch.getType().toString())
+                .build();
     }
 
     @Transactional(readOnly = true)
-    public String switchProfile(SwitchProfileDto switchProfileDto, HttpServletResponse response) {
+    public ProfileInfo switchProfile(SwitchProfileDto switchProfileDto, HttpServletResponse response) {
         Profile nowProfile = profileRepository.findByNickname(switchProfileDto.getNowNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -142,7 +146,10 @@ public class ProfileService {
 
         resetToken(targetProfile.getNickname(), targetProfile.getType().toString(), response);
 
-        return targetProfile.getType().toString();
+        return ProfileInfo.builder()
+                .nickname(targetProfile.getNickname())
+                .type(targetProfile.getType().toString())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -160,7 +167,10 @@ public class ProfileService {
             getProfileResponse.setRelation(GetProfileResponse.Relation.OWN);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
             getProfileResponse.setRelation(GetProfileResponse.Relation.FOLLOWING);
+        } else {
+            getProfileResponse.setRelation(GetProfileResponse.Relation.NONE);
         }
+
         return getProfileResponse;
     }
 

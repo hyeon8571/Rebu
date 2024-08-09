@@ -6,6 +6,7 @@ import com.rebu.member.controller.dto.MemberLoginRequest;
 import com.rebu.profile.entity.Profile;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.security.dto.AuthProfileInfo;
+import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.entity.RefreshToken;
 import com.rebu.security.service.RefreshTokenService;
 import com.rebu.security.util.JWTUtil;
@@ -98,7 +99,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
-        setResponse(response, "로그인 성공 코드", type);
+        setResponse(response, "로그인 성공 코드", new ProfileInfo(nickname, type));
     }
 
     @Override
@@ -116,7 +117,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         return cookie;
     }
 
-    private void setResponse(HttpServletResponse response, String code, String data) throws IOException {
+    private void setResponse(HttpServletResponse response, String code, ProfileInfo data) throws IOException {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
