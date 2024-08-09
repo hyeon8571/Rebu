@@ -60,6 +60,8 @@ const Signup = () => {
             formData={formData}
             handleChange={handleChange}
             nextStep={nextStep}
+            purpose={"signup"}
+            buttonTitle={"Next"}
           />
         )}
         {step === 2 && (

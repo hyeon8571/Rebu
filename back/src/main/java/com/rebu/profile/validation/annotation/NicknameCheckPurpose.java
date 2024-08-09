@@ -1,7 +1,6 @@
 package com.rebu.profile.validation.annotation;
 
 import com.rebu.profile.validation.validator.NicknameCheckPurposeValidator;
-import com.rebu.profile.validation.validator.NicknameValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

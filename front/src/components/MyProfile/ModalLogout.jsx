@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import axios from "axios";
 import styled from "styled-components";
+import { BASE_URL } from "../../views/Signup";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -85,26 +86,13 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    //로그아웃하자...
+    //로그아웃 기능
     try {
-      // 로그아웃 API 호출 - header로 받음
-      // api - body로 받음 // {access: localStorage.getItem("accessToken"),}
-      await axios.post(
-        "http://localhost:80/api/auths/logout",
-        {},
-        {
-          headers: {
-            access: `Bearer ${localStorage.getItem(accessToken)}`,
-          },
-        }
-      );
+      // 로그아웃 API 호출
+      await axios.post(`${BASE_URL}/api/auths/logout`);
 
-      localStorage.removeItem("accessToken");
-
-      // Dispatch the logout action
-      dispatch(logout());
-      alert("logout");
-      navigate("/login"); //로그아웃 후 로그인 페이지로 이동
+      dispatch(logout()); // Dispatch the logout action
+      navigate("/login", { replace: true });
       closeModal();
     } catch (error) {
       console.log("로그아웃 중 오류 발생: ", error);

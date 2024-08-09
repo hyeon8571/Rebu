@@ -1,10 +1,7 @@
 package com.rebu.comment.controller.dto;
 
 import com.rebu.comment.dto.CommentCreateDto;
-import com.rebu.comment.entity.Comment;
 import com.rebu.comment.validation.annotation.Content;
-import com.rebu.feed.entity.Feed;
-import com.rebu.profile.entity.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

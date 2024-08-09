@@ -1,18 +1,12 @@
 package com.rebu.feed.review.service;
 
 import com.rebu.common.aop.annotation.Authorized;
-import com.rebu.common.util.ListUtils;
-import com.rebu.feed.dto.FeedCreateByEmployeeDto;
-import com.rebu.feed.dto.FeedCreateByShopDto;
-import com.rebu.feed.dto.FeedDeleteDto;
-import com.rebu.feed.dto.FeedModifyDto;
-import com.rebu.feed.entity.Feed;
 import com.rebu.feed.exception.FeedNotFoundException;
-import com.rebu.feed.repository.FeedImageRepository;
 import com.rebu.feed.review.dto.ReviewCreateDto;
 import com.rebu.feed.review.dto.ReviewDeleteDto;
 import com.rebu.feed.review.dto.ReviewModifyDto;
 import com.rebu.feed.review.entity.Review;
+import com.rebu.feed.review.exception.ReviewNotAllowedException;
 import com.rebu.feed.review.repository.ReviewRepository;
 import com.rebu.feed.service.FeedImageService;
 import com.rebu.feed.service.HashtagService;
@@ -36,6 +30,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,13 +60,19 @@ public class ReviewService {
         if(!profile.equals(reservation.getProfile()))
             throw new ProfileUnauthorizedException();
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDateTime = reservation.getStartDateTime();
+
+        if(startDateTime.isBefore(now) || startDateTime.plusDays(7).isAfter(now))
+            throw new ReviewNotAllowedException();
+
         EmployeeProfile employee = reservation.getEmployeeProfile();
         ShopProfile shop = reservation.getShopProfile();
         Review review = reviewRepository.save(dto.toEntity(profile, employee, shop, reservation));
         List<SelectedReviewKeyword> selectedReviewKeywords = generateSelectedReviewKeyword(dto.getReviewKeywordIds(), review);
         selectedReviewKeywordRepository.saveAll(selectedReviewKeywords);
-        feedImageService.createFeedImages(dto.getImages(), review);
         hashtagService.createHashTags(dto.getHashtags(), review);
+        feedImageService.createFeedImages(dto.getImages(), review);
     }
 
     /**
@@ -84,17 +85,24 @@ public class ReviewService {
     public void modify(@Valid ReviewModifyDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
         Review review = reviewRepository.findById(dto.getFeedId()).orElseThrow(FeedNotFoundException::new);
+        Reservation reservation = review.getReservation();
 
         if(!profile.equals(review.getWriter()))
             throw new ProfileUnauthorizedException();
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDateTime = reservation.getStartDateTime();
+
+        if(startDateTime.isBefore(now) || startDateTime.plusDays(7).isAfter(now))
+            throw new ReviewNotAllowedException();
+
         selectedReviewKeywordRepository.deleteByReviewId(review.getId());
         List<SelectedReviewKeyword> selectedReviewKeywords = generateSelectedReviewKeyword(dto.getReviewKeywordIds(), review);
         selectedReviewKeywordRepository.saveAll(selectedReviewKeywords);
-        feedImageService.deleteFeedImages(review.getId());
-        feedImageService.createFeedImages(dto.getImages(), review);
         hashtagService.deleteHashTags(review.getId());
         hashtagService.createHashTags(dto.getHashtags(), review);
+        feedImageService.deleteFeedImages(review.getId());
+        feedImageService.createFeedImages(dto.getImages(), review);
 
         review.changeContent(dto.getContent());
         review.changeRating(dto.getRating());

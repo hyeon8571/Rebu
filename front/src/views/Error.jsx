@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +54,8 @@ const Button = styled.button`
 
 const Notfound = () => {
   const nav = useNavigate();
+  // useSelector는 컴포넌트 내부에서 호출
+  const { nickname, type, isLogin } = useSelector((state) => state.auth);
 
   const onClickMain = () => {
     nav("/main");
@@ -60,6 +63,12 @@ const Notfound = () => {
 
   return (
     <Container>
+      <div>
+        <h2>로그인 상태</h2>
+        <p>닉네임: {nickname || "Guest"}</p>
+        <p>타입: {type}</p>
+        <p>로그인 여부: {isLogin ? "로그인됨" : "로그인되지 않음"}</p>
+      </div>
       <Title>서비스에 접속할 수 없습니다.</Title>
       <Description>
         기술적인 문제로 일시적으로 접속되지 않았습니다.

@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useLocation } from 'react-router-dom';
-import { postCards } from "../util/postDatas";
-import { scrapCards } from "../util/scrapDatas";
-import { storeCards } from "../util/storeDatas";
 import TabComponent from "../components/storeProfile/StoreProfileTab";
 import ProfileImage from "../components/storeProfile/StoreProfileImage";
-import Img from "../assets/images/ssafyhair.png";
-import userImg from "../assets/images/cha.png";
 import ProfileInfo from "../components/storeProfile/StoreProfileInfo";
 import Header from "../components/storeProfile/StoreProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
 import PostGrid from "../components/storeProfile/PostGrid";
 import TimeTable from "../components/reservation/TimeTable";
+import DesignerGrid from "../components/reservation/TimeTable"; // 새로운 컴포넌트를 import 합니다.
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -60,43 +56,64 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-// 예시 - 현재 프로필
-let currentUser = {
-  profile_src: Img,
-  introduction: "싸피 앞 메가박스 건물에 위치하고 있습니다:)",
-  type: "store",
-  category: "헤어",
-  name: "사피 헤어샵",
-  license_num: "12345678",
-  nickname: "SSAFY_hair",
-  address: "경북 구미시 인동",
-  rank: 4.8,
-  reservation_interval: 10,
-  phone: "010-1234-5678",
-  following: {
-    nickname: "jiwon",
-  },
-  follower: {
-    nickname: "cha_cha",
-  }
-};
-
-
-
 const ProfilePage = ({ theme, toggleTheme }) => {
   const location = useLocation();
-  // const updatedUser = location.state?.user;
   const shopProfile = location.state?.shop;
   const loginUser = location.state?.user;
   const [likesUser, setLikesUser] = useState(loginUser);
   const [currentTab, setCurrentTab] = useState(0);
-  // const [reviewPhotos, setReviewPhotos] = useState([]);
-  // const [scrapPhotos, setScrapPhotos] = useState([]);
   const [isSticky, setIsSticky] = useState(false);
   const [key, setKey] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState('예약현황'); // 중첩된 탭의 상태를 추가합니다.
   const tabRef = useRef(null);
   const [shopPost, setShopPost] = useState([]);
+  const [reviewdata, setReviewdata] = useState([]);
+  const [ratingAvg, setRatingAvg] = useState(0);
+  const [followerdata, setFollowerData] = useState([]);
+  const [followingdata, setFollowingData] =useState([]);
+  const [likeshop, setLikeshop] = useState([]);
 
+  useEffect(() => {
+    fetch('/mockdata/likeshop.json')
+      .then(res => res.json())
+      .then((data) => {
+        setLikeshop(data.body);
+      })      
+  }, []);
+  
+  useEffect(() => {
+    fetch('/mockdata/followerlist.json')
+      .then(res => res.json())
+      .then((data) => {
+        setFollowerData(data.body);
+      })      
+  }, []);
+
+  useEffect(() => {
+    fetch('/mockdata/followinglist.json')
+      .then(res => res.json())
+      .then((data) => {
+        setFollowingData(data.body);
+      })      
+  }, []);
+
+  useEffect(() => {
+    fetch('/mockdata/reviewdata.json')
+      .then(res => res.json())
+      .then((data) => {
+        const shopReview = data.body.filter(review => shopProfile.nickname === review.shopNickname && shopProfile.nickname !== review.nickname);
+        setReviewdata(shopReview || data.body);
+      })      
+  }, [reviewdata, shopProfile]);
+
+  useEffect(() => {
+    if (reviewdata.length > 0) {
+      const totalRating = reviewdata.reduce((acc, review) => acc + review.rating, 0);
+      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(2) : 0;
+      setRatingAvg(averageRating);
+    }
+  });
+  
   useEffect(() => {
     fetch('/mockdata/shoppost.json')
       .then(res => res.json())
@@ -111,11 +128,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       likes: newLikes
     });
   };
-
-  // if (updatedUser) {
-  //   currentUser = updatedUser;
-  //   loginUser = updatedUser;
-  // }
 
   const handleScroll = () => {
     if (tabRef.current) {
@@ -132,18 +144,13 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const reviewPhotos = postCards.flatMap(postcard => postcard.img);
-  //   const scrapPhotos = scrapCards.flatMap(scrapcard => scrapcard.img);
-  //   setReviewPhotos(reviewPhotos);
-  //   setScrapPhotos(scrapPhotos);
-  // }, []);
-
   const tabTitle = [
     { name: "Post", content: "Post", count: shopProfile.feedCnt},
     { name: "Review", content: "Review", count: shopProfile.reviewCnt},
     { name: "Reservation", content: "Reservation", count: shopProfile.reservationCnt},
   ];
+
+  const tabName = ['예약현황', "디자이너"];
 
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
@@ -151,15 +158,19 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     if (content === "Post") {
       return <PostGrid key={key} Card={shopPost} currentUser={shopProfile} loginUser={loginUser}/>;
     } else if (content === "Review") {
-      return <ReviewGrid key={key} loginUser={loginUser}/>;
+      return <ReviewGrid key={key} Card={reviewdata} currentUser={shopProfile} loginUser={loginUser}/>;
     } else if (content === "Reservation") {
-      return <TimeTable />;
+      return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
     }
   };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
     setKey(prevKey => prevKey + 1);
+  };
+
+  const handleSubTabChange = (tab) => {
+    setActiveSubTab(tab);
   };
 
   return (
@@ -170,8 +181,10 @@ const ProfilePage = ({ theme, toggleTheme }) => {
           <ProfileImage
             currentUser={shopProfile}
             time={130}
+            followerdata={followerdata}
+            followingdata={followingdata}
           />
-          <ProfileInfo currentUser={shopProfile} loginUser={likesUser} updateLikes={updateLikes} />
+          <ProfileInfo currentUser={shopProfile} loginUser={likesUser} updateLikes={updateLikes} rating={ratingAvg} likeshop={likeshop}/>
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>
@@ -179,6 +192,9 @@ const ProfilePage = ({ theme, toggleTheme }) => {
               tabTitle={tabTitle}
               currentTab={currentTab}
               onTabChange={handleTabChange}
+              tabName={tabName}
+              onSubTabChange={handleSubTabChange} // 서브탭 변경 함수를 전달합니다.
+              activeSubTab={activeSubTab} // 현재 활성화된 서브탭을 전달합니다.
             />
           </StickyTabContainer>
         </div>

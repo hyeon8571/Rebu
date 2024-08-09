@@ -23,13 +23,14 @@ const NameInfo = styled.div`
 const LeftContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
+  margin-right: 8px;
 `;
 
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 `;
 
 const Name = styled.h2`
@@ -42,8 +43,13 @@ const Name = styled.h2`
 `;
 
 const StoreMarkBox = styled.img`
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  @media (max-width: 375px) {
+    width: 18px;
+  height: 18px;
+  }
 `;
 
 const Rating = styled.div`
@@ -162,7 +168,7 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ currentUser, loginUser, updateLikes }) => {
+const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
@@ -207,17 +213,16 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes }) => {
           <StoreMarkBox src={StoreMark} />
           <Rating>
             <FaRegStar />
-            &nbsp;
-            <RatingText>{currentUser.rank}</RatingText>
+        
+            <RatingText>{rating}</RatingText>
           </Rating>
         </LeftContainer>
         <RightContainer>
-          {/* {currentUser.nickname !== loginUser.nickname && (
-            loginUser.likes.includes(currentUser.nickname) ? (
+          {currentUser.nickname !== loginUser.nickname ? (
+            likeshop.map((shop) => {shop.nickname === currentUser.nickname}) ? (
               <ImgLikeActive onClick={handleLikeToggle} />
-            ) : (
-              <ImgLike onClick={handleLikeToggle} />
-            ))} */}
+            ) : (<ImgLike onClick={handleLikeToggle} />)
+          ) : ("")}
           <ImgShare />
         </RightContainer>
       </NameInfo>

@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   max-width: 768px;
   width: 100%;
   top: 0;
-  z-index: 1;
+  z-index: 5;
 
   /* 색상 */
   background-color: ${(props) =>
@@ -42,7 +42,7 @@ const ButtonBox = styled.div`
 const ImgSend = styled(FiSend)`
   width: 22px;
   height: 22px;
-  margin-left: 20px;
+  margin-left: 10px;
   cursor: pointer;
 `;
 

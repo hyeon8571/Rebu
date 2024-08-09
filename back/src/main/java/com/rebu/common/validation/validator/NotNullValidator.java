@@ -1,5 +1,6 @@
 package com.rebu.common.validation.validator;
 
+import com.rebu.common.exception.NullPointerException;
 import com.rebu.common.validation.annotation.NotNull;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

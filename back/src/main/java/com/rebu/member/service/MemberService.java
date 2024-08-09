@@ -2,11 +2,11 @@ package com.rebu.member.service;
 
 import com.rebu.auth.exception.EmailNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
+import com.rebu.common.service.RedisService;
 import com.rebu.member.dto.ChangePasswordDto;
 import com.rebu.member.dto.FindEmailDto;
 import com.rebu.member.dto.MemberJoinDto;
 import com.rebu.member.entity.Member;
-import com.rebu.member.enums.Status;
 import com.rebu.member.exception.EmailDuplicateException;
 import com.rebu.member.exception.FindEmailFailException;
 import com.rebu.member.exception.MemberNotFoundException;
@@ -32,6 +32,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileService profileService;
     private final ProfileRepository profileRepository;
+    private final RedisService redisService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -75,14 +76,16 @@ public class MemberService {
 
     @Transactional
     public void withdraw(String nickname) {
-       Profile profile = profileRepository.findByNickname(nickname)
-               .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = profileRepository.findByNickname(nickname)
+                .orElseThrow(ProfileNotFoundException::new);
 
         Member member = profile.getMember();
 
-        member.changeStatus(Status.ROLE_DELETED);
+        memberRepository.delete(member);
 
         profileRepository.deleteProfileByMemberId(member.getId());
+
+        redisService.deleteData("Refresh: " + nickname);
     }
 
     private Boolean checkSignupPreAuth(MemberJoinDto memberJoinDto, ProfileGenerateDto profileGenerateDto, HttpSession session) {
