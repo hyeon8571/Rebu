@@ -11,6 +11,7 @@ import ChangePasswordCompl from "../views/ChangePasswordCompl";
 import Signup from "../views/Signup";
 import SignupComp from "../views/SignupComp"
 import Error from "../views/Error"
+import TestProfile from "../views/TestProfile";
 
 
 const AppRoutes = () => (
@@ -25,6 +26,7 @@ const AppRoutes = () => (
     <Route path="/signup" element={<Signup />} />
     <Route path="/signup-completed" element={<SignupComp />} />
     <Route path="/error" element={<Error />} />
+    <Route path="/test" element={<TestProfile />} />
 
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>

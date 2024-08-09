@@ -58,6 +58,7 @@ export const login = (email, password) => async (dispatch) => {
     );
 
     if (response.data.code === "로그인 성공 코드") {
+      console.log(response)
       const access = response.headers["access"];
       const { type, nickname } = response.data.body;
       localStorage.setItem("access", access);
@@ -73,5 +74,7 @@ export const login = (email, password) => async (dispatch) => {
     return { success: false, error: "오류가 발생했습니다. 다시 시도해 주세요." };
   }
 };
+
+
 
 export default authSlice.reducer;

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { login } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
-// import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 //css
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
@@ -38,13 +38,19 @@ const Login = () => {
 
   const dispatch = useDispatch(); //redux
   const navigate = useNavigate();
+  const nickname = useSelector((state) => state.auth.nickname); // 컴포넌트 내부에서 useSelector 사용
 
   const handleLogin = async (e) => {
     // dispatch(login(loginParam))
     e.preventDefault(); //0ㅅ0
     const result = await dispatch(login(email, password));
+
     if (result.success) {
       alert("로그인 성공");
+
+      // 로그인 성공 시 프로필조회 후 currentProfile에 데이터 저장
+      // const currentProfile = await dispatch(getProfile(nickname));
+      console.log("nickname", nickname);
       navigate("/error", { replace: true });
     } else {
       alert(result.error);

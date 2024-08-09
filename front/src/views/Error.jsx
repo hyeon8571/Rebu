@@ -78,6 +78,7 @@ const Notfound = () => {
       <ButtonContainer>
         <Button onClick={onClickMain}>메인 페이지로 돌아가기</Button>
       </ButtonContainer>
+      <button onClick={() => nav("/test")}>프로필테스트</button>
     </Container>
   );
 };
