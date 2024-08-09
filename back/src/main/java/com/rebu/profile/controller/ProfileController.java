@@ -24,6 +24,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/profiles")
@@ -112,16 +114,29 @@ public class ProfileController {
         if (authPassword == null || !authPassword.equals(nickname)) {
             throw new PasswordNotVerifiedException();
         }
-        profileService.deleteProfile(nickname, response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", null));
+        String type = profileService.deleteProfile(nickname, response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", type));
     }
 
     @GetMapping("/switch-profile")
     public ResponseEntity<?> switchProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                            @Nickname @RequestParam String nickname,
                                            HttpServletResponse response) {
-        profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", null));
+        String type = profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", type));
+    }
+
+    @GetMapping("/{nickname}")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                        @PathVariable String nickname) {
+        GetProfileResponse result = profileService.getProfile(new GetProfileDto(authProfileInfo.getNickname(), nickname));
+        return ResponseEntity.ok(new ApiResponse<>("일반 프로필 조회 성공 코드", result));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProfile(@RequestParam String keyword) {
+        List<SearchProfileResponse> result = profileService.searchProfile(keyword);
+        return ResponseEntity.ok(new ApiResponse<>("프로필 검색 성공 코드", result));
     }
 
 }

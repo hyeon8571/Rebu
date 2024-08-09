@@ -74,10 +74,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String status = auth.getAuthority();
 
         if (status.equals("ROLE_DORMANT")) {
-            setResponse(response, "휴면 사용자 입니다");
+            setResponse(response, "휴면 사용자 입니다", null);
             return;
         } else if (status.equals("ROLE_DELETED")) {
-            setResponse(response, "탈퇴한 회원입니다.");
+            setResponse(response, "탈퇴한 회원입니다.", null);
             return;
         }
 
@@ -98,13 +98,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
-        setResponse(response, "로그인 성공 코드");
+        setResponse(response, "로그인 성공 코드", type);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 
-        setResponse(response, "로그인 에러 코드");
+        setResponse(response, "로그인 에러 코드", null);
     }
 
     private Cookie createCookie(String key, String value) {
@@ -116,12 +116,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         return cookie;
     }
 
-    private void setResponse(HttpServletResponse response, String code) throws IOException {
+    private void setResponse(HttpServletResponse response, String code, String data) throws IOException {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        ApiResponse<?> apiResponse = new ApiResponse<>(code, null);
+        ApiResponse<?> apiResponse = new ApiResponse<>(code, data);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(apiResponse);
         response.getWriter().write(jsonResponse);
