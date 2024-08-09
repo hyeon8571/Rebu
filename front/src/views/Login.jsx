@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { isLogin, login } from "../features/auth/authSlice";
+import { login } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
 // import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 //css
@@ -28,12 +28,6 @@ const Ptag = styled.p`
 const Button = styled.button`
   ${ButtonStyles}
 `;
-// redux
-const initState = {
-  isLogin: false,
-  nickname: "",
-  // profileType: 0
-};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -48,54 +42,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     // dispatch(login(loginParam))
     e.preventDefault(); //0ㅅ0
-    try {
-      // 서버에 로그인 요청 - 비동기
-      const response = await axios.post(
-        `${BASE_URL}/api/auths/login`,
-        {
-          email: email,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // if the server expects cookies to be sent along with the request
-        }
-      );
-      console.log("response:", response);
-      if (response.data.code === "로그인 성공 코드") {
-        // 서버에서 jwt 토큰 받기
-        const access = response.headers["access"]; //access 토큰 받기
-        const { type, nickname } = response.data.body;
-        localStorage.setItem("access", access); //로컬저장소에 토큰 저장
-
-        // 로그인 성공 표시
-        console.log("data", response);
-        alert("로그인 성공");
-        dispatch(login({ isLogin: true, nickname: nickname, type: type })); //isLogin = true 로 설정
-        console.log("로그인 상태", isLogin);
-        navigate("/profile", { replace: true }); //프로필로 임시 이동..
-      } else {
-        //로그인 에러 코드
-        console.log("로그인 실패:", response.data.code);
-        alert(
-          "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요."
-        );
-        // console.log(response)
-      }
-    } catch (error) {
-      // 로그인 실패 처리
-      alert("로그인 실패");
-      console.log("로그인 실패: ", error);
-      // setError("로그인 실패. 다시 시도해 주세요.");
-      if (error.response && error.response.status === 404) {
-        console.error("리소스를 찾을 수 없음: ", error);
-        setError("요청한 리소스를 찾을 수 없습니다.");
-      } else {
-        console.error("오류 발생: ", error);
-        setError("오류가 발생했습니다. 다시 시도해 주세요.");
-      }
+    const result = await dispatch(login(email, password));
+    if (result.success) {
+      alert("로그인 성공");
+      navigate("/error", { replace: true });
+    } else {
+      alert(result.error);
     }
   };
 

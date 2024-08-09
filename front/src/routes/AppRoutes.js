@@ -10,6 +10,7 @@ import ChangePassword from "../views/ChangePassword";
 import ChangePasswordCompl from "../views/ChangePasswordCompl";
 import Signup from "../views/Signup";
 import SignupComp from "../views/SignupComp"
+import Error from "../views/Error"
 
 
 const AppRoutes = () => (
@@ -23,6 +24,8 @@ const AppRoutes = () => (
     <Route path="/login/email-found" element={<FindEmailComp />} />
     <Route path="/signup" element={<Signup />} />
     <Route path="/signup-completed" element={<SignupComp />} />
+    <Route path="/error" element={<Error />} />
+
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>
 );
