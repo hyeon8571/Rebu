@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetFollowingDto {
+public class GetFollowerResponse {
     private String nickname;
     private String imgSrc;
     private String introduction;
     private Type type;
 
-    public static GetFollowingDto from(Follow follow) {
-        return GetFollowingDto.builder()
-                .nickname(follow.getFollowing().getNickname())
-                .imgSrc(follow.getFollowing().getImageSrc())
-                .introduction(follow.getFollowing().getIntroduction())
-                .type(follow.getFollowing().getType())
+    public static GetFollowerResponse from(Follow follow) {
+        return GetFollowerResponse.builder()
+                .nickname(follow.getFollower().getNickname())
+                .imgSrc(follow.getFollower().getImageSrc())
+                .introduction(follow.getFollower().getIntroduction())
+                .type(follow.getFollower().getType())
                 .build();
     }
 }

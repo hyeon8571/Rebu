@@ -6,7 +6,7 @@ import ButtonBack from "../components/common/ButtonBack";
 import LoginTitle from "../components/common/LoginTitle";
 import styled from "styled-components";
 import { BASE_URL } from "./Signup";
-import { isLogin } from "../features/auth/authSlice";
+// import { isLogin } from "../features/auth/authSlice";
 
 const Container = styled.div`
   align-items: center;
@@ -35,14 +35,14 @@ const ChangePassword = () => {
         // Handle successful password reset (e.g., redirect to login page)
         alert("비밀번호 변경 성공");
         console.log("비밀번호 변경 성공", password);
-        console.log("로그인상태", isLogin);
-        if (isLogin) {
-          // 로그인 상태이면 프로필로
-          navigate("/profile");
-        } else {
-          // 비로그인 상태면 로그인 화면으로
-          navigate("/login");
-        }
+        console.log("로그인상태 isLogin-useSelector 수정하기");
+        // if (isLogin) {
+        //   // 로그인 상태이면 프로필로
+        //   navigate("/profile");
+        // } else {
+        //   // 비로그인 상태면 로그인 화면으로
+        //   navigate("/login");
+        // }
       } else {
         alert("비밀번호 변경 실패: ", response.data.code);
         console.log("비밀번호 변경 실패: ", response.data.code);

@@ -58,7 +58,7 @@ public class FollowService {
 
 
     @Transactional(readOnly = true)
-    public List<GetFollowingDto> getFollowings(GetFollowingsTargetDto getFollowingsTargetDto) {
+    public List<GetFollowingResponse> getFollowings(GetFollowingsTargetDto getFollowingsTargetDto) {
         Profile profile = profileRepository.findByNickname(getFollowingsTargetDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -70,11 +70,11 @@ public class FollowService {
 
         List<Follow> followings = followRepository.findByFollowerId(profile.getId());
 
-        return followings.stream().map(GetFollowingDto::from).toList();
+        return followings.stream().map(GetFollowingResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<GetFollowerDto> getFollowers(GetFollowersTargetDto getFollowersTargetDto) {
+    public List<GetFollowerResponse> getFollowers(GetFollowersTargetDto getFollowersTargetDto) {
         Profile profile = profileRepository.findByNickname(getFollowersTargetDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -86,6 +86,6 @@ public class FollowService {
 
         List<Follow> followers = followRepository.findByFollowingId(profile.getId());
 
-        return followers.stream().map(GetFollowerDto::from).toList();
+        return followers.stream().map(GetFollowerResponse::from).toList();
     }
 }
