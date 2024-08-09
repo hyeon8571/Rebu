@@ -49,18 +49,19 @@ const Login = () => {
       // 로그인 성공 시 프로필조회 후 currentProfile에 데이터 저장
       // const currentProfile = await dispatch(getProfile(nickname));
       // result.payload에서 nickname을 가져옴
-      const nickname = result.payload.nickname; //로그인 성공 시 닉네임 가져옴
+      // const nickname = result.payload.nickname; //로그인 성공 시 닉네임 가져옴
+      // const nickname = useSelector((state) => state.auth.nickname);
       // const { nickname, type, isLogin } = useSelector((state) => state.auth);
 
       // 프로필 데이터 가져오기
-      const profile = await dispatch(getProfile(nickname));
-      if (profile.success) {
-        console.log("프로필 조회 성공:", profile.payload);
-        // navigate("/profile", { replace: true }); // 프로필 페이지로 이동
-      } else {
-        alert("프로필 조회에 실패했습니다.");
-      }
-      console.log("nickname", nickname);
+      // const profile = await dispatch(getProfile(nickname));
+      // if (profile.success) {
+      //   console.log("프로필 조회 성공:", profile.payload);
+      //   // navigate("/profile", { replace: true }); // 프로필 페이지로 이동
+      // } else {
+      //   alert("프로필 조회에 실패했습니다.");
+      // }
+      // console.log("nickname", nickname);
       navigate("/error", { replace: true });
     } else {
       alert(result.error);
