@@ -59,9 +59,9 @@ const Login = () => {
       console.log("response:", response);
       if (response.data.code === "로그인 성공 코드") {
         // 서버에서 jwt 토큰 받기
-        const accessToken = response.headers["access"];
-        console.log("access token: ", accessToken);
-        localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
+        const access = response.headers["access"];
+        console.log("access token: ", access);
+        localStorage.setItem("access", access); //로컬저장소에 토큰 저장
 
         // 로그인 성공 표시
         console.log("로그인 성공");
@@ -70,7 +70,7 @@ const Login = () => {
         alert("로그인 성공");
         dispatch(setIsLogin(true)); //isLogin = true 로 설정
         console.log("로그인 상태", isLogin);
-        navigate("/profile"); //프로필로 임시 이동..
+        navigate("/profile", { replace: true }); //프로필로 임시 이동..
       } else {
         //로그인 에러 코드
         console.log("로그인 실패:", response.data.code);

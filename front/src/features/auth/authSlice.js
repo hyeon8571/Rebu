@@ -18,7 +18,7 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.isLogin = false;
-      localStorage.removeItem("accessToken")
+      localStorage.removeItem("access")
       console.log("logout 성공") //debug
 
     },
