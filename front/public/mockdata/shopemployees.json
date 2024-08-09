@@ -1,0 +1,21 @@
+{
+  "code" : "1D03",
+"body" : [{
+	"image" : "design.png",
+	"workingName" : "유승",
+  "nickname" : "yuseong0429",
+	"workingIntroduction" : "최선을 다해 모시겠습니다.",
+	"gender" : true,
+	"reviewCnt" : 15,
+	"role" : "원장"
+  },
+{
+	"image" : "kind.png",
+	"workingName" : "지원",
+  "nickname" : "jiwon",
+	"workingIntroduction" : "최선을 다해 모시겠습니다.",
+	"gender" : false,
+	"reviewCnt" : 10,
+	"role" : "실장"
+  }]
+}

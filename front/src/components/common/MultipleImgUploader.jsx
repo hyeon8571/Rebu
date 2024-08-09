@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { MdCancel } from "react-icons/md";
-
+import { useState, useEffect } from "react";
 const ImgDisplayer = styled.div`
   width: 100%;
   display: flex;
@@ -78,16 +78,36 @@ const DelIcon = styled(MdCancel)`
   display: none;
 `;
 
-export default function ImgUploader({
-  list,
-  imgNum,
-  uploadImgUrls,
-  setUploadImgUrls,
-  setImgNum,
-  setIsImgAlert,
-  review,
-  setReview,
-}) {
+const photoInRow = (width) => {
+  if (width < 768) {
+    return Math.floor((width - 16) / 128);
+  } else return Math.floor((width - 32) / 408);
+};
+
+export default function ImgUploader({ uploadImgUrls = [], setUploadImgUrls }) {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const list = Array.from({
+    length:
+      photoInRow(windowWidth) -
+      (uploadImgUrls && uploadImgUrls.length % photoInRow(windowWidth)) -
+      1 +
+      (uploadImgUrls && uploadImgUrls.length === 5 ? 1 : 0),
+  });
+
+  const IMG_URL = process.env.PUBLIC_URL + "images/";
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const onchangeImageUpload = (e) => {
     const { files } = e.target;
     const uploadFiles = Array.from(files);
@@ -102,44 +122,34 @@ export default function ImgUploader({
         if (newUrls.length === uploadFiles.length) {
           const allUrls = [...uploadImgUrls, ...newUrls];
           setUploadImgUrls(allUrls);
-          setReview({
-            ...review,
-            images: allUrls,
-          });
         }
       };
     });
-    setIsImgAlert(false);
-    setImgNum(imgNum + uploadFiles.length);
   };
 
   const handleDelete = (index) => {
     const newUrls = uploadImgUrls.filter((_, i) => i !== index);
     setUploadImgUrls(newUrls);
-    setReview({
-      ...review,
-      images: newUrls,
-    });
-    setImgNum(imgNum - 1);
   };
 
   return (
     <ImgDisplayer>
-      {uploadImgUrls.map((url, index) => (
-        <ImgWrapper key={index} onClick={() => handleDelete(index)}>
-          <UploadedImg src={url} alt={`upload-${index}`} />
-          <DelIcon size={24} />
-        </ImgWrapper>
-      ))}
+      {uploadImgUrls &&
+        uploadImgUrls.map((url, index) => (
+          <ImgWrapper key={index} onClick={() => handleDelete(index)}>
+            <UploadedImg src={IMG_URL + url} alt={`upload-${index}`} />
+            <DelIcon size={24} />
+          </ImgWrapper>
+        ))}
 
-      {imgNum < 5 && (
+      {uploadImgUrls && uploadImgUrls.length < 5 && (
         <label htmlFor="file">
           <ExampleImg src={process.env.PUBLIC_URL + "/addphoto.png"} />
         </label>
       )}
 
-      {list.map((item, index) => {
-        return <InvisibleDiv key={index} />;
+      {list.map(() => {
+        return <InvisibleDiv />;
       })}
       <InvisibleInput
         type="file"

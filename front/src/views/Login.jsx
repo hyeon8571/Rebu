@@ -62,7 +62,7 @@ const Login = () => {
         // 서버에서 jwt 토큰 받기
         const accessToken = response.headers["access"];
         console.log("access token: ", accessToken);
-        localStorage.setItem("accessToken", accessToken); //로컬저장소에 토큰 저장
+        localStorage.setItem("access", accessToken); //로컬저장소에 토큰 저장
 
         // 로그인 성공 표시
         console.log("로그인 성공");

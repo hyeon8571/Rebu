@@ -125,11 +125,20 @@ export default function Components({ theme, toggleTheme }) {
   const button11 = {
     id: 1,
     onClick: () => {
+      navigate("/designer");
+    },
+    title: "디자이너 보기",
+    highlight: true,
+  };
+  
+  const button12 = {
+    id: 1,
+      onClick: () => {
       navigate("/stat");
     },
     title: "리뷰 키워드 통계",
     highlight: true,
-  };
+  }
 
   function handleModal() {
     setIsModalOpen(true);
@@ -178,6 +187,7 @@ export default function Components({ theme, toggleTheme }) {
       <ButtonFull buttons={buttons6}></ButtonFull>
       <ButtonFull buttons={buttons8}></ButtonFull>
       <ButtonFull buttons={button10}></ButtonFull>
+      <ButtonLarge button={button12}></ButtonLarge>
       <ButtonLarge button={button11}></ButtonLarge>
       <ButtonLarge button={buttons9}></ButtonLarge>
       <ButtonLarge button={buttons3}></ButtonLarge>

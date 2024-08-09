@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
@@ -29,8 +29,11 @@ const Card = styled.div`
 const PhotoContainer = styled.img`
   @media (max-width: 768px) {
     width: 80%;
+    width: 125px;
+    height: 125px;
   }
-  width: 50%;
+  width: 200px;
+  height: 200px;
   border-radius: 0.3rem;
 `;
 
@@ -90,10 +93,12 @@ const InsturctionText = styled.div`
 `;
 const ButtonWrapper = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-around;
 `;
 
 export default function MenuDisplay() {
+  const [menuData, setMenuData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [isSettingMode, setIsSettingMode] = useState(false);
@@ -102,74 +107,23 @@ export default function MenuDisplay() {
 
   const navigation = useNavigate();
 
-  const MockData = [
-    {
-      id: 1,
-      nickname: "yuseon",
-      img: Img,
-      title: "시그니처 세팅펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h 30",
-      cost: "110,000",
-    },
-    {
-      id: 2,
-      nickname: "yuseong",
-      img: Img,
-      title: "시그니처 S컬펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h",
-      cost: "100,000",
-    },
-    {
-      id: 3,
-      nickname: "jinseo",
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 4,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 5,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 6,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 7,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-  ];
+  useEffect(() => {
+    fetch("/mockdata/menudata.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((jsondata) => {
+        const data = jsondata.body;
+        console.log(data);
+        setMenuData(data);
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+      });
+  }, []);
 
   function handleSettingMode() {
     if (isSettingMode) {
@@ -180,19 +134,20 @@ export default function MenuDisplay() {
       setIsSettingMode(true);
     }
   }
-  const SettingIcon = styled(IoSettings)``;
 
   function handleModalContent(item) {
     if (!isDeleteMode && !isEditMode) {
       setModalContent(
         <>
           <ModalContentWrapper>
-            <PhotoContainer src={item.img} />
+            <PhotoContainer
+              src={process.env.PUBLIC_URL + "images/" + item.images[0]}
+            />
             <ModalContent>
               <MenuTitleContainer>{item.title}</MenuTitleContainer>
-              <ModalDescription>{item.description}</ModalDescription>
-              <DurationContainer>소요시간 : {item.duration}</DurationContainer>
-              <CostContainer>가격 : {item.cost}</CostContainer>
+              <ModalDescription>{item.content}</ModalDescription>
+              <DurationContainer>소요시간 : {item.timeTaken}</DurationContainer>
+              <CostContainer>가격 : {item.price}</CostContainer>
             </ModalContent>
           </ModalContentWrapper>
           <ButtonWrapper>
@@ -225,32 +180,34 @@ export default function MenuDisplay() {
             </MenuTitleContainer>
           </ModalContent>
           <ButtonWrapper>
-          <ButtonSmall
-            button={{
-              id: 1,
-              onClick: () => {
-                window.alert("삭제");
-                setIsModalOpen(false);
-              },
-              highlight: true,
-              title: "삭제",
-            }}
-          />
-                    <ButtonSmall
-            button={{
-              id: 1,
-              onClick: () => {
-                setIsModalOpen(false);
-              },
-              highlight: false,
-              title: "취소",
-            }}
+            <ButtonSmall
+              button={{
+                id: 1,
+                onClick: () => {
+                  window.alert("삭제");
+                  setIsModalOpen(false);
+                },
+                highlight: true,
+                title: "삭제",
+              }}
             />
-            </ButtonWrapper>
+            <ButtonSmall
+              button={{
+                id: 1,
+                onClick: () => {
+                  setIsModalOpen(false);
+                },
+                highlight: false,
+                title: "취소",
+              }}
+            />
+          </ButtonWrapper>
         </ModalContentWrapper>
       );
     } else if (isEditMode) {
-      navigation("/addMenu");
+      navigation("/addMenu", {
+        state: { categories: null, originMenu: item },
+      });
     }
     setIsModalOpen(true);
   }
@@ -314,23 +271,26 @@ export default function MenuDisplay() {
         )}
 
         <Grid>
-          {MockData.map((item) => (
-            <Card
-              key={item.id}
-              onClick={() => {
-                handleModalContent(item);
-              }}
-            >
-              <PhotoContainer src={item.img} />
-              <ContentContainer>
-                <MenuTitleContainer>{item.title}</MenuTitleContainer>
-                <DurationContainer>
-                  소요시간 : {item.duration}
-                </DurationContainer>
-                <CostContainer>가격 : {item.cost}</CostContainer>
-              </ContentContainer>
-            </Card>
-          ))}
+          {menuData &&
+            menuData.map((item) => (
+              <Card
+                key={item.id}
+                onClick={() => {
+                  handleModalContent(item);
+                }}
+              >
+                <PhotoContainer
+                  src={process.env.PUBLIC_URL + "images/" + item.images[0]}
+                />
+                <ContentContainer>
+                  <MenuTitleContainer>{item.title}</MenuTitleContainer>
+                  <DurationContainer>
+                    소요시간 : {item.timeTaken}분
+                  </DurationContainer>
+                  <CostContainer>가격 : {item.price}</CostContainer>
+                </ContentContainer>
+              </Card>
+            ))}
         </Grid>
       </Wrapper>
     </>

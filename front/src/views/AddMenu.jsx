@@ -6,10 +6,11 @@ import Lottie from "lottie-react";
 import validationAlert from "../assets/images/validationAlert.json";
 import ModalPortal from "../util/ModalPortal";
 import ModalNoBackNoExit from "../components/common/ModalNoBackNoExit";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ButtonSmall from "../components/common/ButtonSmall";
 import confirmLottie from "../assets/images/confirmLottie.json";
 import Header from "../components/common/Header";
+import ImgUploader from "../components/common/MultipleImgUploader";
 
 // 공통 스타일 분리
 const StyledInputBox = styled.input`
@@ -55,10 +56,6 @@ const InputWrapper = styled.div`
   margin: auto;
   margin-top: 1rem;
   margin-bottom: 1rem;
-`;
-
-const ButtonWrapper = styled.div`
-  padding-top: 1rem;
 `;
 
 const Container = styled.div`
@@ -139,12 +136,20 @@ const ModalContentContainer = styled.div`
 const MenuData = {};
 
 export default function AddMenu() {
-  const [category, setCategory] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [time, setTime] = useState("");
-  const [cost, setCost] = useState("");
-  const [uploadImgUrl, setUploadImgUrl] = useState("");
+  const location = useLocation();
+  const { categories, originMenu } = location.state || {};
+  const [category, setCategory] = useState(
+    originMenu ? originMenu.category : ""
+  );
+  const [name, setName] = useState(originMenu ? originMenu.title : "");
+  const [description, setDescription] = useState(
+    originMenu ? originMenu.content : ""
+  );
+  const [time, setTime] = useState(originMenu ? originMenu.timeTaken : "");
+  const [cost, setCost] = useState(originMenu ? originMenu.price : "");
+  const [uploadImgUrls, setUploadImgUrls] = useState(
+    originMenu ? originMenu.images : []
+  );
   const [errors, setErrors] = useState({});
   const [animationKey, setAnimationKey] = useState(0);
   const [isError, setIsError] = useState(false);
@@ -152,15 +157,9 @@ export default function AddMenu() {
 
   const navigate = useNavigate();
 
-  const onchangeImageUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(uploadFile);
-    reader.onloadend = () => {
-      setUploadImgUrl(reader.result);
-    };
-  };
+  const IMG_URL = process.env.PUBLIC_URL;
+
+  console.log(category);
   const handleNumberInput = (e) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) {
@@ -183,7 +182,7 @@ export default function AddMenu() {
     if (!cost) newErrors.cost = "시술 비용을 입력해주세요";
     if (cost && (isNaN(costValue) || costValue <= 0))
       newErrors.cost = "시술 비용은 0보다 커야 합니다";
-    if (!uploadImgUrl) newErrors.uploadImgUrl = "사진을 업로드해주세요";
+    if (!uploadImgUrls) newErrors.uploadImgUrl = "사진을 업로드해주세요";
 
     if (Object.keys(newErrors).length > 0) {
       setAnimationKey(animationKey + 1);
@@ -198,7 +197,7 @@ export default function AddMenu() {
         description,
         time: timeValue,
         cost: costValue,
-        uploadImgUrl,
+        images: uploadImgUrls,
       };
       console.log(formData);
       // formData 객체를 이용하여 필요한 작업 수행
@@ -208,14 +207,16 @@ export default function AddMenu() {
 
   return (
     <div style={{ padding: "0", margin: "0" }}>
-      <Header title={"시술추가"}></Header>
+      <Header title={originMenu ? "시술수정" : "시술추가"}></Header>
       <Container>
         <ModalPortal>
           <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
             <ModalContentContainer>
               <DescriptionContainer>
                 {" "}
-                시술이 추가되었습니다.
+                {originMenu
+                  ? "시술이 수정되었습니다."
+                  : "시술이 추가되었습니다."}
               </DescriptionContainer>
               {isModalOpen && (
                 <Lottie
@@ -241,7 +242,7 @@ export default function AddMenu() {
         <InputWrapper>
           <TitleText>시술분류</TitleText>
           <SelectComponent
-            options={[{ value: "뭔데", title: "뭐가" }]}
+            options={categories}
             setCategory={setCategory}
             category={category}
           />
@@ -288,18 +289,13 @@ export default function AddMenu() {
           {errors.cost && <ValidationText>{errors.cost}</ValidationText>}
         </InputWrapper>
         <InputWrapper>
-          <TitleText style={{ paddingTop: "1rem" }}>사진 업로드</TitleText>
-          <ButtonWrapper>
-            {uploadImgUrl && <ImgWrapper src={uploadImgUrl} />}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={onchangeImageUpload}
-            />
-            {errors.uploadImgUrl && (
-              <ValidationText>{errors.uploadImgUrl}</ValidationText>
-            )}
-          </ButtonWrapper>
+          <TitleText style={{ paddingTop: "1rem" }}>
+            사진 업로드 (최소 1장, 최대 5장)
+          </TitleText>
+          <ImgUploader
+            uploadImgUrls={uploadImgUrls}
+            setUploadImgUrls={setUploadImgUrls}
+          ></ImgUploader>
         </InputWrapper>
         {isError && (
           <ErrorMsgContainer>
