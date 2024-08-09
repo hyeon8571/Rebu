@@ -101,7 +101,7 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
       );
 
       // localStorage.removeItem("accessToken");
-      localStorage.removeItem("access");
+      localStorage.removeItem("accessToken");
 
       // Dispatch the logout action
       dispatch(logout());
