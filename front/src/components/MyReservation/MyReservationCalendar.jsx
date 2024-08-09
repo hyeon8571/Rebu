@@ -199,6 +199,13 @@ const StyledCalendar = styled(Calendar)`
     color: white;
   }
 `;
+
+const NumInCalendar = styled.div`
+  position: absolute;
+  color: red;
+  border: 1px solid black;
+  margin: 0;
+`;
 export default function MyReservationCalendar() {
   const [date, setDate] = useState(new Date());
 
@@ -212,7 +219,9 @@ export default function MyReservationCalendar() {
         formatDay={(locale, date) => moment(date).format("D")}
         calendarType="gregory" // 일요일 부터 시작
         tileContent={({ date, view }) =>
-          view === "month" && date.getDay() === 0 ? <div>10</div> : null
+          view === "month" && date.getDay() === 0 ? (
+            <NumInCalendar> 5 </NumInCalendar>
+          ) : null
         }
         value={date}
       />

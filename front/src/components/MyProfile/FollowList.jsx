@@ -118,6 +118,10 @@ const Button = styled.button`
 
 const FollowList = ({ follower, time }) => {
   const online = time < 300;
+  
+  const handleChat = () => {
+
+  }
 
   return (
     <FollowerContainer>
@@ -132,7 +136,7 @@ const FollowList = ({ follower, time }) => {
           </OutterCircleOffline>
         )}
       </React.Fragment>
-      {/* <Avatar src={follower.imgSrc} alt={follower.nickname} /> */}
+
       <Info>
         <Username>{follower.nickname}</Username>
         <Description>{follower.introduction}</Description>

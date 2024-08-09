@@ -1,6 +1,5 @@
 package com.rebu.profile.employee.validation.validator;
 
-
 import com.rebu.profile.shop.exception.WorkingIntroMismatchException;
 import com.rebu.profile.employee.validation.annotation.WorkingIntro;
 import jakarta.validation.ConstraintValidator;

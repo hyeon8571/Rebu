@@ -101,13 +101,13 @@ const SaveButton = styled.div`
 `;
 
 const MenuLink = styled.div`
-  font-size : 14px;
+  font-size: 14px;
   text-decoration: underline;
-  padding-left : 0.75rem;
+  padding-left: 0.75rem;
 `;
 
 //profileType 1은 일반프로필, 2는 디자이너, 3은 매장
-export default function DesignerDisplay({profileType}) {
+export default function DesignerDisplay({ profileType }) {
   const [isMale, setIsMale] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -118,10 +118,9 @@ export default function DesignerDisplay({profileType}) {
   const navigate = useNavigate();
 
   // 실제로는 props로 전달
-  profileType = 3;
-
+  profileType = 2;
   //로그인시의 본인 닉네임
-  const currentNickname = "jiwon";
+  const currentNickname = "eyuseung0429";
 
   useEffect(() => {
     fetch("/mockdata/shopemployees.json")
@@ -203,7 +202,7 @@ export default function DesignerDisplay({profileType}) {
         )}
         {isEditMode && (
           <ButtonWrapper>
-            {profileType===3 && (
+            {profileType === 3 && (
               <EditButton onClick={handleAddDesigner}>추가</EditButton>
             )}
             <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
@@ -223,11 +222,21 @@ export default function DesignerDisplay({profileType}) {
               <DesignerIntroduction>
                 {item.workingIntroduction}
               </DesignerIntroduction>
-              <MenuLink>시술 보기</MenuLink>
+              <MenuLink
+                onClick={() =>
+                  navigate("/menudisplay", {
+                    state: { nickname: currentNickname },
+                  })
+                }
+              >
+                시술 보기
+              </MenuLink>
               <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
-              <DesignerPhoto src={process.env.PUBLIC_URL+"keyword/"+item.image} />
+              <DesignerPhoto
+                src={process.env.PUBLIC_URL + "keyword/" + item.image}
+              />
             </DesignerPhotoContainer>
             {isEditMode && (
               <ButtonWrapper>
@@ -240,14 +249,13 @@ export default function DesignerDisplay({profileType}) {
                     수정
                   </EditButton>
                 )}
-                {profileType===3 || item.nickname === currentNickname? (
+                {profileType === 3 || item.nickname === currentNickname ? (
                   <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
                 ) : null}
               </ButtonWrapper>
             )}
           </DesignerCardContainer>
         ))}
-    
     </>
   );
 }

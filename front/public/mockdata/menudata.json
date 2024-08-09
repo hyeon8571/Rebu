@@ -1,0 +1,59 @@
+{
+  "code": "1D03",
+  "body": [
+    {
+      "id": 1,
+      "title": "시그니처 애즈펌",
+      "content": "남자의 품격을 잘 드러내는 머리 스타일",
+      "price": 60000,
+      "timeTaken": 150,
+      "category": "펌",
+      "images": ["hair.png", "asjdfhjhasdbgfh.jpg"]
+    },
+    {
+      "id": 2,
+      "title": "볼륨 매직펌",
+      "content": "자연스러운 볼륨감과 깔끔함을 동시에",
+      "price": 70000,
+      "timeTaken": 180,
+      "category": "펌",
+      "images": ["hair2.png", "volume_magic2.jpg"]
+    },
+    {
+      "id": 3,
+      "title": "투블럭 댄디컷",
+      "content": "단정하면서도 세련된 남성 스타일의 정석",
+      "price": 35000,
+      "timeTaken": 60,
+      "category": "컷",
+      "images": ["hair.png", "two_block_dandy2.jpg"]
+    },
+    {
+      "id": 4,
+      "title": "리젠트 펌",
+      "content": "고급스러움과 남성미를 극대화하는 스타일",
+      "price": 65000,
+      "timeTaken": 140,
+      "category": "펌",
+      "images": ["hair.png", "regent_perm2.jpg"]
+    },
+    {
+      "id": 5,
+      "title": "가르마 펌",
+      "content": "자연스럽고 부드러운 인상을 주는 스타일",
+      "price": 60000,
+      "timeTaken": 120,
+      "category": "펌",
+      "images": ["hair.png", "garma_perm2.jpg"]
+    },
+    {
+      "id": 6,
+      "title": "쉐도우 펌",
+      "content": "세련된 텍스처와 볼륨을 강조한 스타일",
+      "price": 68000,
+      "timeTaken": 130,
+      "category": "펌",
+      "images": ["hair.png", "shadow_perm2.jpg"]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef }from "react";
 import styled, { keyframes } from "styled-components";
 
+
 // 그라디언트 애니메이션을 정의합니다.
 const rotateGradient = keyframes`
   0% {

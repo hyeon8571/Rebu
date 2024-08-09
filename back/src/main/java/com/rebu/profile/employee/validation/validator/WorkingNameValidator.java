@@ -2,7 +2,6 @@ package com.rebu.profile.employee.validation.validator;
 
 import com.rebu.profile.employee.exception.WorkingNameMismatchException;
 import com.rebu.profile.employee.validation.annotation.WorkingName;
-import com.rebu.profile.exception.LicenseNumMismatchException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

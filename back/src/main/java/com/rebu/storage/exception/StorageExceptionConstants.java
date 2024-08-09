@@ -9,5 +9,5 @@ import lombok.Getter;
 public enum StorageExceptionConstants implements ExceptionConstants {
     CONNECTION_ERR("0E00"), FILE_UPLOAD_FAIL("0E01"), FILE_UNSAVEABLE("0E02"),
     FILE_REMOVE_FAIL("0E03"), DIRECTORY_REMOVE_FAIL("0E04");
-    private final String code;
+    final String code;
 }

@@ -138,8 +138,8 @@ export default function ImgUploader({
         </label>
       )}
 
-      {list.map(() => {
-        return <InvisibleDiv />;
+      {list.map((item, index) => {
+        return <InvisibleDiv key={index} />;
       })}
       <InvisibleInput
         type="file"

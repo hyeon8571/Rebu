@@ -5,9 +5,6 @@ import com.rebu.menu.validation.annotation.Title;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class TitleValidator implements ConstraintValidator<Title, String> {
 
     @Override

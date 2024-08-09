@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const TabMenu = styled.ul`
@@ -18,7 +18,6 @@ const TabMenu = styled.ul`
   box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
 
   .submenu {
-    // 기본 Tabmenu 에 대한 CSS를 구현
     display: flex;
     width: calc(100% / 3);
     padding: 10px;
@@ -28,7 +27,6 @@ const TabMenu = styled.ul`
   }
 
   .focused {
-    //선택된 Tabmenu 에만 적용되는 CSS를 구현
     background-color: ${(props) =>
       props.theme.value === "light" ? "#f7f2fd" : "#cccccc"};
     border-radius: 3px;
@@ -54,27 +52,59 @@ const TabName = styled.span`
 
 const Count = styled.span`
   font-size: 14px;
-  color: ${(props) => (props.theme.value === "light" ? "#black" : "#white")};
+  color: ${(props) => (props.theme.value === "light" ? "#000000" : "#ffffff")};
   cursor: pointer;
 `;
 
-const Desc = styled.p`
-  font-weight: bold;
-  font-size: 16px;
-  margin-left: 4%;
+const Desc = styled.div`
+  font-size: 15px;
+  margin-top: 15px;
+  margin-left: 5%;
   margin-bottom: 5px;
 `;
 
-const Tab = ({ tabTitle, currentTab, onTabChange }) => {
+const TabTitle = styled.p`
+  font-weight: bold;
+  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const Tabs = styled.div`
+  padding: 5px 10px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.3s;
+  ${({ active }) => active && `
+    border-bottom: 2px solid #943aee;
+    font-weight: bold;
+  `}
+  &:hover {
+    border-bottom: 2px solid #d4b0f8;
+  }
+`;
+
+const Content = styled.div`
+  margin-top: 18px;
+`;
+
+const Tab = ({ tabTitle, currentTab, onTabChange, tabName, onSubTabChange, activeSubTab }) => {
   const selectMenuHandler = (index) => {
-    // parameter로 현재 선택한 인덱스 값을 전달해야 하며, 이벤트 객체(event)는 쓰지 않는다
     onTabChange(index);
+  };
+
+  const handleTabClick = (tab) => {
+    onSubTabChange(tab);
   };
 
   return (
     <>
       <TabMenu>
-        {/* li 엘리먼트의 class명의 경우 선택된 tab 은 'submenu focused', 나머지 2개의 tab은 'submenu'  */}
         {tabTitle.map((el, index) => (
           <li
             key={index}
@@ -88,7 +118,15 @@ const Tab = ({ tabTitle, currentTab, onTabChange }) => {
           </li>
         ))}
       </TabMenu>
-      <Desc>{tabTitle[currentTab].content}</Desc>
+      <Desc>
+        <TabTitle>{tabTitle[currentTab].content}</TabTitle>
+        {currentTab === 2 && (
+          <TabContainer>
+            <Tabs active={activeSubTab === tabName[0]} onClick={() => handleTabClick(tabName[0])}>예약현황</Tabs>
+            <Tabs active={activeSubTab === tabName[1]} onClick={() => handleTabClick(tabName[1])}>디자이너</Tabs>
+          </TabContainer>
+        )}
+      </Desc>
     </>
   );
 };

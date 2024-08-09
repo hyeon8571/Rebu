@@ -1,50 +1,51 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const SelectBox = styled.select`
-    background-color: #fff;
-    border: 1px solid #000;
-    box-sizing: border-box;
-    height: 30px;
-    border-radius: 3px;
-    padding: 0 40px 0 20px;
-    background-image: url("../assets/images/select-arrow.png");
-    background-repeat: no-repeat;
-    background-size: 13px;
-    background-position: 30%;
-    cursor: pointer;
-    outline: none;
-    display: flex;
-    margin: auto;
-    width: 80%;
-    max-width: 420px;
-    min-width: 240px;
+  background-color: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  height: 30px;
+  border-radius: 3px;
+  padding: 0 40px 0 20px;
+  background-image: url("../assets/images/select-arrow.png");
+  background-repeat: no-repeat;
+  background-size: 13px;
+  background-position: 30%;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  margin: auto;
+  width: 80%;
+  max-width: 420px;
+  min-width: 240px;
 `;
 
 const InputBox = styled.input`
-    border: 1px solid #000;
-    border-radius: 3px;
-    height: 30px;
-    padding: 0 20px;
-    box-sizing: border-box;
-    width: 80%;
-    display: flex;
-    margin: auto;
-    margin-top: 10px;
+  border: 1px solid #000;
+  border-radius: 3px;
+  height: 30px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  width: 80%;
+  display: flex;
+  margin: auto;
+  margin-top: 10px;
 `;
 
 const SelectComponent = ({ options, category, setCategory }) => {
-  const [selectedValue, setSelectedValue] = useState(category || "");
+  const [selectedValue, setSelectedValue] = useState(
+    category ? category : "직접입력"
+  );
 
   const handleChange = (e) => {
     const value = e.target.value;
     setSelectedValue(value);
     console.log(value);
-    if (value=== "직접입력") {
-      setCategory(null);
-    }
-    else {
+    if (value === "직접입력") {
+      setCategory("");
+    } else {
       setCategory(value);
     }
   };
@@ -60,20 +61,19 @@ const SelectComponent = ({ options, category, setCategory }) => {
         <option value="" disabled>
           시술 분류
         </option>
-        {options.map((target) => (
-          <option key={target.value} value={target.value}>
-            {target.title}
-          </option>
-        ))}
+        {options &&
+          options.map((target) => (
+            <option key={target.value} value={target.value}>
+              {target.title}
+            </option>
+          ))}
         <option value="직접입력">[직접입력]</option>
       </SelectBox>
-      {selectedValue === "직접입력" && (
-        <InputBox
-          placeholder="시술 분류"
-          value={category}
-          onChange={handleInputChange}
-        />
-      )}
+      <InputBox
+        placeholder="시술 분류"
+        value={category || ""}
+        onChange={handleInputChange}
+      />
     </div>
   );
 };

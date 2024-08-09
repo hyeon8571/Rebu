@@ -1,5 +1,5 @@
 // App.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./util/theme";
 import { GlobalStyles } from "./util/GlobalStyles";
@@ -9,6 +9,7 @@ import NavigationBar from "./components/common/NavigationBar";
 import NavigationRail from "./components/common/NavigationRail";
 import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
+import axios from "axios";
 
 const Grid = styled.div`
   @media (min-width: 769px) {
@@ -33,6 +34,19 @@ function App() {
   const [theme, setTheme] = useState("light");
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
+  // useEffect(() => {
+  //   axios
+  //     .get("/api", {
+  //       params: {},
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         access: localStorage.getItem("access"),
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     });
+  // }, []);
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };

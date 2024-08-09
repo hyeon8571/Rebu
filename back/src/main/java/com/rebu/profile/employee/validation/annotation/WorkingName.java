@@ -1,7 +1,6 @@
 package com.rebu.profile.employee.validation.annotation;
 
 import com.rebu.profile.employee.validation.validator.WorkingNameValidator;
-import com.rebu.profile.validation.validator.IntroductionValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
