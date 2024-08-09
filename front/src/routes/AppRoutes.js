@@ -12,10 +12,10 @@ import Signup from "../views/Signup";
 import SignupComp from "../views/SignupComp"
 
 
-const AppRoutes = () => (
+const AppRoutes = ({ theme, toggleTheme }) => (
   <Routes>
     <Route path="/start" element={<AppStart />} />
-    <Route path="/main" element={<Main />} />
+    <Route path="/main" element={<Main theme={theme} toggleTheme={toggleTheme} />} />
     <Route path="/login" element={<Login />} />
     <Route path="/login/password" element={<ChangePassword />} />
     <Route path="login/password-changed" element={<ChangePasswordCompl />} />

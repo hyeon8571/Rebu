@@ -6,9 +6,9 @@ import { FiMoreVertical } from "react-icons/fi";
 import { MdPlace } from "react-icons/md";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
-import PostDelete from "./PostDeleteModal";
-import PostComment from "./PostComment";
-import PostModifyModal from "./PostModifyModal";
+import PostDelete from "../post/PostDeleteModal";
+import PostComment from "../post/PostComment";
+import PostModifyModal from "../post/PostModifyModal";
 import ModalPortal from "../../util/ModalPortal";
 
 const PostWrapper = styled.div`
@@ -300,23 +300,22 @@ const timeSince = (date) => {
 };
 
 const PostDetail = ({ information, currentUser, loginUser }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const updatedPost = location.state?.post;
-  const modifyPostId = location.state?.postId;
-  const [scrapActive, setScrapActive] = useState(false);
+  // const location = useLocation();
+  // const navigate = useNavigate();
+  // const updatedPost = location.state?.post;
+  // const modifyPostId = location.state?.postId;
   const [showDropdown, setShowDropdown] = useState(Array(information.length).fill(false));
   const [postModifyModalOpen, setPostModifyModalOpen] = useState(false);
   const [PostDeleteModalOpen, setPostDeleteModalOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isCommnetActive, setIsCommentActive] = useState(Array(information.length).fill(false));
-  const [posts, setPosts] = useState(information.map((post) => ({ ...post, currentIndex: 0 })));
+  const [posts, setPosts] = useState(information);
+  const [current, setCurrent] = useState(0);
   const [expandedComments, setExpandedComments] = useState(Array(information.length).fill(false));
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
-
 
   useEffect(() => {
     fetch('/mockdata/shopdata.json')
@@ -335,22 +334,33 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   }, []);
 
   const nextSlide = useCallback((index) => {
-    setPosts((prevPosts) => {
-      const updatedPosts = [...prevPosts];
-      const length = updatedPosts[index].imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === length - 1 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex + 1;
-      return updatedPosts;
+    const length = information[index].imageSrcs.length
+    setCurrent(current === length - 1 ? 0 : current + 1);
+    // setPosts((prevPosts) => {
+    //   const updatedPosts = [...prevPosts];
+    //   const currentPost = updatedPosts[index];
+      
+    //   if (currentPost.imageSrcs && currentPost.imageSrcs.length > 0) {
+    //     const length = currentPost.imageSrcs.length;
+    //     currentPost.currentIndex = currentPost.currentIndex === length - 1 
+    //       ? currentPost.currentIndex 
+    //       : currentPost.currentIndex + 1;
+    //   }
+      
+    //   return updatedPosts;
     });
-  }, []);
+  
 
   const prevSlide = useCallback((index) => {
-    setPosts((prevPosts) => {
-      const updatedPosts = [...prevPosts];
-      const length = updatedPosts[index].imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === 0 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex - 1;
-      return updatedPosts;
+    const length = information[index].imageSrcs.length
+    setCurrent(current === length - 1 ? 0 : current + 1);
+    // setPosts((prevPosts) => {
+    //   const updatedPosts = [...prevPosts];
+    //   const length = updatedPosts[index].imageSrcs.length;
+    //   updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === 0 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex - 1;
+    //   return updatedPosts;
     });
-  }, []);
+
 
   const ModifyModalOpen = (id) => {
     const post = posts.find((post) => post.feedId === id);
@@ -367,7 +377,6 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   }, []);
 
   const handleScrapToggle = useCallback((index) => {
-    setScrapActive(!scrapActive);
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       updatedPosts[index].isScrapped = !updatedPosts[index].isScrapped;
@@ -456,7 +465,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
 
   return (
     <>
-      {posts.map((item, index) => (
+      {information.map((item, index) => (
         <PostWrapper key={index}>
           <PostHeader>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -525,12 +534,12 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
                 key={imgIndex}
                 src={slide}
                 alt={`Slide ${imgIndex}`}
-                style={{ display: imgIndex === item.currentIndex ? "block" : "none" }}
+                style={{ display: imgIndex === current ? "block" : "none" }}
               />
             ))}
             <DotsWrapper>
               {item.imageSrcs.map((_, imgIndex) => (
-                <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
+                <Dot key={imgIndex} active={imgIndex === current} />
               ))}
             </DotsWrapper>
           </SlideImg>
@@ -560,7 +569,7 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
           </PostActions>
           <Likes>좋아요 {item.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.nickname === loginUser.nickname ? updatedPost.content : item.content}
+            {item.content}
           </PostDescription>
           <HashtagContainer>
             {item.hashTags.map((hashtag) => (

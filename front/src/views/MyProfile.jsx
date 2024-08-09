@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import { useSelector } from "react-redux"
 import { useLocation } from 'react-router-dom';
 import TabComponent from "../components/MyProfile/MyProfileTab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
@@ -8,7 +9,9 @@ import ProfileInfo from "../components/MyProfile/MyProfileInfo";
 import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
+import ScrapGrid from "../components/MyProfile/ScrapGrid"
 
+export const BASE_URL = "https://www.rebu.kro.kr";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -71,10 +74,43 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] =useState([]);
   const [loginUser, setLoginUser] = useState([]);
-  // const [user, setUser] = useState(null);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+ useEffect(() => {
+      const fetchUser = async () => {
+      const token = useSelector(state => state.accessToken)
+      const nickname = localStorage.getItem('nickname')
+      if (!token) {
+        setError('토큰을 찾지 못했습니다');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setProfile(response.data.body);
+      } catch (error) {
+        setError('사용자 정보를 찾지 못했습니다');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  };
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  };
   
   useEffect(() => {
     fetch('/mockdata/loginuser.json')
@@ -171,12 +207,12 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     if (content === "Post") {
       return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={loginUser} />;
     } else if (content === "Scrap") {
-      return <ReviewGrid key={key} Card={scrapdata} currentUser={profile} loginUser={loginUser} />;
+      return <ScrapGrid key={key} Card={scrapdata} currentUser={profile} loginUser={loginUser} />;
     } else if (content === "Likes") {
       return (
         <React.Fragment key={key}>
           {likeCard.map((item) => (
-            <LikesCard key={item.id} Card={item} />
+            <LikesCard key={item.id} Card={item} loginUser={loginUser} />
           ))}
         </React.Fragment>
     )}
