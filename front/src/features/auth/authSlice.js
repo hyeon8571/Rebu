@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
+const navigate = useNavigate();
 const initialState = {
   isLogin: false,
-  // other states like user data, error, etc.
+  nickName: "",
+  profileType: 1
 };
 
 const authSlice = createSlice({
@@ -14,8 +17,9 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.isLogin = false;
-      console.log("logout...") //debug
-      // localStorage.removeItem("accessToken")
+      localStorage.removeItem("accessToken")
+      console.log("logout 성공") //debug
+      navigate("/login", { replace: true })
     },
     // add other reducers
   },
