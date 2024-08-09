@@ -23,7 +23,7 @@ const HashTag = styled.button`
   padding: 5px 10px;
   border: none;
   border-radius: 1rem;
-  cursor: pointer; /* Make the button look clickable */
+  cursor: pointer;
   &:hover {
     background-color: #ff4545;
   }
@@ -41,15 +41,12 @@ export default function AddHashTag({
 }) {
   const [inputHashTag, setInputHashTag] = useState("");
 
-  const addHashTag = (e) => {
-    const allowedCommand = ["Comma", "Enter", "Space", "NumpadEnter"];
-    if (!allowedCommand.includes(e.code)) return;
-
-    if (isEmptyValue(e.target.value.trim())) {
+  const addHashTag = () => {
+    if (isEmptyValue(inputHashTag.trim())) {
       return setInputHashTag("");
     }
 
-    let newHashTag = e.target.value.trim();
+    let newHashTag = inputHashTag.trim();
     const regExp = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     if (regExp.test(newHashTag)) {
       newHashTag = newHashTag.replace(regExp, "");
@@ -72,51 +69,45 @@ export default function AddHashTag({
     setInputHashTag("");
   };
 
-  const keyDownHandler = (e) => {
-    if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
-    e.preventDefault();
-
-    const regExp = /^[a-z|A-Z|가-힣|ㄱ-ㅎ|ㅏ-ㅣ|0-9| \t|]+$/g;
-    if (!regExp.test(e.target.value)) {
-      setInputHashTag("");
+  const keyUpHandler = (e) => {
+    const allowedKeys = ["Enter", "Comma", " "]; // " " is for Space
+    if (allowedKeys.includes(e.key)) {
+      e.preventDefault();
+      addHashTag();
     }
-  };
-
-  const deleteHashTag = (hashTagToDelete) => {
-    const newHashTags = (prevHashTags) =>
-      prevHashTags.filter((hashTag) => hashTag !== hashTagToDelete);
-    setHashTags(newHashTags);
-    setReview({
-      ...review,
-      hashtags: newHashTags,
-    });
   };
 
   const changeHashTagInput = (e) => {
     setInputHashTag(e.target.value);
   };
 
+  const deleteHashTag = (hashTagToDelete) => {
+    const newHashTags = hashTags.filter((hashTag) => hashTag !== hashTagToDelete);
+    setHashTags(newHashTags);
+    setReview({
+      ...review,
+      hashTags: newHashTags,
+    });
+  };
+
   return (
     <HashTagContainer>
       <div className="hashTags">
         {hashTags.length > 0 &&
-          hashTags.map((hashTag) => {
-            return (
-              <HashTag
-                key={hashTag}
-                onClick={() => deleteHashTag(hashTag)}
-                className="tag"
-              >
-                #{hashTag}
-              </HashTag>
-            );
-          })}
+          hashTags.map((hashTag) => (
+            <HashTag
+              key={hashTag}
+              onClick={() => deleteHashTag(hashTag)}
+              className="tag"
+            >
+              #{hashTag}
+            </HashTag>
+          ))}
 
         <input
           value={inputHashTag}
           onChange={changeHashTagInput}
-          onKeyUp={addHashTag}
-          onKeyDown={keyDownHandler}
+          onKeyUp={keyUpHandler}
           placeholder="#해시태그를 등록해보세요. (최대 10개)"
           className="hashTagInput"
         />

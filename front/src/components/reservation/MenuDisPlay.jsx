@@ -132,7 +132,7 @@ export default function MenuDisplay() {
         params: {},
         headers: {
           "Content-Type": "application/json",
-          accessToken: localStorage.getItem("access"),
+          "Access": localStorage.getItem("access"),
         },
       })
       .then((response) => {

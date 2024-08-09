@@ -120,7 +120,7 @@ export default function DesignerDisplay({ profileType }) {
   // 실제로는 props로 전달
   profileType = 2;
   //로그인시의 본인 닉네임
-  const currentNickname = "eyuseung0429";
+  const currentNickname = 'qwerty12345';
 
   useEffect(() => {
     fetch("/mockdata/shopemployees.json")
@@ -195,7 +195,7 @@ export default function DesignerDisplay({ profileType }) {
       </ModalPortal>
       <UpperTabWrapper>
         <Switch isMan={isMale} toggleHandler={toggleHandler} />
-        {(profileType===2 || profileType===3) && !isEditMode && (
+        {(profileType === 2 || profileType === 3) && !isEditMode && (
           <EditDesignerButton onClick={handleModifyDesigner}>
             디자이너 관리
           </EditDesignerButton>
