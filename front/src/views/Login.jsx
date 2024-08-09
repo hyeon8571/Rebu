@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { isLogin, setIsLogin } from "../features/auth/authSlice";
+import { isLogin, login } from "../features/auth/authSlice";
 import { BASE_URL } from "./Signup";
 // import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
 //css
@@ -28,6 +28,12 @@ const Ptag = styled.p`
 const Button = styled.button`
   ${ButtonStyles}
 `;
+// redux
+const initState = {
+  isLogin: false,
+  nickname: "",
+  // profileType: 0
+};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,10 +42,11 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); //redux
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
+    // dispatch(login(loginParam))
     e.preventDefault(); //0ㅅ0
     try {
       // 서버에 로그인 요청 - 비동기
@@ -59,16 +66,14 @@ const Login = () => {
       console.log("response:", response);
       if (response.data.code === "로그인 성공 코드") {
         // 서버에서 jwt 토큰 받기
-        const access = response.headers["access"];
-        console.log("access token: ", access);
+        const access = response.headers["access"]; //access 토큰 받기
+        const { type, nickname } = response.data.body;
         localStorage.setItem("access", access); //로컬저장소에 토큰 저장
 
         // 로그인 성공 표시
-        console.log("로그인 성공");
-        console.log(email, password);
         console.log("data", response);
         alert("로그인 성공");
-        dispatch(setIsLogin(true)); //isLogin = true 로 설정
+        dispatch(login({ isLogin: true, nickname: nickname, type: type })); //isLogin = true 로 설정
         console.log("로그인 상태", isLogin);
         navigate("/profile", { replace: true }); //프로필로 임시 이동..
       } else {
