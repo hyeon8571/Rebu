@@ -5,8 +5,8 @@ import { useRef, useState, useEffect } from "react";
 import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
-import { useNavigate } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 const Wrapper = styled.div`
   padding-left: 1rem;
   padding-right: 1rem;
@@ -104,24 +104,39 @@ export default function MenuDisplay() {
   const [isSettingMode, setIsSettingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
   const navigation = useNavigate();
 
+  const location = useLocation();
+  const { nickname } = location.state;
+
+  const BASE_URL = "https://www.rebu.kro.kr";
+
   useEffect(() => {
-    fetch("/mockdata/menudata.json")
+    // fetch("/mockdata/menudata.json")
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Network response was not ok");
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((jsondata) => {
+    //     const data = jsondata.body;
+    //     console.log(data);
+    //     setMenuData(data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Fetch error:", error);
+    //   });
+    axios
+      .get(BASE_URL + "/api/menus?nickname=" + nickname, {
+        params: {},
+        headers: {
+          "Content-Type": "application/json",
+          accessToken: localStorage.getItem("access"),
+        },
+      })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((jsondata) => {
-        const data = jsondata.body;
-        console.log(data);
-        setMenuData(data);
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error);
+        console.log(response);
       });
   }, []);
 

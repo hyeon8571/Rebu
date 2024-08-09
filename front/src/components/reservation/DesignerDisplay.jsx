@@ -120,7 +120,7 @@ export default function DesignerDisplay({ profileType }) {
   // 실제로는 props로 전달
   profileType = 2;
   //로그인시의 본인 닉네임
-  const currentNickname = "jiwon";
+  const currentNickname = "eyuseung0429";
 
   useEffect(() => {
     fetch("/mockdata/shopemployees.json")
@@ -222,7 +222,15 @@ export default function DesignerDisplay({ profileType }) {
               <DesignerIntroduction>
                 {item.workingIntroduction}
               </DesignerIntroduction>
-              <MenuLink>시술 보기</MenuLink>
+              <MenuLink
+                onClick={() =>
+                  navigate("/menudisplay", {
+                    state: { nickname: currentNickname },
+                  })
+                }
+              >
+                시술 보기
+              </MenuLink>
               <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
