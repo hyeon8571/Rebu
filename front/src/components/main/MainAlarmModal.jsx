@@ -29,7 +29,7 @@ const ModalContainer = styled.div`
 // `;
 
 const NotificationItem = styled.div`
-  background: #f5f5f5;
+  background: #f4ebfd;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -132,7 +132,7 @@ const NotificationModal = ({ notifications, closeModal }) => {
         <ModalTitle>MY 알림</ModalTitle>
         <CloseButton onClick={closeModal}>&times;</CloseButton>
       </ModalHeader>
-      <hr style={{borderColor: '#EDE0FB'}}/>
+      <hr style={{borderColor: '#dec3f9'}}/>
       <AlarmListContainer>
         {notifications.map((notification, index) => (
           <NotificationItem key={index}>

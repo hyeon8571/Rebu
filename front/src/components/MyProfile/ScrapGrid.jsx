@@ -50,7 +50,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
-  const isPrivate = true;
+  const [isPrivate, setIsPrivate] = useState(currentUser.isPrivate);
 
   const generateLayout = useCallback((photos) => {
     return photos.map((photo, index) => ({

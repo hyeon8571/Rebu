@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import TabComponent from "../components/storeProfile/StoreProfileTab";
 import ProfileImage from "../components/storeProfile/StoreProfileImage";
 import ProfileInfo from "../components/storeProfile/StoreProfileInfo";
-import Header from "../components/storeProfile/StoreProfileHeader";
+import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
 import PostGrid from "../components/storeProfile/PostGrid";
 import TimeTable from "../components/reservation/TimeTable";
