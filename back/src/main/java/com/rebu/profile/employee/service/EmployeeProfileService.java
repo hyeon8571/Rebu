@@ -14,6 +14,8 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.service.ProfileService;
+import com.rebu.profile.shop.entity.ShopProfile;
+import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.workingInfo.service.WorkingInfoService;
 import jakarta.servlet.http.Cookie;
@@ -33,6 +35,7 @@ public class EmployeeProfileService {
     private final MemberRepository memberRepository;
     private final RedisService redisService;
     private final WorkingInfoService workingInfoService;
+    private final ShopProfileRepository shopProfileRepository;
 
     @Transactional
     public void generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
@@ -76,7 +79,7 @@ public class EmployeeProfileService {
         Profile profile = profileRepository.findByNickname(getEmployeeProfileDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        GetEmployeeProfileResponse getEmployeeProfileResponse = employeeProfileRepository.getEmployeeProfileByEmployeeProfileId(targetProfile.getId())
+        GetEmployeeProfileResponse getEmployeeProfileResponse = employeeProfileRepository.getEmployeeProfileResponseByProfileId(targetProfile.getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
         if (targetProfile.getNickname().equals(getEmployeeProfileDto.getNickname())) {
@@ -89,6 +92,20 @@ public class EmployeeProfileService {
 
         return getEmployeeProfileResponse;
     }
+
+    @Transactional
+    public void acceptInvite(AcceptInviteDto acceptInviteDto) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(acceptInviteDto.getEmployeeProfileId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        ShopProfile shopProfile = shopProfileRepository.findById(acceptInviteDto.getShopProfileId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        employeeProfile.changeShop(shopProfile);
+
+        employeeProfile.changeRole(acceptInviteDto.getRole());
+    }
+
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);

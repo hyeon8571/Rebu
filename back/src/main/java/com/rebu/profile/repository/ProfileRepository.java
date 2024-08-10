@@ -42,7 +42,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
         WHERE p.id = :profileId
         GROUP BY p.id
         """)
-    Optional<GetProfileResponse> getCommonProfileByProfileId(Long profileId);
+    Optional<GetProfileResponse> getCommonProfileResponseByProfileId(Long profileId);
 
     @Query("""
         SELECT p

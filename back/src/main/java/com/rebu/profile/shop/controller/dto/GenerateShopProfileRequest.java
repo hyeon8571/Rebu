@@ -1,6 +1,6 @@
 package com.rebu.profile.shop.controller.dto;
 
-import com.rebu.profile.shop.Category;
+import com.rebu.profile.shop.enums.Category;
 import com.rebu.profile.shop.dto.GenerateShopProfileDto;
 import com.rebu.profile.validation.annotation.LicenseNum;
 import com.rebu.profile.validation.annotation.Nickname;

@@ -68,9 +68,9 @@ public class FollowService {
             }
         }
 
-        List<Follow> followings = followRepository.findByFollowerId(profile.getId());
+        List<Follow> followingList = followRepository.findByFollowerId(profile.getId());
 
-        return followings.stream().map(GetFollowingResponse::from).toList();
+        return followingList.stream().map(GetFollowingResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -84,8 +84,8 @@ public class FollowService {
             }
         }
 
-        List<Follow> followers = followRepository.findByFollowingId(profile.getId());
+        List<Follow> followerList = followRepository.findByFollowingId(profile.getId());
 
-        return followers.stream().map(GetFollowerResponse::from).toList();
+        return followerList.stream().map(GetFollowerResponse::from).toList();
     }
 }

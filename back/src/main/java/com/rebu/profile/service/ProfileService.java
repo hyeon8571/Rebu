@@ -160,7 +160,7 @@ public class ProfileService {
         Profile profile = profileRepository.findByNickname(getProfileDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        GetProfileResponse getProfileResponse = profileRepository.getCommonProfileByProfileId(targetProfile.getId())
+        GetProfileResponse getProfileResponse = profileRepository.getCommonProfileResponseByProfileId(targetProfile.getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
         if (getProfileDto.getNickname().equals(getProfileDto.getTargetNickname())) {
