@@ -4,6 +4,7 @@ import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.menu.controller.dto.MenuCreateRequest;
 import com.rebu.menu.controller.dto.MenuUpdateRequest;
+import com.rebu.menu.dto.MenuCategoryReadDto;
 import com.rebu.menu.dto.MenuDeleteDto;
 import com.rebu.menu.dto.MenuReadDto;
 import com.rebu.menu.service.MenuService;
@@ -62,6 +63,12 @@ public class MenuController {
         String nickName = authProfileInfo.getNickname();
         menuService.delete(MenuDeleteDto.builder().menuId(menuId).nickname(nickName).build());
         return new ResponseEntity<>(new ApiResponse("1J02",null), HttpStatus.OK);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<?> categoryRead(@RequestParam(value = "employeeNickname", required = false) String employeeNickname) {
+        MenuCategoryReadDto menuCategoryReadDto =menuService.category(employeeNickname);
+        return new ResponseEntity<>(new ApiResponse<>("1J02", menuCategoryReadDto), HttpStatus.OK);
     }
 
 }

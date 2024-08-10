@@ -1,10 +1,14 @@
 package com.rebu.profile.shop.controller;
 
+import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
+import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
-import com.rebu.profile.shop.controller.dto.ChangeAddressRequest;
-import com.rebu.profile.shop.controller.dto.ChangeShopNameRequest;
-import com.rebu.profile.shop.controller.dto.GenerateShopProfileRequest;
+import com.rebu.profile.shop.controller.dto.*;
+import com.rebu.profile.shop.dto.GetShopEmployeeDto;
+import com.rebu.profile.shop.dto.GetShopEmployeeResponse;
+import com.rebu.profile.shop.dto.GetShopProfileDto;
+import com.rebu.profile.shop.dto.GetShopProfileResponse;
 import com.rebu.profile.shop.exception.LicenseNumNotVerifiedException;
 import com.rebu.profile.shop.service.ShopProfileService;
 import com.rebu.security.dto.AuthProfileInfo;
@@ -14,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +45,7 @@ public class ShopProfileController {
         return ResponseEntity.ok(new ApiResponse<>("매장 프로필 생성 완료 코드", null));
     }
 
+    @Authorized(allowed = {Type.SHOP})
     @PatchMapping("/{nickname}/address")
     public ResponseEntity<?> updateAddress(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                            @Valid @RequestBody ChangeAddressRequest changeAddressRequest) {
@@ -46,10 +53,42 @@ public class ShopProfileController {
         return ResponseEntity.ok(new ApiResponse<>("매장 주소 수정 완료 코드", null));
     }
 
+    @Authorized(allowed = {Type.SHOP})
     @PatchMapping("/{nickname}/name")
     public ResponseEntity<?> updateShopName(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @RequestBody ChangeShopNameRequest changeShopNameRequest) {
         shopProfileService.updateShopName(changeShopNameRequest.toDto(authProfileInfo.getNickname()));
         return ResponseEntity.ok(new ApiResponse<>("매장 이름 수정 완료 코드", null));
     }
+
+    @Authorized(allowed = {Type.SHOP})
+    @PatchMapping("/{nickname}/reservation-interval")
+    public ResponseEntity<?> updateReservationInterval(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                                       @RequestBody UpdateReservationIntervalRequest updateReservationIntervalRequest) {
+        shopProfileService.updateReservationInterval(updateReservationIntervalRequest.toDto(authProfileInfo.getNickname()));
+        return ResponseEntity.ok(new ApiResponse<>("매장 예약 단위 수정 성공 코드", null));
+    }
+
+    @GetMapping("/{nickname}/employees")
+    public ResponseEntity<?> getShopEmployees(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                              @PathVariable String nickname) {
+        List<GetShopEmployeeResponse> result = shopProfileService.getShopEmployees(new GetShopEmployeeDto(authProfileInfo.getNickname(), nickname));
+        return ResponseEntity.ok(new ApiResponse<>("매장 직원 조회 성공 코드", result));
+    }
+
+    @GetMapping("/{nickname}")
+    public ResponseEntity<?> getShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                            @PathVariable String nickname) {
+        GetShopProfileResponse result = shopProfileService.getShopProfile(new GetShopProfileDto(authProfileInfo.getNickname(), nickname));
+        return ResponseEntity.ok(new ApiResponse<>("매장 프로필 조회 성공 코드", result));
+    }
+
+    @Authorized(allowed = {Type.SHOP})
+    @PostMapping("/{nickname}/invite-employees")
+    public ResponseEntity<?> inviteEmployee(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                            @RequestBody InviteEmployeeRequest inviteEmployeeRequest) {
+        shopProfileService.inviteEmployee(inviteEmployeeRequest.toDto(authProfileInfo.getNickname()));
+        return ResponseEntity.ok(new ApiResponse<>("직원 초대 성공 코드", null));
+    }
+
 }

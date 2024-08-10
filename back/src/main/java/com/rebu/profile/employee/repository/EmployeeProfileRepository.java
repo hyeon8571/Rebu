@@ -35,8 +35,8 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
         LEFT JOIN Review rv ON rv.employeeProfile.id = e.id
         LEFT JOIN Feed fe ON fe.writer.id = e.id
         LEFT JOIN Scrap sc ON sc.profile.id = e.id
-        WHERE e.id = :employeeProfileId
+        WHERE e.id = :profileId
         GROUP BY e.id
     """)
-    Optional<GetEmployeeProfileResponse> getEmployeeProfileByEmployeeProfileId(Long employeeProfileId);
+    Optional<GetEmployeeProfileResponse> getEmployeeProfileResponseByProfileId(Long profileId);
 }

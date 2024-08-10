@@ -1,12 +1,15 @@
 package com.rebu.profile.employee.controller;
 
+import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
 import com.rebu.profile.employee.controller.dto.GenerateEmployeeProfileRequest;
+import com.rebu.profile.employee.dto.AcceptInviteDto;
 import com.rebu.profile.employee.dto.GetEmployeeProfileDto;
 import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
 import com.rebu.profile.employee.service.EmployeeProfileService;
+import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +38,7 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("직원 프로필 생성 완료 코드", null));
     }
 
+    @Authorized(allowed = {Type.EMPLOYEE})
     @PatchMapping("/{nickname}/working-introduction")
     public ResponseEntity<?> updateWorkingIntro(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @RequestBody ChangeWorkingIntroRequest changeWorkingIntroRequest) {
@@ -42,6 +46,7 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("직원 매장 소개글 변경 완료 코드", null));
     }
 
+    @Authorized(allowed = {Type.EMPLOYEE})
     @PatchMapping("/{nickname}/working-name")
     public ResponseEntity<?> updateWorkingName(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                @RequestBody ChangeWorkingNameRequest changeWorkingNameRequest) {
@@ -54,5 +59,11 @@ public class EmployeeProfileController {
                                                 @PathVariable String nickname) {
         GetEmployeeProfileResponse result = employeeProfileService.getEmployeeProfile(new GetEmployeeProfileDto(authProfileInfo.getNickname(), nickname));
         return ResponseEntity.ok(new ApiResponse<>("직원 프로필 조회 완료 코드", result));
+    }
+
+    @PatchMapping("/{nickname}/shop")
+    public ResponseEntity<?> acceptInvite(@RequestBody AcceptInviteDto acceptInviteDto) {
+        employeeProfileService.acceptInvite(acceptInviteDto);
+        return ResponseEntity.ok(new ApiResponse<>("매장 직원 등록 완료 코드", null));
     }
 }
