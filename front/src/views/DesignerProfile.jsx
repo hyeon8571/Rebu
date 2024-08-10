@@ -9,7 +9,7 @@ import ProfileInfo from "../components/MyProfile/MyProfileInfo";
 import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
-import LikesCard from "../components/MyProfile/LikesCard";
+import PostGrid from "../components/storeProfile/PostGrid";
 
 
 const Wrapper = styled.div`
@@ -172,9 +172,9 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
   const tabTitle = [
-    { name: "Post", content: "Post", count: profile.reviewCnt },
+    { name: "Post", content: "Post", count: profile.feedCnt },
+    { name: "Review", content: "Review", count: profile.reviewCnt },
     { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
-    { name: "Likes", content: "Likes", count: profile.favoriteCnt },
   ];
 
   const renderGrid = () => {
@@ -182,7 +182,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
     if (content === "Post") {
       return (
-        <ReviewGrid
+        <PostGrid
           key={key}
           Card={reviewdata}
           currentUser={profile}
@@ -191,13 +191,14 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       );
     } else if (content === "Scrap") {
       return <ScrapGrid key={key} Card={scrapdata} currentUser={profile} loginUser={profile} />;
-    } else if (content === "Likes") {
+    } else if (content === "Review") {
       return (
-        <React.Fragment key={key}>
-          {likeCard.map((item) => (
-            <LikesCard key={item.id} Card={item} loginUser={profile} />
-          ))}
-        </React.Fragment>
+        <ReviewGrid
+          key={key}
+          Card={reviewdata}
+          currentUser={profile}
+          loginUser={loginUser}
+        />
       );
     }
   };

@@ -4,7 +4,6 @@ import styled from "styled-components";
 const ToggleContainer = styled.div`
   position: relative;
   width: 60px;
-
   display: flex;
   cursor: pointer;
 

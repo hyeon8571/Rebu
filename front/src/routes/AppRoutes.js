@@ -15,10 +15,10 @@ import TestProfile from "../views/TestProfile";
 import CreateProfile from "../views/CreateProfile";
 import SignupForm2 from "../components/user/SignupForm2";
 
-const AppRoutes = () => (
+const AppRoutes = ({ theme, toggleTheme }) => (
   <Routes>
     <Route path="/start" element={<AppStart />} />
-    <Route path="/main" element={<Main />} />
+    <Route path="/main" element={<Main theme={theme} toggleTheme={toggleTheme} />} />
     <Route path="/login" element={<Login />} />
     <Route path="/login/password" element={<ChangePassword />} />
     <Route path="login/password-changed" element={<ChangePasswordCompl />} />

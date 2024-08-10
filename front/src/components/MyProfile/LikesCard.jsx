@@ -1,10 +1,10 @@
 import styled from "styled-components";
-// import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ButtonSmall from "../common/ButtonSmall";
 import { FaRegStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import DesignerTab from "../reservation/DesignerTab";
 
 const Wrapper = styled.div`
   display: flex;
@@ -93,6 +93,10 @@ const TitleText = styled.div`
   }
 `;
 
+const ShopName = styled.span`
+  
+`;
+
 const IntroWrapper = styled.div`
   padding-top: 10px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
@@ -142,12 +146,27 @@ const ButtonWrapper = styled.div`
 `;
 
 
-export default function VisitedCard({ Card }) {
+export default function VisitedCard({ Card, loginUser }) {
+  const navigate = useNavigate();
+  const [shopdata, setShopData] = useState([]);
+
+  useEffect(() => {
+    fetch('/mockdata/shopdata.json')
+      .then(res => res.json())
+      .then((data) => {
+        setShopData(data.body);
+      })      
+  }, []);
+
+  const handleShopNameClick = (nickname) => {
+    const shopProfile = shopdata.find(shop => shop.nickname === nickname);
+    if (shopProfile) {
+      navigate('/store-profile', { state: { shop: shopProfile, user: loginUser } });
+    }
+  };
 
   const button = {
-    onClick: () => {
-      window.alert("버튼 클릭!");
-    },
+    onClick: () => {navigate("/designertab")},
     title: "예약하기",
     highlight: true,
   };
@@ -160,7 +179,7 @@ export default function VisitedCard({ Card }) {
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText>
+            <TitleText onClick={() => handleShopNameClick(Card.nickname)}>
               {Card.name}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>

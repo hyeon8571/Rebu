@@ -163,7 +163,7 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
   return (
     <Wrapper>
       <ImgBack onClick={handleBackClick} />
-      <HeaderText>My Profile</HeaderText>
+      <HeaderText>Profile</HeaderText>
       <ButtonBox>
         <ThemeSwitch theme={theme} toggleTheme={toggleTheme} />
         {currentUser.nickname === loginUser.nickname ? (

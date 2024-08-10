@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { GoShareAndroid } from "react-icons/go";
 import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
 import StoreMark from "../../assets/images/storemark.png";
@@ -75,11 +74,6 @@ const ImgLike = styled(FaRegHeart)`
 const ImgLikeActive = styled(FaHeart)`
   font-size: 20px;
   color: #943aee;
-  cursor: pointer;
-`;
-
-const ImgShare = styled(GoShareAndroid)`
-  font-size: 20px;
   cursor: pointer;
 `;
 
@@ -223,7 +217,6 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }
               <ImgLikeActive onClick={handleLikeToggle} />
             ) : (<ImgLike onClick={handleLikeToggle} />)
           ) : ("")}
-          <ImgShare />
         </RightContainer>
       </NameInfo>
 

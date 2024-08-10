@@ -1,0 +1,77 @@
+{
+  "code" : "????",
+  "body" : [
+    
+
+
+
+      {
+          "alarmType": "COMMENT",
+          "receiverNickname": "user123",
+          "receiverId": 1,
+          "receiverType": "EMPLOYEE",
+          "senderNickname": "user123",
+          "senderId": 1,
+          "senderType": "EMPLOYEE",
+          "feedId": 1,
+          "alarmCreateAT": "2024-08-10T01:57:59.992672",
+          "alarmId": 1
+      },
+
+      {
+          "alarmType": "NESTED_COMMENT",
+          "parentCommentId": 1,
+          "receiverNickname": "user123",
+          "receiverId": 1,
+          "receiverType": "EMPLOYEE",
+          "senderNickname": "user123",
+          "senderId": 1,
+          "senderType": "EMPLOYEE",
+          "feedId": 1,
+          "alarmCreateAT": "2024-08-10T01:57:59.992672",
+          "alarmId": 1
+      },
+
+      {
+          "alarmType": "INVITE_EMPLOYEE",
+          "receiverNickname": "user123",
+          "receiverId": 1,
+          "receiverType": "EMPLOYEE",
+          "senderNickname": "user123",
+          "senderId": 1,
+          "senderType": "EMPLOYEE",
+          "shopName": "싸피네일", 
+          "shopId": 1,
+          "role": "인턴 디자이너",
+          "alarmCreateAT": "2024-08-10T01:57:59.992672",
+          "alarmId": 1
+      },
+
+      {
+          "alarmType": "RESERVATION",
+          "receiverNickname": "user123",
+          "receiverId": 1,
+          "receiverType": "EMPLOYEE",
+          "senderNickname": "user123",
+          "senderId": 1,
+          "senderType": "EMPLOYEE",
+          "startDateTime": 30,
+          "timeTaken": 30,
+          "alarmCreateAT": "2024-08-10T01:57:59.992672",
+          "alarmId": 1
+      },
+
+      {
+          "alarmType": "FOLLOW",
+          "receiverNickname": "user123",
+          "receiverId": 1,
+          "receiverType": "EMPLOYEE",
+          "senderNickname": "user123",
+          "senderId": 1,
+          "senderType": "EMPLOYEE",
+          "alarmCreateAT": "2024-08-10T01:57:59.992672",
+          "alarmId": 1
+      }
+  ]
+
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef }from "react";
 import styled, { keyframes } from "styled-components";
 import FollowList from "./FollowList";
+import nullImg from "../../assets/images/img.webp";
 
 // 그라디언트 애니메이션을 정의합니다.
 const rotateGradient = keyframes`
@@ -41,9 +42,11 @@ const rotateGradient = keyframes`
 
 const ProfileContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   position: relative;
   margin-top: 20px;
   margin-left: 30px;
+  margin-right: 30px;
   @media (max-width: 375px) {
     margin-left: 15px;
     margin-right: 15px;
@@ -180,6 +183,25 @@ const CloseButton = styled.button`
   float: right;
 `;
 
+const FollowButton = styled.button`
+  margin-top: 10px;
+  width: ${props => (props.following === "FOLLOWING" ? '120px' : '90px')};
+  height: 40px;
+  background-color: ${props => (props.following === "FOLLOWING" ? '#f4ebfd' : '#b475f3')};
+  color: ${props => (props.following === "FOLLOWING" ? '#943aee' : '#ffffff')};
+  border: 2px solid #b475f3;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${props => (props.following === "FOLLOWING" ? '#f4ebfd' : '#b475f3')};
+  }
+`;
+
+
 
 export default function ProfileLarge({ currentUser, time, followingdata, followerdata }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
@@ -187,6 +209,16 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
   const online = time < 300;
   const followersModalRef = useRef(null);
   const followingModalRef = useRef(null);
+  const [relation, setRelation] = useState(currentUser.relation);
+
+  const handleFollow = () => {
+    setRelation('FOLLOWING');
+  };
+
+  const handleUnfollow = () => {
+    setRelation('NONE');
+  };
+
 
   const handleOpenFollowersModal = () => {
     setIsFollowersModalOpen(true);
@@ -224,15 +256,19 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
     <ProfileContainer>
     <ImgBox>
       <React.Fragment>
-        {online ? (
+        {currentUser.imageSrc === null ? (
+          <OutterCircleOffline>
+            <Insideimg src={nullImg}></Insideimg>
+          </OutterCircleOffline>
+        ) : (online ? (
           <OutterCircleOnline>
-            <Insideimg src={currentUser.imageSrc} alt="Profile" />
+            <Insideimg src={'https://www.rebu.kro.kr/data/' + currentUser.imageSrc} alt="Profile" />
           </OutterCircleOnline>
         ) : (
           <OutterCircleOffline>
-            <Insideimg src={currentUser.imageSrc}></Insideimg>
+            <Insideimg src={'https://www.rebu.kro.kr/data/' + currentUser.imageSrc}></Insideimg>
           </OutterCircleOffline>
-        )}
+        ))}
       </React.Fragment>
     <FollowInfo>
       <FollowerInfo>
@@ -246,6 +282,16 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
     </FollowInfo>
     </ImgBox>
     
+    {relation === 'OWN'? (
+      ""
+    ) : (
+      <FollowButton
+        following={relation}
+        onClick={relation === 'FOLLOWING' ? handleUnfollow : handleFollow}
+      >
+        {relation === 'FOLLOWING' ? '팔로우 취소' : '팔로우'}
+      </FollowButton>
+    )}
 
     {isFollowersModalOpen && (
         <ModalOverlay>

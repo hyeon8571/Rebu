@@ -1,31 +1,106 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import SelectComponent from "./../components/AddMenu/MenuSelectBox";
-import ButtonLarge from "../components/common/ButtonLarge";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { IoIosClose } from "react-icons/io";
+import ModalPortal from "../../util/ModalPortal";
+import ModalNoBackNoExit from "../../components/common/ModalNoBackNoExit";
+import SelectComponent from "../../components/AddMenu/MenuSelectBox";
+import ButtonLarge from "../../components/common/ButtonLarge";
 import Lottie from "lottie-react";
-import validationAlert from "../assets/images/validationAlert.json";
-import ModalPortal from "../util/ModalPortal";
-import ModalNoBackNoExit from "../components/common/ModalNoBackNoExit";
+import validationAlert from "../../assets/images/validationAlert.json";
 import { useNavigate, useLocation } from "react-router-dom";
-import ButtonSmall from "../components/common/ButtonSmall";
-import confirmLottie from "../assets/images/confirmLottie.json";
-import Header from "../components/common/Header";
-import ImgUploader from "../components/common/MultipleImgUploader";
+import ButtonSmall from "../../components/common/ButtonSmall";
+import confirmLottie from "../../assets/images/confirmLottie.json";
+import ImgUploader from "../../components/common/MultipleImgUploader";
 
-// 공통 스타일 분리
+const ModalOverlay = styled.div`
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-right: 10px;
+  align-items: center;
+`;
+
+const CloseButton = styled(IoIosClose)`
+  background: transparent;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  &:hover {
+    color: #943AEE;
+  }
+`;
+
+const ModalContent = styled.div`
+  overflow-y: auto;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? '#ffffff' : '#e5e5e5'};
+  border-radius: 8px;
+  padding: 10px 20px;
+  width: 350px;
+  /* height: 700px; */
+  @media (max-width: 375px) {
+    /* height: 550px; */
+  }
+  max-width: 80%;
+`;
+
+const HeaderText = styled.p`
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px 15px;
+  @media (max-width: 375px) {
+    font-size: 17px;
+  }
+`;
+
+const Content = styled.div`
+  margin: 10px auto;
+  width: 90%;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+  /* height: 700px; */
+  @media (max-width: 375px) {
+    /* height: 450px; */
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 10px;
+  border-radius: 8px;
+  border: 1px solid #bcbcbc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#fbf8fe" : props.theme.secondary};
+`;
+
 const StyledInputBox = styled.input`
   border: 1px solid #000;
   border-radius: 0.3rem;
   height: 30px;
   padding: 0 20px;
   box-sizing: border-box;
-  width: 40vw;
+  width: 20vw;
   max-width: 420px;
   min-width: 240px;
   display: flex;
 `;
 
 const InstructionInputBox = styled(StyledInputBox).attrs({ as: "textarea" })`
+  display: flex;
+  max-width: 420px;
   height: 100px;
   resize: none;
   &::placeholder {
@@ -50,7 +125,7 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Left align items */
-  width: 40vw;
+  width: 20vw;
   max-width: 420px;
   min-width: 240px;
   margin: auto;
@@ -58,14 +133,8 @@ const InputWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const Container = styled.div`
-  display: flex;
-  @media (max-width: 768px) {
-    padding-top: 3rem;
-  }
-  padding-top: 4rem;
-  flex-direction: column;
-  align-items: center;
+const ButtonWrapper = styled.div`
+  padding-top: 1rem;
 `;
 
 const SubmitButtonWrapper = styled.div`
@@ -90,7 +159,7 @@ const NumberInput = styled.input`
   height: 30px;
   padding: 0 20px;
   box-sizing: border-box;
-  width: 25vw;
+  width: 20vw;
   max-width: 420px;
   min-width: 240px;
   display: flex;
@@ -133,9 +202,10 @@ const ModalContentContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
 const MenuData = {};
 
-export default function AddMenu() {
+const AddMenuModal = ({addMenuModalOpen, closeModal}) => {
   const location = useLocation();
   const { categories, originMenu } = location.state || {};
   const [category, setCategory] = useState(
@@ -159,7 +229,16 @@ export default function AddMenu() {
 
   const IMG_URL = process.env.PUBLIC_URL;
 
-  console.log(category);
+
+  const onchangeImageUpload = (e) => {
+    const { files } = e.target;
+    const uploadFile = files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadFile);
+    reader.onloadend = () => {
+      setUploadImgUrl(reader.result);
+    };
+  };
   const handleNumberInput = (e) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) {
@@ -182,7 +261,7 @@ export default function AddMenu() {
     if (!cost) newErrors.cost = "시술 비용을 입력해주세요";
     if (cost && (isNaN(costValue) || costValue <= 0))
       newErrors.cost = "시술 비용은 0보다 커야 합니다";
-    if (!uploadImgUrls) newErrors.uploadImgUrl = "사진을 업로드해주세요";
+    if (!uploadImgUrl) newErrors.uploadImgUrl = "사진을 업로드해주세요";
 
     if (Object.keys(newErrors).length > 0) {
       setAnimationKey(animationKey + 1);
@@ -197,7 +276,7 @@ export default function AddMenu() {
         description,
         time: timeValue,
         cost: costValue,
-        images: uploadImgUrls,
+        uploadImgUrl,
       };
       console.log(formData);
       // formData 객체를 이용하여 필요한 작업 수행
@@ -205,10 +284,17 @@ export default function AddMenu() {
     }
   };
 
+
   return (
-    <div style={{ padding: "0", margin: "0" }}>
-      <Header title={originMenu ? "시술수정" : "시술추가"}></Header>
-      <Container>
+    <ModalOverlay>
+    {addMenuModalOpen && (
+      <ModalContent>
+        <ModalHeader>
+          <HeaderText title={originMenu ? "시술수정" : "시술추가"}></HeaderText>
+          <CloseButton onClick={closeModal} />
+        </ModalHeader>
+
+        <Content>
         <ModalPortal>
           <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
             <ModalContentContainer>
@@ -308,7 +394,7 @@ export default function AddMenu() {
         )}
 
         <SubmitButtonWrapper>
-          <ButtonLarge
+          <ButtonSmall
             button={{
               title: "메뉴 생성",
               onClick: handleSubmit,
@@ -316,7 +402,11 @@ export default function AddMenu() {
             }}
           />
         </SubmitButtonWrapper>
-      </Container>
-    </div>
-  );
-}
+        </Content>
+      </ModalContent>
+    )}
+    </ModalOverlay>
+  )
+};
+
+export default AddMenuModal;
