@@ -13,7 +13,7 @@ const Container = styled.div`
   margin: 2rem 3rem;
 `;
 
-export const Div = styled.div`
+const Div = styled.div`
   display: flex;
   justify-content: space-around;
 `;
@@ -249,6 +249,10 @@ const SignupForm2 = ({
       alert("생년월일을 입력하세요.");
       return false;
     }
+    // if (!formData.gender) {
+    //   alert("성별을 선택하세요.");
+    //   return false;
+    // }
     if (!formData.phone) {
       alert("전화번호를 입력하세요.");
       return false;
@@ -261,6 +265,10 @@ const SignupForm2 = ({
       alert("이미 회원가입한 전화번호입니다.");
       return false;
     }
+    // if (!isCodeVerified) {
+    //   alert("전화번호를 올바르게 입력하세요.");
+    //   return false;
+    // }
     return true;
   };
 

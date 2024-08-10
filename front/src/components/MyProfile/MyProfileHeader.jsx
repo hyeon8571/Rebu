@@ -105,7 +105,7 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
   const [isSettingActive, setIsSettingActive] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const type = useSelector((state) => state.type);
+  const { type } = useSelector((state) => state.auth);
 
   const logoutModalOpen = () => {
     setLogoutModalOpen(true);

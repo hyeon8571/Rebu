@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
 import api from "../../features/auth/api";
 import axios from "axios";
-// import InfoIconContainer from "../../util/InfoIconContainer";
 import { Msg, Tooltip, InfoIconContainer } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { BASE_URL } from "../../views/Signup";
+// const Msg = styled.p``;
+// const Tooltip = styled.ul``;
+// const InfoIconContainer = styled.div``;
 
 export const Div = styled.div`
   display: flex;
@@ -181,14 +184,20 @@ export const formatPhoneNumber = (value) => {
   return value;
 };
 
+const access = localStorage.getItem("access");
 // 직원 프로필 생성 함수
 const createEmployeeProfile = async (formData) => {
   try {
-    const response = await api.post("/profiles/employees", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.post(
+      `${BASE_URL}/profiles/employees`,
+      formData,
+      {
+        headers: {
+          Access: access,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     console.log("직원 프로필 생성", response);
     return response.data;
   } catch (error) {

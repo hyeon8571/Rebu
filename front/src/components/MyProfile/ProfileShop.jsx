@@ -19,6 +19,11 @@ export const Div = styled.div`
   display: flex;
   justify-content: center;
 `;
+// const Msg = styled.p``;
+// const Tooltip = styled.ul``;
+// const InfoIconContainer = styled.div``;
+// const RadioButtonContainer = styled.div``;
+// const Button = styled.button``;
 
 const Container = styled.div`
   display: flex;

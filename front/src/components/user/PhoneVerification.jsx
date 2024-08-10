@@ -4,7 +4,8 @@ import { BASE_URL } from "../../views/Signup";
 import styled, { css } from "styled-components";
 import ButtonLarge from "../common/ButtonDisabled";
 import { Msg } from "./SignupForm2";
-// import { ButtonStyles } from "../common/ButtonLogin";
+
+import { ButtonStyles } from "../common/ButtonLogin";
 
 const Div = styled.div`
   display: flex;

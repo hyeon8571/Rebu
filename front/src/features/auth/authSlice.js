@@ -82,6 +82,7 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
+
 export const getProfile = (nickname) => async (dispatch) => {
   const access = localStorage.getItem("access");
   try {
@@ -101,4 +102,23 @@ export const getProfile = (nickname) => async (dispatch) => {
   }
 };
 
+
+export const alarmsAgreement = () => async (dispatch) => {
+  const access = localStorage.getItem("access");
+  try {
+    const response = await axios.get(`${BASE_URL}/api/alarms/subscribe`, {
+      headers: {
+        "access": access,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("alarm axios", response)
+    // console.log(response.data.body)
+    // dispatch(setProfile(response.data.body));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "알람 동의 sse연결 실패." };
+  }
+};
 export default authSlice.reducer;

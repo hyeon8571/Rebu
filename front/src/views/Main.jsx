@@ -1,11 +1,27 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { alarmsAgreement } from "../features/auth/authSlice";
 
 function Main() {
+  const dispatch = useDispatch();
+
   // Redux 상태에서 필요한 정보 가져오기
   const { profile, nickname, type, isLogin } = useSelector(
     (state) => state.auth
   );
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 alarmsAgreement 액션을 디스패치합니다.
+    const fetchAlarmsAgreement = async () => {
+      const alarmsResult = await dispatch(alarmsAgreement());
+      if (!alarmsResult.success) {
+        // 알람 동의 실패 시 처리할 내용 (선택 사항)
+        console.error("Failed to agree to alarms:", alarmsResult.error);
+      }
+    };
+
+    fetchAlarmsAgreement();
+  }, [dispatch]);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -17,7 +33,7 @@ function Main() {
         </p>
         <p>
           <strong>Type:</strong>{" "}
-          {type === 1 ? "일반" : type === 2 ? "디자이너" : "매장"}
+          {type === "COMMON" ? "일반" : type === "SHOP" ? "매장" : "디자이너"}
         </p>
         <p>
           <strong>Is Logged In:</strong> {isLogin ? "Yes" : "No"}

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../features/auth/authSlice";
+import { login, alarmsAgreement } from "../features/auth/authSlice";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -43,6 +43,8 @@ const Login = () => {
     if (result.success) {
       alert("로그인 성공");
 
+      // 알람 동의 요청을 처리하고 결과를 기다립니다.
+      // const alarmsResult = await dispatch(alarmsAgreement());
       navigate("/main", { replace: true }); // 로그인 성공 후 메인 페이지로 이동
     } else {
       alert(result.error);
