@@ -12,7 +12,8 @@ import Signup from "../views/Signup";
 import SignupComp from "../views/SignupComp"
 import Error from "../views/Error"
 import TestProfile from "../views/TestProfile";
-
+import CreateProfile from "../views/CreateProfile";
+import SignupForm2 from "../components/user/SignupForm2";
 
 const AppRoutes = () => (
   <Routes>
@@ -24,9 +25,11 @@ const AppRoutes = () => (
     <Route path="/login/email" element={<FindEmail />} />
     <Route path="/login/email-found" element={<FindEmailComp />} />
     <Route path="/signup" element={<Signup />} />
+    <Route path="/signupform2" element={<SignupForm2 />} />
     <Route path="/signup-completed" element={<SignupComp />} />
     <Route path="/error" element={<Error />} />
     <Route path="/test" element={<TestProfile />} />
+    <Route path="/create-profile" element={<CreateProfile />} />
 
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>

@@ -6,7 +6,7 @@ import { BASE_URL } from '../../views/Signup'; // BASE_URL 경로는 확인 필�
 const initialState = {
   isLogin: false,
   nickname: "",
-  type: 1,
+  type: "COMMON",
   profile: {
     favoritesCnt: 0,
     followersCnt: 0,
@@ -34,7 +34,7 @@ const authSlice = createSlice({
     logout(state) {
       state.isLogin = false;
       state.nickname = "";
-      state.type = 1;
+      state.type = "COMMON";
       state.profile = initialState.profile;
       localStorage.removeItem("access");
     },

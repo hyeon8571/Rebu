@@ -42,7 +42,8 @@ const Login = () => {
 
     if (result.success) {
       alert("로그인 성공");
-      navigate("/main"); // 로그인 성공 후 메인 페이지로 이동
+
+      navigate("/main", { replace: true }); // 로그인 성공 후 메인 페이지로 이동
     } else {
       alert(result.error);
     }
