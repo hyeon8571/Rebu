@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     @Query(value = """
                    SELECT r
-                   FROM Reservation r join fetch r.menu
+                   FROM Reservation r JOIN Fetch r.menu
                    WHERE r.employeeProfile.id = :profileId AND DATE(r.startDateTime) = :date
                    """)
     List<Reservation> findByProfileIdAndDate(Long profileId, LocalDate date);

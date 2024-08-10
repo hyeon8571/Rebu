@@ -25,7 +25,7 @@ public class SelectedReviewKeyword {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @MapsId("reviewKeywordId")
     @JoinColumn(name = "review_keyword_id")
     private ReviewKeyword reviewKeyword;

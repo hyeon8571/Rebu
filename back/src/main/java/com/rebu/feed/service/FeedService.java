@@ -1,11 +1,15 @@
 package com.rebu.feed.service;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.util.ListUtils;
 import com.rebu.feed.dto.*;
 import com.rebu.feed.entity.Feed;
 import com.rebu.feed.exception.FeedNotFoundException;
 import com.rebu.feed.repository.FeedRepository;
 import com.rebu.feed.repository.HashtagRepository;
+import com.rebu.like.entity.LikeFeed;
+import com.rebu.like.repository.LikeFeedRepository;
+import com.rebu.profile.dto.ProfileDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.employee.repository.EmployeeProfileRepository;
 import com.rebu.profile.entity.Profile;
@@ -13,11 +17,17 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.exception.ProfileUnauthorizedException;
 import com.rebu.profile.repository.ProfileRepository;
+import com.rebu.profile.shop.dto.ShopProfileDto;
+import com.rebu.profile.shop.entity.ShopProfile;
+import com.rebu.profile.shop.repository.ShopProfileRepository;
+import com.rebu.scrap.entity.Scrap;
+import com.rebu.scrap.repository.ScrapRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +40,9 @@ public class FeedService {
     private final ProfileRepository profileRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
     private final HashtagRepository hashtagRepository;
+    private final ShopProfileRepository shopProfileRepository;
+    private final ScrapRepository scrapRepository;
+    private final LikeFeedRepository likeFeedRepository;
 
     /**
      * FeedService :: createByEmployee method
@@ -126,5 +139,42 @@ public class FeedService {
             if (!employees.contains(profile))
                 throw new ProfileUnauthorizedException();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<FeedByShopDto> readShopFeeds(FeedReadByShopDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+        ShopProfile shop = shopProfileRepository.findByNickname(dto.getShopNickname()).orElseThrow(ProfileNotFoundException::new);
+        List<Feed> feeds = feedRepository.findByOwnerAndType(shop, Feed.Type.NONE);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+
+        int sIdx = 0;
+        int lIdx = 0;
+
+        List<FeedByShopDto> result = new ArrayList<>();
+        for(Feed feed : feeds){
+            boolean isScraped = false;
+            boolean isLiked = false;
+            if(!scraps.isEmpty() && scraps.get(sIdx) != null && scraps.get(sIdx).getId().equals(feed.getId())){
+                sIdx++;
+                isScraped = true;
+            }
+            if(!likeFeeds.isEmpty() && likeFeeds.get(lIdx) != null && likeFeeds.get(lIdx).getId().equals(feed.getId())){
+                lIdx++;
+                isLiked = true;
+            }
+
+            result.add(FeedByShopDto.builder()
+                    .writer(ProfileDto.from(feed.getWriter()))
+                    .shop(ShopProfileDto.from(shop))
+                    .feed(FeedDto.from(feed))
+                    .feedImages(ListUtils.applyFunctionToElements(feed.getFeedImages().stream().toList(), FeedImageDto::from))
+                    .hashtags(ListUtils.applyFunctionToElements(feed.getHashtags().stream().toList(), HashtagDto::from))
+                    .isScraped(isScraped)
+                    .isLiked(isLiked)
+                    .build());
+        }
+        return result;
     }
 }

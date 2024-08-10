@@ -1,6 +1,7 @@
 package com.rebu.reviewkeyword.repository;
 
 import com.rebu.reviewkeyword.dto.ReviewKeywordCountDto;
+import com.rebu.reviewkeyword.dto.ReviewKeywordDto;
 import com.rebu.reviewkeyword.entity.ReviewKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
