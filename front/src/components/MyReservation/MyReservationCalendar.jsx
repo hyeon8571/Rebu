@@ -3,6 +3,9 @@ import styled from "styled-components";
 import Calendar from "react-calendar";
 import moment from "moment";
 import ReservationCard from "./ReservationCard";
+import ModalPortal from "../../util/ModalPortal";
+import CheckCancelModal from "./CheckCancelModal";
+import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 
 // 스타일 정의는 기존과 동일하게 유지합니다.
 const CalendarWrapper = styled.div`
@@ -55,8 +58,8 @@ const StyledCalendar = styled(Calendar)`
 
   .react-calendar__month-view__days__day abbr {
     position: relative;
-    bottom : 25%;
-    right : 5%;
+    bottom: 25%;
+    right: 5%;
   }
 
   .react-calendar button:enabled:hover {
@@ -77,6 +80,9 @@ const StyledCalendar = styled(Calendar)`
     font-weight: 800;
     border: 0;
     margin-top: 8px;
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
   }
 
   .react-calendar__navigation button:disabled:first-of-type {
@@ -150,7 +156,7 @@ const StyledCalendar = styled(Calendar)`
     vertical-align: top;
     text-align: left;
     font-weight: 600;
-    height : 100%;
+    height: 100%;
 
     @media (max-width: 768px) {
     }
@@ -250,6 +256,7 @@ const InnerText = styled.div``;
 
 const ReservationDetails = styled.div`
   margin-top: 1em;
+  margin-bottom: auto;
 `;
 
 export default function MyReservationCalendar() {
@@ -257,7 +264,8 @@ export default function MyReservationCalendar() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDateReservations, setSelectedDateReservations] = useState([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCancel, setIsCancel] = useState(true);
   const fetchReservations = async () => {
     try {
       const response = await fetch("/mockdata/reservationdata.json");
@@ -294,13 +302,22 @@ export default function MyReservationCalendar() {
     const selectedDateStr = moment(newDate).format("YYYY-MM-DD");
     const reservationsForDate = reservations.filter(
       (reservation) =>
-        moment(reservation.startDateTime).format("YYYY-MM-DD") === selectedDateStr
+        moment(reservation.startDateTime).format("YYYY-MM-DD") ===
+        selectedDateStr
     );
     setSelectedDateReservations(reservationsForDate);
   };
 
   return (
     <CalendarWrapper>
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen}>
+          <CheckCancelModal
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+          />
+        </ModalNoBackNoExit>
+      </ModalPortal>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -328,17 +345,22 @@ export default function MyReservationCalendar() {
           <ReservationDetails>
             <h2>예약 상세 정보</h2>
             {selectedDateReservations.length > 0 ? (
-                selectedDateReservations.map((rev) => (
-                  <ReservationCard Card={{
+              selectedDateReservations.map((rev) => (
+                <ReservationCard
+                  key={rev.id}
+                  Card={{
                     img: rev.shop.imageSrc,
                     title: rev.shop.name,
                     menu: rev.menu.title,
-                    designer: rev.employee.workingName+" "+rev.employee.role,
+                    designer:
+                      rev.employee.workingName + " " + rev.employee.role,
                     price: rev.menu.price,
-                    reservationStatus : rev.reservationStatus
-                  }}>
-                    
-                  </ReservationCard>
+                    time: rev.startDateTime,
+                    status: rev.reservationStatus,
+                  }}
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
+                ></ReservationCard>
               ))
             ) : (
               <p>선택된 날짜에 예약이 없습니다.</p>

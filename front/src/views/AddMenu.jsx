@@ -289,12 +289,11 @@ export default function AddMenu() {
           {errors.cost && <ValidationText>{errors.cost}</ValidationText>}
         </InputWrapper>
         <InputWrapper>
-          <TitleText style={{ paddingTop: "1rem" }}>
-            사진 업로드 (최소 1장, 최대 5장)
-          </TitleText>
+          <TitleText style={{ paddingTop: "1rem" }}>사진 업로드</TitleText>
           <ImgUploader
             uploadImgUrls={uploadImgUrls}
             setUploadImgUrls={setUploadImgUrls}
+            imgLimit={1}
           ></ImgUploader>
         </InputWrapper>
         {isError && (

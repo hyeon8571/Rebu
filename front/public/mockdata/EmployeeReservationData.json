@@ -1,0 +1,67 @@
+{
+  "code": "1R04",
+  "body": {
+    "employeeAbsences": [
+      {
+        "startDate": "2024-08-12T00:00:00",
+        "endDate": "2024-08-15T23:59:59"
+      }
+    ],
+    "shopAbsences": [
+      {
+        "startDate": "2024-08-15T00:00:00",
+        "endDate": "2024-08-16T23:59:59"
+      }
+    ],
+    "shopWorkingInfos": [
+      {
+        "day": "FRI",
+        "isHoliday": false,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "MON",
+        "isHoliday": false,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "SAT",
+        "isHoliday": true,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "SUN",
+        "isHoliday": true,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "THU",
+        "isHoliday": false,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "TUE",
+        "isHoliday": false,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      },
+      {
+        "day": "WED",
+        "isHoliday": false,
+        "openAt": "12:00:00",
+        "closeAt": "18:00:00"
+      }
+    ],
+    "reservations": [
+      {
+        "startDateTime": "2024-08-19T15:30:00",
+        "timeTaken": 30
+      }
+    ]
+  }
+}

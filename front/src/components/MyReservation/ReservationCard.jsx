@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ButtonSmall from "../common/ButtonSmall";
+import CancelButton from "./CancelButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
 
 const Wrapper = styled.div`
@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr 5fr;
-  height: 150px;
+  height: 180px;
   width: 85%;
   max-width: 500px;
   background: ${(props) =>
@@ -24,6 +24,9 @@ const GridContainer = styled.div`
   margin-top: 0.75rem;
   margin-bottom: 0.5rem;
   border-radius: 0.7rem;
+  @media (max-width: 768px) {
+    width: 95%;
+  }
 `;
 
 const PhotoSection = styled.div`
@@ -90,9 +93,9 @@ const DesignerWrapper = styled.div`
   }
 `;
 
-const ServiceTimeText = styled.div`
+const ServiceStatusText = styled.div`
   padding-left: 0.3rem;
-  color: ${(props) => props.theme.primary};
+  color: ${(props) => props.color};
   font-weight: 600;
 `;
 
@@ -114,33 +117,93 @@ const MenuWrapper = styled.div`
   }
 `;
 
-const ServiceTimeWrapper = styled.div`
+const ServiceStatusWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  padding-top: 0.3rem;
-  font-size: 14px;
+  padding-top: 0.2rem;
+  font-size: 12px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
-    font-size: 12px;
+    font-size: 11px;
   }
 `;
 
 const PriceWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  padding-top: 0.3rem;
-  font-size: 14px;
+  padding-top: 0.2rem;
+  font-size: 12px;
   color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
   @media (max-width: 768px) {
-    font-size: 12px;
+    font-size: 11px;
   }
 `;
 
-export default function ShopCard({ Card }) {
+const ReservationTime = styled.div`
+  font-size: 12px;
+  padding-top: 0.2rem;
+  color: ${(props) => (props.theme.value === "light" ? "#666666" : "#cfcfcf")};
+  @media (max-width: 768px) {
+    font-size: 11px;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
   if (!Card) {
     console.log("카드 컴포넌트 불러오기 실패");
     return null;
   }
+
+  let statusMessege = "";
+  let statusColor = "";
+  let isUnableCancle = false;
+
+  switch (Card.status) {
+    case "RECEIVED":
+      statusMessege = "예약 확인중";
+      statusColor = "#943AEE";
+      break;
+    case "DONE":
+      statusMessege = "방문 완료";
+      statusColor = "gray";
+      isUnableCancle = true;
+      break;
+    case "ACCEPTED":
+      statusMessege = "예약 확정";
+      statusColor = "#943AEE";
+      break;
+    case "REFUSED":
+      statusMessege = "예약 거절";
+      statusColor = "gray";
+      isUnableCancle = true;
+      break;
+    case "CANCLED":
+      statusMessege = "예약 취소";
+      statusColor = "#ff5656";
+      isUnableCancle = true;
+      break;
+    case "NOSHOW":
+      statusMessege = "방문하지않음";
+      statusColor = "gray";
+      isUnableCancle = true;
+      break;
+  }
+
+  const date = new Date(Card.time);
+  const year = date.getFullYear(); // 연도
+  const month = date.getMonth() + 1; // 월 (0부터 시작하므로 1을 더함)
+  const day = date.getDate(); // 일
+  const hours = date.getHours(); // 시
+  const minutes = date.getMinutes(); // 분
+
+  // 원하는 형식으로 변환
+  const formattedDate = `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+
   return (
     <Wrapper>
       <GridContainer>
@@ -157,14 +220,28 @@ export default function ShopCard({ Card }) {
           <MenuWrapper>{Card.menu}</MenuWrapper>
           <DesignerWrapper>{Card.designer}</DesignerWrapper>
           <PriceWrapper>
-            가격 : <PriceText> {Card.price}</PriceText>원
+            가격 : <PriceText> {Card.price.toLocaleString()}</PriceText>원
           </PriceWrapper>
-                  <div>
-            예약 시간 : {Card.time}
-          </div>
-          <ServiceTimeWrapper>
-            예약 상태 :<ServiceTimeText> {Card.reservationStatus}</ServiceTimeText>
-          </ServiceTimeWrapper>
+          <ReservationTime>예약 시간 : {formattedDate}</ReservationTime>
+          <ServiceStatusWrapper>
+            예약 상태 :
+            <ServiceStatusText color={statusColor}>
+              {" "}
+              {statusMessege}
+            </ServiceStatusText>
+          </ServiceStatusWrapper>
+          <ButtonWrapper>
+            <CancelButton
+              button={{
+                id: 1,
+                title: "예약 취소",
+                unable: isUnableCancle ? "true" : undefined,
+                onClick: () => {
+                  setIsModalOpen(true);
+                },
+              }}
+            />
+          </ButtonWrapper>
         </Content>
       </GridContainer>
     </Wrapper>

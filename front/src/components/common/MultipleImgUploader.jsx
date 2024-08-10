@@ -84,14 +84,20 @@ const photoInRow = (width) => {
   } else return Math.floor((width - 32) / 408);
 };
 
-export default function ImgUploader({ uploadImgUrls = [], setUploadImgUrls }) {
+export default function ImgUploader({
+  uploadImgUrls = [],
+  setUploadImgUrls,
+  imgLimit,
+}) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const list = Array.from({
     length:
-      photoInRow(windowWidth) -
-      (uploadImgUrls && uploadImgUrls.length % photoInRow(windowWidth)) -
-      1 +
-      (uploadImgUrls && uploadImgUrls.length === 5 ? 1 : 0),
+      imgLimit === 1
+        ? 0
+        : photoInRow(windowWidth) -
+          (uploadImgUrls && uploadImgUrls.length % photoInRow(windowWidth)) -
+          1 +
+          (uploadImgUrls && uploadImgUrls.length === imgLimit ? 1 : 0),
   });
 
   const IMG_URL = process.env.PUBLIC_URL + "images/";
@@ -137,12 +143,12 @@ export default function ImgUploader({ uploadImgUrls = [], setUploadImgUrls }) {
       {uploadImgUrls &&
         uploadImgUrls.map((url, index) => (
           <ImgWrapper key={index} onClick={() => handleDelete(index)}>
-            <UploadedImg src={IMG_URL + url} alt={`upload-${index}`} />
+            <UploadedImg src={url} alt={`upload-${index}`} />
             <DelIcon size={24} />
           </ImgWrapper>
         ))}
 
-      {uploadImgUrls && uploadImgUrls.length < 5 && (
+      {uploadImgUrls && uploadImgUrls.length < imgLimit && (
         <label htmlFor="file">
           <ExampleImg src={process.env.PUBLIC_URL + "/addphoto.png"} />
         </label>

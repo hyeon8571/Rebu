@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
 import ReservationCalendar from "../components/reservation/ReservationCalendar";
 import VisitedPage from "../views/VisitedPage";
 import Components from "../views/Components";
-import TimeTable from "../components/reservation/TimeTable";
+import TimeTablePage from "../views/TimeTablePage";
 import MenuTab from "../components/reservation/MenuTab";
 import DesignerTab from "../components/reservation/DesignerTab";
 import PersonalInfo from "../views/PersonalInfo";
@@ -19,12 +19,7 @@ import PostReview from "../views/PostReviewPage";
 import PostFeedPage from "../views/PostFeedPage";
 import ReviewKeywordStat from "../components/review/ReviewKeywordStat";
 
-
-
-  
-
 const PrivateRoutes = ({ theme, toggleTheme }) => (
-
   <Routes>
     <Route
       path="/personal-info"
@@ -44,7 +39,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       path="/component"
       element={<Components theme={theme} toggleTheme={toggleTheme} />}
     />
-    <Route path="/timetable" element={<TimeTable />} />
+    <Route path="/timetable" element={<TimeTablePage />} />
     <Route path="/menutab" element={<MenuTab />} />
     <Route path="/designertab" element={<DesignerTab />} />
     <Route path="/myreservation" element={<MyReservationCalendar />} />

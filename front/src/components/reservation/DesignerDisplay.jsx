@@ -120,7 +120,7 @@ export default function DesignerDisplay({ profileType }) {
   // 실제로는 props로 전달
   profileType = 2;
   //로그인시의 본인 닉네임
-  const currentNickname = 'qwerty12345';
+  const currentNickname = "erebu5";
 
   useEffect(() => {
     fetch("/mockdata/shopemployees.json")

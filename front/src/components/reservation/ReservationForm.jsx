@@ -169,7 +169,7 @@ function generateTimeIntervals(
   if (currentHourArray.length > 0) {
     timeIntervals.push(currentHourArray);
   }
-
+  // console.log(timeIntervals);
   return timeIntervals;
 }
 

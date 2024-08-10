@@ -112,33 +112,18 @@ export default function MenuDisplay() {
   const BASE_URL = "https://www.rebu.kro.kr";
 
   useEffect(() => {
-    // fetch("/mockdata/menudata.json")
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((jsondata) => {
-    //     const data = jsondata.body;
-    //     console.log(data);
-    //     setMenuData(data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Fetch error:", error);
-    //   });
     axios
-      .get(BASE_URL + "/api/menus?nickname=" + nickname, {
-        params: {},
+      .get(`${BASE_URL}/api/menus?employeeNickName=` + nickname, {
         headers: {
           "Content-Type": "application/json",
-          "Access": localStorage.getItem("access"),
+          Access: localStorage.getItem("access"),
         },
       })
       .then((response) => {
-        console.log(response);
+        console.log(response.data.body);
+        setMenuData(response.data.body);
       });
-  }, []);
+  }, [nickname]);
 
   function handleSettingMode() {
     if (isSettingMode) {
