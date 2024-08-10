@@ -1,11 +1,8 @@
+// Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
-import { BASE_URL } from "./Signup";
-// import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
-//css
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -36,16 +33,17 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch(); //redux
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    // dispatch(login(loginParam))
-    e.preventDefault(); //0ㅅ0
+    e.preventDefault();
     const result = await dispatch(login(email, password));
+
     if (result.success) {
       alert("로그인 성공");
-      navigate("/error", { replace: true });
+
+      navigate("/main", { replace: true }); // 로그인 성공 후 메인 페이지로 이동
     } else {
       alert(result.error);
     }
@@ -53,8 +51,6 @@ const Login = () => {
 
   return (
     <Container className="page">
-      {/* <ButtonBack /> */}
-
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleLogin}>
         <div className="emailBox">

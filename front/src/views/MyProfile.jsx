@@ -1,17 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useSelector } from "react-redux"
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import TabComponent from "../components/MyProfile/MyProfileTab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
 import ProfileInfo from "../components/MyProfile/MyProfileInfo";
 import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
-import ScrapGrid from "../components/MyProfile/ScrapGrid"
 
-export const BASE_URL = "https://www.rebu.kro.kr";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -31,8 +30,9 @@ const ProfileContainer = styled.div`
 `;
 
 const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? 'sticky' : 'relative')};
-  top: ${(props) => (props.isSticky ? '0' : 'auto')}; // 화면 상단에 고정되도록 설정
+  position: ${(props) => (props.isSticky ? "sticky" : "relative")};
+  top: ${(props) =>
+    props.isSticky ? "0" : "auto"}; // 화면 상단에 고정되도록 설정
   left: 0;
   right: 0;
   width: 100%;
@@ -72,63 +72,70 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [reviewdata, setReveiwData] = useState([]);
   const [scrapdata, setScrapData] = useState([]);
   const [followerdata, setFollowerData] = useState([]);
-  const [followingdata, setFollowingData] =useState([]);
+  const [followingdata, setFollowingData] = useState([]);
   const [loginUser, setLoginUser] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { nickname, type, isLogin } = useSelector((state) => state.auth);
-
-
+  // const [user, setUser] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  
+  
   useEffect(() => {
-    fetch('/mockdata/loginuser.json')
-      .then(res => res.json())
+    fetch("/mockdata/loginuser.json")
+      .then((res) => res.json())
       .then((data) => {
         setLoginUser(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/followerlist.json')
-      .then(res => res.json())
+    fetch("/mockdata/followerlist.json")
+      .then((res) => res.json())
       .then((data) => {
         setFollowerData(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/followinglist.json')
-      .then(res => res.json())
+    fetch("/mockdata/followinglist.json")
+      .then((res) => res.json())
       .then((data) => {
         setFollowingData(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/reviewdata.json')
-      .then(res => res.json())
+    fetch("/mockdata/reviewdata.json")
+      .then((res) => res.json())
       .then((data) => {
-        const matchedReview = data.body.filter(review => review.nickname === loginUser.nickname);
-        const matchedScrap = data.body.filter(scrap => scrap.isScraped === true && scrap.nickname !== loginUser.nickname);
+        const matchedReview = data.body.filter(
+          (review) => review.nickname === loginUser.nickname
+        );
+        const matchedScrap = data.body.filter(
+          (scrap) =>
+            scrap.isScraped === true && scrap.nickname !== loginUser.nickname
+        );
         setReveiwData(matchedReview || data.body);
         setScrapData(matchedScrap || data.body);
-      })      
+      });
   }, [loginUser]);
 
   useEffect(() => {
-    fetch('/mockdata/likeshop.json')
-      .then(res => res.json())
+    fetch("/mockdata/likeshop.json")
+      .then((res) => res.json())
       .then((data) => {
         setLikeCard(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/personalprofile.json')
-      .then(res => res.json())
+    fetch("/mockdata/personalprofile.json")
+      .then((res) => res.json())
       .then((data) => {
-        const matchedProfile = data.body.find(profile => profile.nickname === loginUser.nickname);
+        const matchedProfile = data.body.find(
+          (profile) => profile.nickname === loginUser.nickname
+        );
         setProfile(matchedProfile || data.body);
-      })      
+      });
   }, [loginUser]);
 
   useEffect(() => {
@@ -142,7 +149,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       setProfile(updatedProfile);
     }
   }, [updatedProfile]);
-
 
   const handleScroll = () => {
     if (tabRef.current) {
@@ -161,20 +167,26 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
-
   const tabTitle = [
-    { name: "Post", content: "Post", count: profile.reviewCnt},
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
-    { name: "Likes", content: "Likes", count: profile.likeCnt},
+    { name: "Post", content: "Post", count: profile.reviewCnt },
+    { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
+    { name: "Likes", content: "Likes", count: profile.likeCnt },
   ];
 
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
 
     if (content === "Post") {
-      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={loginUser} />;
+      return (
+        <ReviewGrid
+          key={key}
+          Card={reviewdata}
+          currentUser={profile}
+          loginUser={loginUser}
+        />
+      );
     } else if (content === "Scrap") {
-      return <ScrapGrid key={key} Card={scrapdata} currentUser={profile} loginUser={loginUser} />;
+      return <ReviewGrid key={key} Card={scrapdata} currentUser={profile} loginUser={loginUser} />;
     } else if (content === "Likes") {
       return (
         <React.Fragment key={key}>
@@ -182,17 +194,23 @@ const ProfilePage = ({ theme, toggleTheme }) => {
             <LikesCard key={item.id} Card={item} loginUser={loginUser} />
           ))}
         </React.Fragment>
-    )}
+      );
+    }
   };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
-    setKey(prevKey => prevKey + 1); // 같은 탭을 클릭해도 리렌더링
+    setKey((prevKey) => prevKey + 1); // 같은 탭을 클릭해도 리렌더링
   };
 
   return (
     <Wrapper>
-      <Header theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} />
+      <Header
+        theme={theme}
+        toggleTheme={toggleTheme}
+        currentUser={profile}
+        loginUser={loginUser}
+      />
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage

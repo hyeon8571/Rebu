@@ -13,7 +13,7 @@ const Container = styled.div`
   margin: 2rem 3rem;
 `;
 
-const Div = styled.div`
+export const Div = styled.div`
   display: flex;
   justify-content: space-around;
 `;
@@ -40,7 +40,7 @@ const MidiumButton = styled.button`
   width: 30%;
 `;
 
-const Tooltip = styled.div`
+export const Tooltip = styled.div`
   position: absolute;
   background-color: whitesmoke;
   color: gray;
@@ -54,7 +54,7 @@ const Tooltip = styled.div`
   transition: opacity 0.2s, visibility 0.2s;
 `;
 
-const InfoIconContainer = styled.div`
+export const InfoIconContainer = styled.div`
   cursor: pointer;
   position: relative;
 
@@ -72,7 +72,7 @@ export const Msg = styled.p`
 `;
 
 // 버튼처럼 보이게 하는 스타일
-const RadioButtonContainer = styled.div`
+export const RadioButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -81,7 +81,7 @@ const RadioButtonContainer = styled.div`
   flex: 1;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   background-color: ${(props) => (props.checked ? "#a55eea" : "#f0f0f0")};
   color: ${(props) => (props.checked ? "#fff" : "#000")};
   border: 1px solid ${(props) => (props.checked ? "#a55eea" : "#ccc")};
@@ -249,10 +249,6 @@ const SignupForm2 = ({
       alert("생년월일을 입력하세요.");
       return false;
     }
-    // if (!formData.gender) {
-    //   alert("성별을 선택하세요.");
-    //   return false;
-    // }
     if (!formData.phone) {
       alert("전화번호를 입력하세요.");
       return false;
@@ -265,10 +261,6 @@ const SignupForm2 = ({
       alert("이미 회원가입한 전화번호입니다.");
       return false;
     }
-    // if (!isCodeVerified) {
-    //   alert("전화번호를 올바르게 입력하세요.");
-    //   return false;
-    // }
     return true;
   };
 
