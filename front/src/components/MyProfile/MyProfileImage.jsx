@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef }from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { follow } from "../../features/common/followSlice";
 import styled, { keyframes } from "styled-components";
 import FollowList from "./FollowList";
 import nullImg from "../../assets/images/img.webp";
@@ -149,10 +150,10 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: ${(props) =>
-      props.theme.value === "light" ? '#ffffff' : '#e5e5e5'};
+    props.theme.value === "light" ? "#ffffff" : "#e5e5e5"};
   color: black;
   padding: 10px;
-  border: 1.5px solid #943AEE;
+  border: 1.5px solid #943aee;
   border-radius: 8px;
   width: 90%;
 `;
@@ -174,7 +175,7 @@ const ModalTitle = styled.h3`
 
 const CloseButton = styled.button`
   background: transparent;
-  color: #943AEE;
+  color: #943aee;
   font-size: 25px;
   border: none;
   /* padding: 5px; */
@@ -185,10 +186,12 @@ const CloseButton = styled.button`
 
 const FollowButton = styled.button`
   margin-top: 10px;
-  width: ${props => (props.following === "FOLLOWING" ? '120px' : '90px')};
+  width: ${(props) => (props.following === "FOLLOWING" ? "120px" : "90px")};
   height: 40px;
-  background-color: ${props => (props.following === "FOLLOWING" ? '#f4ebfd' : '#b475f3')};
-  color: ${props => (props.following === "FOLLOWING" ? '#943aee' : '#ffffff')};
+  background-color: ${(props) =>
+    props.following === "FOLLOWING" ? "#f4ebfd" : "#b475f3"};
+  color: ${(props) =>
+    props.following === "FOLLOWING" ? "#943aee" : "#ffffff"};
   border: 2px solid #b475f3;
   border-radius: 16px;
   padding: 6px 12px;
@@ -197,13 +200,17 @@ const FollowButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: ${props => (props.following === "FOLLOWING" ? '#f4ebfd' : '#b475f3')};
+    background-color: ${(props) =>
+      props.following === "FOLLOWING" ? "#f4ebfd" : "#b475f3"};
   }
 `;
 
-
-
-export default function ProfileLarge({ currentUser, time, followingdata, followerdata }) {
+export default function ProfileLarge({
+  currentUser,
+  time,
+  followingdata,
+  followerdata,
+}) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
@@ -211,14 +218,36 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
   const followingModalRef = useRef(null);
   const [relation, setRelation] = useState(currentUser.relation);
 
-  const handleFollow = () => {
-    setRelation('FOLLOWING');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const handleFollow = async () => {
+    setRelation("FOLLOWING");
+    // 팔로우 결과에 따라 버튼이 눌린걸로 바뀌게 해줘야함
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await followUser(targetNickname);
+
+      if (result.success) {
+        setSuccess("팔로우가 성공적으로 추가되었습니다.");
+        // 추가적인 성공 처리가 필요할 경우 여기에 추가
+      } else {
+        setError(result.error || "팔로우 추가 실패");
+      }
+    } catch (error) {
+      setError("알 수 없는 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleUnfollow = () => {
-    setRelation('NONE');
+    setRelation("NONE");
   };
-
 
   const handleOpenFollowersModal = () => {
     setIsFollowersModalOpen(true);
@@ -237,70 +266,85 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
   };
 
   const handleClickOutside = (event) => {
-    if (followersModalRef.current && !followersModalRef.current.contains(event.target)) {
+    if (
+      followersModalRef.current &&
+      !followersModalRef.current.contains(event.target)
+    ) {
       setIsFollowersModalOpen(false);
     }
-    if (followingModalRef.current && !followingModalRef.current.contains(event.target)) {
+    if (
+      followingModalRef.current &&
+      !followingModalRef.current.contains(event.target)
+    ) {
       setIsFollowingModalOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   return (
     <ProfileContainer>
-    <ImgBox>
-      <React.Fragment>
-        {currentUser.imageSrc === null ? (
-          <OutterCircleOffline>
-            <Insideimg src={nullImg}></Insideimg>
-          </OutterCircleOffline>
-        ) : (online ? (
-          <OutterCircleOnline>
-            <Insideimg src={'https://www.rebu.kro.kr/data/' + currentUser.imageSrc} alt="Profile" />
-          </OutterCircleOnline>
-        ) : (
-          <OutterCircleOffline>
-            <Insideimg src={'https://www.rebu.kro.kr/data/' + currentUser.imageSrc}></Insideimg>
-          </OutterCircleOffline>
-        ))}
-      </React.Fragment>
-    <FollowInfo>
-      <FollowerInfo>
-        <FollowCount>{currentUser.followerCnt}</FollowCount>
-        <FollowText onClick={handleOpenFollowersModal}> 팔로워</FollowText>
-      </FollowerInfo>
-      <FollowingInfo>
-        <FollowCount>{currentUser.followingCnt}</FollowCount>
-        <FollowText onClick={handleOpenFollowingModal}> 팔로잉</FollowText>
-      </FollowingInfo>
-    </FollowInfo>
-    </ImgBox>
-    
-    {relation === 'OWN'? (
-      ""
-    ) : (
-      <FollowButton
-        following={relation}
-        onClick={relation === 'FOLLOWING' ? handleUnfollow : handleFollow}
-      >
-        {relation === 'FOLLOWING' ? '팔로우 취소' : '팔로우'}
-      </FollowButton>
-    )}
+      <ImgBox>
+        <React.Fragment>
+          {currentUser.imageSrc === null ? (
+            <OutterCircleOffline>
+              <Insideimg src={nullImg}></Insideimg>
+            </OutterCircleOffline>
+          ) : online ? (
+            <OutterCircleOnline>
+              <Insideimg
+                src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc}
+                alt="Profile"
+              />
+            </OutterCircleOnline>
+          ) : (
+            <OutterCircleOffline>
+              <Insideimg
+                src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc}
+              ></Insideimg>
+            </OutterCircleOffline>
+          )}
+        </React.Fragment>
+        <FollowInfo>
+          <FollowerInfo>
+            <FollowCount>{currentUser.followerCnt}</FollowCount>
+            <FollowText onClick={handleOpenFollowersModal}> 팔로워</FollowText>
+          </FollowerInfo>
+          <FollowingInfo>
+            <FollowCount>{currentUser.followingCnt}</FollowCount>
+            <FollowText onClick={handleOpenFollowingModal}> 팔로잉</FollowText>
+          </FollowingInfo>
+        </FollowInfo>
+      </ImgBox>
+      {/* <p>
+        {currentUser.relation} {relation}
+      </p> */}
+      {currentUser.relation !== "OWN" && (
+        <FollowButton
+          following={relation}
+          onClick={
+            currentUser.relation === "FOLLOWING" ? handleUnfollow : handleFollow
+          }
+        >
+          {currentUser.relation === "FOLLOWING" ? "팔로우 취소" : "팔로우"}
+        </FollowButton>
+      )}
 
-    {isFollowersModalOpen && (
+      {isFollowersModalOpen && (
         <ModalOverlay>
           <ModalContent ref={followersModalRef}>
             <ModalHeader>
               <ModalTitle>팔로워 목록</ModalTitle>
-              <CloseButton onClick={handleCloseFollowersModal}>&times;</CloseButton>
+              <CloseButton onClick={handleCloseFollowersModal}>
+                &times;
+              </CloseButton>
             </ModalHeader>
-            <hr style={{borderColor: '#EDE0FB'}}/>
+            <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
               {followerdata.map((follower, index) => (
                 <FollowList key={index} follower={follower} time={130} />
@@ -315,9 +359,11 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
           <ModalContent ref={followingModalRef}>
             <ModalHeader>
               <ModalTitle>팔로잉 목록</ModalTitle>
-              <CloseButton onClick={handleCloseFollowingModal}>&times;</CloseButton>
+              <CloseButton onClick={handleCloseFollowingModal}>
+                &times;
+              </CloseButton>
             </ModalHeader>
-            <hr style={{borderColor: '#EDE0FB'}}/>
+            <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
               {followingdata.map((follower, index) => (
                 <FollowList key={index} follower={follower} time={130} />
@@ -326,7 +372,6 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
           </ModalContent>
         </ModalOverlay>
       )}
-    
     </ProfileContainer>
   );
 }

@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import {
+  getCommonProfile,
+  getEmployeeProfile,
+  getShopProfile,
+} from "../features/common/userSlice";
+
 import TabComponent from "../components/MyProfile/MyProfileTab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
 import ProfileInfo from "../components/MyProfile/MyProfileInfo";
@@ -10,7 +16,6 @@ import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
-
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -67,21 +72,59 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [isSticky, setIsSticky] = useState(false);
   const [key, setKey] = useState(0);
   const tabRef = useRef(null);
-  // const [profile, setProfile] = useState([]);
   const [likeCard, setLikeCard] = useState([]);
   const [reviewdata, setReveiwData] = useState([]);
   const [scrapdata, setScrapData] = useState([]);
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] = useState([]);
   const [loginUser, setLoginUser] = useState([]);
+  const [profile, setProfile] = useState([]); //profile 조회
   // const [user, setUser] = useState(null);
   // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  
-    // Redux 상태에서 필요한 정보 가져오기
-  const { profile, nickname, type, isLogin } = useSelector(
-    (state) => state.auth
-  );
+  const [error, setError] = useState(null);
+
+  // Redux 상태에서 필요한 정보 가져오기
+  const { nickname, type, isLogin } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (type === "COMMON" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getCommonProfile(nickname);
+        console.log("프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    } else if (type === "EMPLOYEE" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getEmployeeProfile(nickname);
+        console.log("직원 프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    } else if (type === "SHOP" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getShopProfile(nickname);
+        console.log("매장 프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    }
+  }, [type, isLogin, nickname]);
 
   useEffect(() => {
     fetch("/mockdata/loginuser.json")
@@ -171,10 +214,19 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
+  // const tabTitle = [
+  //   { name: "Post", content: "Post", count: profile.reviewCnt },
+  //   { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
+  //   { name: "Likes", content: "Likes", count: profile.favoritesCnt },
+  // ];
   const tabTitle = [
-    { name: "Post", content: "Post", count: profile.reviewCnt },
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
-    { name: "Likes", content: "Likes", count: profile.favoriteCnt },
+    { name: "Post", content: "Post", count: profile ? profile.reviewCnt : 0 },
+    { name: "Scrap", content: "Scrap", count: profile ? profile.scrapCnt : 0 },
+    {
+      name: "Likes",
+      content: "Likes",
+      count: profile ? profile.favoritesCnt : 0,
+    },
   ];
 
   const renderGrid = () => {
@@ -190,7 +242,14 @@ const ProfilePage = ({ theme, toggleTheme }) => {
         />
       );
     } else if (content === "Scrap") {
-      return <ScrapGrid key={key} Card={scrapdata} currentUser={profile} loginUser={profile} />;
+      return (
+        <ScrapGrid
+          key={key}
+          Card={scrapdata}
+          currentUser={profile}
+          loginUser={profile}
+        />
+      );
     } else if (content === "Likes") {
       return (
         <React.Fragment key={key}>
