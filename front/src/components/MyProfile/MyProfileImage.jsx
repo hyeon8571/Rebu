@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef }from "react";
 import styled, { keyframes } from "styled-components";
 import FollowList from "./FollowList";
+import nullImg from "../../assets/images/img.webp";
 
 // 그라디언트 애니메이션을 정의합니다.
 const rotateGradient = keyframes`
@@ -224,7 +225,11 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
     <ProfileContainer>
     <ImgBox>
       <React.Fragment>
-        {online ? (
+        {currentUser.imageSrc === null ? (
+          <OutterCircleOffline>
+            <Insideimg src={nullImg}></Insideimg>
+          </OutterCircleOffline>
+        ) : (online ? (
           <OutterCircleOnline>
             <Insideimg src={currentUser.imageSrc} alt="Profile" />
           </OutterCircleOnline>
@@ -232,7 +237,7 @@ export default function ProfileLarge({ currentUser, time, followingdata, followe
           <OutterCircleOffline>
             <Insideimg src={currentUser.imageSrc}></Insideimg>
           </OutterCircleOffline>
-        )}
+        ))}
       </React.Fragment>
     <FollowInfo>
       <FollowerInfo>

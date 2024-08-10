@@ -8,7 +8,7 @@ import Header from "../components/storeProfile/StoreProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
 import PostGrid from "../components/storeProfile/PostGrid";
 import TimeTable from "../components/reservation/TimeTable";
-import DesignerGrid from "../components/reservation/TimeTable"; // 새로운 컴포넌트를 import 합니다.
+import DesignerGrid from "../components/reservation/DesignerDisplay";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>

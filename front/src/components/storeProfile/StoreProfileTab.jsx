@@ -52,18 +52,18 @@ const TabName = styled.span`
 
 const Count = styled.span`
   font-size: 14px;
-  color: ${(props) => (props.theme.value === "light" ? "#000000" : "#ffffff")};
+  color: ${(props) => (props.theme.value === "light" ? "#black" : "#white")};
   cursor: pointer;
 `;
 
-const Desc = styled.div`
+const Desc = styled.p`
   font-size: 15px;
   margin-top: 15px;
   margin-left: 5%;
   margin-bottom: 5px;
 `;
 
-const TabTitle = styled.p`
+const TabTitle = styled.div`
   font-weight: bold;
   font-size: 15px;
   margin-top: 10px;

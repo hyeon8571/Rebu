@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import PropTypes from 'prop-types';
 import PostDetail from "../post/PostDetail";
+import { CiLock } from "react-icons/ci";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -20,6 +21,22 @@ const GridItem = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+`;
+
+const PrivateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+`
+
+const LockImg = styled(CiLock)`
+  width: 120px;
+  height: 120px;
+`;
+
+const LockText = styled.span`
+  font-size: 18px;
 `;
 
 const Photo = styled.img`
@@ -77,6 +94,13 @@ function GridComponent({ Card, currentUser, loginUser }) {
 
   return (
     <>
+      {isPrivate ? (
+        <PrivateContainer>
+          <LockImg />
+          <LockText>비공개 항목입니다</LockText>
+        </PrivateContainer>
+      ) : (
+        <>
       {selectedPhotos ? (
         <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
       ) : (
@@ -102,6 +126,8 @@ function GridComponent({ Card, currentUser, loginUser }) {
           </ResponsiveGridLayout>
         </GridContainer>
       )}
+      </>
+    )}
     </>
   );
 }

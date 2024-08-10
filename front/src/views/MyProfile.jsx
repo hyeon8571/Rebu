@@ -76,42 +76,9 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [loginUser, setLoginUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { nickname, type, isLogin } = useSelector((state) => state.auth);
 
- useEffect(() => {
-      const fetchUser = async () => {
-      const token = useSelector(state => state.accessToken)
-      const nickname = localStorage.getItem('nickname')
-      if (!token) {
-        setError('토큰을 찾지 못했습니다');
-        setLoading(false);
-        return;
-      }
 
-      try {
-        const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setProfile(response.data.body);
-      } catch (error) {
-        setError('사용자 정보를 찾지 못했습니다');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  };
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  };
-  
   useEffect(() => {
     fetch('/mockdata/loginuser.json')
       .then(res => res.json())

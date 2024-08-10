@@ -95,7 +95,7 @@ const SecretMode = ({secretModalOpen, closeModal}) => {
 
   const toggleHandler = () => {
     setisSecret(!isSecret);
-    console.log(secretMode);
+    console.log(isSecret);
   };
     
 
@@ -109,8 +109,8 @@ const SecretMode = ({secretModalOpen, closeModal}) => {
           </ModalHeader>
           <ModalText>내 스크랩 항목 비공개</ModalText>
           <ToggleContainer onClick={toggleHandler}>
-            <div className={`toggle-container ${isSecret ? "toggle--checked" : null}`}></div>
-            <div className={`toggle-circle ${isSecret ? "toggle--checked" : null}`}></div>
+            <div className={`toggle-container ${isSecret ? null : "toggle--checked" }`}></div>
+            <div className={`toggle-circle ${isSecret ? null : "toggle--checked" }`}></div>
           </ToggleContainer>
         </ModalContent>
       </ModalOverlay>
