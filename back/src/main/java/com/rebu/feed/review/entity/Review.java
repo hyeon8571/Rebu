@@ -4,12 +4,16 @@ import com.rebu.feed.entity.Feed;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.reservation.entity.Reservation;
+import com.rebu.reviewkeyword.entity.SelectedReviewKeyword;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -29,6 +33,9 @@ public class Review extends Feed {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private ShopProfile shopProfile;
+
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<SelectedReviewKeyword> selectedReviewKeywords;
 
     private Integer rating;
 
