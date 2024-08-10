@@ -1,10 +1,8 @@
+// Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { login, getProfile } from "../features/auth/authSlice";
-import { BASE_URL } from "./Signup";
-//css
+import { useDispatch } from "react-redux";
+import { login } from "../features/auth/authSlice";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -35,34 +33,16 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch(); //redux
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    // dispatch(login(loginParam))
-    e.preventDefault(); //0ㅅ0
+    e.preventDefault();
     const result = await dispatch(login(email, password));
 
     if (result.success) {
       alert("로그인 성공");
-
-      // 로그인 성공 시 프로필조회 후 currentProfile에 데이터 저장
-      // const currentProfile = await dispatch(getProfile(nickname));
-      // result.payload에서 nickname을 가져옴
-      // const nickname = result.payload.nickname; //로그인 성공 시 닉네임 가져옴
-      // const nickname = useSelector((state) => state.auth.nickname);
-      // const { nickname, type, isLogin } = useSelector((state) => state.auth);
-
-      // 프로필 데이터 가져오기
-      // const profile = await dispatch(getProfile(nickname));
-      // if (profile.success) {
-      //   console.log("프로필 조회 성공:", profile.payload);
-      //   // navigate("/profile", { replace: true }); // 프로필 페이지로 이동
-      // } else {
-      //   alert("프로필 조회에 실패했습니다.");
-      // }
-      // console.log("nickname", nickname);
-      navigate("/error", { replace: true });
+      navigate("/main"); // 로그인 성공 후 메인 페이지로 이동
     } else {
       alert(result.error);
     }
@@ -70,8 +50,6 @@ const Login = () => {
 
   return (
     <Container className="page">
-      {/* <ButtonBack /> */}
-
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleLogin}>
         <div className="emailBox">
