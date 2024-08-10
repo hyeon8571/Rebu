@@ -24,7 +24,7 @@ public class ProfileDto {
     public static ProfileDto from(Profile profile) {
         return ProfileDto.builder()
                 .memberId(profile.getMember().getId())
-                .imageSrc(profile.getNickname())
+                .nickname(profile.getNickname())
                 .type(profile.getType())
                 .imageSrc(profile.getImageSrc())
                 .introduction(profile.getIntroduction())

@@ -36,6 +36,14 @@ public class EmployeeProfile extends Profile {
         workingIntroduction = newWorkingIntroduction;
     }
 
+    public void changeRole(String newRole) {
+        role = newRole;
+    }
+
+    public void changeShop(ShopProfile newShop) {
+        shop = newShop;
+    }
+
     public void changeWorkingName(String newWorkingName) {
         workingName = newWorkingName;
     }

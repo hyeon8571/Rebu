@@ -1,18 +1,21 @@
 package com.rebu.profile.employee.service;
 
 import com.rebu.common.service.RedisService;
+import com.rebu.follow.repository.FollowRepository;
 import com.rebu.member.entity.Member;
 import com.rebu.member.exception.MemberNotFoundException;
 import com.rebu.member.repository.MemberRepository;
 import com.rebu.profile.dto.ChangeImgDto;
-import com.rebu.profile.employee.dto.ChangeWorkingIntroDto;
-import com.rebu.profile.employee.dto.ChangeWorkingNameDto;
-import com.rebu.profile.employee.dto.GenerateEmployeeProfileDto;
+import com.rebu.profile.employee.dto.*;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.employee.repository.EmployeeProfileRepository;
+import com.rebu.profile.entity.Profile;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
+import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.service.ProfileService;
+import com.rebu.profile.shop.entity.ShopProfile;
+import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.workingInfo.service.WorkingInfoService;
 import jakarta.servlet.http.Cookie;
@@ -26,10 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeProfileService {
 
     private final EmployeeProfileRepository employeeProfileRepository;
+    private final ProfileRepository profileRepository;
     private final ProfileService profileService;
+    private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
     private final RedisService redisService;
     private final WorkingInfoService workingInfoService;
+    private final ShopProfileRepository shopProfileRepository;
 
     @Transactional
     public void generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
@@ -64,6 +70,42 @@ public class EmployeeProfileService {
 
         employeeProfile.changeWorkingName(changeWorkingNameDto.getWorkingName());
     }
+
+    @Transactional(readOnly = true)
+    public GetEmployeeProfileResponse getEmployeeProfile(GetEmployeeProfileDto getEmployeeProfileDto) {
+        EmployeeProfile targetProfile = employeeProfileRepository.findByNickname(getEmployeeProfileDto.getTargetNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        Profile profile = profileRepository.findByNickname(getEmployeeProfileDto.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        GetEmployeeProfileResponse getEmployeeProfileResponse = employeeProfileRepository.getEmployeeProfileResponseByProfileId(targetProfile.getId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (targetProfile.getNickname().equals(getEmployeeProfileDto.getNickname())) {
+            getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.OWN);
+        } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
+            getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.FOLLOWING);
+        } else {
+            getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.NONE);
+        }
+
+        return getEmployeeProfileResponse;
+    }
+
+    @Transactional
+    public void acceptInvite(AcceptInviteDto acceptInviteDto) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(acceptInviteDto.getEmployeeProfileId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        ShopProfile shopProfile = shopProfileRepository.findById(acceptInviteDto.getShopProfileId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        employeeProfile.changeShop(shopProfile);
+
+        employeeProfile.changeRole(acceptInviteDto.getRole());
+    }
+
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);

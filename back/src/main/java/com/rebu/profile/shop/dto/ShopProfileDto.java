@@ -1,11 +1,10 @@
 package com.rebu.profile.shop.dto;
 
-import com.rebu.member.entity.Member;
 import com.rebu.member.enums.Status;
 import com.rebu.profile.enums.Type;
-import com.rebu.profile.shop.Category;
+
+import com.rebu.profile.shop.enums.Category;
 import com.rebu.profile.shop.entity.ShopProfile;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,7 +20,7 @@ public class ShopProfileDto {
     private String introduction;
     private LocalDateTime recentTime;
     private String phone;
-    private Boolean isPrivate;
+    private boolean isPrivate;
     private Status status;
     private String licenseNum;
     private String name;
