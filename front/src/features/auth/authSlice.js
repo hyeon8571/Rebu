@@ -8,9 +8,9 @@ const initialState = {
   nickname: "",
   type: 1,
   profile: {
-    favoritesCnt: 100,
-    followersCnt: 100,
-    followingCnt: 100,
+    favoritesCnt: 0,
+    followersCnt: 0,
+    followingCnt: 0,
     imageSrc: null,
     introduction: null,
     nickname: "",
