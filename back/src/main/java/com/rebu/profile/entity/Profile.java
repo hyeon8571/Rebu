@@ -21,7 +21,6 @@ import java.util.Objects;
 @SQLRestriction("status != 'ROLE_DELETED'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
-@EqualsAndHashCode(of = "id")
 public class Profile {
 
     @Id
