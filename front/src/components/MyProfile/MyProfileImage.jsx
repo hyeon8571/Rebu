@@ -222,18 +222,20 @@ export default function ProfileLarge({
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // 수정 필요
   const handleFollow = async () => {
-    setRelation("FOLLOWING");
+    // setRelation("FOLLOWING");
     // 팔로우 결과에 따라 버튼이 눌린걸로 바뀌게 해줘야함
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const result = await followUser(targetNickname);
+      const result = await follow(targetNickname);
 
       if (result.success) {
         setSuccess("팔로우가 성공적으로 추가되었습니다.");
+        console.log(currentUser.relation);
         // 추가적인 성공 처리가 필요할 경우 여기에 추가
       } else {
         setError(result.error || "팔로우 추가 실패");

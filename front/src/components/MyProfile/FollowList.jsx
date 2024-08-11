@@ -1,5 +1,6 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import { fetchFollowingList } from "../../features/common/followSlice";
 
 const rotateGradient = keyframes`
   0% {
@@ -118,10 +119,8 @@ const Button = styled.button`
 
 const FollowList = ({ follower, time }) => {
   const online = time < 300;
-  
-  const handleChat = () => {
 
-  }
+  const handleChat = () => {};
 
   return (
     <FollowerContainer>
