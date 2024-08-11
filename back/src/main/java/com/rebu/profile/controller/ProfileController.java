@@ -43,7 +43,7 @@ public class ProfileController {
         if (!isExist) {
             session.setAttribute("CheckNickname:" + purpose, nickname);
         }
-        return ResponseEntity.ok(new ApiResponse<>("닉네임 중복 검사 성공 코드", isExist));
+        return ResponseEntity.ok(new ApiResponse<>("1C00", isExist));
     }
 
     @GetMapping("/check-phone")
@@ -55,7 +55,7 @@ public class ProfileController {
         if (!isExist) {
             session.setAttribute("CheckPhone:" + purpose, phone);
         }
-        return ResponseEntity.ok(new ApiResponse<>("전화번호 중복 검사 성공 코드", isExist));
+        return ResponseEntity.ok(new ApiResponse<>("1C01", isExist));
     }
 
     @PatchMapping("/{nickname}/nickname")
@@ -67,28 +67,28 @@ public class ProfileController {
             throw new NicknameDuplicateException();
         }
         profileService.changeNickname(changeNicknameRequest.toDto(authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("닉네임 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1C02", null));
     }
 
     @PatchMapping("/{nickname}/introduction")
     public ResponseEntity<?> updateIntro(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                          @Valid @RequestBody ChangeIntroRequest changeIntroRequest) {
         profileService.changeIntro(changeIntroRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("프로필 소개 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1C03", null));
     }
 
     @PatchMapping("/{nickname}/is-private")
     public ResponseEntity<?> updateisPrivate(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                              @RequestBody ChangeIsPrivateRequest changeIsPrivateRequest) {
         profileService.changeIsPrivate(changeIsPrivateRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("프로필 공개 여부 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1C04", null));
     }
 
     @PatchMapping("/{nickname}/image")
     public ResponseEntity<?> updateProfileImg(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                               @ProfileImg @RequestParam MultipartFile imgFile) {
         profileService.changePhoto(new ChangeImgDto(imgFile, authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("프로필 사진 변경 성공", null));
+        return ResponseEntity.ok(new ApiResponse<>("1C05", null));
     }
 
     @PatchMapping("/{nickname}/phone")
@@ -104,7 +104,7 @@ public class ProfileController {
             throw new PhoneNotVerifiedException();
         }
         profileService.changePhone(changePhoneRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("전화번호 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1C06", null));
     }
 
     @Authorized(allowed = {Type.SHOP, Type.EMPLOYEE})
@@ -116,13 +116,13 @@ public class ProfileController {
             throw new PasswordNotVerifiedException();
         }
         ProfileInfo profileInfo = profileService.deleteProfile(nickname, response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", profileInfo));
+        return ResponseEntity.ok(new ApiResponse<>("1C07", profileInfo));
     }
 
     @GetMapping
     public ResponseEntity<?> getProfileList(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
         List<GetProfileListDto> result = profileService.getProfileList(authProfileInfo.getEmail());
-        return ResponseEntity.ok(new ApiResponse<>("보유한 프로필 조회 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1C08", result));
     }
 
     @PostMapping("/switch-profile")
@@ -130,21 +130,21 @@ public class ProfileController {
                                            @Valid @RequestBody SwitchProfileRequest switchProfileRequest,
                                            HttpServletResponse response) {
         ProfileInfo profileInfo = profileService.switchProfile(switchProfileRequest.toDto(authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", profileInfo));
+        return ResponseEntity.ok(new ApiResponse<>("1C09", profileInfo));
     }
 
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                         @PathVariable String nickname) {
         GetProfileResponse result = profileService.getProfile(new GetProfileDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("일반 프로필 조회 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchProfile(@RequestParam String keyword,
                                            @PageableDefault(size = 20) Pageable pageable) {
         Slice<SearchProfileResponse> result = profileService.searchProfile(new SearchProfileDto(keyword, pageable));
-        return ResponseEntity.ok(new ApiResponse<>("프로필 검색 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 
 }

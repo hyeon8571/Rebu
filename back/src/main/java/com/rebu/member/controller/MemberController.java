@@ -32,7 +32,7 @@ public class MemberController {
     public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequest memberJoinRequest,
                                   HttpSession session) {
         memberService.join(memberJoinRequest.toMemberJoinDto(), memberJoinRequest.toProfileGenerateDto(), session);
-        return ResponseEntity.ok(new ApiResponse<>("회원가입 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1B00", null));
     }
 
     @GetMapping("/check-email")
@@ -43,7 +43,7 @@ public class MemberController {
         if (!isExist) {
             session.setAttribute("CheckEmail:" + purpose, email);
         }
-        return ResponseEntity.ok(new ApiResponse<>("이메일 중복 검사 성공", isExist));
+        return ResponseEntity.ok(new ApiResponse<>("1B01", isExist));
     }
 
     @PatchMapping("/{email}/password")
@@ -54,7 +54,7 @@ public class MemberController {
             throw new EmailNotVerifiedException();
         }
         memberService.changePassword(changePasswordRequest.toDto(email));
-        return ResponseEntity.ok(new ApiResponse<>("비밀번호 변경 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1B02", null));
     }
 
     @GetMapping("/find-email")
@@ -65,7 +65,7 @@ public class MemberController {
             throw new PhoneNotVerifiedException();
         }
         String email = memberService.findEmail(new FindEmailDto(name, phone));
-        return ResponseEntity.ok(new ApiResponse<>("이메일 찾기 성공 코드", email));
+        return ResponseEntity.ok(new ApiResponse<>("1B03", email));
     }
 
     @Authorized(allowed = Type.COMMON)
@@ -76,6 +76,6 @@ public class MemberController {
             throw new PasswordNotVerifiedException();
         }
         memberService.withdraw(nickname);
-        return ResponseEntity.ok(new ApiResponse<>("회원 탈퇴 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1B04", null));
     }
 }

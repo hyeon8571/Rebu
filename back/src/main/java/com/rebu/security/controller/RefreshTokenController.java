@@ -18,6 +18,6 @@ public class RefreshTokenController {
     @PostMapping("/auths/refresh")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         refreshTokenService.reissue(request, response);
-        return ResponseEntity.ok(new ApiResponse<>("리프레시 토큰 재발급 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A06", null));
     }
 }

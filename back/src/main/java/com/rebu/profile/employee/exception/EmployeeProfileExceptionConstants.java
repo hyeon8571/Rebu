@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum EmployeeProfileExceptionConstants implements ExceptionConstants {
-    WORKING_NAME_MISMATCH("활동명 형식 불일치 에러"),
-    NOT_INCLUDE("매장에 속해있지 않은 직원 프로필");
+    WORKING_NAME_MISMATCH("0D00"),
+    NOT_INCLUDE("0D01");
     final String code;
 }

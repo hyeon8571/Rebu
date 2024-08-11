@@ -44,7 +44,7 @@ public class FollowController {
     @GetMapping("/{nickname}/followings")
     public ResponseEntity<?> getFollowings(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                            @PathVariable String nickname,
-                                           @PageableDefault(size = 10, sort = "id") Pageable pageable) {
+                                           @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Slice<GetFollowingResponse> followings = followService.getFollowings(new GetFollowingsTargetDto(authProfileInfo.getNickname(), nickname, pageable));
         return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followings));
     }
@@ -52,7 +52,7 @@ public class FollowController {
     @GetMapping("/{nickname}/followers")
     public ResponseEntity<?> getFollowers(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                           @PathVariable String nickname,
-                                          @PageableDefault(size = 10, sort = "id") Pageable pageable) {
+                                          @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Slice<GetFollowerResponse> followers = followService.getFollowers(new GetFollowersTargetDto(authProfileInfo.getNickname(), nickname, pageable));
         return ResponseEntity.ok(new ApiResponse<>("팔로워 조회 성공 코드", followers));
     }

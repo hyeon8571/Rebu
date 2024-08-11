@@ -36,7 +36,7 @@ public class EmployeeProfileController {
             throw new NicknameDuplicateException();
         }
         employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("직원 프로필 생성 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1D00", null));
     }
 
     @Authorized(allowed = {Type.EMPLOYEE})
@@ -44,7 +44,7 @@ public class EmployeeProfileController {
     public ResponseEntity<?> updateWorkingIntro(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @RequestBody ChangeWorkingIntroRequest changeWorkingIntroRequest) {
         employeeProfileService.updateWorkingIntro(changeWorkingIntroRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("직원 매장 소개글 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1D01", null));
     }
 
     @Authorized(allowed = {Type.EMPLOYEE})
@@ -52,20 +52,20 @@ public class EmployeeProfileController {
     public ResponseEntity<?> updateWorkingName(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                @RequestBody ChangeWorkingNameRequest changeWorkingNameRequest) {
         employeeProfileService.updateWorkingName(changeWorkingNameRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("활동명 변경 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1D02", null));
     }
 
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getEmployeeProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @PathVariable String nickname) {
         GetEmployeeProfileResponse result = employeeProfileService.getEmployeeProfile(new GetEmployeeProfileDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("직원 프로필 조회 완료 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1D03", result));
     }
 
     @PatchMapping("/{nickname}/shop")
     public ResponseEntity<?> acceptInvite(@RequestBody AcceptInviteDto acceptInviteDto) {
         employeeProfileService.acceptInvite(acceptInviteDto);
-        return ResponseEntity.ok(new ApiResponse<>("매장 직원 등록 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1D04", null));
     }
 
     @GetMapping("/{nickname}/period-schedule")
