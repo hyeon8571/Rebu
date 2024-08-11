@@ -7,7 +7,7 @@ const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
-  profile: {
+  profile: { //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
     followingCnt: 0,
@@ -59,7 +59,7 @@ export const login = (email, password) => async (dispatch) => {
       }
     );
 
-    if (response.data.code === "로그인 성공 코드") {
+    if (response.data.code === "1A07") {
       const access = response.headers["access"];
       console.log("로그인 성공", response)
       const { type, nickname } = response.data.body;

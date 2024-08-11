@@ -6,7 +6,7 @@ import { BASE_URL } from '../../views/Signup';
 export const getCommonProfile = async (nickname) => {
   const access = localStorage.getItem("access");
   try {
-    const response = await axios.get(`${BASE_URL}/api/profiles/rebu22`, {
+    const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
       // const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
       headers: {
         "access": access,

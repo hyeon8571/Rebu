@@ -37,7 +37,7 @@ export default function NavigationBar() {
   return (
     <>
       <Bar>
-        <StyledNavLink to="/Login">
+        <StyledNavLink to="/login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>

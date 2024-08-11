@@ -83,10 +83,27 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // state로부터 targetNickname을 가져오기 - 다른 사람 프로필 조회 시 사용
+  const { targetNickname, targetType } = location.state || {
+    targetNickname: null,
+    targetType: null,
+  };
+
   // Redux 상태에서 필요한 정보 가져오기
-  const { nickname, type, isLogin } = useSelector((state) => state.auth);
+  const {
+    nickname: reduxNickname,
+    type: reduxType,
+    isLogin,
+  } = useSelector((state) => state.auth);
+  const [nickname, setNickname] = useState(reduxNickname);
+  const [type, setType] = useState(reduxType);
 
   useEffect(() => {
+    if (reduxNickname !== targetNickname) {
+      setNickname(targetNickname);
+      setType(targetType);
+    }
+
     if (type === "COMMON" && isLogin) {
       const fetchProfile = async () => {
         const result = await getCommonProfile(nickname);
@@ -124,7 +141,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       };
       fetchProfile();
     }
-  }, [type, isLogin, nickname]);
+  }, [reduxNickname, targetNickname, targetType]);
 
   useEffect(() => {
     fetch("/mockdata/loginuser.json")
@@ -280,7 +297,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
             currentUser={profile}
             time={130}
             followerdata={followerdata}
-            followingdata={followingdata}
+            followingdata={followingdata} // 팔로잉 목록에 보여줄 mock데이터
           />
           <ProfileInfo currentUser={profile} loginUser={profile} />
         </IntroduceBox>

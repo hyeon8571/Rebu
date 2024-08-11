@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { follow } from "../../features/common/followSlice";
+import {
+  getFollowerList,
+  getFollowingList,
+  follow,
+} from "../../features/common/followSlice";
+import { useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import FollowList from "./FollowList";
 import nullImg from "../../assets/images/img.webp";
@@ -156,6 +161,8 @@ const ModalContent = styled.div`
   border: 1.5px solid #943aee;
   border-radius: 8px;
   width: 90%;
+  max-height: 50vh; /* 화면 높이의 절반으로 제한 */
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 표시 */
 `;
 
 const ModalHeader = styled.div`
@@ -205,12 +212,7 @@ const FollowButton = styled.button`
   }
 `;
 
-export default function ProfileLarge({
-  currentUser,
-  time,
-  followingdata,
-  followerdata,
-}) {
+export default function ProfileLarge({ currentUser, time }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
@@ -222,7 +224,88 @@ export default function ProfileLarge({
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  // 수정 필요
+  // 팔로잉 목록
+  const [followings, setFollowings] = useState([]); //팔로잉 목록
+  const [followers, setFollowers] = useState([]); //팔로워 목록
+
+  const targetNickname = currentUser.nickname; //현재 프로필 페이지의 사용자 닉네임
+  const { nickname } = useSelector((state) => state.auth); //로그인한 사용자의 닉네임
+
+  // 무한 스크롤 - 페이지네이션
+  const [currentPage, setCurrentPage] = useState(0); // 페이지 번호
+  const [hasMore, setHasMore] = useState(true); // 더 로드할 데이터가 있는지 여부
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+
+  // API- 팔로잉 목록 불러오기
+  useEffect(() => {
+    const getFollowings = async () => {
+      if (hasMore) {
+        // 더 불러올 데이터가 있는 경우에만 API 호출
+        const result = await getFollowingList(targetNickname, currentPage);
+        // const last = result.data.body.last;
+        const last =
+          result.data.body.last === undefined ? true : result.data.body.last;
+
+        if (result.success) {
+          setFollowings((prevFollowings) => [
+            ...prevFollowings,
+            ...result.data.body.content,
+          ]);
+          setHasMore(last === false); // 마지막 페이지인지 확인
+          console.log("팔로잉 목록", result.data.body);
+        } else {
+          setError(result.error);
+        }
+      }
+    };
+    getFollowings();
+  }, [targetNickname, currentPage]); // currentPage 변경 시 getFollowings 호출
+
+  //API- 팔로워 목록 불러오기
+  useEffect(() => {
+    const getFollowers = async () => {
+      if (hasMore) {
+        // 더 불러올 데이터가 있을 때에만 API 호출
+        const result = await getFollowerList(targetNickname, currentPage); // cirrentPage : 현재 페이지 번호
+        const last =
+          result.data.body.last === undefined ? true : result.data.body.last;
+        if (result.success) {
+          setFollowers((prevFollowers) => [
+            ...prevFollowers, // 이전 목록에 다음 목록들 추가
+            ...result.data.body.content,
+          ]);
+          setHasMore(last === false); // 다음 페이지가 있는지 여부
+          // last= true -> 다음 페이지 없음 false: 다음 페이지 있음
+          console.log("팔로워 목록", result.data.body);
+          setCurrentPage((prevPage) => prevPage + 1);
+        } else {
+          setError(result.error);
+        }
+      }
+    };
+    getFollowers();
+  }, [targetNickname, currentPage]); // currentPage 변경 시 getFollowings 호출
+
+  // 스크롤 이벤트 핸들러
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (scrollHeight - scrollTop <= clientHeight + 10 && hasMore) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    const modalRef = isFollowersModalOpen
+      ? followersModalRef.current
+      : followingModalRef.current;
+
+    if (modalRef) {
+      modalRef.addEventListener("scroll", handleScroll);
+      return () => modalRef.removeEventListener("scroll", handleScroll);
+    }
+  }, [isFollowersModalOpen, isFollowingModalOpen, hasMore]);
+
+  // 팔로우 버튼 - 수정 필요
   const handleFollow = async () => {
     // setRelation("FOLLOWING");
     // 팔로우 결과에 따라 버튼이 눌린걸로 바뀌게 해줘야함
@@ -342,15 +425,23 @@ export default function ProfileLarge({
           <ModalContent ref={followersModalRef}>
             <ModalHeader>
               <ModalTitle>팔로워 목록</ModalTitle>
+              {/* <CloseButton onClick={handleCloseFollowersModal}> */}
               <CloseButton onClick={handleCloseFollowersModal}>
                 &times;
               </CloseButton>
             </ModalHeader>
             <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
-              {followerdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
+              {followers.map((follower, index) => (
+                <FollowList
+                  key={index}
+                  follower={follower}
+                  time={130}
+                  handleCloseFollowersModal={handleCloseFollowersModal}
+                />
               ))}
+              {isLoading && <p>로딩 중...</p>}
+              {!hasMore && <p>더 이상 팔로워가 없습니다.</p>}
             </FollowListContainer>
           </ModalContent>
         </ModalOverlay>
@@ -367,8 +458,13 @@ export default function ProfileLarge({
             </ModalHeader>
             <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
-              {followingdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
+              {followings.map((follower, index) => (
+                <FollowList
+                  key={index}
+                  follower={follower}
+                  time={130}
+                  handleCloseFollowingModal={handleCloseFollowingModal}
+                />
               ))}
             </FollowListContainer>
           </ModalContent>
