@@ -21,7 +21,7 @@ import java.util.List;
 public class ShopProfile extends Profile {
 
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-    List<EmployeeProfile> employeeProfiles = new ArrayList<>();
+    private final List<EmployeeProfile> employeeProfiles = new ArrayList<>();
 
     @Column(unique=true, nullable = false)
     private String licenseNum;

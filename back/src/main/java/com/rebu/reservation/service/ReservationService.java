@@ -3,6 +3,7 @@ package com.rebu.reservation.service;
 import com.rebu.absence.entity.Absence;
 import com.rebu.absence.repository.AbsenceRepository;
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.util.ListUtils;
 import com.rebu.menu.entity.Menu;
 import com.rebu.menu.exception.MenuNotFoundException;
 import com.rebu.menu.repositoy.MenuRepository;
@@ -16,9 +17,7 @@ import com.rebu.profile.exception.ProfileUnauthorizedException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.profile.shop.repository.ShopProfileRepository;
-import com.rebu.reservation.dto.ReservationCreateDto;
-import com.rebu.reservation.dto.ReservationStatusDeleteDto;
-import com.rebu.reservation.dto.ReservationStatusModifyDto;
+import com.rebu.reservation.dto.*;
 import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.exception.ReservationNotAcceptableException;
 import com.rebu.reservation.exception.ReservationNotFoundException;
@@ -69,18 +68,18 @@ public class ReservationService {
         LocalTime endTime = endDateTime.toLocalTime();
         int day = startDateTime.getDayOfWeek().getValue()-1;
 
-        List<WorkingInfo> shopWorkingInfos = workingInfoRepository.findByProfileId(shop.getId());
+        List<WorkingInfo> shopWorkingInfos = workingInfoRepository.findByProfile(shop);
         checkCreateReservationWorkingInfos(shopWorkingInfos, startTime, endTime, day);
-        List<WorkingInfo> employeeWorkingInfos = workingInfoRepository.findByProfileId(employee.getId());
+        List<WorkingInfo> employeeWorkingInfos = workingInfoRepository.findByProfile(employee);
         checkCreateReservationWorkingInfos(employeeWorkingInfos, startTime, endTime, day);
 
-        List<Absence> shopAbsences = absenceRepository.findByProfileIdAndDate(shop.getId(), startDateTime.toLocalDate());
+        List<Absence> shopAbsences = absenceRepository.findByProfileAndDate(shop, startDateTime.toLocalDate());
         checkCreateReservationAbsences(shopAbsences, startDateTime, endDateTime);
 
-        List<Absence> employeeAbsences = absenceRepository.findByProfileIdAndDate(employee.getId(), startDateTime.toLocalDate());
+        List<Absence> employeeAbsences = absenceRepository.findByProfileAndDate(employee, startDateTime.toLocalDate());
         checkCreateReservationAbsences(employeeAbsences, startDateTime, endDateTime);
 
-        List<Reservation> reservations = reservationRepository.findByProfileIdAndDate(employee.getId(), startDateTime.toLocalDate());
+        List<Reservation> reservations = reservationRepository.findByProfileAndDate(employee, startDateTime.toLocalDate());
         checkCreateReservationExistReservation(reservations, startTime, endTime);
 
         Reservation reservation = dto.toEntity(profile, shop, employee, menu);
@@ -116,14 +115,18 @@ public class ReservationService {
         reservation.changeReservationStatus(Reservation.ReservationStatus.CANCLED);
     }
 
-    private void checkModifyReservationStatusToAccepted(Reservation reservation) {
+    @Transactional(readOnly = true)
+    public List<ReservationByProfileDto> readProfileReservations(ReservationReadByProfileDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
+        List<Reservation> reservations = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
+        return ListUtils.applyFunctionToElements(reservations, ReservationByProfileDto::from);
+    }
 
+    private void checkModifyReservationStatusToAccepted(Reservation reservation) {
         if(!(reservation.getReservationStatus() == Reservation.ReservationStatus.RECEIVED))
             throw new ReservationStatusNotChangeableException();
-
         if(reservation.getStartDateTime().isBefore(LocalDateTime.now()))
             throw new ReservationStatusNotChangeableException();
-
     }
 
     private void checkModifyReservationStatusToRefused(Reservation reservation) {
@@ -153,7 +156,6 @@ public class ReservationService {
     }
 
     private void checkCreateReservationAbsences(List<Absence> absences, LocalDateTime startDateTime, LocalDateTime endDateTime){
-        System.out.println(absences.size());
         for(Absence absence : absences){
             LocalDateTime s = absence.getStartDate();
             LocalDateTime e = absence.getEndDate();
