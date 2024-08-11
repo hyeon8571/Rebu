@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { BASE_URL } from "../../views/Signup";
+import axios from "axios";
 
 
 const Container = styled.div`
@@ -17,7 +19,7 @@ const Container = styled.div`
 
 const StyledSlider = styled.input.attrs(props => ({
   style: {
-    background: `linear-gradient(to right, #c99cf6 ${props.value}%, #dddddd ${props.value}%)`
+    background: `linear-gradient(to right, #c99cf6 ${props.distance}%, #dddddd ${props.distance}%)`
   },
 }))`
   -webkit-appearance: none;
@@ -166,14 +168,34 @@ const ToggleContainer = styled.div`
 
 
 const MainFilterStat = () => {
-  const [value, setValue] = useState(0);
+  const [distance, setDistance] = useState(0);
+  const [period, setPeriod] = useState('');
+  const [sortedLike, setSortedLike] = useState(false);
+  const [feed, setFeed] = useState([]);
   const [selectedButton, setSelectedButton] = useState('');
   const [popularFeed, setPopularFeed] = useState(false);
 
   const buttons = ['하루', '일주일', '한달', '일년', '전체'];
 
   const handleChange = e => {
-      setValue(e.target.value);
+    setDistance(e.target.value);
+    // setSortedLike(!sortedLike);
+    // setPeriod(e.target.value);
+    const access = localStorage.getItem('access');
+
+    axios.get(`${BASE_URL}/api/feeds`, 
+      // {period: period}, 
+      {params : {distance: distance}},
+      // {sortedLike: sortedLike},
+      {headers : {
+        "Content-Type": "application/json",
+        // access : access
+      }}
+    )
+    .then((res)=> {
+      console.log(res.data.data);
+      setFeed(res.data.data);
+    })
     };
 
   const handleMouseUp = () => {
@@ -195,14 +217,14 @@ const MainFilterStat = () => {
       <DistanceRange>
         <span style={{fontWeight: "bold"}}>거리 범위</span>
         <SliderHeader>
-          최대거리 : &nbsp; <strong><span>{value}km</span></strong>
+          최대거리 : &nbsp; <strong><span>{distance}km</span></strong>
         </SliderHeader>
           <StyledSlider
             type="range"
             id="myRange"
             className="js-range-slider"
             min="0"
-            value={value}
+            distance={distance}
             onChange={handleChange}
             onMouseUp={handleMouseUp}
             onTouchEnd={handleTouchEnd} />
@@ -214,7 +236,8 @@ const MainFilterStat = () => {
             <Button
               key={button}
               selected={selectedButton === button}
-              onClick={() => setSelectedButton(button)}>
+              onClick={() => setSelectedButton(button)}
+              onChange={handleChange}>
               {button}
             </Button>
           ))}
@@ -222,7 +245,7 @@ const MainFilterStat = () => {
       </UploadRange>
       <PopularRange>
         <span style={{fontWeight: "bold"}}>인기있는 피드 위주로 보기</span>
-        <ToggleContainer onClick={handlePopularFeed}>
+        <ToggleContainer onClick={handlePopularFeed} onChange={handleChange}>
             <div className={`toggle-container ${popularFeed ? "toggle--checked" : null}`}></div>
             <div className={`toggle-circle ${popularFeed ? "toggle--checked" : null}`}></div>
         </ToggleContainer>

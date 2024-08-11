@@ -299,7 +299,7 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostDetail = ({ information, currentUser, loginUser }) => {
+const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const updatedPost = location.state?.post;
@@ -316,6 +316,21 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=0&size=10`, {
+      headers : {
+        "Content-Type": "application/json",
+      }
+    }, {feedId : feedId})
+    .then(res => {
+      console.log(res.data.body);
+      setComment(res.data.body);
+    })
+    .catch(err => {
+      console.log(err + '댓글을 찾지 못했습니다');
+    })
+  });
 
 
   useEffect(() => {

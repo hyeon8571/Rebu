@@ -95,7 +95,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={item.imageSrcs[0]} alt={`uploaded-${index}`} />
+                <Photo src={item.review.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

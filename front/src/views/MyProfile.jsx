@@ -11,6 +11,7 @@ import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
 
+export const BASE_URL = "https://www.rebu.kro.kr";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -74,6 +75,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] = useState([]);
   const [loginUser, setLoginUser] = useState([]);
+  
   // const [user, setUser] = useState(null);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
@@ -108,20 +110,36 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   useEffect(() => {
-    fetch("/mockdata/reviewdata.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const matchedReview = data.body.filter(
-          (review) => review.nickname === loginUser.nickname
-        );
-        const matchedScrap = data.body.filter(
-          (scrap) =>
-            scrap.isScraped === true && scrap.nickname !== loginUser.nickname
-        );
-        setReveiwData(matchedReview || data.body);
-        setScrapData(matchedScrap || data.body);
-      });
-  }, [loginUser]);
+    const access = localStorage.getItem('access');
+    axios.get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
+      headers : {
+        "access": access,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      console.log(response)
+      setReveiwData(response.data.body);
+    })
+    .catch(err => {
+      console.log('리뷰 데이터를 찾지 못했습니다');
+    })
+  }, []);
+
+    // fetch("/mockdata/reviewdata.json")
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     const matchedReview = data.body.filter(
+    //       (review) => review.nickname === loginUser.nickname
+    //     );
+    //     const matchedScrap = data.body.filter(
+    //       (scrap) =>
+    //         scrap.isScraped === true && scrap.nickname !== loginUser.nickname
+    //     );
+    //     setReveiwData(matchedReview || data.body);
+    //     setScrapData(matchedScrap || data.body);
+    //   });
+  // }, [loginUser]);
 
   useEffect(() => {
     fetch("/mockdata/likeshop.json")

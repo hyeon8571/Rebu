@@ -20,6 +20,22 @@ function Main({ theme, toggleTheme }) {
   const [loginUser, setLoginUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
+  const [alarmdata, setAlarmdata] = useState([]);
+  const [alarmCount, setAlarmCount] = useState(0);
+  const [currentLocation, setCurrentLocation] = useState([]);
+
+
+  useEffect(() => {
+    fetch("/mockdata/alarmdata.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const alarm = data.body.filter(
+          (alarm) => alarm.receiverNickname === loginUser.nickname
+        );
+        setAlarmdata(alarm || data.body);
+        setAlarmCount(alarm.length);
+      });
+  }, [loginUser]);
 
   useEffect(() => {
     fetch('/mockdata/loginuser.json')
@@ -43,15 +59,15 @@ function Main({ theme, toggleTheme }) {
       .then(res => res.json())
       .then((data) => {
         setFeed(data.body);
-        console.log(data.body);
+    
       })      
   }, []);
 
 
   return (
     <Wrapper>
-      <MainHeader theme={theme} toggleTheme={toggleTheme} />
-      <MainFilter />
+      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
+      <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
       <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
     </Wrapper>
   )

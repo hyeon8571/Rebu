@@ -1,13 +1,9 @@
 {
   "code" : "????",
   "body" : [
-    
-
-
-
       {
           "alarmType": "COMMENT",
-          "receiverNickname": "user123",
+          "receiverNickname": "cha_cha",
           "receiverId": 1,
           "receiverType": "EMPLOYEE",
           "senderNickname": "user123",
@@ -21,7 +17,7 @@
       {
           "alarmType": "NESTED_COMMENT",
           "parentCommentId": 1,
-          "receiverNickname": "user123",
+          "receiverNickname": "cha_cha",
           "receiverId": 1,
           "receiverType": "EMPLOYEE",
           "senderNickname": "user123",
@@ -34,7 +30,7 @@
 
       {
           "alarmType": "INVITE_EMPLOYEE",
-          "receiverNickname": "user123",
+          "receiverNickname": "cha_cha",
           "receiverId": 1,
           "receiverType": "EMPLOYEE",
           "senderNickname": "user123",
@@ -49,13 +45,13 @@
 
       {
           "alarmType": "RESERVATION",
-          "receiverNickname": "user123",
+          "receiverNickname": "cha_cha",
           "receiverId": 1,
           "receiverType": "EMPLOYEE",
           "senderNickname": "user123",
           "senderId": 1,
           "senderType": "EMPLOYEE",
-          "startDateTime": 30,
+          "startDateTime": "2024-08-30 15:00",
           "timeTaken": 30,
           "alarmCreateAT": "2024-08-10T01:57:59.992672",
           "alarmId": 1
@@ -63,7 +59,7 @@
 
       {
           "alarmType": "FOLLOW",
-          "receiverNickname": "user123",
+          "receiverNickname": "cha_cha",
           "receiverId": 1,
           "receiverType": "EMPLOYEE",
           "senderNickname": "user123",

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BiEditAlt } from "react-icons/bi";
+import { BASE_URL } from '../../views/Signup';
+import { useSelector } from "react-redux"
+import axios from 'axios';
+
 
 const InfoBox = styled.div`
   margin-left: 30px;
@@ -73,6 +77,7 @@ const ModalHeader = styled.div`
 
 const ModalTitle = styled.h3`
   margin: 0;
+  color: #000000;
 `;
 
 const ModalInput = styled.textarea`
@@ -117,6 +122,10 @@ const InfoComponent = ({ currentUser, loginUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
+  const { profile, nickname, type, isLogin } = useSelector(
+    (state) => state.auth
+  );
+  
 
   useEffect(() => {
     setNewIntroduce(currentUser.introduction);
@@ -136,9 +145,34 @@ const InfoComponent = ({ currentUser, loginUser }) => {
     setTempIntroduce(e.target.value);
   };
 
-  const saveIntroduce = () => {
-    // Introduce 정보를 업데이트하는 로직을 여기에 추가합니다.
-    setNewIntroduce(tempIntroduce);
+  const saveIntroduce = async () => {
+    try {
+      const access = localStorage.getItem('access');
+      // 백엔드 API 엔드포인트 주소
+      const url = `${BASE_URL}/api/profiles/${nickname}/introduction`;
+
+      // 업데이트할 데이터
+      // const updatedData = {
+      //   introduction: tempIntroduce,
+      // };
+
+      const headers = {
+        "Content-Type": "application/json",
+        Access : access
+      }
+
+      // PATCH 요청 보내기
+      const response = await axios.patch(url, {
+        introduction: tempIntroduce,
+      }, {headers});
+
+      // 성공 시 추가로 처리할 작업이 있다면 여기에 작성
+      console.log('소개글이 성공적으로 수정되었습니다:', response.data);
+    } catch (error) {
+      // 에러 처리 로직 작성
+      console.error('소개글 수정에 실패했습니다:', error);
+    }
+    setNewIntroduce(tempIntroduce)
     closeModal();
   };
 
