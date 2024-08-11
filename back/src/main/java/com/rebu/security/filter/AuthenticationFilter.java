@@ -75,10 +75,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String status = auth.getAuthority();
 
         if (status.equals("ROLE_DORMANT")) {
-            setResponse(response, "휴면 사용자 입니다", null);
+            setResponse(response, "0A13", null);
             return;
         } else if (status.equals("ROLE_DELETED")) {
-            setResponse(response, "탈퇴한 회원입니다.", null);
+            setResponse(response, "0A14", null);
             return;
         }
 
@@ -99,13 +99,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
-        setResponse(response, "로그인 성공 코드", new ProfileInfo(nickname, type));
+        setResponse(response, "1A07", new ProfileInfo(nickname, type));
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 
-        setResponse(response, "로그인 에러 코드", null);
+        setResponse(response, "0A12", null);
     }
 
     private Cookie createCookie(String key, String value) {

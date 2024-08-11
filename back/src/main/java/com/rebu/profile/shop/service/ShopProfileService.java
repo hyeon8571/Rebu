@@ -58,9 +58,11 @@ public class ShopProfileService {
 
         workingInfoService.create(generateShopProfileDto.getNickname());
 
-        ChangeImgDto changeImgDto = new ChangeImgDto(generateShopProfileDto.getImgFile(), generateShopProfileDto.getNickname());
+        if (generateShopProfileDto.getImgFile() != null && !generateShopProfileDto.getImgFile().isEmpty()) {
+            ChangeImgDto changeImgDto = new ChangeImgDto(generateShopProfileDto.getImgFile(), generateShopProfileDto.getNickname());
 
-        profileService.changePhoto(changeImgDto);
+            profileService.changePhoto(changeImgDto);
+        }
 
         redisService.deleteData("Refresh:" + generateShopProfileDto.getNowNickname());
 

@@ -42,7 +42,7 @@ public class ShopProfileController {
             throw new LicenseNumNotVerifiedException();
         }
         shopProfileService.generateProfile(generateShopProfileRequest.toDto(authProfileInfo.getNickname(), authProfileInfo.getEmail()), response);
-        return ResponseEntity.ok(new ApiResponse<>("매장 프로필 생성 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E00", null));
     }
 
     @Authorized(allowed = {Type.SHOP})
@@ -50,7 +50,7 @@ public class ShopProfileController {
     public ResponseEntity<?> updateAddress(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                            @Valid @RequestBody ChangeAddressRequest changeAddressRequest) {
         shopProfileService.updateAddress(changeAddressRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("매장 주소 수정 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E01", null));
     }
 
     @Authorized(allowed = {Type.SHOP})
@@ -58,7 +58,7 @@ public class ShopProfileController {
     public ResponseEntity<?> updateShopName(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @RequestBody ChangeShopNameRequest changeShopNameRequest) {
         shopProfileService.updateShopName(changeShopNameRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("매장 이름 수정 완료 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E02", null));
     }
 
     @Authorized(allowed = {Type.SHOP})
@@ -66,21 +66,21 @@ public class ShopProfileController {
     public ResponseEntity<?> updateReservationInterval(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                        @RequestBody UpdateReservationIntervalRequest updateReservationIntervalRequest) {
         shopProfileService.updateReservationInterval(updateReservationIntervalRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("매장 예약 단위 수정 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E03", null));
     }
 
     @GetMapping("/{nickname}/employees")
     public ResponseEntity<?> getShopEmployees(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                               @PathVariable String nickname) {
         List<GetShopEmployeeResponse> result = shopProfileService.getShopEmployees(new GetShopEmployeeDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("매장 직원 조회 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1E04", result));
     }
 
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @PathVariable String nickname) {
         GetShopProfileResponse result = shopProfileService.getShopProfile(new GetShopProfileDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("매장 프로필 조회 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1E05", result));
     }
 
     @Authorized(allowed = {Type.SHOP})
@@ -88,7 +88,7 @@ public class ShopProfileController {
     public ResponseEntity<?> inviteEmployee(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @RequestBody InviteEmployeeRequest inviteEmployeeRequest) {
         shopProfileService.inviteEmployee(inviteEmployeeRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("직원 초대 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E06", null));
     }
 
 }

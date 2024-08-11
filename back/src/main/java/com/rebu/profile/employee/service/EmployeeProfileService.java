@@ -46,9 +46,11 @@ public class EmployeeProfileService {
 
         workingInfoService.create(generateEmployeeProfileDto.getNickname());
 
-        ChangeImgDto changeImgDto = new ChangeImgDto(generateEmployeeProfileDto.getImgFile(), generateEmployeeProfileDto.getNickname());
+        if (generateEmployeeProfileDto.getImgFile() != null && !generateEmployeeProfileDto.getImgFile().isEmpty()) {
+            ChangeImgDto changeImgDto = new ChangeImgDto(generateEmployeeProfileDto.getImgFile(), generateEmployeeProfileDto.getNickname());
 
-        profileService.changePhoto(changeImgDto);
+            profileService.changePhoto(changeImgDto);
+        }
 
         redisService.deleteData("Refresh:" + generateEmployeeProfileDto.getNowNickname());
 
