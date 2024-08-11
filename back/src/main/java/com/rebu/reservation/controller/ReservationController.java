@@ -58,27 +58,4 @@ public class ReservationController {
         return ResponseEntity.ok(new ApiResponse<>("1R03", response));
     }
 
-    @GetMapping("/employees/{nickname}/period-schedule")
-    public ResponseEntity<?> readEmployeePeriodSchedule(@PathVariable String nickname,
-                                                        @RequestParam("start-date") LocalDate startDate,
-                                                        @RequestParam("end-date") LocalDate endDate) {
-        ReservationEmployeePeriodScheduleDto dto = reservationService.readEmployeePeriodSchedule(ReservationReadEmployeePeriodScheduleDto.builder()
-                .nickname(nickname)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build());
-        ReservationReadEmployeePeriodScheduleResponse response = ReservationReadEmployeePeriodScheduleResponse.from(dto);
-        return ResponseEntity.ok(new ApiResponse<>("1R04", response));
-    }
-
-    @GetMapping("/shops/{nickname}/daily-schedule")
-    public ResponseEntity<?> readEmployeesDailySchedule(@PathVariable String nickname, @RequestParam("date") LocalDate date) {
-        ReservationEmployeesDaliyScheduleDto dto = reservationService.readEmployeesDailySchedule(ReservationReadEmployeesDailyScheduleDto.builder()
-                .nickname(nickname)
-                .date(date)
-                .build());
-        ReservationEmployeesDaliyScheduleResponse response = ReservationEmployeesDaliyScheduleResponse.from(dto);
-        return ResponseEntity.ok(new ApiResponse<>("1R05", response));
-    }
-
 }

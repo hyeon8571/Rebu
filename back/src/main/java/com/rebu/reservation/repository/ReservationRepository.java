@@ -36,4 +36,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                    """)
     List<Reservation> findByEmployeeProfileAndStartDateTimeBetweenUsingFetchJoinMenu(Profile profile, LocalDate startDate, LocalDate endDate);
 
+    @Query(value = """
+                   SELECT r
+                   FROM Reservation r
+                   JOIN FETCH r.employeeProfile
+                   JOIN FETCH r.menu
+                   WHERE r.employeeProfile IN :profiles AND DATE(r.startDateTime) = :date
+                   """)
+    List<Reservation> findByProfileInAndDateUsingFetchJoinMenuAndEmployeeProfile(List<Profile> profiles, LocalDate date);
+
 }

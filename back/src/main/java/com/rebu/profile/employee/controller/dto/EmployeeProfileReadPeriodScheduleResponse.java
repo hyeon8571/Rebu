@@ -1,10 +1,10 @@
-package com.rebu.reservation.controller.dto;
+package com.rebu.profile.employee.controller.dto;
 
 import com.rebu.absence.dto.AbsenceDto;
 import com.rebu.common.util.ListUtils;
 import com.rebu.menu.dto.MenuDto;
+import com.rebu.profile.employee.dto.EmployeeProfilePeriodScheduleDto;
 import com.rebu.reservation.dto.ReservationDto;
-import com.rebu.reservation.dto.ReservationEmployeePeriodScheduleDto;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
 import com.rebu.workingInfo.enums.Days;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 @Getter
 @Builder
-public class ReservationReadEmployeePeriodScheduleResponse {
+public class EmployeeProfileReadPeriodScheduleResponse {
 
     private List<Absence> employeeAbsences;
 
@@ -76,8 +76,8 @@ public class ReservationReadEmployeePeriodScheduleResponse {
         }
     };
 
-    public static ReservationReadEmployeePeriodScheduleResponse from(ReservationEmployeePeriodScheduleDto dto){
-        return ReservationReadEmployeePeriodScheduleResponse.builder()
+    public static EmployeeProfileReadPeriodScheduleResponse from(EmployeeProfilePeriodScheduleDto dto){
+        return EmployeeProfileReadPeriodScheduleResponse.builder()
                 .employeeWorkingInfos(ListUtils.applyFunctionToElements(dto.getEmployeeWorkingInfos(), WorkingInfo::from))
                 .employeeAbsences(ListUtils.applyFunctionToElements(dto.getEmployeeAbsences(), Absence::from))
                 .shopWorkingInfos(ListUtils.applyFunctionToElements(dto.getShopWorkingInfos(), WorkingInfo::from))

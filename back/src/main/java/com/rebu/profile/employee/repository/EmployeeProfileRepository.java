@@ -1,9 +1,7 @@
 package com.rebu.profile.employee.repository;
 
 import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
-import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
 import com.rebu.profile.employee.entity.EmployeeProfile;
-import com.rebu.profile.entity.Profile;
 import com.rebu.profile.entity.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,4 +42,6 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Optional<GetEmployeeProfileResponse> getEmployeeProfileResponseByProfileId(Long profileId);
 
     List<EmployeeProfile> findByShop(Profile profile);
+
+
 }

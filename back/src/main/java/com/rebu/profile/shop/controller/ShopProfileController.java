@@ -5,10 +5,7 @@ import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
 import com.rebu.profile.shop.controller.dto.*;
-import com.rebu.profile.shop.dto.GetShopEmployeeDto;
-import com.rebu.profile.shop.dto.GetShopEmployeeResponse;
-import com.rebu.profile.shop.dto.GetShopProfileDto;
-import com.rebu.profile.shop.dto.GetShopProfileResponse;
+import com.rebu.profile.shop.dto.*;
 import com.rebu.profile.shop.exception.LicenseNumNotVerifiedException;
 import com.rebu.profile.shop.service.ShopProfileService;
 import com.rebu.security.dto.AuthProfileInfo;
@@ -19,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -89,6 +87,17 @@ public class ShopProfileController {
                                             @RequestBody InviteEmployeeRequest inviteEmployeeRequest) {
         shopProfileService.inviteEmployee(inviteEmployeeRequest.toDto(authProfileInfo.getNickname()));
         return ResponseEntity.ok(new ApiResponse<>("직원 초대 성공 코드", null));
+    }
+
+    @GetMapping("/{nickname}/daily-schedule")
+    public ResponseEntity<?> readShopProfileDailySchedule(@PathVariable String nickname,
+                                                          @RequestParam LocalDate date) {
+
+        ShopProfileDailyScheduleDto dto = shopProfileService.readShopProfileDailySchedule(ShopProfileReadDailyScheduleDto.builder()
+                        .nickname(nickname)
+                        .date(date)
+                        .build());
+        return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopProfileReadDailyScheduleResponse.from(dto)));
     }
 
 }

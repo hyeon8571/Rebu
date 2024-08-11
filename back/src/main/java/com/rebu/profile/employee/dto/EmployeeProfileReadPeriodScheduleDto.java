@@ -1,4 +1,4 @@
-package com.rebu.reservation.dto;
+package com.rebu.profile.employee.dto;
 
 import com.rebu.common.validation.annotation.NotNull;
 import com.rebu.profile.validation.annotation.Nickname;
@@ -9,9 +9,11 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class ReservationReadEmployeesDailyScheduleDto {
+public class EmployeeProfileReadPeriodScheduleDto {
     @Nickname
     private String nickname;
     @NotNull
-    private LocalDate date;
+    private LocalDate startDate;
+    @NotNull
+    private LocalDate endDate;
 }

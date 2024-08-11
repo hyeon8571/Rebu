@@ -25,9 +25,7 @@ import com.rebu.reservation.exception.ReservationStatusMismatchException;
 import com.rebu.reservation.exception.ReservationStatusNotChangeableException;
 import com.rebu.reservation.repository.ReservationRepository;
 import com.rebu.workingInfo.entity.WorkingInfo;
-import com.rebu.workingInfo.enums.Days;
 import com.rebu.workingInfo.repository.WorkingInfoRepository;
-import com.rebu.workingInfo.validation.annotation.Day;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -122,28 +120,6 @@ public class ReservationService {
         Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
         List<Reservation> reservations = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
         return ListUtils.applyFunctionToElements(reservations, ReservationByProfileDto::from);
-    }
-
-    @Transactional(readOnly = true)
-    public ReservationEmployeePeriodScheduleDto readEmployeePeriodSchedule(ReservationReadEmployeePeriodScheduleDto dto) {
-        EmployeeProfile profile = employeeProfileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
-        List<Reservation> reservations = reservationRepository.findByEmployeeProfileAndStartDateTimeBetweenUsingFetchJoinMenu(profile, dto.getStartDate(), dto.getEndDate());
-        List<Menu> menus = ListUtils.applyFunctionToElements(reservations, Reservation::getMenu);
-        List<Absence> employeeAbsences =  absenceRepository.findByProfileAndDateRange(profile, dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
-        List<Absence> shopAbsences =  absenceRepository.findByProfileAndDateRange(profile.getShop(), dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
-        List<WorkingInfo> employeeWorkingInfos = workingInfoRepository.findByProfile(profile);
-        List<WorkingInfo> shopWorkingInfos = workingInfoRepository.findByProfile(profile.getShop());
-        return ReservationEmployeePeriodScheduleDto.from(reservations, menus, employeeAbsences, employeeWorkingInfos, shopAbsences, shopWorkingInfos);
-    }
-
-    @Transactional(readOnly = true)
-    public ReservationEmployeesDaliyScheduleDto readEmployeesDailySchedule(ReservationReadEmployeesDailyScheduleDto dto) {
-        ShopProfile profile = shopProfileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
-        WorkingInfo shopWorkingInfo = workingInfoRepository.findByProfileAndDays(profile, Days.values()[dto.getDate().getDayOfWeek().ordinal()+1]);
-        List<Absence> shopAbsences =  absenceRepository.findByProfileAndDate(profile, dto.getDate());
-
-        List<EmployeeProfile> employeeProfiles = employeeProfileRepository.findByShop(profile);
-
     }
 
     private void checkModifyReservationStatusToAccepted(Reservation reservation) {

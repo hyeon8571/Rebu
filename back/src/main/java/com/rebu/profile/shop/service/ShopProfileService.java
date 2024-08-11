@@ -1,13 +1,20 @@
 package com.rebu.profile.shop.service;
 
+import com.rebu.absence.dto.AbsenceDto;
+import com.rebu.absence.entity.Absence;
+import com.rebu.absence.repository.AbsenceRepository;
 import com.rebu.alarm.service.AlarmService;
 import com.rebu.common.service.RedisService;
+import com.rebu.common.util.ListUtils;
 import com.rebu.feed.review.repository.ReviewRepository;
 import com.rebu.follow.repository.FollowRepository;
 import com.rebu.member.entity.Member;
 import com.rebu.member.exception.MemberNotFoundException;
 import com.rebu.member.repository.MemberRepository;
+import com.rebu.menu.dto.MenuDto;
 import com.rebu.profile.dto.ChangeImgDto;
+import com.rebu.profile.employee.dto.EmployeeProfileDailyScheduleDto;
+import com.rebu.profile.employee.dto.EmployeeProfileDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.employee.repository.EmployeeProfileRepository;
 import com.rebu.profile.entity.Profile;
@@ -15,11 +22,17 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.service.ProfileService;
-import com.rebu.profile.shop.controller.dto.InviteEmployeeRequest;
 import com.rebu.profile.shop.dto.*;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.profile.shop.repository.ShopProfileRepository;
+import com.rebu.reservation.dto.ReservationDto;
+import com.rebu.reservation.entity.Reservation;
+import com.rebu.reservation.repository.ReservationRepository;
 import com.rebu.security.util.JWTUtil;
+import com.rebu.workingInfo.dto.WorkingInfoDto;
+import com.rebu.workingInfo.entity.WorkingInfo;
+import com.rebu.workingInfo.enums.Days;
+import com.rebu.workingInfo.repository.WorkingInfoRepository;
 import com.rebu.workingInfo.service.WorkingInfoService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +41,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +60,9 @@ public class ShopProfileService {
     private final FollowRepository followRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
     private final AlarmService alarmService;
+    private final WorkingInfoRepository workingInfoRepository;
+    private final AbsenceRepository absenceRepository;
+    private final ReservationRepository reservationRepository;
 
     @Transactional
     public void generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
@@ -146,6 +164,49 @@ public class ShopProfileService {
         alarmService.alarmInviteEmployee(shopProfile, employeeProfile, inviteEmployeeDto.getRole());
     }
 
+    @Transactional(readOnly = true)
+    public ShopProfileDailyScheduleDto readShopProfileDailySchedule(ShopProfileReadDailyScheduleDto dto) {
+        ShopProfile shop = shopProfileRepository.findByNicknameFetch(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
+        List<EmployeeProfile> employees = shop.getEmployeeProfiles();
+        Days day = Days.values()[dto.getDate().getDayOfWeek().getValue()-1];
+        WorkingInfo shopWorkingInfo = workingInfoRepository.findByProfileAndDay(shop, day);
+        List<Absence> shopAbsences = absenceRepository.findByProfileAndDate(shop, dto.getDate());
+
+        List<Profile> profiles = new ArrayList<>(employees);
+        List<WorkingInfo> employeesWorkingInfo = workingInfoRepository.findByProfileInAndDay(profiles, day);
+        List<Absence> employeesAbsences = absenceRepository.findByProfileInAndDate(profiles, dto.getDate());
+        List<Reservation> employeesReservations = reservationRepository.findByProfileInAndDateUsingFetchJoinMenuAndEmployeeProfile(profiles, dto.getDate());
+        Map<Profile, EmployeeProfileDailyScheduleDto> map = new HashMap<>();
+
+        for(EmployeeProfile profile : employees){
+            EmployeeProfileDailyScheduleDto obj = new EmployeeProfileDailyScheduleDto();
+            obj.setEmployeeProfile(EmployeeProfileDto.from(profile));
+            map.put(profile, obj);
+        }
+
+        for(WorkingInfo workingInfo : employeesWorkingInfo){
+            EmployeeProfileDailyScheduleDto obj = map.get(workingInfo.getProfile());
+            obj.setWorkingInfo(WorkingInfoDto.from(workingInfo));
+        }
+
+        for(Absence absence : employeesAbsences){
+            EmployeeProfileDailyScheduleDto obj = map.get(absence.getProfile());
+            obj.getAbsences().add(AbsenceDto.from(absence));
+        }
+
+        for(Reservation reservation : employeesReservations){
+            EmployeeProfileDailyScheduleDto obj = map.get(reservation.getProfile());
+            obj.getReservations().add(ReservationDto.from(reservation));
+            obj.getMenus().add(MenuDto.from(reservation.getMenu()));
+        }
+
+        return ShopProfileDailyScheduleDto.builder()
+                .shopWorkingInfo(WorkingInfoDto.from(shopWorkingInfo))
+                .shopAbsences(ListUtils.applyFunctionToElements(shopAbsences, AbsenceDto::from))
+                .employeesProfileDailySchedule(new ArrayList<>(map.values()))
+                .build();
+    }
+
     private void resetToken(String nickname, String type, HttpServletResponse response) {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
         String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
@@ -163,4 +224,5 @@ public class ShopProfileService {
 
         return cookie;
     }
+
 }
