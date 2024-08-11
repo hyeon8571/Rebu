@@ -5,16 +5,12 @@ import { useRef, useState, useEffect } from "react";
 import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
-import { useNavigate } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 15px;
   padding-left: 1rem;
   padding-right: 1rem;
   height: 100%;
-  width: 100%;
 `;
 
 const Grid = styled.div`
@@ -33,8 +29,11 @@ const Card = styled.div`
 const PhotoContainer = styled.img`
   @media (max-width: 768px) {
     width: 80%;
+    width: 125px;
+    height: 125px;
   }
-  width: 50%;
+  width: 200px;
+  height: 200px;
   border-radius: 0.3rem;
 `;
 
@@ -105,77 +104,26 @@ export default function MenuDisplay() {
   const [isSettingMode, setIsSettingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
   const navigation = useNavigate();
 
-  const MockData = [
-    {
-      id: 1,
-      nickname: "yuseon",
-      img: Img,
-      title: "시그니처 세팅펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h 30",
-      cost: "110,000",
-    },
-    {
-      id: 2,
-      nickname: "yuseong",
-      img: Img,
-      title: "시그니처 S컬펌",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "3h",
-      cost: "100,000",
-    },
-    {
-      id: 3,
-      nickname: "jinseo",
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 4,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 5,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 6,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-    {
-      id: 7,
-      img: Img,
-      title: "밀크브라운 염색",
-      description:
-        "프리미엄 세팅펌 기계로 손상은 최대한 줄이고 자연스러운 펌이 가능합니다.",
-      duration: "2h",
-      cost: "80,000",
-    },
-  ];
+  const location = useLocation();
+  const { nickname } = location.state;
+
+  const BASE_URL = "https://www.rebu.kro.kr";
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/menus?employeeNickName=` + nickname, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
+      })
+      .then((response) => {
+        console.log(response.data.body);
+        setMenuData(response.data.body);
+      });
+  }, [nickname]);
 
   function handleSettingMode() {
     if (isSettingMode) {
@@ -257,7 +205,9 @@ export default function MenuDisplay() {
         </ModalContentWrapper>
       );
     } else if (isEditMode) {
-      navigation("/addMenu");
+      navigation("/addMenu", {
+        state: { categories: null, originMenu: item },
+      });
     }
     setIsModalOpen(true);
   }
@@ -270,12 +220,11 @@ export default function MenuDisplay() {
         </ModalNoBackNoExit>
       </ModalPortal>
       <Wrapper>
-        <IconWrapper>
+        <IconWrapper onClick={handleSettingMode}>
           <IoSettings
             style={{ paddingRight: "12px" }}
             size={24}
             fill={isSettingMode ? "#999999" : "#000"}
-            onClick={handleSettingMode}
           ></IoSettings>
         </IconWrapper>
         {!isSettingMode || isDeleteMode || isEditMode ? (
@@ -285,7 +234,9 @@ export default function MenuDisplay() {
             <ButtonSmall
               button={{
                 id: 1,
-                onClick: handleAddMenuModalOpen,
+                onClick: () => {
+                  navigation("/addmenu");
+                },
                 highlight: true,
                 title: "메뉴 추가",
               }}
@@ -311,12 +262,6 @@ export default function MenuDisplay() {
               }}
             ></ButtonSmall>
           </ButtonWrapper>
-        )}
-        {addMenuModalOpen && (
-          <AddMenuModal
-            addMenuModalOpen={addMenuModalOpen}
-            closeModal={closeModal}
-          />
         )}
         {isDeleteMode && (
           <InsturctionText>삭제할 항목을 클릭해주세요</InsturctionText>

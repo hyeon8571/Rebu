@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import VisitedCard from "../components/review/VisitedCard";
 import Header from "../components/common/Header";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Wrapper = styled.div`
   @media (max-width: 768px) {
@@ -27,8 +29,12 @@ const PageTitleContainer = styled.div`
   }
 `;
 
+const BASE_URL = "https://www.rebu.kro.kr";
+
 export default function VisitedPage() {
   const [data, setData] = useState([]);
+
+  const { nickname, type, isLogin } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -37,11 +43,22 @@ export default function VisitedPage() {
   }, []);
 
   useEffect(() => {
-    fetch("/mockdata/visitedData.json")
+    console.log(nickname);
+    axios
+      .get(
+        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=20000101&end-date=20251231`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Access: localStorage.getItem("access"),
+          },
+        }
+      )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        console.log(response);
         return response.json();
       })
       .then((jsondata) => {
