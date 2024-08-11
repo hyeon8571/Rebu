@@ -41,7 +41,7 @@ public class MenuController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readAll(@RequestParam(value = "employeeNickName", required = false) String employeeNickName) {
+    public ResponseEntity<?> readAll(@RequestParam(value = "employeeNickname", required = false) String employeeNickName) {
         List<MenuReadDto> menuReadsDtos = menuService.readAll(employeeNickName);
         return new ResponseEntity<>(new ApiResponse<>("1J04",menuReadsDtos), HttpStatus.OK);
     }
@@ -66,9 +66,9 @@ public class MenuController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<?> categoryRead(@RequestParam(value = "employeeNickname", required = false) String employeeNickname) {
-        MenuCategoryReadDto menuCategoryReadDto =menuService.category(employeeNickname);
-        return new ResponseEntity<>(new ApiResponse<>("1J02", menuCategoryReadDto), HttpStatus.OK);
+    public ResponseEntity<?> categoryRead(@RequestParam(value = "shopNickname", required = false) String shopNickname) {
+        MenuCategoryReadDto menuCategoryReadDto =menuService.category(shopNickname);
+        return new ResponseEntity<>(new ApiResponse<>("1J05", menuCategoryReadDto), HttpStatus.OK);
     }
 
 }

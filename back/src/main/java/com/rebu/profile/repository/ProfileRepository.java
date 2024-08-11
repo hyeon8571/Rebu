@@ -8,7 +8,10 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long>, ProfileCustomRepository {
@@ -53,5 +56,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     """)
     Slice<Profile> searchProfileByKeyword(String keyword, Pageable pageable);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Profile p SET p.recentTime = :currentTime WHERE p.id = :profileId")
+    void updateRecentTime(@Param("profileId") Long profileId, @Param("currentTime") LocalDateTime currentTime);
 }
-

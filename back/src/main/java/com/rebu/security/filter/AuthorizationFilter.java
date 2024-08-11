@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
@@ -54,7 +55,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
- 
+
+        profileRepository.updateRecentTime(profile.getId(), LocalDateTime.now());
+
         AuthProfileInfo authProfileInfo = new AuthProfileInfo(profile);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(authProfileInfo, null, authProfileInfo.getAuthorities());

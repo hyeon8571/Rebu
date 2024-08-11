@@ -145,7 +145,7 @@ public class ShopProfileService {
                 .orElseThrow(ProfileNotFoundException::new);
 
         if (targetProfile.getNickname().equals(getShopProfileDto.getNickname())) {
-            getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.ONW);
+            getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.OWN);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
             getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.FOLLOWING);
             getShopProfileResponse.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
