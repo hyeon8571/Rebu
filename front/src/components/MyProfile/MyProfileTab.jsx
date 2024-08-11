@@ -88,7 +88,7 @@ const Tab = ({ tabTitle, currentTab, onTabChange }) => {
           </li>
         ))}
       </TabMenu>
-      <Desc>{tabTitle[currentTab].content}</Desc>
+      <Desc>{tabTitle[currentTab]?.content}</Desc>
     </>
   );
 };

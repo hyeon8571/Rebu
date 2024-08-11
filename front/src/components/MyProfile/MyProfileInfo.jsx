@@ -122,9 +122,6 @@ const InfoComponent = ({ currentUser, loginUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
-  const { profile, nickname, type, isLogin } = useSelector(
-    (state) => state.auth
-  );
   
 
   useEffect(() => {
@@ -149,7 +146,7 @@ const InfoComponent = ({ currentUser, loginUser }) => {
     try {
       const access = localStorage.getItem('access');
       // 백엔드 API 엔드포인트 주소
-      const url = `${BASE_URL}/api/profiles/${nickname}/introduction`;
+      const url = `${BASE_URL}/api/profiles/${currentUser.nickname}/introduction`;
 
       // 업데이트할 데이터
       // const updatedData = {
@@ -158,7 +155,7 @@ const InfoComponent = ({ currentUser, loginUser }) => {
 
       const headers = {
         "Content-Type": "application/json",
-        Access : access
+        "access" : access
       }
 
       // PATCH 요청 보내기
@@ -183,7 +180,7 @@ const InfoComponent = ({ currentUser, loginUser }) => {
       </NameInfo>
       <IntroduceInfo>
         <Introduction>{newIntroduce}</Introduction> &nbsp;
-        {currentUser.nickname === loginUser.nickname ? (
+        {currentUser.nickname === loginUser ? (
           <ImgEdit onClick={openModal} />
         ) : ("")}
       </IntroduceInfo>

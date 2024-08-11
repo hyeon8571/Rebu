@@ -119,7 +119,7 @@ const Tab = ({ tabTitle, currentTab, onTabChange, tabName, onSubTabChange, activ
         ))}
       </TabMenu>
       <Desc>
-        <TabTitle>{tabTitle[currentTab].content}</TabTitle>
+        <TabTitle>{tabTitle[currentTab]?.content}</TabTitle>
         {currentTab === 2 && (
           <TabContainer>
             <Tabs active={activeSubTab === tabName[0]} onClick={() => handleTabClick(tabName[0])}>예약현황</Tabs>

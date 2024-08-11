@@ -316,13 +316,14 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=0&size=10`, {
+    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=${page}&size=10`, {
       headers : {
         "Content-Type": "application/json",
       }
-    }, {feedId : feedId})
+    })
     .then(res => {
       console.log(res.data.body);
       setComment(res.data.body);
@@ -330,7 +331,9 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
     .catch(err => {
       console.log(err + '댓글을 찾지 못했습니다');
     })
-  });
+  }, [page]);
+
+
 
 
   useEffect(() => {
@@ -487,7 +490,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
               </ProfileDetails>
             </div>
             <div style={{ position: "relative" }}>
-              {item.nickname === loginUser.nickname ? (
+              {item.nickname === loginUser ? (
                 <IconBox onClick={() => handleMoreOptionToggle(index)}>
                   <FiMoreVertical />
                 </IconBox>
@@ -575,7 +578,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
           </PostActions>
           <Likes>좋아요 {item.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.nickname === loginUser.nickname ? updatedPost.content : item.content}
+            {updatedPost && modifyPostId === index && item.nickname === loginUser ? updatedPost.content : item.content}
           </PostDescription>
           <HashtagContainer>
             {item.hashTags.map((hashtag) => (

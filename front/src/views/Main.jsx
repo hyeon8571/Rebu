@@ -25,7 +25,7 @@ function Main({ theme, toggleTheme }) {
   const [alarmdata, setAlarmdata] = useState([]);
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch("/mockdata/alarmdata.json")
