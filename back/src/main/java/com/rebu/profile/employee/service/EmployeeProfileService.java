@@ -73,7 +73,7 @@ public class EmployeeProfileService {
         employeeProfile.changeWorkingName(changeWorkingNameDto.getWorkingName());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public GetEmployeeProfileResponse getEmployeeProfile(GetEmployeeProfileDto getEmployeeProfileDto) {
         EmployeeProfile targetProfile = employeeProfileRepository.findByNickname(getEmployeeProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);

@@ -115,7 +115,7 @@ public class ShopProfileService {
         return responseList;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public GetShopProfileResponse getShopProfile(GetShopProfileDto getShopProfileDto) {
         ShopProfile targetProfile = shopProfileRepository.findByNickname(getShopProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
