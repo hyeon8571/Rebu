@@ -30,4 +30,13 @@ public interface WorkingInfoRepository extends JpaRepository<WorkingInfo, Workin
     ORDER BY wi.profile.id ASC
     """)
     List<WorkingInfo> findByProfileInAndDay(List<Profile> profiles, Days day);
+
+    @Query("""
+    SELECT wi
+    FROM WorkingInfo wi
+    JOIN FETCH wi.profile
+    WHERE wi.profile IN :profiles
+    ORDER BY wi.profile.id ASC
+    """)
+    List<WorkingInfo> findByProfileIn(List<Profile> profiles);
 }

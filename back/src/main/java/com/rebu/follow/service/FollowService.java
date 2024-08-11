@@ -1,5 +1,6 @@
 package com.rebu.follow.service;
 
+import com.rebu.alarm.service.AlarmService;
 import com.rebu.follow.dto.*;
 import com.rebu.follow.entity.Follow;
 import com.rebu.follow.exception.AlreadyFollowingException;
@@ -22,6 +23,7 @@ public class FollowService {
 
     private final ProfileRepository profileRepository;
     private final FollowRepository followRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void follow(FollowDto followDto) {
@@ -39,7 +41,9 @@ public class FollowService {
             throw new AlreadyFollowingException();
         }
 
-        followRepository.save(followDto.toEntity(sender, receiver));
+        Follow follow = followRepository.save(followDto.toEntity(sender, receiver));
+
+        alarmService.alarmFollow(follow, receiver, sender);
     }
 
     @Transactional

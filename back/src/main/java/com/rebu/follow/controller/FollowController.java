@@ -31,14 +31,14 @@ public class FollowController {
     public ResponseEntity<?> follow(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                     @Valid @RequestBody FollowRequest followRequest) {
         followService.follow(followRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("팔로우 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1O00", null));
     }
 
     @DeleteMapping("/{followId}")
     public ResponseEntity<?> delete(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                     @PathVariable Long followId) {
         followService.delete(new FollowDeleteDto(followId, authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("팔로우 삭제 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1O01", null));
     }
 
     @GetMapping("/{nickname}/followings")
@@ -46,7 +46,7 @@ public class FollowController {
                                            @PathVariable String nickname,
                                            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Slice<GetFollowingResponse> followings = followService.getFollowings(new GetFollowingsTargetDto(authProfileInfo.getNickname(), nickname, pageable));
-        return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followings));
+        return ResponseEntity.ok(new ApiResponse<>("1O02", followings));
     }
 
     @GetMapping("/{nickname}/followers")
@@ -54,6 +54,6 @@ public class FollowController {
                                           @PathVariable String nickname,
                                           @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Slice<GetFollowerResponse> followers = followService.getFollowers(new GetFollowersTargetDto(authProfileInfo.getNickname(), nickname, pageable));
-        return ResponseEntity.ok(new ApiResponse<>("팔로워 조회 성공 코드", followers));
+        return ResponseEntity.ok(new ApiResponse<>("1O03", followers));
     }
 }

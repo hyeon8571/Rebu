@@ -90,14 +90,25 @@ public class ShopProfileController {
     }
 
     @GetMapping("/{nickname}/daily-schedule")
-    public ResponseEntity<?> readShopProfileDailySchedule(@PathVariable String nickname,
+    public ResponseEntity<?> readShopDailySchedule(@PathVariable String nickname,
                                                           @RequestParam LocalDate date) {
-
-        ShopProfileDailyScheduleDto dto = shopProfileService.readShopProfileDailySchedule(ShopProfileReadDailyScheduleDto.builder()
+        ShopDailyScheduleWithEmployeesDailyScheduleDto dto = shopProfileService.readShopDailySchedule(ShopReadDailyScheduleDto.builder()
                         .nickname(nickname)
                         .date(date)
                         .build());
-        return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopProfileReadDailyScheduleResponse.from(dto)));
+        return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopReadDailyScheduleResponse.from(dto)));
+    }
+
+    @GetMapping("/{nickname}/period-schedule")
+    public ResponseEntity<?> readShopPeriodSchedule(@PathVariable String nickname,
+                                                           @RequestParam("start-date") LocalDate startDate,
+                                                           @RequestParam("end-date") LocalDate endDate) {
+        ShopPeriodScheduleWithEmployeesPeriodScheduleDto dto = shopProfileService.readShopPeriodSchedule(ShopReadPeriodScheduleDto.builder()
+                .nickname(nickname)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build());
+        return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopReadPeriodScheduleResponse.from(dto)));
     }
 
 }

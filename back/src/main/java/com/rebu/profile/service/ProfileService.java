@@ -166,7 +166,7 @@ public class ProfileService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public GetProfileResponse getProfile(GetProfileDto getProfileDto) {
         Profile targetProfile = profileRepository.findByNickname(getProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);

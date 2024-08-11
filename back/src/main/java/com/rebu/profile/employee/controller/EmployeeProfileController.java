@@ -4,7 +4,7 @@ import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
-import com.rebu.profile.employee.controller.dto.EmployeeProfileReadPeriodScheduleResponse;
+import com.rebu.profile.employee.controller.dto.EmployeeReadPeriodScheduleResponse;
 import com.rebu.profile.employee.controller.dto.GenerateEmployeeProfileRequest;
 import com.rebu.profile.employee.dto.*;
 import com.rebu.profile.employee.service.EmployeeProfileService;
@@ -72,12 +72,12 @@ public class EmployeeProfileController {
     public ResponseEntity<?> readEmployeePeriodSchedule(@PathVariable String nickname,
                                                         @RequestParam("start-date") LocalDate startDate,
                                                         @RequestParam("end-date") LocalDate endDate) {
-        EmployeeProfilePeriodScheduleDto dto = employeeProfileService.readEmployeeProfilePeriodSchedule(EmployeeProfileReadPeriodScheduleDto.builder()
+        EmployeePeriodScheduleWithShopPeriodScheduleDto dto = employeeProfileService.readEmployeePeriodSchedule(EmployeeReadPeriodScheduleDto.builder()
                 .nickname(nickname)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build());
-        EmployeeProfileReadPeriodScheduleResponse response = EmployeeProfileReadPeriodScheduleResponse.from(dto);
+        EmployeeReadPeriodScheduleResponse response = EmployeeReadPeriodScheduleResponse.from(dto);
         return ResponseEntity.ok(new ApiResponse<>("1R04", response));
     }
 }

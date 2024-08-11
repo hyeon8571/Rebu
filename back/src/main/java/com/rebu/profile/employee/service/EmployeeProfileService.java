@@ -20,6 +20,7 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.service.ProfileService;
+import com.rebu.profile.shop.dto.ShopPeriodScheduleDto;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.reservation.dto.ReservationDto;
@@ -90,7 +91,7 @@ public class EmployeeProfileService {
         employeeProfile.changeWorkingName(changeWorkingNameDto.getWorkingName());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public GetEmployeeProfileResponse getEmployeeProfile(GetEmployeeProfileDto getEmployeeProfileDto) {
         EmployeeProfile targetProfile = employeeProfileRepository.findByNickname(getEmployeeProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -127,29 +128,34 @@ public class EmployeeProfileService {
     }
 
     @Transactional(readOnly = true)
-    public EmployeeProfilePeriodScheduleDto readEmployeeProfilePeriodSchedule(EmployeeProfileReadPeriodScheduleDto dto) {
-        EmployeeProfile profile = employeeProfileRepository.findByNicknameUsingFetchJoinShop(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
+    public EmployeePeriodScheduleWithShopPeriodScheduleDto readEmployeePeriodSchedule(EmployeeReadPeriodScheduleDto dto) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findByNicknameUsingFetchJoinShop(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
 
-        List<Reservation> reservations = reservationRepository.findByEmployeeProfileAndStartDateTimeBetweenUsingFetchJoinMenu(profile, dto.getStartDate(), dto.getEndDate());
+        List<Absence> shopAbsences =  absenceRepository.findByProfileAndDateRange(employeeProfile.getShop(), dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
+        List<WorkingInfo> shopWorkingInfos = workingInfoRepository.findByProfile(employeeProfile.getShop());
+
+        List<Absence> employeeAbsences =  absenceRepository.findByProfileAndDateRange(employeeProfile, dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
+        List<WorkingInfo> employeeWorkingInfos = workingInfoRepository.findByProfile(employeeProfile);
+
+        List<Reservation> reservations = reservationRepository.findByEmployeeProfileAndStartDateTimeBetweenUsingFetchJoinMenu(employeeProfile, dto.getStartDate(), dto.getEndDate());
         List<Menu> menus = ListUtils.applyFunctionToElements(reservations, Reservation::getMenu);
 
-        List<Absence> employeeAbsences =  absenceRepository.findByProfileAndDateRange(profile, dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
-        List<Absence> shopAbsences =  absenceRepository.findByProfileAndDateRange(profile.getShop(), dto.getStartDate().atStartOfDay(), dto.getEndDate().atStartOfDay());
-
-        List<WorkingInfo> employeeWorkingInfos = workingInfoRepository.findByProfile(profile);
-        List<WorkingInfo> shopWorkingInfos = workingInfoRepository.findByProfile(profile.getShop());
-
-        return EmployeeProfilePeriodScheduleDto.builder()
-                .reservationInterval(profile.getShop().getReservationInterval())
+        EmployeePeriodScheduleDto employeeDto = EmployeePeriodScheduleDto.builder()
+                .employeeProfile(EmployeeProfileDto.from(employeeProfile))
+                .workingInfos(ListUtils.applyFunctionToElements(employeeWorkingInfos, WorkingInfoDto::from))
+                .absences(ListUtils.applyFunctionToElements(employeeAbsences, AbsenceDto::from))
                 .reservations(ListUtils.applyFunctionToElements(reservations, ReservationDto::from))
                 .menus(ListUtils.applyFunctionToElements(menus, MenuDto::from))
-                .employeeAbsences(ListUtils.applyFunctionToElements(employeeAbsences, AbsenceDto::from))
-                .employeeWorkingInfos(ListUtils.applyFunctionToElements(employeeWorkingInfos, WorkingInfoDto::from))
-                .shopAbsences(ListUtils.applyFunctionToElements(shopAbsences, AbsenceDto::from))
-                .shopWorkingInfos(ListUtils.applyFunctionToElements(shopWorkingInfos, WorkingInfoDto::from))
                 .build();
-    }
 
+        ShopPeriodScheduleDto shopDto = ShopPeriodScheduleDto.builder()
+                .reservationInterval(employeeProfile.getShop().getReservationInterval())
+                .workingInfos(ListUtils.applyFunctionToElements(shopWorkingInfos, WorkingInfoDto::from))
+                .absences(ListUtils.applyFunctionToElements(shopAbsences, AbsenceDto::from))
+                .build();
+
+        return EmployeePeriodScheduleWithShopPeriodScheduleDto.of(shopDto, employeeDto);
+    }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
