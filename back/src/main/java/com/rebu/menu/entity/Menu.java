@@ -1,6 +1,6 @@
 package com.rebu.menu.entity;
 
-import com.rebu.member.entity.Member;
+import com.rebu.menu.dto.MenuUpdateDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +36,14 @@ public class Menu {
     private Integer timeTaken;
 
     private String category;
+
+    public void updateMenu(MenuUpdateDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.price = dto.getPrice();
+        this.timeTaken = dto.getTimeTaken();
+        this.category = dto.getCategory();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -31,19 +31,19 @@ public class MenuController {
         @Valid @ModelAttribute MenuCreateRequest menuCreateRequest) {
         String nickName = authProfileInfo.getNickname();
         menuService.create(menuCreateRequest.toDto(nickName));
-        return new ResponseEntity<> (new ApiResponse("1J00",null), HttpStatus.OK);
+        return new ResponseEntity<> (new ApiResponse<>("1J00",null), HttpStatus.OK);
     }
 
     @GetMapping("/{menuId}")
     public ResponseEntity<?> read(@PathVariable Long menuId) {
         MenuReadDto dto = menuService.read(menuId);
-        return new ResponseEntity<>(new ApiResponse("1J03",dto), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("1J01",dto), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<?> readAll(@RequestParam(value = "employeeNickName", required = false) String employeeNickName) {
+    public ResponseEntity<?> readAll(@RequestParam(value = "employeeNickname", required = false) String employeeNickName) {
         List<MenuReadDto> menuReadsDtos = menuService.readAll(employeeNickName);
-        return new ResponseEntity<>(new ApiResponse("1J04",menuReadsDtos), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("1J02",menuReadsDtos), HttpStatus.OK);
     }
 
     @PatchMapping("/{menuId}")
@@ -53,7 +53,7 @@ public class MenuController {
         @PathVariable Long menuId) {
         String nickName = authProfileInfo.getNickname();
         menuService.update(menuUpdateRequest.toDto(nickName, menuId));
-        return new ResponseEntity<>(new ApiResponse("1J01",null), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("1J03",null), HttpStatus.OK);
     }
 
     @DeleteMapping("/{menuId}")
@@ -62,13 +62,13 @@ public class MenuController {
         @PathVariable Long menuId) {
         String nickName = authProfileInfo.getNickname();
         menuService.delete(MenuDeleteDto.builder().menuId(menuId).nickname(nickName).build());
-        return new ResponseEntity<>(new ApiResponse("1J02",null), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("1J04",null), HttpStatus.OK);
     }
 
     @GetMapping("/category")
-    public ResponseEntity<?> categoryRead(@RequestParam(value = "employeeNickname", required = false) String employeeNickname) {
-        MenuCategoryReadDto menuCategoryReadDto =menuService.category(employeeNickname);
-        return new ResponseEntity<>(new ApiResponse<>("1J02", menuCategoryReadDto), HttpStatus.OK);
+    public ResponseEntity<?> categoryRead(@RequestParam(value = "shopNickname", required = false) String shopNickname) {
+        MenuCategoryReadDto menuCategoryReadDto =menuService.category(shopNickname);
+        return new ResponseEntity<>(new ApiResponse<>("1J05", menuCategoryReadDto), HttpStatus.OK);
     }
 
 }
