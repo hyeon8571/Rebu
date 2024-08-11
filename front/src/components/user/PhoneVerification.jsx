@@ -4,7 +4,8 @@ import { BASE_URL } from "../../views/Signup";
 import styled, { css } from "styled-components";
 import ButtonLarge from "../common/ButtonDisabled";
 import { Msg } from "./SignupForm2";
-// import { ButtonStyles } from "../common/ButtonLogin";
+
+import { ButtonStyles } from "../common/ButtonLogin";
 
 const Div = styled.div`
   display: flex;
@@ -191,6 +192,8 @@ const PhoneVerification = ({
             value={phone}
             onChange={handlePhoneChange}
             placeholder="전화번호를 입력하세요"
+            pattern="\d*" // Allow only digits
+            maxLength="13" // Max length for formatted phone number
           />
         </div>
         {errors.phone && <ErrorText>{errors.phone}</ErrorText>}
@@ -228,6 +231,7 @@ const PhoneVerification = ({
                       value={phoneCode}
                       onChange={phoneVeriCodeChange}
                       placeholder="000000"
+                      maxLength="6" // Max length for verification code
                     />
                     <Timer>
                       {timeRemaining > 0

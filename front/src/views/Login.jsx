@@ -1,11 +1,8 @@
+// Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch } from "react-redux";
-import { login } from "../features/auth/authSlice";
-import { BASE_URL } from "./Signup";
-// import { loginUser } from "../features/auth/authSlice"; // Assuming loginUser is used to dispatch login actions
-//css
+import { login, alarmsAgreement } from "../features/auth/authSlice";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -36,25 +33,33 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch(); //redux
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    // dispatch(login(loginParam))
-    e.preventDefault(); //0ㅅ0
-    const result = await dispatch(login(email, password));
-    if (result.success) {
-      alert("로그인 성공");
-      navigate("/error", { replace: true });
-    } else {
-      alert(result.error);
+    e.preventDefault();
+    // setError(""); // 에러 상태 초기화
+
+    try {
+      const loginResult = await dispatch(login(email, password));
+
+      if (loginResult.success) {
+        // 로그인 성공
+        console.log("로그인 성공", loginResult);
+
+        navigate("/main", { replace: true });
+      } else {
+        // 로그인 실패
+        setError(loginResult.error || "로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("로그인 과정에서 오류 발생:", error);
+      setError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
   return (
     <Container className="page">
-      {/* <ButtonBack /> */}
-
       <LoginTitle text="Hello Again!" description="Sign in to your account" />
       <form onSubmit={handleLogin}>
         <div className="emailBox">

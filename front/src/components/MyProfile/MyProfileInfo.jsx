@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { GoShareAndroid } from "react-icons/go";
 import { BiEditAlt } from "react-icons/bi";
 
 const InfoBox = styled.div`
@@ -16,13 +15,6 @@ const NameInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const ImgShare = styled(GoShareAndroid)`
-  width: 20px;
-  height: 20px;
-  margin-top: 5px;
-  cursor: pointer;
 `;
 
 const ImgEdit = styled(BiEditAlt)`
@@ -120,6 +112,7 @@ const CloseButton = styled.button`
   }
 `;
 
+
 const InfoComponent = ({ currentUser, loginUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
@@ -153,7 +146,6 @@ const InfoComponent = ({ currentUser, loginUser }) => {
     <InfoBox>
       <NameInfo>
         <Name>{currentUser.nickname}</Name>
-        <ImgShare />
       </NameInfo>
       <IntroduceInfo>
         <Introduction>{newIntroduce}</Introduction> &nbsp;
