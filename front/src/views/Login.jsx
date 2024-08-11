@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../features/auth/authSlice";
+import { login, alarmsAgreement } from "../features/auth/authSlice";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
 import ButtonLogin from "../components/common/ButtonLogin";
@@ -38,14 +38,23 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const result = await dispatch(login(email, password));
+    // setError(""); // 에러 상태 초기화
 
-    if (result.success) {
-      alert("로그인 성공");
+    try {
+      const loginResult = await dispatch(login(email, password));
 
-      navigate("/main", { replace: true }); // 로그인 성공 후 메인 페이지로 이동
-    } else {
-      alert(result.error);
+      if (loginResult.success) {
+        // 로그인 성공
+        console.log("로그인 성공", loginResult);
+
+        navigate("/main", { replace: true });
+      } else {
+        // 로그인 실패
+        setError(loginResult.error || "로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("로그인 과정에서 오류 발생:", error);
+      setError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 

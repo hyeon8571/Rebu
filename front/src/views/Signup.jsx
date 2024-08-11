@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SignupForm1 from "../components/user/SignupForm1";
 import SignupForm2 from "../components/user/SignupForm2";
@@ -24,55 +25,47 @@ const Signup = () => {
     phone: "",
     gender: "FEMALE", // Default value
   });
+  const navigate = useNavigate();
 
-  const nextStep = () => {
-    setStep(step + 1);
-  };
+  const nextStep = () => setStep((prev) => prev + 1);
 
   const handleChange = (input) => (e) => {
-    setFormData({ ...formData, [input]: e.target.value });
+    setFormData((prev) => ({ ...prev, [input]: e.target.value }));
   };
 
   const handleSubmit = async () => {
     try {
-      // Send the collected data to the server
       const response = await axios.post(`${BASE_URL}/api/members`, formData);
-      console.log("Signup successful:", response.data);
-      // Handle successful signup (e.g., redirect to login page)
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Signup error:", error);
-      // Handle signup error
+      alert("회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
   return (
     <>
-      <div>
-        <Container>
-          <ButtonBack />
-          <LoginTitle
-            text={"회원가입"}
-            description={"REBU 가입을 환영합니다!"}
-          />
-        </Container>
-        {step === 1 && (
-          <SignupForm1
-            formData={formData}
-            handleChange={handleChange}
-            nextStep={nextStep}
-            purpose={"signup"}
-            buttonTitle={"Next"}
-          />
-        )}
-        {step === 2 && (
-          <SignupForm2
-            formData={formData}
-            handleChange={handleChange}
-            setFormData={setFormData} // setFormData 전달
-            handleSubmit={handleSubmit}
-          />
-        )}
-      </div>
+      <Container>
+        <ButtonBack />
+        <LoginTitle text={"회원가입"} description={"REBU 가입을 환영합니다!"} />
+      </Container>
+      {step === 1 && (
+        <SignupForm1
+          formData={formData}
+          handleChange={handleChange}
+          nextStep={nextStep}
+          purpose={"signup"}
+          buttonTitle={"Next"}
+        />
+      )}
+      {step === 2 && (
+        <SignupForm2
+          formData={formData}
+          handleChange={handleChange}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+        />
+      )}
     </>
   );
 };

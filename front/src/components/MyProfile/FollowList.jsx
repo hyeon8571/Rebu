@@ -1,5 +1,6 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const rotateGradient = keyframes`
   0% {
@@ -116,29 +117,56 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const FollowList = ({ follower, time }) => {
+const FollowList = ({
+  follower,
+  time,
+  handleCloseFollowingModal,
+  handleCloseFollowersModal,
+}) => {
   const online = time < 300;
-  
-  const handleChat = () => {
+  const navigate = useNavigate();
 
-  }
+  const handleProfileClick = () => {
+    // '/profile' 경로로 이동하고, follower.nickname을 state로 전달
+    navigate("/profile", {
+      state: { targetNickname: follower.nickname, targetType: follower.type },
+    });
+    handleCloseFollowingModal();
+    handleCloseFollowersModal();
+  };
+
+  const handleChat = () => {};
 
   return (
     <FollowerContainer>
       <React.Fragment>
         {online ? (
           <OutterCircleOnline>
-            <Insideimg src={follower.imgSrc} alt="Profile" />
+            <Insideimg
+              src={
+                follower.imgSrc
+                  ? `https://www.rebu.kro.kr/data/${follower.imgSrc}`
+                  : "/img.webp"
+              }
+              alt="Profile"
+            />
           </OutterCircleOnline>
         ) : (
           <OutterCircleOffline>
-            <Insideimg src={follower.imgSrc}></Insideimg>
+            <Insideimg
+              src={
+                follower.imgSrc
+                  ? `https://www.rebu.kro.kr/data/${follower.imgSrc}`
+                  : "/img.webp"
+              }
+              alt="Profile"
+            />
           </OutterCircleOffline>
         )}
       </React.Fragment>
 
       <Info>
-        <Username>{follower.nickname}</Username>
+        <Username onClick={handleProfileClick}>{follower.nickname}</Username>
         <Description>{follower.introduction}</Description>
       </Info>
       <Button>전송</Button>

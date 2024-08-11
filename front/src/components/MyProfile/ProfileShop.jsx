@@ -13,12 +13,18 @@ import {
   Button,
 } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import ButtonSmall from "../common/ButtonSmall";
 import { BASE_URL } from "../../views/Signup";
 
 export const Div = styled.div`
   display: flex;
   justify-content: center;
 `;
+// const Msg = styled.p``;
+// const Tooltip = styled.ul``;
+// const InfoIconContainer = styled.div``;
+// const RadioButtonContainer = styled.div``;
+// const Button = styled.button``;
 
 const Container = styled.div`
   display: flex;
@@ -160,6 +166,74 @@ const UserRole = styled.span`
   color: #000000;
 `;
 
+const categories = ["헤어", "네일", "에스테틱", "타투", "애견미용"];
+
+const CategoryContainer = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const RadioButton = styled.button`
+  border: 2px solid #a55eea;
+  background-color: ${(props) => (props.selected ? "#a55eea" : "white")};
+  color: ${(props) => (props.selected ? "white" : "#a55eea")};
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    background-color: ${(props) => (props.selected ? "#8117eb" : "#f4e9ff")};
+    color: ${(props) => (props.selected ? "white" : "#8117eb")};
+  }
+`;
+
+// 사업자등록증 확인 API
+export const verifyLicense = async (licenceNum) => {
+  const access = localStorage.getItem("access");
+  try {
+    console.log("사업자 등록번호 인증 요청:", licenceNum);
+    const response = await axios.post(
+      `${BASE_URL}/api/auths/license/verify`,
+      {
+        licenceNum: licenceNum, // 요청 바디에 사업자 등록번호 포함
+        // purpose: "generateShopProfile", // 목적 설정
+      },
+      {
+        headers: {
+          "Content-Type": "application/json", // 요청 본문 형식 설정
+          Access: access,
+        },
+      }
+    );
+    // 요청 성공 시 응답 데이터 반환
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error(
+      "사업자 등록번호 인증 실패:",
+      error.response?.data || error.message
+    );
+    return {
+      success: false,
+      error: error.response?.data || "사업자 등록번호 인증 실패",
+    };
+  }
+};
+
+// 사업자등록번호 형식 변환 함수
+export const formatLicenseNumber = (value) => {
+  // 입력값에서 숫자만 추출
+  const numbers = value.replace(/[^\d]/g, "");
+  // xxx-xx-xxxxx 형식으로 포맷팅
+  if (numbers.length <= 3) return numbers;
+  if (numbers.length <= 5) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+  return `${numbers.slice(0, 3)}-${numbers.slice(3, 5)}-${numbers.slice(
+    5,
+    10
+  )}`;
+};
+
 // 전화번호 형식 변환 함수
 export const formatPhoneNumber = (value) => {
   const cleaned = value.replace(/\D/g, "").slice(0, 11);
@@ -175,7 +249,7 @@ export const formatPhoneNumber = (value) => {
 };
 
 // 매장 프로필 생성 함수
-const createShopProfile = async (formData) => {
+export const createShopProfile = async (formData) => {
   try {
     const response = await api.post("/profiles/shops", formData, {
       headers: {
@@ -202,6 +276,7 @@ const ProfileShop = () => {
   const [phone, setPhone] = useState("");
   const [category, setCategory] = useState("");
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const [selected, setSelected] = useState("헤어"); // 선택된 업종
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -219,9 +294,9 @@ const ProfileShop = () => {
       case "name":
         setName(value);
         break;
-      case "licenceNum":
-        setLicenceNum(value);
-        break;
+      // case "licenceNum":
+      //   handleLicenceChange(e);
+      //   break;
       case "address":
         setAddress(value);
         break;
@@ -234,6 +309,12 @@ const ProfileShop = () => {
       default:
         break;
     }
+  };
+
+  const handleLicenceChange = (e) => {
+    const formattedNumber = formatLicenseNumber(e.target.value);
+    // console.log(formattedNumber); // 출력: 123-45-67890setPhone(formattedValue);
+    setLicenceNum(formattedNumber);
   };
 
   const handlePhoneChange = (e) => {
@@ -332,7 +413,24 @@ const ProfileShop = () => {
       console.error("Failed to create profile:", error);
     }
   };
+  // API - 사업자등록증 조회 버튼 클릭 시 실행될 함수
+  const handleClick = async () => {
+    alert("사업자등록증 조회");
+    // // 하이픈 제거 후 API 호출
+    // const cleanedLicenceNum = licenceNum.replace(/-/g, '');
+    const result = await verifyLicense(licenceNum);
 
+    if (result.success) {
+      console.log("인증요청axios 성공:", result.data);
+      if (result.data.code === "유효하지 않은 인증 목적") {
+        alert("유효하지 않은 인증 목적입니다. 사업자번호를 다시 확인해주세요.");
+      } else {
+        console.log(result.data);
+      }
+    } else {
+      console.error("인증 실패:", result.error);
+    }
+  };
   return (
     <Container>
       <Header>
@@ -379,13 +477,24 @@ const ProfileShop = () => {
           {nicknameMsg}
         </Msg>
         <Label required>사업자 등록번호</Label>
-        <Input
-          type="text"
-          name="licenceNum"
-          value={licenceNum}
-          onChange={handleChange}
-          required
-        />
+        <Div>
+          <Input
+            type="text"
+            name="licenceNum"
+            value={licenceNum}
+            onChange={handleLicenceChange}
+            required
+            maxLength={12} // 최대 길이 설정 (xxx-xx-xxxxx)
+          />
+
+          <ButtonSmall
+            button={{
+              title: "조회", // 버튼에 표시될 텍스트
+              highlight: true, // 하이라이트 여부 (true일 경우 버튼 배경이 primary 색상)
+              onClick: handleClick, // 버튼 클릭 시 실행될 함수
+            }}
+          />
+        </Div>
 
         <Label required>상호명</Label>
         <Input
@@ -414,52 +523,21 @@ const ProfileShop = () => {
         />
         {/* category: HAIR, NAIL, TATTOO, PET, AESTHETICS */}
         <Label required>매장 업종</Label>
-        <Input
-          type="text"
-          name="category"
-          value={category}
-          onChange={handleChange}
-          required
-        />
-        <Div>
-          <RadioButtonContainer>
-            <Button
-              type="button"
-              checked={category === "HAIR"}
-              onClick={() => handleButtonChange("HAIR")}
+        <CategoryContainer>
+          {categories.map((category) => (
+            <RadioButton
+              key={category}
+              selected={selected === category}
+              onClick={() => setSelected(category)}
             >
-              HAIR
-            </Button>
-            <Button
-              type="button"
-              checked={category === "NAIL"}
-              onClick={() => handleButtonChange("NAIL")}
-            >
-              NAIL
-            </Button>
-            <Button
-              type="button"
-              checked={category === "TATTOO"}
-              onClick={() => handleButtonChange("TATTOO")}
-            >
-              TATTOO
-            </Button>
-            <Button
-              type="button"
-              checked={category === "PET"}
-              onClick={() => handleButtonChange("PET")}
-            >
-              PET
-            </Button>
-            <Button
-              type="button"
-              checked={category === "AESTHETICS"}
-              onClick={() => handleButtonChange("AESTHETICS")}
-            >
-              AESTHETICS
-            </Button>
-          </RadioButtonContainer>
-        </Div>
+              {category}
+            </RadioButton>
+          ))}
+        </CategoryContainer>
+
+        <Msg>
+          * 업종은 HAIR, NAIL, TATTOO, PET, AESTHETICS 중 하나여야 합니다.
+        </Msg>
 
         <ButtonContainer>
           <SaveButton type="submit">프로필 생성</SaveButton>

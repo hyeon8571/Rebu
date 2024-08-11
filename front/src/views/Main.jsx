@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { alarmsAgreement } from "../features/auth/authSlice";
 import styled from "styled-components";
 import MainHeader from "../components/main/MainHeader";
 import MainFilter from "../components/main/MainFilter";
@@ -38,31 +40,49 @@ function Main({ theme, toggleTheme }) {
   }, [loginUser]);
 
   useEffect(() => {
-    fetch('/mockdata/loginuser.json')
-      .then(res => res.json())
+    const initializeAlarms = async () => {
+      try {
+        const alarmsResult = await dispatch(alarmsAgreement());
+        console.log("alarmResult", alarmsResult);
+        if (alarmsResult.success) {
+          console.log("Alarms agreement 성공");
+        } else {
+          console.error("Alarms agreement 실패:", alarmsResult.error);
+        }
+      } catch (error) {
+        console.error("Error in alarms agreement:", error);
+      }
+    };
+    initializeAlarms();
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetch("/mockdata/loginuser.json")
+      .then((res) => res.json())
       .then((data) => {
         setLoginUser(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/personalprofile.json')
-      .then(res => res.json())
+    fetch("/mockdata/personalprofile.json")
+      .then((res) => res.json())
       .then((data) => {
-        const matchedProfile = data.body.find(profile => profile.nickname === loginUser.nickname);
+        const matchedProfile = data.body.find(
+          (profile) => profile.nickname === loginUser.nickname
+        );
         setProfile(matchedProfile || data.body);
-      })      
+      });
   }, [loginUser]);
 
   useEffect(() => {
-    fetch('/mockdata/reviewdata.json')
-      .then(res => res.json())
+    fetch("/mockdata/reviewdata.json")
+      .then((res) => res.json())
       .then((data) => {
         setFeed(data.body);
-    
-      })      
+        console.log(data.body);
+      });
   }, []);
-
 
   return (
     <Wrapper>
@@ -70,7 +90,7 @@ function Main({ theme, toggleTheme }) {
       <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
       <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
     </Wrapper>
-  )
-};
+  );
+}
 
 export default Main;
