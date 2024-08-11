@@ -7,12 +7,13 @@ import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -30,8 +31,9 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readAll(@RequestParam(value = "feedId", required = false) Long feedId) {
-        List<CommentReadAllDto> response = commentService.readAll(feedId);
+    public ResponseEntity<?> readCommentAll(@PageableDefault(size = 10) Pageable pageable,
+        @RequestParam(value = "feedId", required = false) Long feedId) {
+        Slice<CommentReadAllDto> response = commentService.readCommentAll(feedId, pageable);
         return new ResponseEntity<>(new ApiResponse<>("1M01", response), HttpStatus.OK);
     }
 
@@ -41,5 +43,12 @@ public class CommentController {
         String requestUserNickname = authProfileInfo.getNickname();
         commentService.delete(commentId, requestUserNickname);
         return new ResponseEntity<>(new ApiResponse<>("1M02", null), HttpStatus.OK);
+    }
+
+    @GetMapping("/nested")
+    public ResponseEntity<?> readNestedCommentAll(@PageableDefault(size = 10) Pageable pageable,
+        @RequestParam(value = "commentId",required = false) Long commentId) {
+        Slice<CommentReadAllDto> response = commentService.readNestedComments(commentId, pageable);
+        return new ResponseEntity<>(new ApiResponse<>("1M03", response), HttpStatus.OK);
     }
 }
