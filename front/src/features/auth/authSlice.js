@@ -7,7 +7,7 @@ const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
-  profile: {
+  profile: { //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
     followingCnt: 0,
@@ -59,7 +59,7 @@ export const login = (email, password) => async (dispatch) => {
       }
     );
 
-    if (response.data.code === "로그인 성공 코드") {
+    if (response.data.code === "1A07") {
       const access = response.headers["access"];
       console.log("로그인 성공", response)
       const { type, nickname } = response.data.body;
@@ -68,12 +68,12 @@ export const login = (email, password) => async (dispatch) => {
       dispatch(loginSuccess({ nickname, type }));
 
       // 프로필 가져오기
-      const profileResult = await dispatch(getProfile(nickname));
-      if (profileResult.success) {
-        return { success: true };
-      } else {
-        return { success: false, error: profileResult.error };
-      }
+      // const profileResult = await dispatch(getProfile(nickname));
+      // if (profileResult.success) {
+      return { success: true };
+      // } else {
+      // return { success: false, error: profileResult.error };
+      // }
     } else {
       return { success: false, error: "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요." };
     }
@@ -103,22 +103,79 @@ export const getProfile = (nickname) => async (dispatch) => {
 };
 
 
+// export const alarmsAgreement = () => async (dispatch) => {
+//   const access = localStorage.getItem("access");
+//   try {
+//     const response = await axios.get(`${BASE_URL}/api/alarms/subscribe`, {
+//       headers: {
+//         "access": access,
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     console.log("alarm axios", response)
+//     // console.log(response.data.body)
+//     // dispatch(setProfile(response.data.body));
+//     return { success: true };
+//   } catch (error) {
+//     return { success: false, error: "알람 동의 sse연결 실패." };
+//   }
+// };
+
+// SSE 연결을 위한 이벤트 소스 객체
+let eventSource = null;
+
 export const alarmsAgreement = () => async (dispatch) => {
   const access = localStorage.getItem("access");
+
   try {
-    const response = await axios.get(`${BASE_URL}/api/alarms/subscribe`, {
+    // 기존 SSE 연결이 있다면 닫기
+    if (eventSource) {
+      eventSource.close();
+    }
+
+    // SSE 연결 설정
+    eventSource = new EventSource(`${BASE_URL}/api/alarms/subscribe`, {
       headers: {
         "access": access,
-        "Content-Type": "application/json",
       },
+      withCredentials: true // 쿠키를 포함하여 요청을 보내려면 이 옵션을 true로 설정
     });
 
-    console.log("alarm axios", response)
-    // console.log(response.data.body)
-    // dispatch(setProfile(response.data.body));
+    // 연결 성공 이벤트
+    eventSource.onopen = () => {
+      console.log("SSE 연결 성공");
+      dispatch({ type: 'ALARMS_AGREEMENT_SUCCESS' });
+    };
+
+    // 메시지 수신 이벤트
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("SSE로부터 메시지 수신:", data);
+      dispatch({ type: 'ALARM_RECEIVED', payload: data });
+    };
+
+    // 에러 처리
+    eventSource.onerror = (error) => {
+      console.error("SSE 연결 에러:", error);
+      eventSource.close();
+      dispatch({ type: 'ALARMS_AGREEMENT_ERROR', payload: "SSE 연결 실패" });
+    };
+
     return { success: true };
   } catch (error) {
-    return { success: false, error: "알람 동의 sse연결 실패." };
+    console.error("알람 동의 SSE 연결 실패:", error);
+    return { success: false, error: "알람 동의 SSE 연결 실패." };
   }
 };
+
+// SSE 연결 종료 함수
+export const closeAlarmsConnection = () => {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+  }
+};
+
+
 export default authSlice.reducer;
