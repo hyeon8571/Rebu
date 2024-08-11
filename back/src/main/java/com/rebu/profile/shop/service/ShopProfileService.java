@@ -201,6 +201,7 @@ public class ShopProfileService {
         }
 
         return ShopProfileDailyScheduleDto.builder()
+                .reservationInterval(shop.getReservationInterval())
                 .shopWorkingInfo(WorkingInfoDto.from(shopWorkingInfo))
                 .shopAbsences(ListUtils.applyFunctionToElements(shopAbsences, AbsenceDto::from))
                 .employeesProfileDailySchedule(new ArrayList<>(map.values()))
