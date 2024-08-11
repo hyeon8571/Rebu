@@ -17,26 +17,11 @@ import java.util.List;
 @Getter
 @Builder
 public class EmployeeProfilePeriodScheduleDto {
+    private Integer reservationInterval;
     private List<ReservationDto> reservations;
     private List<MenuDto> menus;
     private List<AbsenceDto> employeeAbsences;
     private List<WorkingInfoDto> employeeWorkingInfos;
     private List<AbsenceDto> shopAbsences;
     private List<WorkingInfoDto> shopWorkingInfos;
-
-    public static EmployeeProfilePeriodScheduleDto from(List<Reservation> reservations,
-                                                            List<Menu> menus,
-                                                            List<Absence> employeeAbsences,
-                                                            List<WorkingInfo> employeeWorkingInfos,
-                                                            List<Absence> shopAbsences,
-                                                            List<WorkingInfo> shopWorkingInfos) {
-        return EmployeeProfilePeriodScheduleDto.builder()
-                .reservations(ListUtils.applyFunctionToElements(reservations, ReservationDto::from))
-                .menus(ListUtils.applyFunctionToElements(menus, MenuDto::from))
-                .employeeAbsences(ListUtils.applyFunctionToElements(employeeAbsences, AbsenceDto::from))
-                .employeeWorkingInfos(ListUtils.applyFunctionToElements(employeeWorkingInfos, WorkingInfoDto::from))
-                .shopAbsences(ListUtils.applyFunctionToElements(shopAbsences, AbsenceDto::from))
-                .shopWorkingInfos(ListUtils.applyFunctionToElements(shopWorkingInfos, WorkingInfoDto::from))
-                .build();
-    }
 }

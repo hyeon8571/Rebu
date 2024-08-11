@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 public class ShopProfileDailyScheduleDto {
+    private final Integer reservationInterval;
     private final WorkingInfoDto shopWorkingInfo;
     private final List<AbsenceDto> shopAbsences;
     private final List<EmployeeProfileDailyScheduleDto> employeesProfileDailySchedule;

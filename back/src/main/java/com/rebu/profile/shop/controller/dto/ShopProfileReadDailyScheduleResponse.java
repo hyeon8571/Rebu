@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 @Getter
 @Builder
 public class ShopProfileReadDailyScheduleResponse {
+    private Integer reservationInterval;
     private WorkingInfo shopWorkingInfo;
     private List<Absence> shopAbsences;
     private final List<Employee> employees;
@@ -96,6 +97,7 @@ public class ShopProfileReadDailyScheduleResponse {
 
     public static ShopProfileReadDailyScheduleResponse from(ShopProfileDailyScheduleDto dto){
         return ShopProfileReadDailyScheduleResponse.builder()
+                .reservationInterval(dto.getReservationInterval())
                 .employees(ListUtils.applyFunctionToElements(dto.getEmployeesProfileDailySchedule(), Employee::from))
                 .shopWorkingInfo(WorkingInfo.from(dto.getShopWorkingInfo()))
                 .shopAbsences(ListUtils.applyFunctionToElements(dto.getShopAbsences(), Absence::from))

@@ -18,6 +18,15 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Optional<EmployeeProfile> findByNickname(String nickname);
 
     @Query("""
+           SELECT e
+           FROM EmployeeProfile e
+           JOIN FETCH e.shop
+           WHERE e.nickname = :nickname
+           """)
+    Optional<EmployeeProfile> findByNicknameUsingFetchJoinShop(String nickname);
+
+
+    @Query("""
         SELECT new com.rebu.profile.employee.dto.GetEmployeeProfileResponse(
             e.imageSrc,
             e.nickname,
