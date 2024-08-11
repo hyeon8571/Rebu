@@ -1,4 +1,4 @@
-package com.rebu.follow.dto;
+package com.rebu.profile.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,7 @@ import org.springframework.data.domain.Pageable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GetFollowingsTargetDto {
-    private String nickname;
-    private String targetNickname;
+public class SearchProfileDto {
+    private String keyword;
     private Pageable pageable;
 }

@@ -11,6 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+
 import java.util.Objects;
 
 @Entity
@@ -21,7 +22,6 @@ import java.util.Objects;
 @SQLRestriction("status != 'ROLE_DELETED'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
-@EqualsAndHashCode(of = "id")
 public class Profile {
 
     @Id

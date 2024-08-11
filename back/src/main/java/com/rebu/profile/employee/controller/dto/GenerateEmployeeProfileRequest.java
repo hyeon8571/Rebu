@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class GenerateEmployeeProfileRequest {
-    @ProfileImg
     private MultipartFile imgFile;
     @Nickname
     private String nickname;

@@ -11,10 +11,10 @@ import com.rebu.profile.exception.ProfileCantAccessException;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class FollowService {
 
 
     @Transactional(readOnly = true)
-    public List<GetFollowingResponse> getFollowings(GetFollowingsTargetDto getFollowingsTargetDto) {
+    public Slice<GetFollowingResponse> getFollowings(GetFollowingsTargetDto getFollowingsTargetDto) {
         Profile profile = profileRepository.findByNickname(getFollowingsTargetDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -68,13 +68,13 @@ public class FollowService {
             }
         }
 
-        List<Follow> followingList = followRepository.findByFollowerId(profile.getId());
+        Slice<Follow> followingList = followRepository.findByFollowerId(profile.getId(), getFollowingsTargetDto.getPageable());
 
-        return followingList.stream().map(GetFollowingResponse::from).toList();
+        return followingList.map(GetFollowingResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public List<GetFollowerResponse> getFollowers(GetFollowersTargetDto getFollowersTargetDto) {
+    public Slice<GetFollowerResponse> getFollowers(GetFollowersTargetDto getFollowersTargetDto) {
         Profile profile = profileRepository.findByNickname(getFollowersTargetDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
@@ -84,8 +84,8 @@ public class FollowService {
             }
         }
 
-        List<Follow> followerList = followRepository.findByFollowingId(profile.getId());
+        Slice<Follow> followerList = followRepository.findByFollowingId(profile.getId(), getFollowersTargetDto.getPageable());
 
-        return followerList.stream().map(GetFollowerResponse::from).toList();
+        return followerList.map(GetFollowerResponse::from);
     }
 }

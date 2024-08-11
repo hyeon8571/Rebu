@@ -21,6 +21,7 @@ public class GetShopProfileResponse {
     private Long reservationCnt;
     private boolean isPrivate;
     private Relation relation;
+    private Long followId;
 
     public GetShopProfileResponse(String imageSrc, String nickname, String name, String introduction, String address, String phone, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long reservationCnt, boolean isPrivate) {
         this.imageSrc = imageSrc;

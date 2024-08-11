@@ -23,11 +23,11 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
             e.introduction,
             e.isPrivate,
             e.workingName,
-            COUNT(fr.id),
-            COUNT(fi.id),
-            COUNT(fe.id),
-            COUNT(rv.id),
-            COUNT(sc.id)
+            COUNT(DISTINCT fr.id),
+            COUNT(DISTINCT fi.id),
+            COUNT(DISTINCT fe.id),
+            COUNT(DISTINCT rv.id),
+            COUNT(DISTINCT sc.id)
         )
         FROM EmployeeProfile e
         LEFT JOIN Follow fr ON fr.follower.id = e.id
