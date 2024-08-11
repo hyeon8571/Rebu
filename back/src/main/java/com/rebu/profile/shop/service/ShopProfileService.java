@@ -128,6 +128,7 @@ public class ShopProfileService {
             getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.ONW);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
             getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.FOLLOWING);
+            getShopProfileResponse.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
         } else {
             getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.NONE);
         }

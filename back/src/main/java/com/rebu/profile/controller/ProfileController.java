@@ -4,10 +4,7 @@ import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
-import com.rebu.profile.controller.dto.ChangeIntroRequest;
-import com.rebu.profile.controller.dto.ChangeIsPrivateRequest;
-import com.rebu.profile.controller.dto.ChangeNicknameRequest;
-import com.rebu.profile.controller.dto.ChangePhoneRequest;
+import com.rebu.profile.controller.dto.*;
 import com.rebu.profile.dto.*;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
@@ -20,6 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -119,11 +119,17 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("프로필 삭제 성공 코드", profileInfo));
     }
 
-    @GetMapping("/switch-profile")
+    @GetMapping
+    public ResponseEntity<?> getProfileList(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        List<GetProfileListDto> result = profileService.getProfileList(authProfileInfo.getEmail());
+        return ResponseEntity.ok(new ApiResponse<>("보유한 프로필 조회 성공 코드", result));
+    }
+
+    @PostMapping("/switch-profile")
     public ResponseEntity<?> switchProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
-                                           @Nickname @RequestParam String nickname,
+                                           @Valid @RequestBody SwitchProfileRequest switchProfileRequest,
                                            HttpServletResponse response) {
-        ProfileInfo profileInfo = profileService.switchProfile(new SwitchProfileDto(authProfileInfo.getNickname(), nickname), response);
+        ProfileInfo profileInfo = profileService.switchProfile(switchProfileRequest.toDto(authProfileInfo.getNickname()), response);
         return ResponseEntity.ok(new ApiResponse<>("프로필 전환 성공 코드", profileInfo));
     }
 
@@ -135,8 +141,9 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchProfile(@RequestParam String keyword) {
-        List<SearchProfileResponse> result = profileService.searchProfile(keyword);
+    public ResponseEntity<?> searchProfile(@RequestParam String keyword,
+                                           @PageableDefault(size = 20) Pageable pageable) {
+        Slice<SearchProfileResponse> result = profileService.searchProfile(new SearchProfileDto(keyword, pageable));
         return ResponseEntity.ok(new ApiResponse<>("프로필 검색 성공 코드", result));
     }
 

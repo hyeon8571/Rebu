@@ -18,6 +18,7 @@ public class GetProfileResponse {
     private Long favoritesCnt;
     private boolean isPrivate;
     private Relation relation;
+    private Long followId;
 
     public GetProfileResponse(String imageSrc, Long followingCnt, Long followerCnt, String nickname, String introduction, Long reviewCnt, Long scrapCnt, Long favoritesCnt, boolean isPrivate) {
         this.imageSrc = imageSrc;

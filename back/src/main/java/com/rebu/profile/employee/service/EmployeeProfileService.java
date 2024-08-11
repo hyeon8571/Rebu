@@ -86,6 +86,7 @@ public class EmployeeProfileService {
             getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.OWN);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
             getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.FOLLOWING);
+            getEmployeeProfileResponse.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
         } else {
             getEmployeeProfileResponse.setRelation(GetEmployeeProfileResponse.Relation.NONE);
         }

@@ -6,9 +6,13 @@ import com.rebu.profile.enums.Type;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.shop_favorite.controller.dto.AddFavoriteRequest;
 import com.rebu.shop_favorite.dto.DeleteFavoriteDto;
+import com.rebu.shop_favorite.dto.GetFavoriteDto;
 import com.rebu.shop_favorite.dto.GetShopFavoriteResponse;
 import com.rebu.shop_favorite.service.ShopFavoriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +43,9 @@ public class ShopFavoriteController {
     }
 
     @GetMapping("/{nickname}")
-    public ResponseEntity<?> getFavorite(@PathVariable String nickname) {
-        List<GetShopFavoriteResponse> result = shopFavoriteService.getShopFavorites(nickname);
+    public ResponseEntity<?> getFavorite(@PathVariable String nickname,
+                                         @PageableDefault(size = 10) Pageable pageable) {
+        Slice<GetShopFavoriteResponse> result = shopFavoriteService.getShopFavorites(new GetFavoriteDto(nickname, pageable));
         return ResponseEntity.ok(new ApiResponse<>("매장 즐겨찾기 조회 성공 코드", result));
     }
 }

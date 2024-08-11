@@ -26,11 +26,11 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
             sp.introduction,
             sp.address,
             sp.phone,
-            COUNT(fr.id),
-            COUNT(fi.id),
-            COUNT(fe.id),
-            COUNT(re.id),
-            COUNT(rs.id),
+            COUNT(DISTINCT fr.id),
+            COUNT(DISTINCT fi.id),
+            COUNT(DISTINCT fe.id),
+            COUNT(DISTINCT re.id),
+            COUNT(DISTINCT rs.id),
             sp.isPrivate
         )
         FROM ShopProfile sp

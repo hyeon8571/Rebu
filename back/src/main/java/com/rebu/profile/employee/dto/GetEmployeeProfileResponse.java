@@ -19,6 +19,7 @@ public class GetEmployeeProfileResponse {
     private Long reviewCnt;
     private Long scrapCnt;
     private Relation relation;
+    private Long followId;
 
     public GetEmployeeProfileResponse(String imageSrc, String nickname, String introduction, boolean isPrivate, String workingName, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long scrapCnt) {
         this.imageSrc = imageSrc;
