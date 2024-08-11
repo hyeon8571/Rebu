@@ -68,7 +68,8 @@ const PhoneVerification = ({
       const response = await axios.get(`${BASE_URL}/api/profiles/check-phone`, {
         params: { phone: phone, purpose: purpose },
       });
-      if (response.data.code === "전화번호 중복 검사 성공 코드") {
+      if (response.data.code === "1C01") {
+        //전화번호 중복 검사 성공 코드
         if (response.data.body === true) {
           // true가 중복이 있는 경우
           setPhoneMsg("중복된 전화번호입니다");
@@ -94,7 +95,8 @@ const PhoneVerification = ({
         purpose: purpose,
       });
       console.log(response.data);
-      if (response.data.code === "전화번호 인증 코드 전송 성공") {
+      if (response.data.code === "1A03") {
+        //전화번호 인증 코드 전송 성공
         alert("인증번호가 발송되었습니다.");
         setIsVerificationFieldVisible(true);
       } else {
@@ -159,7 +161,8 @@ const PhoneVerification = ({
         }
       );
       console.log("인증번호확인", phoneCode, response);
-      if (response.data.code === "전화번호 인증 성공 코드") {
+      if (response.data.code === "1A04") {
+        //전화번호 인증 성공 코드
         alert("전화번호 인증이 완료되었습니다.");
         console.log("전화번호 인증이 완료되었습니다.");
         setPtagMessage("전화번호 인증이 완료되었습니다.");
