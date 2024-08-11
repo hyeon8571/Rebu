@@ -43,4 +43,5 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
         GROUP BY sp.id
     """)
     Optional<GetShopProfileResponse> getShopProfileResponseByProfileId(Long profileId);
+
 }

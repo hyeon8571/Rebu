@@ -4,10 +4,9 @@ import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
+import com.rebu.profile.employee.controller.dto.EmployeeReadPeriodScheduleResponse;
 import com.rebu.profile.employee.controller.dto.GenerateEmployeeProfileRequest;
-import com.rebu.profile.employee.dto.AcceptInviteDto;
-import com.rebu.profile.employee.dto.GetEmployeeProfileDto;
-import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
+import com.rebu.profile.employee.dto.*;
 import com.rebu.profile.employee.service.EmployeeProfileService;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
@@ -18,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,5 +66,18 @@ public class EmployeeProfileController {
     public ResponseEntity<?> acceptInvite(@RequestBody AcceptInviteDto acceptInviteDto) {
         employeeProfileService.acceptInvite(acceptInviteDto);
         return ResponseEntity.ok(new ApiResponse<>("1D04", null));
+    }
+
+    @GetMapping("/{nickname}/period-schedule")
+    public ResponseEntity<?> readEmployeePeriodSchedule(@PathVariable String nickname,
+                                                        @RequestParam("start-date") LocalDate startDate,
+                                                        @RequestParam("end-date") LocalDate endDate) {
+        EmployeePeriodScheduleWithShopPeriodScheduleDto dto = employeeProfileService.readEmployeePeriodSchedule(EmployeeReadPeriodScheduleDto.builder()
+                .nickname(nickname)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build());
+        EmployeeReadPeriodScheduleResponse response = EmployeeReadPeriodScheduleResponse.from(dto);
+        return ResponseEntity.ok(new ApiResponse<>("1R04", response));
     }
 }

@@ -2,6 +2,7 @@ package com.rebu.profile.employee.repository;
 
 import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
 import com.rebu.profile.employee.entity.EmployeeProfile;
+import com.rebu.profile.entity.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,6 +16,15 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Optional<EmployeeProfile> findEmployeeProfileByMemberId(Long memberId);
 
     Optional<EmployeeProfile> findByNickname(String nickname);
+
+    @Query("""
+           SELECT e
+           FROM EmployeeProfile e
+           JOIN FETCH e.shop
+           WHERE e.nickname = :nickname
+           """)
+    Optional<EmployeeProfile> findByNicknameUsingFetchJoinShop(String nickname);
+
 
     @Query("""
         SELECT new com.rebu.profile.employee.dto.GetEmployeeProfileResponse(
@@ -39,4 +49,8 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
         GROUP BY e.id
     """)
     Optional<GetEmployeeProfileResponse> getEmployeeProfileResponseByProfileId(Long profileId);
+
+    List<EmployeeProfile> findByShop(Profile profile);
+
+
 }
