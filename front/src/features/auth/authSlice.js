@@ -7,6 +7,7 @@ const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
+  imageSrc: "",
   profile: { //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
@@ -26,15 +27,17 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess(state, action) {
-      const { nickname, type } = action.payload;
+      const { nickname, type, imageSrc } = action.payload;
       state.isLogin = true;
       state.nickname = nickname;
       state.type = type;
+      state.imageSrc = imageSrc;
     },
     logout(state) {
       state.isLogin = false;
       state.nickname = "";
       state.type = "COMMON";
+      state.imageSrc = "";
       state.profile = initialState.profile;
       localStorage.removeItem("access");
     },
@@ -66,6 +69,7 @@ export const login = (email, password) => async (dispatch) => {
       localStorage.setItem("access", access);
 
       dispatch(loginSuccess({ nickname, type }));
+      console.log("타입, 닉네임", type, nickname)
 
       // 프로필 가져오기
       // const profileResult = await dispatch(getProfile(nickname));
@@ -123,59 +127,59 @@ export const getProfile = (nickname) => async (dispatch) => {
 // };
 
 // SSE 연결을 위한 이벤트 소스 객체
-let eventSource = null;
+// let eventSource = null;
 
-export const alarmsAgreement = () => async (dispatch) => {
-  const access = localStorage.getItem("access");
+// export const alarmsAgreement = () => async (dispatch) => {
+//   const access = localStorage.getItem("access");
 
-  try {
-    // 기존 SSE 연결이 있다면 닫기
-    if (eventSource) {
-      eventSource.close();
-    }
+//   try {
+//     // 기존 SSE 연결이 있다면 닫기
+//     if (eventSource) {
+//       eventSource.close();
+//     }
 
-    // SSE 연결 설정
-    eventSource = new EventSource(`${BASE_URL}/api/alarms/subscribe`, {
-      headers: {
-        "access": access,
-      },
-      withCredentials: true // 쿠키를 포함하여 요청을 보내려면 이 옵션을 true로 설정
-    });
+//     // SSE 연결 설정
+//     eventSource = new EventSource(`${BASE_URL}/api/alarms/subscribe`, {
+//       headers: {
+//         "access": access,
+//       },
+//       withCredentials: true // 쿠키를 포함하여 요청을 보내려면 이 옵션을 true로 설정
+//     });
 
-    // 연결 성공 이벤트
-    eventSource.onopen = () => {
-      console.log("SSE 연결 성공");
-      dispatch({ type: 'ALARMS_AGREEMENT_SUCCESS' });
-    };
+//     // 연결 성공 이벤트
+//     eventSource.onopen = () => {
+//       console.log("SSE 연결 성공");
+//       dispatch({ type: 'ALARMS_AGREEMENT_SUCCESS' });
+//     };
 
-    // 메시지 수신 이벤트
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("SSE로부터 메시지 수신:", data);
-      dispatch({ type: 'ALARM_RECEIVED', payload: data });
-    };
+//     // 메시지 수신 이벤트
+//     eventSource.onmessage = (event) => {
+//       const data = JSON.parse(event.data);
+//       console.log("SSE로부터 메시지 수신:", data);
+//       dispatch({ type: 'ALARM_RECEIVED', payload: data });
+//     };
 
-    // 에러 처리
-    eventSource.onerror = (error) => {
-      console.error("SSE 연결 에러:", error);
-      eventSource.close();
-      dispatch({ type: 'ALARMS_AGREEMENT_ERROR', payload: "SSE 연결 실패" });
-    };
+//     // 에러 처리
+//     eventSource.onerror = (error) => {
+//       console.error("SSE 연결 에러:", error);
+//       eventSource.close();
+//       dispatch({ type: 'ALARMS_AGREEMENT_ERROR', payload: "SSE 연결 실패" });
+//     };
 
-    return { success: true };
-  } catch (error) {
-    console.error("알람 동의 SSE 연결 실패:", error);
-    return { success: false, error: "알람 동의 SSE 연결 실패." };
-  }
-};
+//     return { success: true };
+//   } catch (error) {
+//     console.error("알람 동의 SSE 연결 실패:", error);
+//     return { success: false, error: "알람 동의 SSE 연결 실패." };
+//   }
+// };
 
-// SSE 연결 종료 함수
-export const closeAlarmsConnection = () => {
-  if (eventSource) {
-    eventSource.close();
-    eventSource = null;
-  }
-};
+// // SSE 연결 종료 함수
+// export const closeAlarmsConnection = () => {
+//   if (eventSource) {
+//     eventSource.close();
+//     eventSource = null;
+//   }
+// };
 
 
 export default authSlice.reducer;

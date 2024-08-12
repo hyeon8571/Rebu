@@ -64,50 +64,24 @@ function Main({ theme, toggleTheme }) {
       });
   }, [loginUser]);
 
-  useEffect(() => {
-    const initializeAlarms = async () => {
-      try {
-        const alarmsResult = await dispatch(alarmsAgreement());
-        console.log("alarmResult", alarmsResult);
-        if (alarmsResult.success) {
-          console.log("Alarms agreement 성공");
-        } else {
-          console.error("Alarms agreement 실패:", alarmsResult.error);
-        }
-      } catch (error) {
-        console.error("Error in alarms agreement:", error);
-      }
-    };
-    initializeAlarms();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const initializeAlarms = async () => {
+  //     try {
+  //       const alarmsResult = await dispatch(alarmsAgreement());
+  //       console.log("alarmResult", alarmsResult);
+  //       if (alarmsResult.success) {
+  //         console.log("Alarms agreement 성공");
+  //       } else {
+  //         console.error("Alarms agreement 실패:", alarmsResult.error);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in alarms agreement:", error);
+  //     }
+  //   };
+  //   initializeAlarms();
+  // }, [dispatch]);
 
-  useEffect(() => {
-    fetch("/mockdata/loginuser.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setLoginUser(data.body);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch("/mockdata/personalprofile.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const matchedProfile = data.body.find(
-          (profile) => profile.nickname === loginUser.nickname
-        );
-        setProfile(matchedProfile || data.body);
-      });
-  }, [loginUser]);
-
-  useEffect(() => {
-    fetch("/mockdata/reviewdata.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setFeed(data.body);
-        console.log(data.body);
-      });
-  }, []);
+ 
 
   return (
     <>

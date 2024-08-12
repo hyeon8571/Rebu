@@ -13,9 +13,14 @@ export const getFollowingList = async (nickname, page = 0) => {
       params: { page: page }, //쿼리 파라미터로 페이지 번호 전달
     });
     // API 응답 데이터 반환
-    console.log('팔로잉 목록 가져오기 성공:', response.data);
+    if (response.data.code === "1O02") { // 팔로잉 조회 성공 코드
+      console.log('팔로잉 목록 조회 성공:', response.data);
+      return { success: true, data: response.data };
+    } else {
+      console.log('팔로잉 목록 조회-프로필찾기 실패:', response.data);
+      return { success: false, data: response.data };
+    }
     // 요청 성공 시 응답 데이터 반환
-    return { success: true, data: response.data };
   } catch (error) {
     console.error("팔로잉 목록 가져오기 실패:", error);
     // 요청 실패 시 에러 반환
@@ -39,10 +44,14 @@ export const getFollowerList = async (nickname, page = 0) => {
       params: { page: page }, // 페이지 번호를 쿼리 파라미터로 전달
     });
 
-    console.log("팔로워 목록 가져오기 성공:", response.data);
-
+    if (response.data.code === "1O03") { //팔로워 조회 성공 코드
+      console.log("팔로워 목록 가져오기 성공:", response.data);
+      return { success: true, data: response.data };
+    } else {
+      console.log("팔로워 목록 가져오기 실패:", response.data);
+      return { success: false, data: response.data };
+    }
     // 요청 성공 시 응답 데이터 반환
-    return { success: true, data: response.data };
   } catch (error) {
     console.error("팔로워 목록 가져오기 실패:", error);
 
