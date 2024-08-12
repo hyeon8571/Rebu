@@ -16,6 +16,11 @@ public class GetFollowerResponse {
     private String imgSrc;
     private String introduction;
     private Type type;
+    private Relation relation;
+
+    public enum Relation {
+        FOLLOWING, NONE
+    }
 
     public static GetFollowerResponse from(Follow follow) {
         return GetFollowerResponse.builder()

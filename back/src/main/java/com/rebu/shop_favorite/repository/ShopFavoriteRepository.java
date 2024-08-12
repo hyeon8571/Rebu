@@ -4,6 +4,8 @@ package com.rebu.shop_favorite.repository;
 import com.rebu.shop_favorite.dto.GetShopFavoriteResponse;
 import com.rebu.shop_favorite.entity.ShopFavorite;
 import com.rebu.shop_favorite.entity.ShopFavoriteId;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,5 +33,5 @@ public interface ShopFavoriteRepository extends JpaRepository<ShopFavorite, Shop
        WHERE sp.shopFavoriteId.profile.id = :profileId
        GROUP BY s.id
        """)
-    List<GetShopFavoriteResponse> getShopFavoriteByProfileId(Long profileId);
+    Slice<GetShopFavoriteResponse> getShopFavoriteByProfileId(Long profileId, Pageable pageable);
 }

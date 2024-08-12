@@ -31,7 +31,7 @@ public class ReviewKeywordService {
     @Transactional(readOnly = true)
     public List<ReviewKeywordDto> readAll() {
         List<ReviewKeyword> reviewKeywords = reviewKeywordRepository.findAll();
-        return ListUtils.applyFunctionToElements(reviewKeywords, ReviewKeywordDto::from);
+        return ListUtils.applyFunctionToElements(reviewKeywords, ReviewKeywordDto::fromReviewKeyword);
     }
 
     /**

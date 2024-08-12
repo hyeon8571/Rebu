@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ShopProfileExceptionConstants implements ExceptionConstants {
-    CATEGORY_MISMATCH("카테고리 형식 불일치"),
-    LICENSE_NUM_NOT_VERIFIED("사업자 등록번호 미인증"),
-    ADDRESS_MISMATCH("주소 형식 불일치"),
-    SHOP_NAME_MISMATCH("매장 이름 형식 불일치"),
-    WORKING_INTRO_MISMATCH("매장 한줄 소개 형식 불일치"),
-    CONVERT_ADDRESS_FAIL("주소 좌표로 전환 실패");
+    CATEGORY_MISMATCH("0E00"),
+    LICENSE_NUM_NOT_VERIFIED("0E01"),
+    ADDRESS_MISMATCH("0E02"),
+    SHOP_NAME_MISMATCH("0E03"),
+    WORKING_INTRO_MISMATCH("0E04"),
+    CONVERT_ADDRESS_FAIL("0E05");
 
     final String code;
 }

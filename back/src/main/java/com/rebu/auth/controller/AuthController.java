@@ -35,13 +35,13 @@ public class AuthController {
                                             HttpSession session) {
         passwordAuthService.verifyPassword(passwordSendRequest.toDto(authDto.getNickname(), authDto.getPassword()));
         session.setAttribute("AuthPassword:" + passwordSendRequest.getPurpose(), authDto.getNickname());
-        return ResponseEntity.ok(new ApiResponse<>("비밀번호 인증 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A00", null));
     }
 
     @PostMapping("/email/send")
     public ResponseEntity<?> sendMail(@Valid @RequestBody MailSendDto mailSendDto) {
         mailAuthService.sendMail(mailSendDto);
-        return ResponseEntity.ok(new ApiResponse<>("이메일 인증 코드 전송 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A01", null));
     }
 
     @PostMapping("/email/verify")
@@ -49,13 +49,13 @@ public class AuthController {
                                         HttpSession session) {
         mailAuthService.verifyEmailCode(mailAuthDto);
         session.setAttribute("AuthEmail:" + mailAuthDto.getPurpose(), mailAuthDto.getEmail());
-        return ResponseEntity.ok(new ApiResponse<>("이메일 인증 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A02", null));
     }
 
     @PostMapping("/phone/send")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody PhoneSendDto phoneSendDto) {
         phoneAuthService.sendMessage(phoneSendDto);
-        return ResponseEntity.ok(new ApiResponse<>("전화번호 인증 코드 전송 성공", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A03", null));
     }
 
     @PostMapping("/phone/verify")
@@ -63,7 +63,7 @@ public class AuthController {
                                            HttpSession session) {
         phoneAuthService.verifyMessageCode(phoneAuthDto);
         session.setAttribute("AuthPhone:" + phoneAuthDto.getPurpose(), phoneAuthDto.getPhone());
-        return ResponseEntity.ok(new ApiResponse<>("전화번호 인증 성공 코드", null));
+        return ResponseEntity.ok(new ApiResponse<>("1A04", null));
     }
 
     @PostMapping("/license/verify")
@@ -72,7 +72,7 @@ public class AuthController {
                                               HttpSession session) {
         LicenseNumSendResponse result = licenseNumAuthService.verifyLicenceNum(licenseNumSendRequest.toDto(authProfileInfo.getNickname()));
         session.setAttribute("AuthLicenseNum:" + licenseNumSendRequest.getPurpose(), licenseNumSendRequest.getLicenseNum());
-        return ResponseEntity.ok(new ApiResponse<>("사업자 등록번호 인증 성공 코드", result));
+        return ResponseEntity.ok(new ApiResponse<>("1A05", result));
     }
 
 }

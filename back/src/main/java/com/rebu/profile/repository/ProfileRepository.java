@@ -2,12 +2,13 @@ package com.rebu.profile.repository;
 
 import com.rebu.profile.dto.GetProfileResponse;
 import com.rebu.profile.entity.Profile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long>, ProfileCustomRepository {
@@ -24,13 +25,13 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     @Query("""
         SELECT new com.rebu.profile.dto.GetProfileResponse(
             p.imageSrc,
-            COUNT(fr.id),
-            COUNT(fi.id),
+            COUNT(DISTINCT fr.id),
+            COUNT(DISTINCT fi.id),
             p.nickname,
             p.introduction,
-            COUNT(rv.id),
-            COUNT(sc.id),
-            COUNT(sf.shopFavoriteId),
+            COUNT(DISTINCT rv.id),
+            COUNT(DISTINCT sc.id),
+            COUNT(DISTINCT sf.shopFavoriteId),
             p.isPrivate
         )
         FROM Profile p
@@ -42,7 +43,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
         WHERE p.id = :profileId
         GROUP BY p.id
         """)
-    Optional<GetProfileResponse> getCommonProfileByProfileId(Long profileId);
+    Optional<GetProfileResponse> getCommonProfileResponseByProfileId(Long profileId);
 
     @Query("""
         SELECT p
@@ -50,7 +51,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
         WHERE p.nickname LIKE %:keyword%
         OR p.introduction LIKE %:keyword%
     """)
-    List<Profile> searchProfileByKeyword(String keyword);
+    Slice<Profile> searchProfileByKeyword(String keyword, Pageable pageable);
 
 }
 

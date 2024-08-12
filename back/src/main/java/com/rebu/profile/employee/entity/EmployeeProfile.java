@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class EmployeeProfile extends Profile {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private ShopProfile shop;
 
@@ -34,6 +34,14 @@ public class EmployeeProfile extends Profile {
 
     public void changeWorkingIntroduction(String newWorkingIntroduction) {
         workingIntroduction = newWorkingIntroduction;
+    }
+
+    public void changeRole(String newRole) {
+        role = newRole;
+    }
+
+    public void changeShop(ShopProfile newShop) {
+        shop = newShop;
     }
 
     public void changeWorkingName(String newWorkingName) {

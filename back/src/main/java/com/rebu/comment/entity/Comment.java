@@ -1,6 +1,5 @@
 package com.rebu.comment.entity;
 
-import com.rebu.absence.entity.Absence;
 import com.rebu.feed.entity.Feed;
 import com.rebu.profile.entity.Profile;
 import jakarta.persistence.*;
@@ -46,7 +45,7 @@ public class Comment {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private boolean isDeleted = Boolean.FALSE;
+    private boolean isDeleted;
 
     @Override
     public boolean equals(Object o) {

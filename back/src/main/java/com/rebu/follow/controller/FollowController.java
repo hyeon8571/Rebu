@@ -11,6 +11,9 @@ import com.rebu.follow.dto.GetFollowingResponse;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,15 +43,17 @@ public class FollowController {
 
     @GetMapping("/{nickname}/followings")
     public ResponseEntity<?> getFollowings(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
-                                           @PathVariable String nickname) {
-        List<GetFollowingResponse> followings = followService.getFollowings(new GetFollowingsTargetDto(authProfileInfo.getNickname(), nickname));
+                                           @PathVariable String nickname,
+                                           @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        Slice<GetFollowingResponse> followings = followService.getFollowings(new GetFollowingsTargetDto(authProfileInfo.getNickname(), nickname, pageable));
         return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followings));
     }
 
     @GetMapping("/{nickname}/followers")
     public ResponseEntity<?> getFollowers(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
-                                          @PathVariable String nickname) {
-        List<GetFollowerResponse> followers = followService.getFollowers(new GetFollowersTargetDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("팔로잉 조회 성공 코드", followers));
+                                          @PathVariable String nickname,
+                                          @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        Slice<GetFollowerResponse> followers = followService.getFollowers(new GetFollowersTargetDto(authProfileInfo.getNickname(), nickname, pageable));
+        return ResponseEntity.ok(new ApiResponse<>("팔로워 조회 성공 코드", followers));
     }
 }

@@ -242,11 +242,10 @@ export default function ProfileLarge({ currentUser, time }) {
       if (hasMore) {
         // 더 불러올 데이터가 있는 경우에만 API 호출
         const result = await getFollowingList(targetNickname, currentPage);
-        // const last = result.data.body.last;
-        const last =
-          result.data.body.last === undefined ? true : result.data.body.last;
+        // const last = result.data.body.last === undefined ? true : result.data.body.last;
 
         if (result.success) {
+          const last = result.data.body.last;
           setFollowings((prevFollowings) => [
             ...prevFollowings,
             ...result.data.body.content,
@@ -267,13 +266,12 @@ export default function ProfileLarge({ currentUser, time }) {
       if (hasMore) {
         // 더 불러올 데이터가 있을 때에만 API 호출
         const result = await getFollowerList(targetNickname, currentPage); // cirrentPage : 현재 페이지 번호
-        const last =
-          result.data.body.last === undefined ? true : result.data.body.last;
         if (result.success) {
           setFollowers((prevFollowers) => [
             ...prevFollowers, // 이전 목록에 다음 목록들 추가
             ...result.data.body.content,
           ]);
+          const last = result.data.body.last;
           setHasMore(last === false); // 다음 페이지가 있는지 여부
           // last= true -> 다음 페이지 없음 false: 다음 페이지 있음
           console.log("팔로워 목록", result.data.body);

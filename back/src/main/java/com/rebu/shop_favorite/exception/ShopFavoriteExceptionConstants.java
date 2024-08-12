@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ShopFavoriteExceptionConstants implements ExceptionConstants {
-    ALREADY_FAVORITE("이미 즐겨찾기한 매장");
+    ALREADY_FAVORITE("0S00");
 
     final String code;
 }
