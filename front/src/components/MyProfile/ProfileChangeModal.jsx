@@ -114,6 +114,7 @@ const NicknameText = styled.span`
 const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
   const [isProfileCreateModalOpen, setIsProfileCreateModalOpen] =
     useState(false);
+  const [profiles, setProfiles] = useState([]); // profiles 상태
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -121,12 +122,13 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
     const fetchProfiles = async () => {
       try {
         const profiles = await getAllProfiles();
+        setProfiles(profiles); // 프로필 상태 업데이트
         console.log("프로필 목록", profiles);
       } catch (err) {
         console.error("프로필 목록을 불러오는 중 오류 발생", err);
       }
     };
-    fetchProfiles();
+    fetchProfiles(); // 컴포넌트 마운트 시 fetchProfiles 함수 실행
   }, []);
 
   const handleCreateProfile = () => {
@@ -147,7 +149,18 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
         <ModalOverlay>
           <ModalContent>
             <h2 style={{ textAlign: "center" }}>계정 전환</h2>
-            <div>{profiles}</div>
+            <div>
+              {profiles.map((profile, index) => (
+                <div key={index}>
+                  <ProfileImage
+                    src={profile.imgSrc || profileImageSrc}
+                    alt="Profile"
+                  />
+                  <NicknameText>{profile.nickname}</NicknameText>
+                  <p>type: {profile.type}</p>
+                </div>
+              ))}
+            </div>
             <ModalHeader>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
             </ModalHeader>

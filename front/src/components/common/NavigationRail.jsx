@@ -60,13 +60,14 @@ const ProfileNavItem = () => {
   const { nickname, type } = useSelector((state) => state.auth);
   console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
+    console.log(`/profile/${nickname}/${type}`);
     navigate(`/profile/${nickname}/${type}`);
   };
 
   return (
-    <ProfileNavLink onClick={handleProfileClick}>
+    <div onClick={handleProfileClick}>
       <ProfileMedium img={Img} time={0} />
-    </ProfileNavLink>
+    </div>
   );
 };
 
