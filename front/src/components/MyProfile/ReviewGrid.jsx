@@ -73,8 +73,9 @@ function GridComponent({ Card, currentUser, loginUser }) {
 
   const handlePhotoClick = (index) => {
     setSelectedPhotos(Card.slice(index));
-    console.log(selectedPhotos)
   };
+
+
 
   return (
     <>

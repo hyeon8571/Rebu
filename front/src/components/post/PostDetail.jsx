@@ -10,6 +10,8 @@ import PostDelete from "./PostDeleteModal";
 import PostComment from "./PostComment";
 import PostModifyModal from "./PostModifyModal";
 import ModalPortal from "../../util/ModalPortal";
+import axios from "axios";
+import { BASE_URL } from "../../views/Signup";
 
 const PostWrapper = styled.div`
   background-color: ${(props) => (props.theme.value === "light" ? "#fbf8fe" : "#404040")};
@@ -317,6 +319,8 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
   const [page, setPage] = useState(0);
+  console.log(information);
+  console.log(posts)
 
   useEffect(() => {
     axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=${page}&size=10`, {
@@ -344,13 +348,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
       })      
   }, []);
 
-  useEffect(() => {
-    fetch('/mockdata/comment.json')
-      .then(res => res.json())
-      .then((data) => {
-        setComment(data.body);
-      })      
-  }, []);
+
 
   const nextSlide = useCallback((index) => {
     setPosts((prevPosts) => {
@@ -474,7 +472,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
 
   return (
     <>
-      {posts.map((item, index) => (
+      {posts?.map((item, index) => (
         <PostWrapper key={index}>
           <PostHeader>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -538,7 +536,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
           <SlideImg>
             <SlideBack onClick={() => prevSlide(index)} />
             <SlideFront onClick={() => nextSlide(index)} />
-            {item.imageSrcs.map((slide, imgIndex) => (
+            {item.imageSrcs?.map((slide, imgIndex) => (
               <PostImage
                 key={imgIndex}
                 src={slide}
@@ -547,7 +545,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
               />
             ))}
             <DotsWrapper>
-              {item.imageSrcs.map((_, imgIndex) => (
+              {item.imageSrcs?.map((_, imgIndex) => (
                 <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
               ))}
             </DotsWrapper>
@@ -581,7 +579,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
             {updatedPost && modifyPostId === index && item.nickname === loginUser ? updatedPost.content : item.content}
           </PostDescription>
           <HashtagContainer>
-            {item.hashTags.map((hashtag) => (
+            {item.hashTags?.map((hashtag) => (
               <PostHashtag>#{hashtag}</PostHashtag>
             ))}
           </HashtagContainer>
