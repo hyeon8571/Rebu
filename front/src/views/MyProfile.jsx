@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   /* max-width: 768px; */
-  margin-bottom: 70px;
+  margin-bottom: 20px;
 `;
 
 const ProfileContainer = styled.div`
@@ -40,20 +40,21 @@ const ProfileContainer = styled.div`
 `;
 
 const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? "sticky" : "relative")};
+  position: flex;
+  /* position: ${(props) => (props.isSticky ? "sticky" : "relative")}; */
   top: ${(props) =>
     props.isSticky ? "0" : "auto"}; // 화면 상단에 고정되도록 설정
   left: 0;
   right: 0;
   width: 100%;
-  max-width: 768px;
+  /* max-width: 768px; */
   transition: all 0.5s ease-in-out;
   background-color: ${(props) =>
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
 `;
 
 const GridContainer = styled.div`
-  max-width: 768px;
+  /* max-width: 768px; */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -101,12 +102,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   console.log("MyProfile호출!", nickname, type);
 
 
-
-  // Redux 상태에서 필요한 정보 가져오기
-
- 
-
-
   // 타입별 프로필 정보 조회
   useEffect(() => {
     const fetchProfile = async () => {
@@ -148,8 +143,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   if (!profile) {
     console.log("Loading...");
   }
-
-
 
 
 
@@ -294,26 +287,26 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
 useEffect(() => {
-  if (type === "COMMON" && isLogin) {
+  if (type === "COMMON") {
     setTabTitle([
-    { name: "Review", content: "Review", count: profile ? profile.reviewCnt : 0 },
-    { name: "Scrap", content: "Scrap", count: profile ? profile.scrapCnt : 0 },
-    { name: "Likes", content: "Likes", count: profile ? profile.favoritesCnt : 0}
+    { name: "Review", content: "Review", count: profile.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
+    { name: "Likes", content: "Likes", count: profile.favoritesCnt}
   ])
-} else if (type === "SHOP" && isLogin) {
+} else if (type === "SHOP") {
     setTabTitle([
     { name: "Post", content: "Post", count: profile.feedCnt},
     { name: "Review", content: "Review", count: profile.reviewCnt},
     { name: "Reservation", content: "Reservation", count: profile.reservationCnt},
   ])
-} else if (type === "EMPLOYEE" && isLogin) {
+} else if (type === "EMPLOYEE") {
   setTabTitle([
-    { name: "Post", content: "Post", count:  profile ? profile.feedCnt : 0 },
-    { name: "Review", content: "Review", count:  profile ? profile.reviewCnt : 0 },
-    { name: "Scrap", content: "Scrap", count:  profile ? profile.scrapCnt : 0 },
+    { name: "Post", content: "Post", count: profile.feedCnt },
+    { name: "Review", content: "Review", count: profile.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
   ])
 };
-}, []);
+}, [profile]);
 
   const tabName = ['예약현황', "디자이너"];
 

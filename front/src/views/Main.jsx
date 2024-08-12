@@ -29,6 +29,8 @@ function Main({ theme, toggleTheme }) {
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
   const dispatch = useDispatch();
+
+  //리덕스에서 정보 가져오기
   const {
     nickname,
     type,
@@ -85,17 +87,9 @@ function Main({ theme, toggleTheme }) {
 
   return (
     <Wrapper>
-      {isLogin !== true ? (
-      
-          <Login />
-    
-      ) : (
-        <>
-          <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
-          <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
-          <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
-        </>
-      )}
+      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
+      <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
+      <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
     </Wrapper>
   );
 }

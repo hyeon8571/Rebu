@@ -8,7 +8,7 @@ const TabMenu = styled.ul`
     props.theme.value === "light" ? "#000000" : props.theme.text};
   display: flex;
   margin: auto;
-  max-width: 768px;
+  /* max-width: 768px; */
   height: 60px;
   flex-direction: row;
   align-items: center;
