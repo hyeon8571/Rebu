@@ -2,19 +2,12 @@ package com.rebu.alarm.service;
 
 import com.rebu.alarm.controller.AlarmController;
 import com.rebu.alarm.dto.*;
-import com.rebu.alarm.entity.AlarmComment;
-import com.rebu.alarm.entity.AlarmFollow;
-import com.rebu.alarm.entity.AlarmInviteEmployee;
-import com.rebu.alarm.entity.AlarmReservation;
+import com.rebu.alarm.entity.*;
 import com.rebu.alarm.enums.Type;
 import com.rebu.alarm.exception.AlarmNotFoundException;
-import com.rebu.alarm.repository.AlarmCommentRepository;
-import com.rebu.alarm.repository.AlarmFollowRepository;
-import com.rebu.alarm.repository.AlarmInviteEmployeeRepository;
-import com.rebu.alarm.repository.AlarmReservationRepository;
+import com.rebu.alarm.repository.*;
 import com.rebu.comment.entity.Comment;
 import com.rebu.feed.entity.Feed;
-import com.rebu.feed.repository.FeedRepository;
 import com.rebu.follow.entity.Follow;
 import com.rebu.menu.entity.Menu;
 import com.rebu.profile.employee.entity.EmployeeProfile;
@@ -25,6 +18,9 @@ import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.reservation.entity.Reservation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -32,18 +28,18 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class AlarmService {
 
+    private final AlarmRepository alarmRepository;
     private final AlarmCommentRepository alarmCommentRepository;
     private final AlarmFollowRepository alarmFollowRepository;
     private final AlarmInviteEmployeeRepository alarmInviteEmployeeRepository;
     private final AlarmReservationRepository alarmReservationRepository;
+    private final AlarmReservationResponseRepository alarmReservationResponseRepository;
     private final ProfileRepository profileRepository;
-    private final FeedRepository feedRepository;
     private static Map<String, Integer> alarmCounts = new HashMap<>();
 
     public SseEmitter subscribe(String userNickname) {
@@ -68,6 +64,8 @@ public class AlarmService {
         Profile profile = profileRepository.findById(feed.getWriter().getId()).orElseThrow(ProfileNotFoundException::new);
         String userNickname = profile.getNickname();
         Profile senderProfile = profileRepository.findByNickname(comment.getWriter().getNickname()).orElseThrow(ProfileNotFoundException::new);
+
+        if (!profile.equals(senderProfile)) return;
         if (AlarmController.sseEmitters.containsKey(userNickname)) {
             SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
             try {
@@ -250,55 +248,88 @@ public class AlarmService {
         }
     }
 
-    public List<AlarmReadDto> read(String userNickname) throws IOException {
-        Profile receiverprofile = profileRepository.findByNickname(userNickname).orElseThrow(ProfileNotFoundException::new);
+    @Transactional
+    public void alarmReservationResponse(Reservation reservation, Profile receiver, Profile sender) {
+        String userNickname = receiver.getNickname();
 
-        List<AlarmReadDto> alarmList = new ArrayList<>();
+        if (AlarmController.sseEmitters.containsKey(userNickname)) {
+            SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
+            try {
+                LocalDateTime now = LocalDateTime.now();
 
-        List<AlarmComment> alarmComments = alarmCommentRepository.findByReceiverProfile(receiverprofile);
-        List<AlarmFollow> alarmFollows = alarmFollowRepository.findByReceiverProfile(receiverprofile);
-        List<AlarmInviteEmployee> alarmInviteEmployees = alarmInviteEmployeeRepository.findByReceiverProfile(receiverprofile);
-        List<AlarmReservation> alarmReservations = alarmReservationRepository.findByReceiverProfile(receiverprofile);
+                Map<String, Object> eventData = new LinkedHashMap<>();
+                eventData.put("alarmType", Type.RESERVATION_RESPONSE);
+                eventData.put("senderNickname", sender.getNickname());
+                eventData.put("senderId", sender.getId());
+                eventData.put("senderType", sender.getType());
+                eventData.put("receiverNickname", receiver.getNickname());
+                eventData.put("receiverId", receiver.getId());
+                eventData.put("receiverType", receiver.getType());
+                eventData.put("reservationStatus", reservation.getReservationStatus());
+                eventData.put("alarmCreateAT", now);
 
-        for (AlarmComment alarm : alarmComments) {
-            switch (alarm.getType()) {
-                case COMMENT:
-                    alarmList.add(AlarmCommentReadDto.toDto(alarm));
-                    break;
-                case NESTED_COMMENT:
-                    alarmList.add(AlarmNestedCommentReadDto.toDto(alarm));
+                AlarmReservationResponse alarmReservationResponse = alarmReservationResponseRepository.save(AlarmReservationResponse.builder()
+                        .receiverProfile(receiver)
+                        .senderProfile(sender)
+                        .reservation(reservation)
+                        .reservationStatus(reservation.getReservationStatus())
+                        .type(Type.RESERVATION_RESPONSE)
+                        .build());
+
+                eventData.put("alarmId", alarmReservationResponse.getId());
+                sseEmitter.send(SseEmitter.event().name("addFollow").data(eventData));
+
+                alarmCounts.put(userNickname, alarmCounts.getOrDefault(userNickname, 0) + 1);
+                sseEmitter.send(SseEmitter.event().name("notificationCount").data(alarmCounts.get(userNickname)));
+
+            } catch (IOException e) {
+                AlarmController.sseEmitters.remove(userNickname);
             }
         }
+    }
 
-        for (AlarmFollow alarm : alarmFollows) {
-            alarmList.add(AlarmFollowReadDto.toDto(alarm));
+    public Slice<AlarmReadDto> read(String userNickname, Pageable pageable) throws IOException {
+        Profile requestProfile = profileRepository.findByNickname(userNickname).orElseThrow(ProfileNotFoundException::new);
+        Slice<Alarm> alarms = alarmRepository.findByReceiverProfile(requestProfile, pageable);
+
+        List<AlarmReadDto> alarmReadDtos = new ArrayList<>();
+        for (Alarm alarm : alarms) {
+            switch (alarm.getType()) {
+                case COMMENT:
+                    alarmReadDtos.add(AlarmCommentReadDto.from((AlarmComment) alarm));
+                    break;
+                case NESTED_COMMENT:
+                    alarmReadDtos.add(AlarmNestedCommentReadDto.from((AlarmComment) alarm));
+                    break;
+                case RESERVATION:
+                    alarmReadDtos.add(AlarmReservationReadDto.from((AlarmReservation) alarm));
+                    break;
+                case FOLLOW:
+                    alarmReadDtos.add(AlarmFollowReadDto.from((AlarmFollow) alarm));
+                    break;
+                case INVITE_EMPLOYEE:
+                    alarmReadDtos.add(AlarmInvIteEmployeeReadDto.from((AlarmInviteEmployee) alarm));
+                    break;
+                case RESERVATION_RESPONSE:
+                    alarmReadDtos.add(AlarmReservationResponseDto.from((AlarmReservationResponse) alarm));
+                    break;
+            }
         }
-
-        for (AlarmInviteEmployee alarm : alarmInviteEmployees) {
-            alarmList.add(AlarmInvIteEmployeeReadDto.toDto(alarm));
-        }
-
-        for (AlarmReservation alarm : alarmReservations) {
-            alarmList.add(AlarmReservationReadDto.toDto(alarm));
-        }
-
-        List<AlarmReadDto> sortedList = alarmList.parallelStream()
-                .sorted((o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()))
-                .collect(Collectors.toList());
 
         alarmCounts.put(userNickname, 0);
         SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
         sseEmitter.send(SseEmitter.event().name("notificationCount").data(alarmCounts.get(userNickname)));
-        return sortedList;
+
+        return new SliceImpl<>(alarmReadDtos, pageable, alarms.hasNext());
     }
 
-    public boolean update(AlarmInviteEmployeeUpdateDto dto) {
+    public boolean inviteEmployeeUpdate(AlarmInviteEmployeeUpdateDto dto) {
         AlarmInviteEmployee alarmInviteEmployee = alarmInviteEmployeeRepository.findById(dto.getAlarmId()).orElseThrow(AlarmNotFoundException::new);
         Profile profile = profileRepository.findByNickname(dto.getNickName()).orElseThrow(ProfileNotFoundException::new);
         if (!alarmInviteEmployee.getReceiverProfile().equals(profile)) {
             throw new ProfileUnauthorizedException();
         }
-        alarmInviteEmployeeRepository.save(dto.toEntity(alarmInviteEmployee));
+        alarmInviteEmployee.updateIsAccept(dto.isAccept());
         return true;
     }
 

@@ -16,8 +16,9 @@ public class AlarmInvIteEmployeeReadDto extends AlarmReadDto{
     private String role;
     private Boolean isAccept;
 
-    public static AlarmInvIteEmployeeReadDto toDto(AlarmInviteEmployee alarmInviteEmployee) {
+    public static AlarmInvIteEmployeeReadDto from(AlarmInviteEmployee alarmInviteEmployee) {
         return AlarmInvIteEmployeeReadDto.builder()
+                .alarmId(alarmInviteEmployee.getId())
                 .senderNickname(alarmInviteEmployee.getSenderProfile().getNickname())
                 .senderId(alarmInviteEmployee.getSenderProfile().getId())
                 .senderType(alarmInviteEmployee.getSenderProfile().getType())

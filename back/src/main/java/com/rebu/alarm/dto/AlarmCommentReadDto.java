@@ -14,8 +14,9 @@ public class AlarmCommentReadDto extends AlarmReadDto {
     private Long parentCommentId;
     private Long feedId;
 
-    public static AlarmCommentReadDto toDto(AlarmComment alarmComment) {
+    public static AlarmCommentReadDto from(AlarmComment alarmComment) {
         return AlarmCommentReadDto.builder()
+                .alarmId(alarmComment.getId())
                 .senderNickname(alarmComment.getSenderProfile().getNickname())
                 .senderId(alarmComment.getSenderProfile().getId())
                 .senderType(alarmComment.getSenderProfile().getType())

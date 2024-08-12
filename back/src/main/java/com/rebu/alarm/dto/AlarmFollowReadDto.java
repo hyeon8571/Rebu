@@ -10,8 +10,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AlarmFollowReadDto extends AlarmReadDto {
 
-    public static AlarmFollowReadDto toDto(AlarmFollow alarmFollow) {
+    public static AlarmFollowReadDto from(AlarmFollow alarmFollow) {
         return AlarmFollowReadDto.builder()
+                .alarmId(alarmFollow.getId())
                 .senderNickname(alarmFollow.getSenderProfile().getNickname())
                 .senderId(alarmFollow.getSenderProfile().getId())
                 .senderType(alarmFollow.getSenderProfile().getType())

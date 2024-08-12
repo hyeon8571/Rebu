@@ -7,6 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AlarmFollowRepository extends JpaRepository<AlarmFollow, Long> {
-    List<AlarmFollow> findByReceiverProfile(Profile profile);
-
 }
