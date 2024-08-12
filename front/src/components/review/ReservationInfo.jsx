@@ -2,6 +2,7 @@ import styled from "styled-components";
 import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import ButtonDisabled from "../common/ButtonDisabled";
+import { formatDateTime } from "../../util/commonFunction";
 
 const GridContainer = styled.div`
   display: grid;
@@ -145,7 +146,7 @@ export default function Reservation({ info, button }) {
         <DesignerWrapper>{info.designer}</DesignerWrapper>
         <MenuWrapper>{info.menu}</MenuWrapper>
         <PriceWrapper>{info.price.toLocaleString()} ￦</PriceWrapper>
-        <DateWrapper>{info.date}</DateWrapper>
+        <DateWrapper>{formatDateTime(info.date)}</DateWrapper>
       </Content>
     </GridContainer>
   );

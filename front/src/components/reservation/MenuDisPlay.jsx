@@ -113,7 +113,7 @@ export default function MenuDisplay() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/menus?employeeNickName=` + nickname, {
+      .get(`${BASE_URL}/api/menus?employeeNickname=` + nickname, {
         headers: {
           "Content-Type": "application/json",
           Access: localStorage.getItem("access"),

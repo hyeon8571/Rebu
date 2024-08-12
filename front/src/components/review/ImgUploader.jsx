@@ -81,8 +81,8 @@ const DelIcon = styled(MdCancel)`
 export default function ImgUploader({
   list,
   imgNum,
-  uploadImgUrls,
-  setUploadImgUrls,
+  uploadImgFiles,
+  setUploadImgFiles,
   setImgNum,
   setIsImgAlert,
   review,
@@ -91,46 +91,39 @@ export default function ImgUploader({
   const onchangeImageUpload = (e) => {
     const { files } = e.target;
     const uploadFiles = Array.from(files);
-    const newUrls = [];
 
-    uploadFiles.forEach((uploadFile) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
-      reader.onloadend = () => {
-        newUrls.push(reader.result);
-        // 모든 파일이 다 읽힌 후 상태 업데이트
-        if (newUrls.length === uploadFiles.length) {
-          const allUrls = [...uploadImgUrls, ...newUrls];
-          setUploadImgUrls(allUrls);
-          setReview({
-            ...review,
-            images: allUrls,
-          });
-        }
-      };
+    const allFiles = [...uploadImgFiles, ...uploadFiles];
+    setUploadImgFiles(allFiles);
+    setReview({
+      ...review,
+      images: allFiles,
     });
+
     setIsImgAlert(false);
     setImgNum(imgNum + uploadFiles.length);
   };
 
   const handleDelete = (index) => {
-    const newUrls = uploadImgUrls.filter((_, i) => i !== index);
-    setUploadImgUrls(newUrls);
+    const newFiles = uploadImgFiles.filter((_, i) => i !== index);
+    setUploadImgFiles(newFiles);
     setReview({
       ...review,
-      images: newUrls,
+      images: newFiles,
     });
     setImgNum(imgNum - 1);
   };
 
   return (
     <ImgDisplayer>
-      {uploadImgUrls.map((url, index) => (
-        <ImgWrapper key={index} onClick={() => handleDelete(index)}>
-          <UploadedImg src={url} alt={`upload-${index}`} />
-          <DelIcon size={24} />
-        </ImgWrapper>
-      ))}
+      {uploadImgFiles.map((file, index) => {
+        const url = URL.createObjectURL(file);
+        return (
+          <ImgWrapper key={index} onClick={() => handleDelete(index)}>
+            <UploadedImg src={url} alt={`upload-${index}`} />
+            <DelIcon size={24} />
+          </ImgWrapper>
+        );
+      })}
 
       {imgNum < 5 && (
         <label htmlFor="file">

@@ -81,7 +81,8 @@ const LottieWrapper = styled.div`
   align-items: end;
 `;
 const StyledLottie = styled(Lottie)`
-  position: relative;
+  position: absolute;
+  bottom: 10%;
   width: 100px;
   height: 100px;
 `;
@@ -191,15 +192,15 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
     if (resultListRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = resultListRef.current;
 
-      console.log("scrollHeight:", scrollHeight);
-      console.log("scrollTop:", scrollTop);
-      console.log("clientHeight:", clientHeight);
+      // console.log("scrollHeight:", scrollHeight);
+      // console.log("scrollTop:", scrollTop);
+      // console.log("clientHeight:", clientHeight);
 
       if (scrollTop + clientHeight >= scrollHeight - 5) {
         setPage((prevPage) => prevPage + 1);
       }
     }
-  }, 1000);
+  }, 500);
 
   useEffect(() => {
     if (resultListRef.current) {
@@ -234,7 +235,7 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
         <SearchInputWrapper>
           <SearchInput
             type="text"
-            placeholder="Search..."
+            placeholder="프로필 또는 해시태그를 검색해보세요"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -243,7 +244,13 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
               setProfiles([]);
             }}
           />
-          <CloseButton onClick={() => setIsOpen(false)}>×</CloseButton>
+          <CloseButton
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            ×
+          </CloseButton>
         </SearchInputWrapper>
         {loading && page === 0 ? (
           <LottieWrapper>

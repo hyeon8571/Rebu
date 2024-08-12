@@ -61,7 +61,7 @@ export default function AddHashTag({
       const newSet = [...new Set([...prevHashTags, newHashTag])];
       setReview({
         ...review,
-        hashTags: newSet,
+        hashtags: newSet,
       });
       return newSet;
     });
@@ -82,11 +82,13 @@ export default function AddHashTag({
   };
 
   const deleteHashTag = (hashTagToDelete) => {
-    const newHashTags = hashTags.filter((hashTag) => hashTag !== hashTagToDelete);
+    const newHashTags = hashTags.filter(
+      (hashTag) => hashTag !== hashTagToDelete
+    );
     setHashTags(newHashTags);
     setReview({
       ...review,
-      hashTags: newHashTags,
+      hashtags: newHashTags,
     });
   };
 

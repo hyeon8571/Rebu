@@ -94,7 +94,7 @@ const InsideBar = styled.div`
   width: ${(props) => props.percent}%;
   height: 33px;
   background-color: ${(props) =>
-    props.theme.value === "light" ? "#e3cbfb" :"#b475f3"};
+    props.theme.value === "light" ? "#e3cbfb" : "#b475f3"};
   border-radius: 100rem;
   animation: ${grow} 2s forwards;
 `;
@@ -116,11 +116,13 @@ const StatNum = styled.div`
   padding-right: 1rem;
 `;
 
-export default function ReviewKeywordStat({ reviewNum }) {
+export default function ReviewKeywordStat({ reviewNum, nickname }) {
   const [data, setData] = useState([]);
 
+  const BASE_URL = "https://www.rebu.kro.kr";
+
   useEffect(() => {
-    fetch("/mockdata/keywordstat.json")
+    fetch(`${BASE_URL}/api/review-keywords/counr?nickname=${nickname}`)
       .then((response) => response.json())
       .then((jsondata) => {
         const total = jsondata.body.reduce((acc, item) => acc + item.count, 0);
@@ -146,7 +148,7 @@ export default function ReviewKeywordStat({ reviewNum }) {
 
   return (
     <Container>
-      <hr style={{border: "0.5px solid #943aee"}} />
+      <hr style={{ border: "0.5px solid #943aee" }} />
       {data.length > 0 ? (
         data.map((item) => (
           <StatBar key={item.content}>
@@ -161,7 +163,7 @@ export default function ReviewKeywordStat({ reviewNum }) {
       ) : (
         <div>Loading...</div>
       )}
-      <hr style={{border: "0.5px solid #943aee"}} />
+      <hr style={{ border: "0.5px solid #943aee" }} />
     </Container>
   );
 }

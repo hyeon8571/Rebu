@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const keywordList = [
   {
@@ -55,7 +56,7 @@ const keywordList = [
 ];
 
 const Container = styled.div`
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -68,17 +69,15 @@ const Container = styled.div`
 `;
 
 const StatBar = styled.div`
-  height: 35px;
-  border: 1px solid black;
+  height: 34px;
+  border: 1px solid #999999;
   border-radius: 100rem;
   display: grid;
   grid-template-columns: 1fr 5fr 1fr;
   align-items: center;
   box-sizing: border-box;
-  margin: 10px;
+  margin: 5px;
   position: relative;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 `;
 
 const grow = keyframes`
@@ -93,10 +92,11 @@ const grow = keyframes`
 const InsideBar = styled.div`
   position: absolute;
   width: ${(props) => props.percent}%;
-  height: 34px;
-  background-color: #ca9afa;
+  height: 33px;
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#e3cbfb" : "#b475f3"};
   border-radius: 100rem;
-  animation: ${grow} 1.5s forwards;
+  animation: ${grow} 2s forwards;
 `;
 
 const StatIcon = styled.img`
@@ -116,21 +116,34 @@ const StatNum = styled.div`
   padding-right: 1rem;
 `;
 
-export default function ReviewKeywordStat({ reviewNum }) {
+export default function ReviewKeywordStat({ reviewNum, nickname }) {
   const [data, setData] = useState([]);
 
+  const BASE_URL = "https://www.rebu.kro.kr";
+
   useEffect(() => {
-    fetch("/mockdata/keywordstat.json")
-      .then((response) => response.json())
+    axios
+      .get(`${BASE_URL}/api/review-keywords/count?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setData(response.data.body);
+        return response.data.body;
+      })
       .then((jsondata) => {
-        const total = jsondata.body.reduce((acc, item) => acc + item.count, 0);
-        const newEntity = jsondata.body.map((item) => {
+        console.log(jsondata);
+        const total = jsondata.reduce((acc, item) => acc + item.count, 0);
+        const newEntity = jsondata.map((item) => {
           const keywordItem = keywordList.find(
-            (keyword) => keyword.keyword === item.content
+            (keyword) => keyword.keyword === item.keyword
           );
           return {
             ...item,
-            imgURL: keywordItem ? keywordItem.imgURL : "default.png",
+            imgURL: keywordItem.imgURL,
             percent: ((item.count / reviewNum) * 100).toFixed(2),
           };
         });
@@ -141,18 +154,20 @@ export default function ReviewKeywordStat({ reviewNum }) {
           .slice(0, 5);
 
         setData(top5Entity);
+      })
+      .catch((error) => {
+        console.log(Error);
       });
   }, [reviewNum]);
 
   return (
     <Container>
+      <hr style={{ border: "0.5px solid #943aee" }} />
       {data.length > 0 ? (
         data.map((item) => (
           <StatBar key={item.content}>
-            <StatIcon
-              src={process.env.PUBLIC_URL + "/keyword/" + item.imgURL}
-            />
-            <KeywordText>{item.content}</KeywordText>
+            <StatIcon src={process.env.PUBLIC_URL + "keyword/" + item.imgURL} />
+            <KeywordText>{item.keyword}</KeywordText>
             <StatNum>{item.count}</StatNum>
             <InsideBar percent={item.percent}></InsideBar>
           </StatBar>
@@ -160,6 +175,7 @@ export default function ReviewKeywordStat({ reviewNum }) {
       ) : (
         <div>Loading...</div>
       )}
+      <hr style={{ border: "0.5px solid #943aee" }} />
     </Container>
   );
 }

@@ -42,7 +42,7 @@ const Login = () => {
 
     try {
       const loginResult = await dispatch(login(email, password));
-
+      console.log(loginResult);
       if (loginResult.success) {
         // 로그인 성공
         console.log("로그인 성공", loginResult);

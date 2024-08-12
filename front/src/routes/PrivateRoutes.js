@@ -49,7 +49,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
     <Route path="/designerdisplay" element={<DesignerDisplay />} />
     <Route path="/postrevw" element={<PostReview />} />
     <Route path="/postfeed" element={<PostFeedPage />} />
-    <Route path="/stat" element={<ReviewKeywordStat reviewNum={83} />} />
+    <Route path="/stat" element={<ReviewKeywordStat reviewNum={3} />} />
     <Route path="/designer" element={<DesignerDisplay />} />
   </Routes>
 );
