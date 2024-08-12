@@ -2,6 +2,7 @@ package com.rebu.reservation.service;
 
 import com.rebu.absence.entity.Absence;
 import com.rebu.absence.repository.AbsenceRepository;
+import com.rebu.alarm.service.AlarmService;
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.util.ListUtils;
 import com.rebu.menu.entity.Menu;
@@ -46,6 +47,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final WorkingInfoRepository workingInfoRepository;
     private final AbsenceRepository absenceRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     @Authorized(allowed = {Type.COMMON})
@@ -84,6 +86,8 @@ public class ReservationService {
 
         Reservation reservation = dto.toEntity(profile, shop, employee, menu);
         reservationRepository.save(reservation);
+
+        alarmService.alarmReservation(reservation);
     }
 
     @Transactional
@@ -101,6 +105,8 @@ public class ReservationService {
             default: throw new ReservationStatusMismatchException();
         }
         reservation.changeReservationStatus(dto.getReservationStatus());
+
+        alarmService.alarmReservationResponse(reservation, reservation.getProfile(), reservation.getEmployeeProfile());
     }
 
     @Transactional
@@ -110,9 +116,11 @@ public class ReservationService {
         Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
         if(!reservation.getProfile().equals(profile))
             throw new ProfileUnauthorizedException();
-        if(!(reservation.getReservationStatus() == Reservation.ReservationStatus.RECEIVED))
+        if(!(reservation.getReservationStatus() == Reservation.ReservationStatus.RECEIVED ||
+                reservation.getReservationStatus() == Reservation.ReservationStatus.ACCEPTED))
             throw new ReservationStatusNotChangeableException();
         reservation.changeReservationStatus(Reservation.ReservationStatus.CANCLED);
+        alarmService.alarmReservationResponse(reservation, reservation.getEmployeeProfile(), reservation.getProfile());
     }
 
     @Transactional(readOnly = true)
