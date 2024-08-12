@@ -16,7 +16,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
         FROM Feed f
         JOIN FETCH f.feedImages
         JOIN FETCH f.writer
-        JOIN FETCH f.hashtags
+        LEFT JOIN FETCH f.hashtags
         WHERE f.owner = :profile AND f.type = :type
     """)
     List<Feed> findByOwnerAndType(Profile profile, Feed.Type type);

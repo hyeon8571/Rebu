@@ -23,7 +23,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         FROM Review r
         JOIN FETCH r.feedImages
         JOIN FETCH r.writer
-        JOIN FETCH r.hashtags
+        LEFT JOIN FETCH r.hashtags
         JOIN FETCH r.shopProfile
         JOIN FETCH r.selectedReviewKeywords
         WHERE r.employeeProfile = :profile AND r.type = :type
