@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
@@ -18,9 +18,11 @@ import DesignerDisplay from "../components/reservationTab/DesignerDisplay";
 import PostReview from "../views/PostReviewPage";
 import PostFeedPage from "../views/PostFeedPage";
 
+import ProfileTestPage from "../views/ProfileTestPage";
 
 
-  
+
+
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
 
@@ -30,9 +32,14 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route
-      path="/profile"
+      path="/profile/:nickname/:type"
       element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
     />
+    {/* 프로필 렌더링 테스트용 */}
+    {/* <Route
+      path="/profile/:nickname/:type"
+      element={<ProfileTestPage theme={theme} toggleTheme={toggleTheme} />}
+    /> */}
     <Route
       path="/store-profile/"
       element={<StoreProfile theme={theme} toggleTheme={toggleTheme} />}

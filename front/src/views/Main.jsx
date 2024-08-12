@@ -25,22 +25,22 @@ function Main({ theme, toggleTheme }) {
   const dispatch = useDispatch();
   // const profile = useSelector((state) => state.auth.profile);
 
-  useEffect(() => {
-    const initializeAlarms = async () => {
-      try {
-        const alarmsResult = await dispatch(alarmsAgreement());
-        console.log("alarmResult", alarmsResult);
-        if (alarmsResult.success) {
-          console.log("Alarms agreement 성공");
-        } else {
-          console.error("Alarms agreement 실패:", alarmsResult.error);
-        }
-      } catch (error) {
-        console.error("Error in alarms agreement:", error);
-      }
-    };
-    initializeAlarms();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const initializeAlarms = async () => {
+  //     try {
+  //       const alarmsResult = await dispatch(alarmsAgreement());
+  //       console.log("alarmResult", alarmsResult);
+  //       if (alarmsResult.success) {
+  //         console.log("Alarms agreement 성공");
+  //       } else {
+  //         console.error("Alarms agreement 실패:", alarmsResult.error);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in alarms agreement:", error);
+  //     }
+  //   };
+  //   initializeAlarms();
+  // }, [dispatch]);
 
   useEffect(() => {
     fetch("/mockdata/loginuser.json")
