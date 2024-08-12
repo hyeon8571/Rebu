@@ -18,8 +18,6 @@ import DesignerDisplay from "../components/reservationTab/DesignerDisplay";
 import PostReview from "../views/PostReviewPage";
 import PostFeedPage from "../views/PostFeedPage";
 
-import ProfileTestPage from "../views/ProfileTestPage";
-
 
 
 
@@ -35,11 +33,6 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       path="/profile/:nickname/:type"
       element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
     />
-    {/* 프로필 렌더링 테스트용 */}
-    {/* <Route
-      path="/profile/:nickname/:type"
-      element={<ProfileTestPage theme={theme} toggleTheme={toggleTheme} />}
-    /> */}
     <Route
       path="/store-profile/"
       element={<StoreProfile theme={theme} toggleTheme={toggleTheme} />}

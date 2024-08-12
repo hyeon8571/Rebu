@@ -58,9 +58,9 @@ const ProfileNavItem = () => {
   const navigate = useNavigate();
   // Redux 상태에서 nickname과 type을 가져옴
   const { nickname, type } = useSelector((state) => state.auth);
-  console.log("navigationbar", nickname, type);
+  // console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
-    console.log(`/profile/${nickname}/${type}`);
+    // console.log(`/profile/${nickname}/${type}`);
     navigate(`/profile/${nickname}/${type}`);
   };
 

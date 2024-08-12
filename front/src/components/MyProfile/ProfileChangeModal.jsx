@@ -100,10 +100,11 @@ const ModalText = styled.div`
 
 const ProfileImage = styled.img`
   border-radius: 50%;
-  max-width: 40px; // 원래 크기보다 작게 조정
-  max-height: 40px; // 원래 크기보다 작게 조정
+  max-width: 50px; // 원래 크기보다 작게 조정
+  max-height: 60px; // 원래 크기보다 작게 조정
   object-fit: cover;
   margin-right: 10px; // 이미지와 텍스트 간의 간격
+  margin-bottom: 10px;
 `;
 
 const NicknameText = styled.span`
@@ -121,9 +122,13 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const profiles = await getAllProfiles();
-        setProfiles(profiles); // 프로필 상태 업데이트
-        console.log("프로필 목록", profiles);
+        const response = await getAllProfiles();
+        console.log("프로필 목록", response);
+        if (response.success) {
+          setProfiles(response.data); // 프로필 상태 업데이트
+        } else {
+          console.log(response);
+        }
       } catch (err) {
         console.error("프로필 목록을 불러오는 중 오류 발생", err);
       }
@@ -140,7 +145,7 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
   }; //모달닫기
 
   // const profileImageSrc = profile.imgSrc || "/logo.png";
-  const profileImageSrc = "/logo.png";
+  const profileImageSrc = "/img.webp";
   // const { nickname } = useSelector((state) => state.auth);
   const profile2 = useState([]);
   return (
@@ -148,28 +153,29 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
       {ProfileChangeModalOpen && (
         <ModalOverlay>
           <ModalContent>
-            <h2 style={{ textAlign: "center" }}>계정 전환</h2>
+            <h2 style={{ textAlign: "center", marginBottom: 0 }}>
+              프로필 전환
+            </h2>
             <div>
               {profiles.map((profile, index) => (
                 <div key={index}>
                   <ProfileImage
-                    src={profile.imgSrc || profileImageSrc}
+                    src={
+                      profile.imageSrc
+                        ? `https://www.rebu.kro.kr/data${profile.imageSrc}`
+                        : profileImageSrc
+                    }
                     alt="Profile"
                   />
-                  <NicknameText>{profile.nickname}</NicknameText>
-                  <p>type: {profile.type}</p>
+                  <NicknameText>
+                    {profile.nickname} {profile.type}{" "}
+                  </NicknameText>
                 </div>
               ))}
             </div>
             <ModalHeader>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
             </ModalHeader>
-
-            <ModalText>
-              <ProfileImage src={profileImageSrc} alt="ProfileImage" />
-              <NicknameText>{profile.nickname}</NicknameText>
-            </ModalText>
-            <hr></hr>
 
             <ModalButtonContainer>
               <CreateButton onClick={handleCreateProfile}>
