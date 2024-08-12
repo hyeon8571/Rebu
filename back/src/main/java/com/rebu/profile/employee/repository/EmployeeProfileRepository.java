@@ -20,7 +20,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     @Query("""
            SELECT e
            FROM EmployeeProfile e
-           JOIN FETCH e.shop
+           LEFT JOIN FETCH e.shop
            WHERE e.nickname = :nickname
            """)
     Optional<EmployeeProfile> findByNicknameUsingFetchJoinShop(String nickname);
