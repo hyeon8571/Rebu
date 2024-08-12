@@ -66,8 +66,8 @@ public class ProfileController {
         if (checkNickname == null || !checkNickname.equals(changeNicknameRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
-        profileService.changeNickname(changeNicknameRequest.toDto(authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("1C02", null));
+        ProfileInfo profileInfo = profileService.changeNickname(changeNicknameRequest.toDto(authProfileInfo.getNickname()), response);
+        return ResponseEntity.ok(new ApiResponse<>("1C02", profileInfo));
     }
 
     @PatchMapping("/{nickname}/introduction")
@@ -87,8 +87,15 @@ public class ProfileController {
     @PatchMapping("/{nickname}/image")
     public ResponseEntity<?> updateProfileImg(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                               @ProfileImg @RequestParam MultipartFile imgFile) {
-        profileService.changePhoto(new ChangeImgDto(imgFile, authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("1C05", null));
+        String path = profileService.changePhoto(new ChangeImgDto(imgFile, authProfileInfo.getNickname()));
+
+        ProfileInfo profileInfo = ProfileInfo.builder()
+                .imageSrc(path)
+                .nickname(authProfileInfo.getNickname())
+                .type(authProfileInfo.getType())
+                .build();
+
+        return ResponseEntity.ok(new ApiResponse<>("1C05", profileInfo));
     }
 
     @PatchMapping("/{nickname}/phone")

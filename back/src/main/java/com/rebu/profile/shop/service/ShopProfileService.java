@@ -30,6 +30,7 @@ import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.reservation.dto.ReservationDto;
 import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.repository.ReservationRepository;
+import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
 import com.rebu.workingInfo.entity.WorkingInfo;
@@ -67,26 +68,34 @@ public class ShopProfileService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public void generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
+    public ProfileInfo generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
 
         Member member = memberRepository.findByEmail(generateShopProfileDto.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
         ConvertAddressDto convertAddressDto = convertAddressService.convert(generateShopProfileDto.getAddress());
 
-        shopProfileRepository.save(generateShopProfileDto.toEntity(member, convertAddressDto));
+        ShopProfile shopProfile = shopProfileRepository.save(generateShopProfileDto.toEntity(member, convertAddressDto));
 
         workingInfoService.create(generateShopProfileDto.getNickname());
+
+        String path = null;
 
         if (generateShopProfileDto.getImgFile() != null && !generateShopProfileDto.getImgFile().isEmpty()) {
             ChangeImgDto changeImgDto = new ChangeImgDto(generateShopProfileDto.getImgFile(), generateShopProfileDto.getNickname());
 
-            profileService.changePhoto(changeImgDto);
+            path = profileService.changePhoto(changeImgDto);
         }
 
         redisService.deleteData("Refresh:" + generateShopProfileDto.getNowNickname());
 
         resetToken(generateShopProfileDto.getNickname(), Type.SHOP.toString(), response);
+
+        return ProfileInfo.builder()
+                .imageSrc(path)
+                .nickname(shopProfile.getNickname())
+                .type(shopProfile.getType().toString())
+                .build();
     }
 
     @Transactional
