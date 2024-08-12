@@ -118,8 +118,8 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public List<ReservationByProfileDto> readProfileReservations(ReservationReadByProfileDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
-        List<Reservation> reservations = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
-        return ListUtils.applyFunctionToElements(reservations, ReservationByProfileDto::from);
+        List<ReservationAndReviewDto> reservationAndReviews = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
+        return ListUtils.applyFunctionToElements(reservationAndReviews, ReservationByProfileDto::from);
     }
 
     private void checkModifyReservationStatusToAccepted(Reservation reservation) {

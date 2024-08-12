@@ -17,7 +17,7 @@ public class ReviewReadToShopResponse {
     private boolean isScraped;
     private boolean isLiked;
     private Writer writer;
-    private Review review;
+    private Feed feed;
     private Shop shop;
 
     @Getter
@@ -29,7 +29,7 @@ public class ReviewReadToShopResponse {
 
     @Getter
     @Builder
-    private static class Review {
+    private static class Feed {
         private Long feedId;
         private List<String> imageSrcs;
         private String content;
@@ -56,7 +56,7 @@ public class ReviewReadToShopResponse {
                         .profileImageSrc(dto.getWriter().getImageSrc())
                         .nickname(dto.getWriter().getNickname())
                         .build())
-                .review(Review.builder()
+                .feed(Feed.builder()
                         .feedId(dto.getReview().getId())
                         .imageSrcs(ListUtils.applyFunctionToElements(dto.getFeedImages(), FeedImageDto::getSrc))
                         .content(dto.getReview().getContent())
