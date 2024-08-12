@@ -11,6 +11,7 @@ import com.rebu.profile.employee.service.EmployeeProfileService;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
 import com.rebu.security.dto.AuthProfileInfo;
+import com.rebu.security.dto.ProfileInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class EmployeeProfileController {
         if (nickname == null || !nickname.equals(generateEmployeeProfileRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
-        employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("1D00", null));
+        ProfileInfo profileInfo = employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
+        return ResponseEntity.ok(new ApiResponse<>("1D00", profileInfo));
     }
 
     @Authorized(allowed = {Type.EMPLOYEE})

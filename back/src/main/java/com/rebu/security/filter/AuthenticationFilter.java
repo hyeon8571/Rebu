@@ -99,7 +99,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
-        setResponse(response, "1A07", new ProfileInfo(nickname, type));
+        setResponse(response, "1A07", new ProfileInfo(profile.getImageSrc(), nickname, type));
     }
 
     @Override

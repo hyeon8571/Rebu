@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ProfileInfo {
+    private String imageSrc;
     private String nickname;
     private String type;
 }

@@ -26,6 +26,7 @@ import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.reservation.dto.ReservationDto;
 import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.repository.ReservationRepository;
+import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
 import com.rebu.workingInfo.entity.WorkingInfo;
@@ -56,23 +57,31 @@ public class EmployeeProfileService {
     private final WorkingInfoRepository workingInfoRepository;
 
     @Transactional
-    public void generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
+    public ProfileInfo generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(generateEmployeeProfileDto.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
-        employeeProfileRepository.save(generateEmployeeProfileDto.toEntity(member));
+        EmployeeProfile employeeProfile = employeeProfileRepository.save(generateEmployeeProfileDto.toEntity(member));
 
         workingInfoService.create(generateEmployeeProfileDto.getNickname());
+
+        String path = null;
 
         if (generateEmployeeProfileDto.getImgFile() != null && !generateEmployeeProfileDto.getImgFile().isEmpty()) {
             ChangeImgDto changeImgDto = new ChangeImgDto(generateEmployeeProfileDto.getImgFile(), generateEmployeeProfileDto.getNickname());
 
-            profileService.changePhoto(changeImgDto);
+            path = profileService.changePhoto(changeImgDto);
         }
 
         redisService.deleteData("Refresh:" + generateEmployeeProfileDto.getNowNickname());
 
         resetToken(generateEmployeeProfileDto.getNickname(), Type.EMPLOYEE.toString(), response);
+
+        return ProfileInfo.builder()
+                .imageSrc(path)
+                .nickname(employeeProfile.getNickname())
+                .type(employeeProfile.getType().toString())
+                .build();
     }
 
     @Transactional

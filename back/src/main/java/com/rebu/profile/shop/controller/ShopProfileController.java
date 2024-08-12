@@ -9,6 +9,7 @@ import com.rebu.profile.shop.dto.*;
 import com.rebu.profile.shop.exception.LicenseNumNotVerifiedException;
 import com.rebu.profile.shop.service.ShopProfileService;
 import com.rebu.security.dto.AuthProfileInfo;
+import com.rebu.security.dto.ProfileInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,8 @@ public class ShopProfileController {
         if (licenseNum == null || !licenseNum.equals(generateShopProfileRequest.getLicenseNum())) {
             throw new LicenseNumNotVerifiedException();
         }
-        shopProfileService.generateProfile(generateShopProfileRequest.toDto(authProfileInfo.getNickname(), authProfileInfo.getEmail()), response);
-        return ResponseEntity.ok(new ApiResponse<>("1E00", null));
+        ProfileInfo profileInfo = shopProfileService.generateProfile(generateShopProfileRequest.toDto(authProfileInfo.getNickname(), authProfileInfo.getEmail()), response);
+        return ResponseEntity.ok(new ApiResponse<>("1E00", profileInfo));
     }
 
     @Authorized(allowed = {Type.SHOP})
