@@ -5,6 +5,9 @@ import styled from "styled-components";
 import MainHeader from "../components/main/MainHeader";
 import MainFilter from "../components/main/MainFilter";
 import MainFeed from "../components/main/MainFeed";
+import axios from "axios";
+import { BASE_URL } from "./Signup";
+import Login from "./Login";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -26,6 +29,28 @@ function Main({ theme, toggleTheme }) {
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
   const dispatch = useDispatch();
+  const {
+    nickname,
+    type,
+    isLogin,
+  } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const access = localStorage.getItem('access');
+    axios.get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
+      headers : {
+        "access" : access,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      console.log(response)
+      setPostdata(response.data.body);
+    })
+    .catch(err => {
+      console.log('피드 데이터를 찾지 못했습니다');
+    })
+  }, []);
 
   useEffect(() => {
     fetch("/mockdata/alarmdata.json")
@@ -85,11 +110,19 @@ function Main({ theme, toggleTheme }) {
   }, []);
 
   return (
-    <Wrapper>
-      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
-      <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
-      <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
-    </Wrapper>
+    <>
+      {isLogin !== true ? (
+        <Wrapper>
+          <Login />
+        </Wrapper>
+      ) : (
+        <Wrapper>
+          <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
+          <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
+          <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
+        </Wrapper>
+      )}
+    </>
   );
 }
 

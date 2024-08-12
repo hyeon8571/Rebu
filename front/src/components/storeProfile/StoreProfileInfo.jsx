@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
 import StoreMark from "../../assets/images/storemark.png";
+import { BASE_URL } from '../../views/Signup';
+import axios from 'axios';
 
 const InfoBox = styled.div`
   margin-left: 30px;
@@ -166,6 +168,14 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
+  const [isLikes, setIsLikes] = useState(false);
+
+  useEffect(() => {
+    if (likeshop.map((shop) => {shop.nickname === currentUser.nickname})) {
+      setIsLikes(true);
+    };
+  }, []);
+  
 
   useEffect(() => {
     setNewIntroduce(currentUser.introduction);
@@ -187,10 +197,13 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
   
   const handleLikeToggle = () => {
     // 매장 즐겨찾기 등록 api psot 호출
+    setIsLikes(!isLikes)
+
   };
 
   const handleunLikeToggle = () => {
     // 매장 즐겨찾기 삭제 api delete 호출
+    setIsLikes(!isLikes)
   };
 
   const saveIntroduce = async () => {
@@ -238,7 +251,7 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
         </LeftContainer>
         <RightContainer>
           {currentUser.nickname !== loginUser ? (
-            likeshop.map((shop) => {shop.nickname === currentUser.nickname}) ? (
+            isLikes ? (
               <ImgLikeActive onClick={handleunLikeToggle} />
             ) : (<ImgLike onClick={handleLikeToggle} />)
           ) : ("")}

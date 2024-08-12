@@ -3,11 +3,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import {
-  getCommonProfile,
-  getEmployeeProfile,
-  getShopProfile,
-} from "../features/common/userSlice";
 import { BASE_URL } from "./Signup";
 import TabComponent from "../components/MyProfile/MyProfileTab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
@@ -20,6 +15,7 @@ import TimeTable from "../components/reservation/TimeTable";
 import DesignerGrid from "../components/reservation/DesignerDisplay";
 import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
+import Login from "./Login";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -105,49 +101,58 @@ const ProfilePage = ({ theme, toggleTheme }) => {
  
 
 
-  // 프로필 정보 조회
+  // 타입별 프로필 정보 조회
   useEffect(() => {
-    if (reduxNickname !== targetNickname) {
+    if (targetNickname !== null && targetType !== null) {
       setNickname(targetNickname);
       setType(targetType);
     }
-    console.log(nickname)
+  
     if (type === "COMMON" && isLogin) {
-      const fetchProfile = async () => {
-        const result = await getCommonProfile(nickname);
-        console.log("프로필조회", result);
-        if (result.success) {
-          console.log("프로필조회성공", result);
-          setProfile(result.data);
-        } else {
-          setError(result.error);
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
+        headers : {
+          "access": access,
+          "Content-Type": "application/json"
         }
-      };
-      fetchProfile();
+      })
+      .then(response => {
+        console.log(response.data.body)
+        setProfile(response.data.body);
+      })
+      .catch(err => {
+        console.log('사용자 프로필 데이터를 찾지 못했습니다');
+      })
     } else if (type === "EMPLOYEE" && isLogin) {
-      const fetchProfile = async () => {
-        const result = await getEmployeeProfile(nickname);
-        console.log("직원 프로필조회", result);
-        if (result.success) {
-          console.log("프로필조회성공", result);
-          setProfile(result.data);
-        } else {
-          setError(result.error);
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
+        headers : {
+          "access": access,
+          "Content-Type": "application/json"
         }
-      };
-      fetchProfile();
+      })
+      .then(response => {
+        console.log(response.data.body)
+        setProfile(response.data.body);
+      })
+      .catch(err => {
+        console.log('직원 프로필 데이터를 찾지 못했습니다');
+      })
     } else if (type === "SHOP" && isLogin) {
-      const fetchProfile = async () => {
-        const result = await getShopProfile(nickname);
-        console.log("매장 프로필조회", result);
-        if (result.success) {
-          console.log("프로필조회성공", result);
-          setProfile(result.data);
-        } else {
-          setError(result.error);
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
+        headers : {
+          "access": access,
+          "Content-Type": "application/json"
         }
-      };
-      fetchProfile();
+      })
+      .then(response => {
+        console.log(response.data.body)
+        setProfile(response.data.body);
+      })
+      .catch(err => {
+        console.log('매장 프로필 데이터를 찾지 못했습니다');
+      })
     }
   }, [reduxNickname, targetNickname, targetType]);
 
@@ -226,7 +231,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   
   // 가게 평점 계산
   useEffect(() => {
-    if (reviewdata.length > 0) {
+    if (reviewdata?.length > 0) {
       const totalRating = reviewdata.reduce((acc, review) => acc + review.rating, 0);
       const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(2) : 0;
       setRatingAvg(averageRating);
@@ -326,9 +331,9 @@ useEffect(() => {
   ])
 } else if (type === "EMPLOYEE" && isLogin) {
   setTabTitle([
-    { name: "Post", content: "Post", count: profile.feedCnt },
-    { name: "Review", content: "Review", count: profile.reviewCnt },
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
+    { name: "Post", content: "Post", count:  profile ? profile.feedCnt : 0 },
+    { name: "Review", content: "Review", count:  profile ? profile.reviewCnt : 0 },
+    { name: "Scrap", content: "Scrap", count:  profile ? profile.scrapCnt : 0 },
   ])
 };
 }, []);
@@ -384,7 +389,11 @@ useEffect(() => {
   };
 
   return (
-    <Wrapper>
+    <>
+    {isLogin !== true ? (
+      <Wrapper><Login /></Wrapper>
+    ) : (
+      <Wrapper>
       <Header
         theme={theme}
         toggleTheme={toggleTheme}
@@ -430,6 +439,8 @@ useEffect(() => {
       </ProfileContainer>
       <GridContainer>{renderGrid()}</GridContainer>
     </Wrapper>
+    )}
+    </>
   );
 };
 

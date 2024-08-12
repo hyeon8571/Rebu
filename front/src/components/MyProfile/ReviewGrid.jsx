@@ -34,6 +34,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
   
+  
   const generateLayout = useCallback((photos) => {
     return photos.map((photo, index) => ({
       i: `photo-${index}`,
@@ -72,6 +73,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
 
   const handlePhotoClick = (index) => {
     setSelectedPhotos(Card.slice(index));
+    console.log(selectedPhotos)
   };
 
   return (
