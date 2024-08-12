@@ -73,3 +73,24 @@ export const getShopProfile = async (nickname) => {
     return { success: false, error: 'Failed to fetch shop profile.' };
   }
 };
+
+export const getAllProfiles = async () => {
+  const access = localStorage.getItem('access'); // 토큰을 로컬 스토리지에서 가져옴
+  console.log('getAllProfiles');
+  try {
+    const response = await axios.get(`${BASE_URL}/api/profiles`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'access': access
+      }
+    });
+    if (response.data.code === "1C08") {
+      return { success: true, data: response.data.body };
+    } else {
+      return { success: false, data: response.data.body };
+    }
+  } catch (error) {
+    console.error('Error fetching all profiles:', error);
+    return { success: false, error: 'Failed to fetch all profiles.' };
+  }
+};

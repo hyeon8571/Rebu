@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProfileCreateModal from "./ProfileCreateModal";
+import { getAllProfiles } from "../../features/common/userSlice";
+import axios from "axios";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -115,8 +117,17 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux 상태에서 프로필 정보 가져오기
-  const profile = useSelector((state) => state.auth.profile);
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const profiles = await getAllProfiles();
+        console.log("프로필 목록", profiles);
+      } catch (err) {
+        console.error("프로필 목록을 불러오는 중 오류 발생", err);
+      }
+    };
+    fetchProfiles();
+  }, []);
 
   const handleCreateProfile = () => {
     // 프로필 생성을 위해 ProfileCreateModal을 열도록 설정
@@ -126,21 +137,27 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
     setIsProfileCreateModalOpen(false);
   }; //모달닫기
 
-  const profileImageSrc = profile.imgSrc || "/logo.png";
-
+  // const profileImageSrc = profile.imgSrc || "/logo.png";
+  const profileImageSrc = "/logo.png";
+  // const { nickname } = useSelector((state) => state.auth);
+  const profile2 = useState([]);
   return (
     <>
       {ProfileChangeModalOpen && (
         <ModalOverlay>
           <ModalContent>
+            <h2 style={{ textAlign: "center" }}>계정 전환</h2>
+            <div>{profiles}</div>
             <ModalHeader>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
             </ModalHeader>
+
             <ModalText>
               <ProfileImage src={profileImageSrc} alt="ProfileImage" />
               <NicknameText>{profile.nickname}</NicknameText>
             </ModalText>
             <hr></hr>
+
             <ModalButtonContainer>
               <CreateButton onClick={handleCreateProfile}>
                 Create Profile

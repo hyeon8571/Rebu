@@ -6,8 +6,8 @@ import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
-
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const GridContainer = styled.div`
   display: grid;
@@ -54,6 +54,22 @@ const ProfileNavLink = styled(NavLink)``;
 
 const ICON_SIZE = 36;
 
+const ProfileNavItem = () => {
+  const navigate = useNavigate();
+  // Redux 상태에서 nickname과 type을 가져옴
+  const { nickname, type } = useSelector((state) => state.auth);
+  console.log("navigationbar", nickname, type);
+  const handleProfileClick = () => {
+    navigate(`/profile/${nickname}/${type}`);
+  };
+
+  return (
+    <ProfileNavLink onClick={handleProfileClick}>
+      <ProfileMedium img={Img} time={0} />
+    </ProfileNavLink>
+  );
+};
+
 export default function NavigationRail() {
   return (
     <GridContainer>
@@ -82,9 +98,11 @@ export default function NavigationRail() {
         <div></div>
         <div></div>
         <div></div>
-        <ProfileNavLink to="/profile">
+        {/* <ProfileNavLink to="/profile">
           <ProfileMedium img={Img} time={0} />
-        </ProfileNavLink>
+        </ProfileNavLink> */}
+
+        <ProfileNavItem />
       </Rail>
     </GridContainer>
   );

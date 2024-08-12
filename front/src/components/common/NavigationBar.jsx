@@ -36,26 +36,11 @@ const StyledNavLink = styled(NavLink)`
 
 const ICON_SIZE = 28;
 
-// added
-// const ProfileNavItem = () => {
-//   const navigate = useNavigate();
-//   const { nickname, type } = useSelector((state) => state.auth);
-
-//   const handleProfileClick = () => {
-//     navigate("/profile", { state: { nickname, type } });
-//   };
-
-//   return (
-//     <NavigationItem onClick={handleProfileClick}>
-//       <ProfileSmall img={img}></ProfileSmall>
-//     </NavigationItem>
-//   );
-// };
 const ProfileNavItem = () => {
   const navigate = useNavigate();
   // Redux 상태에서 nickname과 type을 가져옴
   const { nickname, type } = useSelector((state) => state.auth);
-
+  console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
     navigate(`/profile/${nickname}/${type}`);
   };
@@ -95,23 +80,6 @@ export default function NavigationBar() {
         </StyledNavLink>
 
         <ProfileNavItem />
-
-        {/* <StyledNavLink to="/profile">
-          <NavigationItem>
-            <ProfileSmall img={img}></ProfileSmall>
-          </NavigationItem>
-        </StyledNavLink> */}
-
-        {/* <StyledNavLink
-          to={{
-            pathname: "/profile",
-            state: { nickname, type },
-          }}
-        >
-          <NavigationItem>
-            <ProfileSmall img={img}></ProfileSmall>
-          </NavigationItem>
-        </StyledNavLink> */}
       </Bar>
     </>
   );

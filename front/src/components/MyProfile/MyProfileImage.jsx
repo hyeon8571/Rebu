@@ -66,6 +66,7 @@ const Insideimg = styled.img`
 
 const FollowInfo = styled.div`
   display: flex;
+  justify-content: center;
   text-align: center;
   margin-top: 10px;
 `;
@@ -374,16 +375,26 @@ export default function ProfileLarge({ currentUser, time }) {
             </OutterCircleOffline>
           )}
         </React.Fragment>
-        <FollowInfo>
-          <FollowerInfo>
-            <FollowCount>{currentUser.followerCnt}</FollowCount>
-            <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
-          </FollowerInfo>
-          <FollowingInfo>
-            <FollowCount>{currentUser.followingCnt}</FollowCount>
-            <FollowText onClick={handleOpenFollowingModal}>팔로잉</FollowText>
-          </FollowingInfo>
-        </FollowInfo>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            // height: "100%",
+            marginLeft: "2rem",
+          }}
+        >
+          <FollowInfo>
+            <FollowerInfo>
+              <FollowCount>{currentUser.followerCnt}</FollowCount>
+              <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
+            </FollowerInfo>
+            <FollowingInfo>
+              <FollowCount>{currentUser.followingCnt}</FollowCount>
+              <FollowText onClick={handleOpenFollowingModal}>팔로잉</FollowText>
+            </FollowingInfo>
+          </FollowInfo>
+        </div>
       </ImgBox>
 
       {currentUser.relation !== "OWN" && (

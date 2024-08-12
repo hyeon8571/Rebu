@@ -23,8 +23,8 @@ function Main({ theme, toggleTheme }) {
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
   const dispatch = useDispatch();
-  // const profile = useSelector((state) => state.auth.profile);
-
+  const { nickname, type } = useSelector((state) => state.auth);
+  console.log("main", nickname, type);
   // useEffect(() => {
   //   const initializeAlarms = async () => {
   //     try {

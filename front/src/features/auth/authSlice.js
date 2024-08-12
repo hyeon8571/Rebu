@@ -7,6 +7,7 @@ const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
+  imageSrc: "",
   profile: { //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
@@ -26,15 +27,17 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess(state, action) {
-      const { nickname, type } = action.payload;
+      const { nickname, type, imageSrc } = action.payload;
       state.isLogin = true;
       state.nickname = nickname;
       state.type = type;
+      state.imageSrc = imageSrc;
     },
     logout(state) {
       state.isLogin = false;
       state.nickname = "";
       state.type = "COMMON";
+      state.imageSrc = "";
       state.profile = initialState.profile;
       localStorage.removeItem("access");
     },

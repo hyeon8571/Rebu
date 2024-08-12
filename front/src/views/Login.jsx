@@ -1,7 +1,8 @@
 // Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { login, alarmsAgreement } from "../features/auth/authSlice";
 import styled from "styled-components";
 import LoginTitle from "../components/common/LoginTitle";
@@ -42,11 +43,9 @@ const Login = () => {
 
     try {
       const loginResult = await dispatch(login(email, password));
-
       if (loginResult.success) {
         // 로그인 성공
         console.log("로그인 성공", loginResult);
-
         navigate("/main", { replace: true });
       } else {
         // 로그인 실패
