@@ -328,7 +328,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const nextSlide = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
-      const length = updatedPosts[index].review.imageSrcs.length;
+      const length = updatedPosts[index].feed.imageSrcs.length;
       updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === length - 1 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex + 1;
       return updatedPosts;
     });
@@ -337,7 +337,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const prevSlide = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
-      const length = updatedPosts[index].review.imageSrcs.length;
+      const length = updatedPosts[index].feed.imageSrcs.length;
       updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === 0 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex - 1;
       return updatedPosts;
     });
@@ -352,7 +352,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const handleLikeToggle = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
-      updatedPosts[index].liked = !updatedPosts[index].liked;
+      updatedPosts[index].isLiked = !updatedPosts[index].isLiked;
       return updatedPosts;
     });
   }, []);
@@ -360,7 +360,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const handleScrapToggle = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
-      updatedPosts[index].scraped = !updatedPosts[index].scraped;
+      updatedPosts[index].isScraped = !updatedPosts[index].isScraped;
       return updatedPosts;
     });
   }, []);
@@ -430,7 +430,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   }, [information.length]);
 
   const handleShopNameClick = (nickname) => {
-    navigate('/profile', { state: nickname });
+    navigate(`/profile/${nickname}/SHOP`);
   };
 
   const scrollDown = () => {
@@ -469,7 +469,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                 </IconBox>
               ) : (
                 <IconBox onClick={() => handleScrapToggle(index)}>
-                  {item.review.scraped ? <FaBookmark /> : <FaRegBookmark />}
+                  {item.feed.isScraped ? <FaBookmark /> : <FaRegBookmark />}
                 </IconBox>
               )}
               <DropdownMenu
@@ -511,7 +511,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
           <SlideImg>
             <SlideBack onClick={() => prevSlide(index)} />
             <SlideFront onClick={() => nextSlide(index)} />
-            {item.review.imageSrcs?.map((slide, imgIndex) => (
+            {item.feed.imageSrcs?.map((slide, imgIndex) => (
               <PostImage
                 key={imgIndex}
                 src={"https://www.rebu.kro.kr/data/" + slide}
@@ -520,7 +520,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
               />
             ))}
             <DotsWrapper>
-              {item.review.imageSrcs?.map((_, imgIndex) => (
+              {item.feed.imageSrcs?.map((_, imgIndex) => (
                 <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
               ))}
             </DotsWrapper>
@@ -528,7 +528,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
           <PostActions>
             <div style={{ display: "flex", alignItems: "center" }}>
               <ActionIcon onClick={() => handleLikeToggle(index)}>
-                {item.liked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
+                {item.isLiked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
               </ActionIcon>
               <ActionIcon>
                 {isCommnetActive[index] ? (
@@ -540,29 +540,29 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
               <ActionIcon><ShareIcon /></ActionIcon>
             </div>
 
-            {item.review.rating ? (
+            {item.feed.rating ? (
               <Rating>
                 <FaRegStar />
                 &nbsp;
-                <RatingText>{item.review.rating}</RatingText>
+                <RatingText>{item.feed.rating}</RatingText>
               </Rating>
             ) : ("")}
 
           </PostActions>
-          <Likes>좋아요 {item.review.likeCnt}개</Likes>
+          <Likes>좋아요 {item.feed.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.content : item.review.content}
+            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.content : item.feed.content}
           </PostDescription>
           <HashtagContainer>
-            {item.review.hashtags?.map((hashtag) => (
+            {item.feed.hashtags?.map((hashtag) => (
               <PostHashtag>#{hashtag}</PostHashtag>
             ))}
           </HashtagContainer>
           <BottomWrapper>
             <CommentText onClick={() => {toggleComments(index); scrollDown();}} >
-              댓글 {item.review.commentCnt}개
+              댓글 {item.feed.commentCnt}개
             </CommentText>
-            <PostTime>{timeSince(new Date(item.review.createAt))}</PostTime>
+            <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>
           </BottomWrapper>
           <CommentList expanded={expandedComments[index]}>
             {expandedComments[index] && (
@@ -572,7 +572,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                 posts={posts}
                 setPosts={setPosts}
                 index={index}
-                feedId={item.review.feedId}
+                feedId={item.feed.feedId}
               />
             )}
           </CommentList>

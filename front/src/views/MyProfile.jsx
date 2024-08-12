@@ -89,7 +89,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [loginUser, setLoginUser] = useState([]);
 
   // Redux 상태에서 필요한 정보 가져오기
-  // const { nickname, type, isLogin } = useSelector((state) => state.auth);
+  const { isLogin } = useSelector((state) => state.auth);
   const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
@@ -211,7 +211,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   // 가게 평점 계산
   useEffect(() => {
     if (reviewdata?.length > 0) {
-      const totalRating = reviewdata.reduce((acc, review) => acc + review.review.rating, 0);
+      const totalRating = reviewdata.reduce((acc, review) => acc + review.feed.rating, 0);
       const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(1) : 0;
       setRatingAvg(averageRating);
     }
@@ -327,7 +327,8 @@ useEffect(() => {
           key={key}
           Card={postdata}
           currentUser={profile}
-          loginUser={reduxNickname}
+          loginUser={nickname}
+          type={type}
           currentTab={currentTab}
         />
       );
@@ -337,19 +338,19 @@ useEffect(() => {
           key={key}
           Card={reviewdata}
           currentUser={profile}
-          loginUser={reduxNickname}
+          loginUser={nickname}
         />
       );
     } else if (content === "Likes") {
       return (
         <React.Fragment key={key}>
           {likeCard.map((item) => (
-            <LikesCard key={item.id} Card={item} loginUser={reduxNickname} />
+            <LikesCard key={item.id} Card={item} loginUser={nickname} />
           ))}
         </React.Fragment>
       );
     } else if (content === "Review") {
-      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={reduxNickname} currentTab={currentTab}/>;
+      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={nickname} type={type} currentTab={currentTab}/>;
     } else if (content === "Reservation") {
       return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
     }
@@ -376,12 +377,17 @@ useEffect(() => {
         theme={theme}
         toggleTheme={toggleTheme}
         currentUser={profile}
-        loginUser={reduxNickname}
+        loginUser={nickname}
       />
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage currentUser={profile} time={130} />
-          <ProfileInfo currentUser={profile} loginUser={profile} />
+          {type === "SHOP" ? (
+            <ShopProfileInfo currentUser={profile} loginUser={nickname} rating={ratingAvg} likeshop={likeCard}/>
+          ) : (
+            <ProfileInfo currentUser={profile} loginUser={nickname} />
+          )}
+          
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>

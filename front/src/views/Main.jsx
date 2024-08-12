@@ -84,19 +84,19 @@ function Main({ theme, toggleTheme }) {
  
 
   return (
-    <>
+    <Wrapper>
       {isLogin !== true ? (
-        <Wrapper>
+      
           <Login />
-        </Wrapper>
+    
       ) : (
-        <Wrapper>
+        <>
           <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
           <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
           <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
-        </Wrapper>
+        </>
       )}
-    </>
+    </Wrapper>
   );
 }
 

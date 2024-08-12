@@ -72,7 +72,7 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser, currentTab }) {
+function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
@@ -80,7 +80,6 @@ function GridComponent({ Card, currentUser, loginUser, currentTab }) {
   const [openReviewKeyword, setOpenReviewKeyword] = useState(false);
   const [keywordBtnActive, setKeywordBtnActive] = useState(false);
   
-  console.log(currentTab)
 
   const scrollDown = () => {
     window.scrollBy({
@@ -143,16 +142,21 @@ function GridComponent({ Card, currentUser, loginUser, currentTab }) {
 
   return (
     <>
-     {keywordBtnActive && currentTab === 1 ? (
-        <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
-      ) : (
-        <ReviewKeywordBtn onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtn>
+      {type === "SHOP" && currentTab === 1 && (
+        <>
+          {keywordBtnActive ? (
+            <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
+          ) : (
+            <ReviewKeywordBtn onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtn>
+          )}
+          <ReviewKeywordList expanded={openReviewKeyword}>
+            {openReviewKeyword && (
+              <ReviewKeywordStat reviewNum={100}/>
+            )}
+          </ReviewKeywordList>
+        </>
       )}
-      <ReviewKeywordList expanded={openReviewKeyword}>
-        {openReviewKeyword && (
-          <ReviewKeywordStat reviewNum={100}/>
-        )}
-      </ReviewKeywordList>
+  
       {selectedPhotos ? (
         <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
       ) : (
@@ -172,7 +176,7 @@ function GridComponent({ Card, currentUser, loginUser, currentTab }) {
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={"https://www.rebu.kro.kr/data/" + item.review?.imageSrcs[0]} alt={`uploaded-${index}`} />
+                <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

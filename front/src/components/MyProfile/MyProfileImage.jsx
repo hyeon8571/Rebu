@@ -68,7 +68,7 @@ const FollowInfo = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 `;
 
 const FollowerInfo = styled.div`
@@ -113,7 +113,7 @@ const FollowListContainer = styled.div`
 
 const ModalOverlay = styled.div`
   position: absolute;
-  top: 70%;
+  top: 80%;
   left: 50%;
   @media (min-width: 768px) {
     left: 55%;
