@@ -10,6 +10,7 @@ import com.rebu.feed.repository.HashtagRepository;
 import com.rebu.like.entity.LikeFeed;
 import com.rebu.like.repository.LikeFeedRepository;
 import com.rebu.profile.dto.ProfileDto;
+import com.rebu.profile.employee.dto.EmployeeProfileDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.employee.repository.EmployeeProfileRepository;
 import com.rebu.profile.entity.Profile;
@@ -168,6 +169,43 @@ public class FeedService {
             result.add(FeedByShopDto.builder()
                     .writer(ProfileDto.from(feed.getWriter()))
                     .shop(ShopProfileDto.from(shop))
+                    .feed(FeedDto.from(feed))
+                    .feedImages(ListUtils.applyFunctionToElements(feed.getFeedImages().stream().toList(), FeedImageDto::from))
+                    .hashtags(ListUtils.applyFunctionToElements(feed.getHashtags().stream().toList(), HashtagDto::from))
+                    .isScraped(isScraped)
+                    .isLiked(isLiked)
+                    .build());
+        }
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<FeedByEmployeeDto> readEmployeeFeeds(FeedReadByEmployeeDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+        EmployeeProfile employee = employeeProfileRepository.findByNickname(dto.getEmployeeNickname()).orElseThrow(ProfileNotFoundException::new);
+        List<Feed> feeds = feedRepository.findByOwnerAndType(employee, Feed.Type.NONE);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+
+        int sIdx = 0;
+        int lIdx = 0;
+
+        List<FeedByEmployeeDto> result = new ArrayList<>();
+        for(Feed feed : feeds){
+            boolean isScraped = false;
+            boolean isLiked = false;
+            if(!scraps.isEmpty() && scraps.get(sIdx) != null && scraps.get(sIdx).getId().equals(feed.getId())){
+                sIdx++;
+                isScraped = true;
+            }
+            if(!likeFeeds.isEmpty() && likeFeeds.get(lIdx) != null && likeFeeds.get(lIdx).getId().equals(feed.getId())){
+                lIdx++;
+                isLiked = true;
+            }
+
+            result.add(FeedByEmployeeDto.builder()
+                    .writer(ProfileDto.from(feed.getWriter()))
+                    .employee(EmployeeProfileDto.from(employee))
                     .feed(FeedDto.from(feed))
                     .feedImages(ListUtils.applyFunctionToElements(feed.getFeedImages().stream().toList(), FeedImageDto::from))
                     .hashtags(ListUtils.applyFunctionToElements(feed.getHashtags().stream().toList(), HashtagDto::from))
