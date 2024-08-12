@@ -13,8 +13,8 @@ import java.util.List;
 @Getter
 @Builder
 public class FeedReadByShopResponse {
-    private boolean isScraped;
-    private boolean isLiked;
+    private Boolean isScraped;
+    private Boolean isLiked;
     private Writer writer;
     private Feed feed;
     private Shop shop;

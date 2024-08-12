@@ -14,6 +14,7 @@ public class ReservationReadByProfileResponse {
     private Long id;
     private LocalDateTime startDateTime;
     private Reservation.ReservationStatus reservationStatus;
+    private Boolean isReviewed;
 
     private EmployeeProfile employee;
     private ShopProfile shop;
@@ -48,6 +49,7 @@ public class ReservationReadByProfileResponse {
                 .id(dto.getReservationDto().getId())
                 .startDateTime(dto.getReservationDto().getStartDateTime())
                 .reservationStatus(dto.getReservationDto().getReservationStatus())
+                .isReviewed(dto.getReviewDto() != null)
                 .employee(EmployeeProfile.builder()
                         .nickname(dto.getEmployeeProfileDto().getNickname())
                         .workingName(dto.getEmployeeProfileDto().getWorkingName())
