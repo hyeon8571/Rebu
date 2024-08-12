@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import PropTypes from 'prop-types';
 import PostDetail from "../post/PostDetail";
+import ReviewKeywordStat from "../storeProfile/ReviewKeywordStat";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -11,6 +12,49 @@ const GridContainer = styled.div`
   max-width: 768px;
   margin: 0 auto; /* 중앙 정렬을 위한 추가 */
 `;
+
+const ReviewKeywordBtn = styled.button`
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#f4ebfd" :"#9e4def"};
+  border: 1.5px solid #d1a6f7;
+  outline: none;
+  border-radius: 12px;      
+  padding: 5px 10px;      
+  font-size: 13px;       
+  color: ${(props) =>
+    props.theme.value === "light" ? "#000" :"#fff"};        
+  cursor: pointer;
+  &:hover {
+    border-color: #b475f3;
+    box-shadow: 0 0 15px rgba(186, 126, 250, 0.3);
+  }
+ `;
+
+const ReviewKeywordBtnActive = styled.button`
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#f4ebfd" :"#b475f3"};
+  border: 1.5px solid #b475f3;
+  /* box-shadow: 0 0 15px rgba(186, 126, 250, 0.4); */
+  outline: none;
+  border-radius: 12px;      
+  padding: 5px 10px;      
+  font-size: 13px;       
+  color: ${(props) =>
+    props.theme.value === "light" ? "#000" :"#fff"};     
+  cursor: pointer;
+  &:hover {
+    border-color: #b475f3;
+    box-shadow: 0 0 15px rgba(186, 126, 250, 0.3);
+  }
+  `;
+
+ const ReviewKeywordList = styled.div`
+  padding: 0 10px;
+  width: 90%;
+  max-height: ${(props) => (props.expanded ? "auto" : "0")};
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+ `;
 
 const GridItem = styled.div`
   padding: 5px;
@@ -28,13 +72,33 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser }) {
+function GridComponent({ Card, currentUser, loginUser, currentTab }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
+  const [openReviewKeyword, setOpenReviewKeyword] = useState(false);
+  const [keywordBtnActive, setKeywordBtnActive] = useState(false);
   
-  
+  console.log(currentTab)
+
+  const scrollDown = () => {
+    window.scrollBy({
+      top: 200,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handletoggleContent = () => {
+    setOpenReviewKeyword(!openReviewKeyword);
+    setKeywordBtnActive(!keywordBtnActive);
+    if (!openReviewKeyword) {
+    setTimeout(() => scrollDown(), 100);
+    }
+  };
+
+
   const generateLayout = useCallback((photos) => {
     return photos.map((photo, index) => ({
       i: `photo-${index}`,
@@ -79,6 +143,16 @@ function GridComponent({ Card, currentUser, loginUser }) {
 
   return (
     <>
+     {keywordBtnActive && currentTab === 1 ? (
+        <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
+      ) : (
+        <ReviewKeywordBtn onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtn>
+      )}
+      <ReviewKeywordList expanded={openReviewKeyword}>
+        {openReviewKeyword && (
+          <ReviewKeywordStat reviewNum={100}/>
+        )}
+      </ReviewKeywordList>
       {selectedPhotos ? (
         <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
       ) : (
@@ -98,7 +172,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={item.review.imageSrcs[0]} alt={`uploaded-${index}`} />
+                <Photo src={"https://www.rebu.kro.kr/data/" + item.review?.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

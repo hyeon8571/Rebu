@@ -105,7 +105,7 @@ const Tab = ({ tabTitle, currentTab, onTabChange, tabName, onSubTabChange, activ
   return (
     <>
       <TabMenu>
-        {tabTitle.map((el, index) => (
+        {tabTitle?.map((el, index) => (
           <li
             key={index}
             className={index === currentTab ? "submenu focused" : "submenu"}

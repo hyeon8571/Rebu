@@ -25,12 +25,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  max-width: 768px;
+  /* max-width: 768px; */
   margin-bottom: 70px;
 `;
 
 const ProfileContainer = styled.div`
-  max-width: 768px;
+  /* max-width: 768px; */
   width: 100%;
 `;
 
@@ -153,6 +153,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       .catch(err => {
         console.log('매장 프로필 데이터를 찾지 못했습니다');
       })
+  
     }
   }, [reduxNickname, targetNickname, targetType]);
 
@@ -232,16 +233,17 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   // 가게 평점 계산
   useEffect(() => {
     if (reviewdata?.length > 0) {
-      const totalRating = reviewdata.reduce((acc, review) => acc + review.rating, 0);
-      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(2) : 0;
+      const totalRating = reviewdata.reduce((acc, review) => acc + review.review.rating, 0);
+      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(1) : 0;
       setRatingAvg(averageRating);
     }
   });
   
   // 매장, 직원 피드(post) 조회
   useEffect(() => {
-    const access = localStorage.getItem('access');
-    axios.get(`${BASE_URL}/api/feeds/profiles/${nickname}`, {
+    if (type === "SHOP" && isLogin) {
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
       headers : {
         "access": access,
         "Content-Type": "application/json"
@@ -252,8 +254,24 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       setPostdata(response.data.body);
     })
     .catch(err => {
-      console.log('피드 데이터를 찾지 못했습니다');
+      console.log('매장 피드 데이터를 찾지 못했습니다');
     })
+  } else if (type === "EMPLOYEE" && isLogin) {
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
+      headers : {
+        "access": access,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      console.log(response.data.body)
+      setPostdata(response.data.body);
+    })
+    .catch(err => {
+      console.log('직원 피드 데이터를 찾지 못했습니다');
+    })
+  }
   }, []);
 
 
@@ -325,9 +343,9 @@ useEffect(() => {
   ])
 } else if (type === "SHOP" && isLogin) {
     setTabTitle([
-    { name: "Post", content: "Post", count: profile ? profile.feedCnt : 0},
-    { name: "Review", content: "Review", count: profile ? profile.reviewCnt : 0},
-    { name: "Reservation", content: "Reservation", count: profile ? profile.reservationCnt : 0},
+    { name: "Post", content: "Post", count: profile.feedCnt},
+    { name: "Review", content: "Review", count: profile.reviewCnt},
+    { name: "Reservation", content: "Reservation", count: profile.reservationCnt},
   ])
 } else if (type === "EMPLOYEE" && isLogin) {
   setTabTitle([
@@ -351,6 +369,7 @@ useEffect(() => {
           Card={postdata}
           currentUser={profile}
           loginUser={reduxNickname}
+          currentTab={currentTab}
         />
       );
     } else if (content === "Scrap") {
@@ -371,7 +390,7 @@ useEffect(() => {
         </React.Fragment>
       );
     } else if (content === "Review") {
-      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={reduxNickname}/>;
+      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={reduxNickname} currentTab={currentTab}/>;
     } else if (content === "Reservation") {
       return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
     }
@@ -389,11 +408,11 @@ useEffect(() => {
   };
 
   return (
-    <>
+    <Wrapper>
     {isLogin !== true ? (
-      <Wrapper><Login /></Wrapper>
+      <Login />
     ) : (
-      <Wrapper>
+     <>
       <Header
         theme={theme}
         toggleTheme={toggleTheme}
@@ -438,9 +457,9 @@ useEffect(() => {
         </div>
       </ProfileContainer>
       <GridContainer>{renderGrid()}</GridContainer>
-    </Wrapper>
+      </>
     )}
-    </>
+  </Wrapper>
   );
 };
 

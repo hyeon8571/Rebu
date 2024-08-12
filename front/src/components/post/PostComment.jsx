@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegHeart, FaHeart, FaArrowRight, FaTrashAlt } from "react-icons/fa";
 
@@ -173,7 +173,7 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostComment = ({ comment, information, posts, setPosts, currentUser, index }) => {
+const PostComment = ({ information, posts, setPosts, currentUser, index, feedId }) => {
   const [newComments, setNewComments] = useState(
     Array(information.length).fill("")
   );
@@ -187,6 +187,29 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
     updatedNewComments[index] = value;
     setNewComments(updatedNewComments);
   };
+
+  const [comment, setComment] = useState([]);
+  const [page, setPage] = useState(0);
+
+
+  useEffect(() => {
+    const access = localStorage.getItem('access');
+    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=${page}&size=10`, {
+      headers : {
+        "access" : access,
+        "Content-Type": "application/json",
+      }
+    })
+    .then(res => {
+      console.log(res.data.body);
+      setComment(res.data.body);
+    })
+    .catch(err => {
+      console.log(err + '댓글을 찾지 못했습니다');
+    })
+  }, [page]);
+ 
+
 
   const handleReplyChange = (commentId, value) => {
     setReplies({
