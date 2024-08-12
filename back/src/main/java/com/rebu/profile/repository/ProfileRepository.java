@@ -49,17 +49,12 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
        SELECT p
        FROM Profile p
        WHERE p.nickname LIKE %:keyword%
-       OR p.introduction LIKE %:keyword%
        ORDER BY CASE
        WHEN p.nickname LIKE :keyword THEN 0
        WHEN p.nickname LIKE :keyword% THEN 1
        WHEN p.nickname LIKE %:keyword THEN 2
        WHEN p.nickname LIKE %:keyword% THEN 3
-       WHEN p.introduction LIKE :keyword THEN 4
-       WHEN p.introduction LIKE :keyword% THEN 5
-       WHEN p.introduction LIKE %:keyword THEN 6
-       WHEN p.introduction LIKE %:keyword% THEN 7
-       ELSE 8
+       ELSE 4
        END
        """)
     Slice<Profile> searchProfileByKeyword(String keyword, Pageable pageable);
