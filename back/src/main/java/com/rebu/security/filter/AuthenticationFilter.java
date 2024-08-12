@@ -27,7 +27,6 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -84,8 +83,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         }
 
         Profile profile = profileRepository.findFirstByEmailOrderByRecentTimeDesc(userDetails.getEmail());
-
-        profileRepository.updateRecentTime(profile.getId(), LocalDateTime.now());
 
         String nickname = profile.getNickname();
         String type = profile.getType().toString();

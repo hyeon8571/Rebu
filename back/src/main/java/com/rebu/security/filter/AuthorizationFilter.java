@@ -2,11 +2,11 @@ package com.rebu.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebu.common.controller.dto.ApiResponse;
+import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.ProfileNotFoundException;
+import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.util.JWTUtil;
-import com.rebu.profile.entity.Profile;
-import com.rebu.profile.repository.ProfileRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
@@ -55,8 +54,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         Profile profile = profileRepository.findByNickname(nickname)
                 .orElseThrow(ProfileNotFoundException::new);
-
-        profileRepository.updateRecentTime(profile.getId(), LocalDateTime.now());
 
         AuthProfileInfo authProfileInfo = new AuthProfileInfo(profile);
 
