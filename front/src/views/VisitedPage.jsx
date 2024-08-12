@@ -47,6 +47,7 @@ function calculateVisit(date, timeTaken) {
 }
 
 const BASE_URL = "https://www.rebu.kro.kr";
+const nickname = "rebu39";
 
 export default function VisitedPage() {
   const [data, setData] = useState([]);
@@ -62,7 +63,7 @@ export default function VisitedPage() {
   useEffect(() => {
     axios
       .get(
-        `${BASE_URL}/api/reservations/profiles/rebu39?start-date=2024-08-01&end-date=2024-08-30`,
+        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=2024-08-01&end-date=2025-08-30`,
         {
           headers: {
             "Content-Type": "application/json",

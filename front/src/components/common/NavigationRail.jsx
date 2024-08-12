@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
 import { CgAddR } from "react-icons/cg";
@@ -6,6 +6,8 @@ import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
+import ModalPortal from "../../util/ModalPortal";
+import SearchModal from "../Search/SearchModal";
 
 import { NavLink } from "react-router-dom";
 
@@ -45,9 +47,21 @@ const StyledNavLink = styled(NavLink)`
   transition: background-color 0.3s ease-in-out;
   border-radius: 1rem;
   &.active {
-    color: ${(props) => props.theme.primary};
-    background-color: ${(props) => props.theme.body};
+    color: ${(props) =>
+      props.isModalOpen ? "rgb(85, 26, 139)" : props.theme.primary};
+    background-color: ${(props) =>
+      props.isModalOpen ? "none" : props.theme.body};
   }
+`;
+
+const SearchDiv = styled.div`
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 1rem;
+
+  color: ${(props) =>
+    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+  background-color: ${(props) =>
+    props.isModalOpen ? props.theme.body : "none"};
 `;
 
 const ProfileNavLink = styled(NavLink)``;
@@ -55,25 +69,34 @@ const ProfileNavLink = styled(NavLink)``;
 const ICON_SIZE = 36;
 
 export default function NavigationRail() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <GridContainer>
+      <ModalPortal>
+        <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      </ModalPortal>
       <Rail>
-        <StyledNavLink to="/Login">
+        <StyledNavLink isModalOpen={isModalOpen} to="/Login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/designertab">
+        <SearchDiv isModalOpen={isModalOpen} onClick={toggleModal}>
           <NavigationItem>
             <IoSearch size={ICON_SIZE} />
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/visited">
+        </SearchDiv>
+        <StyledNavLink isModalOpen={isModalOpen} to="/visited">
           <NavigationItem>
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/component">
+        <StyledNavLink isModalOpen={isModalOpen} to="/component">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
@@ -82,7 +105,7 @@ export default function NavigationRail() {
         <div></div>
         <div></div>
         <div></div>
-        <ProfileNavLink to="/profile">
+        <ProfileNavLink isModalOpen={isModalOpen} to="/profile">
           <ProfileMedium img={Img} time={0} />
         </ProfileNavLink>
       </Rail>

@@ -8,6 +8,8 @@ import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ModalPortal from "../../util/ModalPortal";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../util/commonFunction";
+import axios from "axios";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -117,27 +119,40 @@ export default function DesignerDisplay({ profileType }) {
 
   const navigate = useNavigate();
 
-  // 실제로는 props로 전달
+  // localStorage로 전달
   profileType = 2;
-  //로그인시의 본인 닉네임
-  const currentNickname = "erebu5";
+  //매장 프로필의 닉네임
+  const nickname = "rebu4_hair3";
 
   useEffect(() => {
-    fetch("/mockdata/shopemployees.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+    axios
+      .get(`${BASE_URL}/api/profiles/shop/${nickname}/employees`, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
       })
-      .then((jsondata) => {
-        const data = jsondata.body;
-        console.log(data);
-        setDesigners(data);
+      .then((response) => {
+        console.log(response);
       })
       .catch((error) => {
         console.error("Fetch error:", error);
       });
+    // fetch("/mockdata/shopemployees.json")
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Network response was not ok");
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((jsondata) => {
+    //     const data = jsondata.body;
+    //     console.log(data);
+    //     setDesigners(data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Fetch error:", error);
+    //   });
   }, []);
 
   const toggleHandler = () => {

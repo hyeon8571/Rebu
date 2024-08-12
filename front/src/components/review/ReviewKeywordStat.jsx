@@ -116,10 +116,12 @@ const StatNum = styled.div`
   padding-right: 1rem;
 `;
 
-export default function ReviewKeywordStat({ reviewNum, nickname }) {
+export default function ReviewKeywordStat({ reviewNum }) {
   const [data, setData] = useState([]);
 
   const BASE_URL = "https://www.rebu.kro.kr";
+
+  const nickname = "rebu4_hair3";
 
   useEffect(() => {
     axios
@@ -163,7 +165,7 @@ export default function ReviewKeywordStat({ reviewNum, nickname }) {
   return (
     <Container>
       <hr style={{ border: "0.5px solid #943aee" }} />
-      {data.length > 0 ? (
+      {data && data.length > 0 ? (
         data.map((item) => (
           <StatBar key={item.content}>
             <StatIcon src={process.env.PUBLIC_URL + "keyword/" + item.imgURL} />

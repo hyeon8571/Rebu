@@ -43,9 +43,11 @@ export default function Components({ theme, toggleTheme }) {
 
   const buttons2 = {
     id: 1,
-    onClick: handleModal,
+    onClick: () => {
+      navigate("/designer");
+    },
     highlight: true,
-    title: "검색",
+    title: "에약 플로우",
   };
 
   const buttons3 = {
@@ -157,12 +159,6 @@ export default function Components({ theme, toggleTheme }) {
 
   return (
     <Wrapper>
-      <ModalPortal>
-        <SearchModal
-          isOpen={isModalOpen}
-          setIsOpen={setIsModalOpen}
-        ></SearchModal>
-      </ModalPortal>
       <ThemeToggler theme={theme} toggleTheme={toggleTheme}></ThemeToggler>
       <ProfilesDisplay>
         <ProfileBig img={Img} time={0} />

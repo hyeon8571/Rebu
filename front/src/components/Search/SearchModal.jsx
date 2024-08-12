@@ -48,7 +48,9 @@ const ModalContent = styled.div`
 const SearchInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid
+    ${(props) => (props.theme.value === "light" ? props.theme.primary : "")};
 `;
 
 const SearchInput = styled.input`
@@ -157,19 +159,19 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
         setIsHashtag(false);
       }
 
-      if (!newQuery.startsWith("#") && newProfiles) {
-        newProfiles = newProfiles.sort((a, b) => {
-          const similarityA = stringSimilarity.compareTwoStrings(
-            newQuery.toLowerCase(),
-            a.nickname.toLowerCase()
-          );
-          const similarityB = stringSimilarity.compareTwoStrings(
-            newQuery.toLowerCase(),
-            b.nickname.toLowerCase()
-          );
-          return similarityB - similarityA;
-        });
-      }
+      // if (!newQuery.startsWith("#") && newProfiles) {
+      //   newProfiles = newProfiles.sort((a, b) => {
+      //     const similarityA = stringSimilarity.compareTwoStrings(
+      //       newQuery.toLowerCase(),
+      //       a.nickname.toLowerCase()
+      //     );
+      //     const similarityB = stringSimilarity.compareTwoStrings(
+      //       newQuery.toLowerCase(),
+      //       b.nickname.toLowerCase()
+      //     );
+      //     return similarityB - similarityA;
+      //   });
+      // }
 
       setProfiles((prevProfiles) =>
         newPage === 0 ? newProfiles : [...prevProfiles, ...newProfiles]
@@ -203,6 +205,11 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
   }, 500);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
     if (resultListRef.current) {
       resultListRef.current.addEventListener("scroll", handleScroll);
     }
@@ -212,7 +219,7 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
         resultListRef.current.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [handleScroll, hasMore]);
+  }, [handleScroll, hasMore, isOpen]);
 
   useEffect(() => {
     if (query.length > 0) {
@@ -224,6 +231,7 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
   }, [query, fetchProfiles]);
 
   useEffect(() => {
+    console.log(page);
     if (page > 0 && query.length > 0) {
       fetchProfiles(query, page);
     }
@@ -246,7 +254,11 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
           />
           <CloseButton
             onClick={() => {
+              setPage(0);
+              setQuery("");
+              setHasMore(true);
               setIsOpen(false);
+              setProfiles([]);
             }}
           >
             ×
