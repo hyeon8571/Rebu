@@ -11,7 +11,7 @@ public class FeedContentValidator implements ConstraintValidator<FeedContent, St
 
     @Override
     public boolean isValid(String content, ConstraintValidatorContext constraintValidatorContext) {
-        if(content != null && (content.length() > 512 || content.trim().isEmpty()))
+        if(content != null && content.length() > 512)
             throw new FeedContentMismatchException();
         return true;
     }
