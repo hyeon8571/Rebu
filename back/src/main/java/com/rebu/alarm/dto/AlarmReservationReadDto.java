@@ -16,18 +16,19 @@ public class AlarmReservationReadDto extends AlarmReadDto {
     private LocalDateTime startDateTime;
     private Integer timeTaken;
 
-    public static AlarmReservationReadDto toDto(AlarmReservation reservation) {
+    public static AlarmReservationReadDto from(AlarmReservation alarmReservation) {
         return AlarmReservationReadDto.builder()
-                .senderNickname(reservation.getSenderProfile().getNickname())
-                .senderId(reservation.getSenderProfile().getId())
-                .senderType(reservation.getSenderProfile().getType())
-                .receiverNickname(reservation.getReceiverProfile().getNickname())
-                .receiverId(reservation.getReceiverProfile().getId())
-                .receiverType(reservation.getReceiverProfile().getType())
-                .createAt(reservation.getCreateAt())
-                .type(reservation.getType())
-                .startDateTime(reservation.getReservation().getStartDateTime())
-                .timeTaken(reservation.getTimeTaken())
+                .alarmId(alarmReservation.getId())
+                .senderNickname(alarmReservation.getSenderProfile().getNickname())
+                .senderId(alarmReservation.getSenderProfile().getId())
+                .senderType(alarmReservation.getSenderProfile().getType())
+                .receiverNickname(alarmReservation.getReceiverProfile().getNickname())
+                .receiverId(alarmReservation.getReceiverProfile().getId())
+                .receiverType(alarmReservation.getReceiverProfile().getType())
+                .createAt(alarmReservation.getCreateAt())
+                .type(alarmReservation.getType())
+                .startDateTime(alarmReservation.getReservation().getStartDateTime())
+                .timeTaken(alarmReservation.getTimeTaken())
                 .build();
     }
 }

@@ -7,6 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AlarmReservationRepository extends JpaRepository<AlarmReservation, Long> {
-    List<AlarmReservation> findByReceiverProfile(Profile profile);
-
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AlarmUpdateRequest {
+public class AlarmInviteEmployeeUpdateRequest {
 
     @NotNull
     boolean isAccept;
