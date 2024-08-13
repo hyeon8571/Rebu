@@ -8,17 +8,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthExceptionConstants implements ExceptionConstants {
 
-    AUTH_PURPOSE_INVALID("유효하지 않은 인증 목적"),
-    PASSWORD_AUTH_FAIL("비밀번호 인증 실패"),
-    MAIL_SEND_FAIL("이메일 전송 실패"),
-    MAIL_SESSION_NOTFOUND("메일 인증 세션 없음"),
-    MAIL_CODE_MISMATCH("이메일 인증 코드 불일치"),
-    PHONE_CODE_MISMATCH("전화번호 인증 코드 불일치"),
-    PHONE_SESSION_NOTFOUND("폰 인증 세션 없음"),
-    LICENCE_NUM_INVALID("사업자 번호 유효하지 않음"),
-    EMAIL_NOT_VERIFIED("이메일 미인증"),
-    PHONE_NOT_VERIFIED("번호 미인증"),
-    PASSWORD_NOT_VERIFIED("비밀번호 미인증");
+    AUTH_PURPOSE_INVALID("0A00"),
+    PASSWORD_AUTH_FAIL("0A01"),
+    MAIL_SEND_FAIL("0A02"),
+    MAIL_SESSION_NOTFOUND("0A03"),
+    MAIL_CODE_MISMATCH("0A04"),
+    PHONE_CODE_MISMATCH("0A05"),
+    PHONE_SESSION_NOTFOUND("0A06"),
+    LICENCE_NUM_INVALID("0A07"),
+    EMAIL_NOT_VERIFIED("0A08"),
+    PHONE_NOT_VERIFIED("0A09"),
+    PASSWORD_NOT_VERIFIED("0A10");
 
     final String code;
 }

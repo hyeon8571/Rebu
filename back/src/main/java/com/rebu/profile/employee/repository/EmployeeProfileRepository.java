@@ -2,6 +2,7 @@ package com.rebu.profile.employee.repository;
 
 import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
 import com.rebu.profile.employee.entity.EmployeeProfile;
+import com.rebu.profile.entity.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,17 +18,26 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Optional<EmployeeProfile> findByNickname(String nickname);
 
     @Query("""
+           SELECT e
+           FROM EmployeeProfile e
+           JOIN FETCH e.shop
+           WHERE e.nickname = :nickname
+           """)
+    Optional<EmployeeProfile> findByNicknameUsingFetchJoinShop(String nickname);
+
+
+    @Query("""
         SELECT new com.rebu.profile.employee.dto.GetEmployeeProfileResponse(
             e.imageSrc,
             e.nickname,
             e.introduction,
             e.isPrivate,
             e.workingName,
-            COUNT(fr.id),
-            COUNT(fi.id),
-            COUNT(fe.id),
-            COUNT(rv.id),
-            COUNT(sc.id)
+            COUNT(DISTINCT fr.id),
+            COUNT(DISTINCT fi.id),
+            COUNT(DISTINCT fe.id),
+            COUNT(DISTINCT rv.id),
+            COUNT(DISTINCT sc.id)
         )
         FROM EmployeeProfile e
         LEFT JOIN Follow fr ON fr.follower.id = e.id
@@ -35,8 +45,12 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
         LEFT JOIN Review rv ON rv.employeeProfile.id = e.id
         LEFT JOIN Feed fe ON fe.writer.id = e.id
         LEFT JOIN Scrap sc ON sc.profile.id = e.id
-        WHERE e.id = :employeeProfileId
+        WHERE e.id = :profileId
         GROUP BY e.id
     """)
-    Optional<GetEmployeeProfileResponse> getEmployeeProfileByEmployeeProfileId(Long employeeProfileId);
+    Optional<GetEmployeeProfileResponse> getEmployeeProfileResponseByProfileId(Long profileId);
+
+    List<EmployeeProfile> findByShop(Profile profile);
+
+
 }

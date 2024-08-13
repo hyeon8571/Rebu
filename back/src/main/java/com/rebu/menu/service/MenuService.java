@@ -1,9 +1,6 @@
 package com.rebu.menu.service;
 
-import com.rebu.menu.dto.MenuCreateDto;
-import com.rebu.menu.dto.MenuDeleteDto;
-import com.rebu.menu.dto.MenuReadDto;
-import com.rebu.menu.dto.MenuUpdateDto;
+import com.rebu.menu.dto.*;
 import com.rebu.menu.entity.Menu;
 import com.rebu.menu.exception.MenuNotFoundException;
 import com.rebu.menu.repositoy.MenuRepository;
@@ -82,8 +79,15 @@ public class MenuService {
         return true;
     }
 
+    public MenuCategoryReadDto category(String employeeNickname) {
+        List<String> categoryList = menuRepository.findMenuCategoriesByEmployeeNickname(employeeNickname);
+        return MenuCategoryReadDto.from(categoryList);
+    }
+
     private MenuReadDto readMenu(Menu menu) {
         List<String> images = menuPhotoService.readPhotos(menu);
         return MenuReadDto.from(menu, images);
     }
+
+
 }

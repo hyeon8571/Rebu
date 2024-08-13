@@ -56,27 +56,27 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         if (refreshToken == null) {
-            setResponse(response, "리프레시 에러코드");
+            setResponse(response, "0A11");
             return;
         }
 
         try {
             JWTUtil.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
-            setResponse(response, "리프레시 에러코드");
+            setResponse(response, "0A11");
             return;
         }
 
         String category = JWTUtil.getCategory(refreshToken);
         if (!category.equals("refresh")) {
-            setResponse(response, "리프레시 에러코드");
+            setResponse(response, "0A11");
             return;
         }
 
         String nickname = JWTUtil.getNickname(refreshToken);
         boolean isExist = redisService.existData(generatePrefixedKey(nickname));
         if (!isExist) {
-            setResponse(response, "리프레시 에러코드");
+            setResponse(response, "0A11");
             return;
         }
 
@@ -87,7 +87,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         cookie.setPath("/");
 
         response.addCookie(cookie);
-        setResponse(response, "로그아웃 성공");
+        setResponse(response, "1A08");
 
     }
 

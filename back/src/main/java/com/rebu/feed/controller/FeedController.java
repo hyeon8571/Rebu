@@ -2,11 +2,15 @@ package com.rebu.feed.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.controller.dto.ApiResponse;
+import com.rebu.common.util.ListUtils;
 import com.rebu.common.validation.annotation.NotNull;
 import com.rebu.feed.controller.dto.FeedCreateByEmployeeRequest;
 import com.rebu.feed.controller.dto.FeedCreateByShopRequest;
 import com.rebu.feed.controller.dto.FeedModifyRequest;
+import com.rebu.feed.controller.dto.FeedReadByShopResponse;
+import com.rebu.feed.dto.FeedByShopDto;
 import com.rebu.feed.dto.FeedDeleteDto;
+import com.rebu.feed.dto.FeedReadByShopDto;
 import com.rebu.feed.service.FeedService;
 import com.rebu.profile.enums.Type;
 import com.rebu.security.dto.AuthProfileInfo;
@@ -15,6 +19,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/feeds")
@@ -63,4 +69,16 @@ public class FeedController {
         return ResponseEntity.ok().body(new ApiResponse<>("1P03", feedService.searchHashtagsCount(keyword)));
     }
 
+    @GetMapping("/shops/{nickname}")
+    public ResponseEntity<?> readShopFeeds(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                           @PathVariable String nickname) {
+
+        List<FeedByShopDto> dtos = feedService.readShopFeeds(FeedReadByShopDto.builder()
+                .shopNickname(nickname)
+                .profileNickname(authProfileInfo.getNickname())
+                .build());
+        List<FeedReadByShopResponse> response = ListUtils.applyFunctionToElements(dtos, FeedReadByShopResponse::from);
+
+        return ResponseEntity.ok().body(new ApiResponse<>("1P04", response));
+    }
 }

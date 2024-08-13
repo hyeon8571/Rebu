@@ -39,14 +39,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         try {
             JWTUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-            setResponse(response, "Access 토큰 만료 에러 코드");
+            setResponse(response, "0A15");
             return;
         }
 
         String category = JWTUtil.getCategory(accessToken);
 
         if (!category.equals("access")) {
-            setResponse(response, "Access 토큰 카테고리 불일치 에러 코드");
+            setResponse(response, "0A16");
             return;
         }
 

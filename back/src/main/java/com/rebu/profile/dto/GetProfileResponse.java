@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 public class GetProfileResponse {
     private String imageSrc;
-    private Long followersCnt;
     private Long followingCnt;
+    private Long followerCnt;
     private String nickname;
     private String introduction;
     private Long reviewCnt;
@@ -18,11 +18,12 @@ public class GetProfileResponse {
     private Long favoritesCnt;
     private boolean isPrivate;
     private Relation relation;
+    private Long followId;
 
-    public GetProfileResponse(String imageSrc, Long followersCnt, Long followingCnt, String nickname, String introduction, Long reviewCnt, Long scrapCnt, Long favoritesCnt, boolean isPrivate) {
+    public GetProfileResponse(String imageSrc, Long followingCnt, Long followerCnt, String nickname, String introduction, Long reviewCnt, Long scrapCnt, Long favoritesCnt, boolean isPrivate) {
         this.imageSrc = imageSrc;
-        this.followersCnt = followersCnt;
         this.followingCnt = followingCnt;
+        this.followerCnt = followerCnt;
         this.nickname = nickname;
         this.introduction = introduction;
         this.reviewCnt = reviewCnt;

@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SecurityExceptionConstants implements ExceptionConstants {
-    REFRESH_INVALID("리프레시 에러코드");
+    REFRESH_INVALID("0A11");
     final String code;
 }
