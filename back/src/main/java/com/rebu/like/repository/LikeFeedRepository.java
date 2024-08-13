@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface LikeFeedRepository extends JpaRepository<LikeFeed, Long> {
     Optional<LikeFeed> findByFeedAndProfile(Feed feed, Profile profile);
 
-    List<LikeFeed> findByProfileAndFeedInOrderByFeedId(Profile profile, List<Feed> feeds);
+    List<LikeFeed> findByProfileAndFeedIn(Profile profile, List<Feed> feeds);
 }

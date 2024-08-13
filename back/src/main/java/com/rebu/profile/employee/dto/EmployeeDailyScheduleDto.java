@@ -20,7 +20,7 @@ public class EmployeeDailyScheduleDto {
     private EmployeeProfileDto employeeProfile;
     @Setter
     private WorkingInfoDto workingInfo;
-    private List<AbsenceDto> absences = new ArrayList<>();
-    private List<ReservationDto> reservations = new ArrayList<>();
-    private List<MenuDto> menus = new ArrayList<>();
+    private final List<AbsenceDto> absences = new ArrayList<>();
+    private final List<ReservationDto> reservations = new ArrayList<>();
+    private final List<MenuDto> menus = new ArrayList<>();
 }

@@ -1,10 +1,12 @@
 package com.rebu.feed.controller.dto;
 
 import com.rebu.common.util.ListUtils;
-import com.rebu.feed.dto.FeedByEmployeeDto;
 import com.rebu.feed.dto.FeedByShopDto;
 import com.rebu.feed.dto.FeedImageDto;
+import com.rebu.feed.dto.FeedSearchedDto;
 import com.rebu.feed.dto.HashtagDto;
+import com.rebu.feed.entity.Feed;
+import com.rebu.reviewkeyword.dto.ReviewKeywordDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,23 +15,24 @@ import java.util.List;
 
 @Getter
 @Builder
-public class FeedReadByEmployeeResponse {
-    private Boolean isScraped;
+public class FeedSearchedResponse {
     private Boolean isLiked;
+    private Boolean isScraped;
     private Writer writer;
     private Feed feed;
-    private Employee employee;
+    private Shop shop;
 
     @Getter
     @Builder
     private static class Writer {
-        private String profileImageSrc;
+        private String imageSrc;
         private String nickname;
     }
 
     @Getter
     @Builder
     private static class Feed {
+        private com.rebu.feed.entity.Feed.Type type;
         private Long feedId;
         private List<String> imageSrcs;
         private String content;
@@ -37,24 +40,27 @@ public class FeedReadByEmployeeResponse {
         private LocalDateTime createAt;
         private Long likeCnt;
         private Long commentCnt;
+        private List<String> reviewKeywords;
+        private Integer rating;
     }
 
     @Getter
     @Builder
-    private static class Employee {
-        private String workingName;
+    private static class Shop {
+        private String name;
         private String nickname;
     }
 
-    public static FeedReadByEmployeeResponse from(FeedByEmployeeDto dto){
-        return FeedReadByEmployeeResponse.builder()
+    public static FeedSearchedResponse from(FeedSearchedDto dto){
+        return FeedSearchedResponse.builder()
                 .isScraped(dto.getIsScraped())
                 .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
-                        .profileImageSrc(dto.getWriter().getImageSrc())
+                        .imageSrc(dto.getWriter().getImageSrc())
                         .nickname(dto.getWriter().getNickname())
                         .build())
                 .feed(Feed.builder()
+                        .type(dto.getFeed().getType())
                         .feedId(dto.getFeed().getId())
                         .imageSrcs(ListUtils.applyFunctionToElements(dto.getFeedImages(), FeedImageDto::getSrc))
                         .content(dto.getFeed().getContent())
@@ -62,10 +68,12 @@ public class FeedReadByEmployeeResponse {
                         .createAt(dto.getFeed().getCreatedAt())
                         .likeCnt(dto.getFeed().getLikeFeedCnt())
                         .commentCnt(dto.getFeed().getCommentCnt())
+                        .reviewKeywords(dto.getReviewKeywords() != null ? ListUtils.applyFunctionToElements(dto.getReviewKeywords(), ReviewKeywordDto::getKeyword) : null)
+                        .rating(dto.getReview() != null ? dto.getReview().getRating() : null)
                         .build())
-                .employee(Employee.builder()
-                        .workingName(dto.getEmployee().getWorkingName())
-                        .nickname(dto.getEmployee().getNickname())
+                .shop(Shop.builder()
+                        .name(dto.getShop().getName())
+                        .nickname(dto.getShop().getNickname())
                         .build())
                 .build();
     }

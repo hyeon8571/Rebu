@@ -50,8 +50,8 @@ public class ReviewReadByProfileResponse {
 
     public static ReviewReadByProfileResponse from(ReviewByProfileDto dto){
         return ReviewReadByProfileResponse.builder()
-                .isScraped(dto.isScraped())
-                .isLiked(dto.isLiked())
+                .isScraped(dto.getIsScraped())
+                .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
                         .profileImageSrc(dto.getWriter().getImageSrc())
                         .nickname(dto.getWriter().getNickname())

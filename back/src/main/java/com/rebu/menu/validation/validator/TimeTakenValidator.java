@@ -10,7 +10,6 @@ public class TimeTakenValidator implements ConstraintValidator<TimeTaken, Intege
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
-            System.out.println(1);
             throw new MenuTimeTakenMismatchException();
         }
 

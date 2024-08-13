@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     Optional<Scrap> findByProfileAndFeed(Profile profile, Feed feed);
 
-    List<Scrap> findByProfileAndFeedInOrderByFeedId(Profile profile, List<Feed> feed);
+    List<Scrap> findByProfileAndFeedIn(Profile profile, List<Feed> feed);
 }

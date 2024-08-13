@@ -50,8 +50,8 @@ public class ReviewReadToEmployeeResponse {
 
     public static ReviewReadToEmployeeResponse from(ReviewToEmployeeDto dto){
         return ReviewReadToEmployeeResponse.builder()
-                .isScraped(dto.isScraped())
-                .isLiked(dto.isLiked())
+                .isScraped(dto.getIsScraped())
+                .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
                         .profileImageSrc(dto.getWriter().getImageSrc())
                         .nickname(dto.getWriter().getNickname())

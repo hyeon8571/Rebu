@@ -7,7 +7,12 @@ import com.rebu.common.validation.annotation.NotNull;
 import com.rebu.feed.controller.dto.*;
 import com.rebu.feed.dto.*;
 import com.rebu.feed.service.FeedService;
+import com.rebu.feed.validation.annotation.Distance;
+import com.rebu.feed.validation.annotation.Latitude;
+import com.rebu.feed.validation.annotation.Longitude;
+import com.rebu.feed.validation.annotation.Period;
 import com.rebu.profile.enums.Type;
+import com.rebu.profile.shop.enums.Category;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -89,4 +94,31 @@ public class FeedController {
 
         return ResponseEntity.ok().body(new ApiResponse<>("1P04", response));
     }
+
+    @GetMapping
+    public ResponseEntity<?> searchFeeds(
+            @AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+            @Latitude @RequestParam(required = false) Double lat,
+            @Longitude @RequestParam(required = false) Double lng,
+            @Distance @RequestParam(required = false) Integer distance,
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) String hashtag,
+            @RequestParam(required = false) String scrapedBy,
+            @Period @RequestParam(required = false) Integer period,
+            @RequestParam(defaultValue = "false") Boolean sortedLike){
+        List<FeedSearchedDto> dtos = feedService.searchFeeds(FeedSearchDto.builder()
+                .nickname(authProfileInfo.getNickname())
+                .lat(lat)
+                .lng(lng)
+                .distance(distance)
+                .category(category)
+                .hashtag(hashtag)
+                .scrapedBy(scrapedBy)
+                .period(period)
+                .sortedLike(sortedLike)
+                .build());
+        List<FeedSearchedResponse> response = ListUtils.applyFunctionToElements(dtos, FeedSearchedResponse::from);
+        return ResponseEntity.ok().body(new ApiResponse<>("1P05", response));
+    }
+
 }
