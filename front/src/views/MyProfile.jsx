@@ -249,7 +249,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
   // 매장 즐겨찾기 전체 조회
   useEffect(() => {
-    if (type === "COMMON") {
+    
     const access = localStorage.getItem('access');
     axios.get(`${BASE_URL}/api/shop-favorites/${nickname}`, {
       headers : {
@@ -258,13 +258,13 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       }
     })
     .then(response => {
-      console.log(response.data.body)
-      setLikeCard(response.data.body);
+      console.log(response.data.body.content)
+      setLikeCard(response.data.body.content);
     })
     .catch(err => {
       console.log('즐겨찾기 데이터를 찾지 못했습니다');
     })
-    }
+    
   }, []);
 
 
@@ -289,21 +289,21 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 useEffect(() => {
   if (type === "COMMON") {
     setTabTitle([
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
-    { name: "Likes", content: "Likes", count: profile.favoritesCnt}
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile?.scrapCnt},
+    { name: "Likes", content: "Likes", count: profile?.favoritesCnt}
   ])
 } else if (type === "SHOP") {
     setTabTitle([
-    { name: "Post", content: "Post", count: profile.feedCnt},
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Reservation", content: "Reservation", count: profile.reservationCnt},
+    { name: "Post", content: "Post", count: profile?.feedCnt},
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Reservation", content: "Reservation", count: profile?.reservationCnt},
   ])
 } else if (type === "EMPLOYEE") {
   setTabTitle([
-    { name: "Post", content: "Post", count: profile.feedCnt },
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
+    { name: "Post", content: "Post", count: profile?.feedCnt },
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile?.scrapCnt},
   ])
 };
 }, [profile]);
@@ -336,11 +336,11 @@ useEffect(() => {
       );
     } else if (content === "Likes") {
       return (
-        <React.Fragment key={key}>
-          {likeCard.map((item) => (
+        <>
+          {likeCard?.map((item) => (
             <LikesCard key={item.id} Card={item} loginUser={nickname} />
           ))}
-        </React.Fragment>
+        </>
       );
     } else if (content === "Review") {
       return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={nickname} type={type} currentTab={currentTab}/>;

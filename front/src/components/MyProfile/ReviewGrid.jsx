@@ -19,7 +19,8 @@ const ReviewKeywordBtn = styled.button`
   border: 1.5px solid #d1a6f7;
   outline: none;
   border-radius: 12px;      
-  padding: 5px 10px;      
+  padding: 5px 10px;
+  margin-bottom: 10px; 
   font-size: 13px;       
   color: ${(props) =>
     props.theme.value === "light" ? "#000" :"#fff"};        
@@ -37,7 +38,8 @@ const ReviewKeywordBtnActive = styled.button`
   /* box-shadow: 0 0 15px rgba(186, 126, 250, 0.4); */
   outline: none;
   border-radius: 12px;      
-  padding: 5px 10px;      
+  padding: 5px 10px;
+  margin-bottom: 10px;
   font-size: 13px;       
   color: ${(props) =>
     props.theme.value === "light" ? "#000" :"#fff"};     
@@ -99,7 +101,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
 
 
   const generateLayout = useCallback((photos) => {
-    return photos.map((photo, index) => ({
+    return photos?.map((photo, index) => ({
       i: `photo-${index}`,
       x: index % 3,
       y: Math.floor(index / 3),
@@ -138,10 +140,18 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
     setSelectedPhotos(Card.slice(index));
   };
 
-
-
   return (
     <>
+      {Card == false && type === "SHOP" && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성한 게시글이 없습니다
+        </h3>
+      )}
+      {Card == false && type === "COMMON" && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성한 리뷰가 없습니다
+        </h3>
+      )}
       {type === "SHOP" && currentTab === 1 && (
         <>
           {keywordBtnActive ? (
@@ -158,7 +168,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
       )}
   
       {selectedPhotos ? (
-        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
+        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} type={type}/>
       ) : (
         <GridContainer ref={containerRef}>
           <ResponsiveGridLayout
@@ -170,7 +180,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
             isDraggable={false}
             isResizable={false}
           >
-            {Card.map((item, index) => (
+            {Card?.map((item, index) => (
               <GridItem
                 key={`photo-${index}`}
                 data-grid={layouts.lg[index]}

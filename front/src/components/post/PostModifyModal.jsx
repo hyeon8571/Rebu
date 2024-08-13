@@ -213,8 +213,8 @@ const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser,
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const [current, setCurrent] = useState(0);
-  const length = post.imageSrcs?.length;
-  const [content, setContent] = useState(post.content);
+  const length = post.feed.imageSrcs?.length;
+  const [content, setContent] = useState(post.feed.content);
   const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
   const location = useLocation();
 
@@ -269,16 +269,16 @@ const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser,
             <SlideImg>
               <SlideBack onClick={prevSlide} disabled={current === 0} />
               <SlideFront onClick={nextSlide} disabled={current === length - 1} />
-              {post.imageSrcs.map((slide, imgIndex) => (
+              {post.feed.imageSrcs.map((slide, imgIndex) => (
                 <PostImage
                   key={imgIndex}
-                  src={slide}
+                  src={"https://www.rebu.kro.kr/data/" + slide}
                   alt={`Slide ${imgIndex}`}
                   style={{ display: imgIndex === current ? "block" : "none" }}
                 />
               ))}
               <DotsWrapper>
-                {post.imageSrcs.map((_, imgIndex) => (
+                {post.feed.imageSrcs.map((_, imgIndex) => (
                   <Dot key={imgIndex} active={imgIndex === current} />
                 ))}
               </DotsWrapper>

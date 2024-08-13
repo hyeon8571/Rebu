@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { BASE_URL } from '../../views/Signup';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -72,13 +74,47 @@ const PostDeleteButton = styled.button`
 `;
 
 
-const PostDelete = ({postId, PostDeleteModalOpen, closeModal, deletePost}) => {
-  
+const PostDelete = ({nickname, postId, PostDeleteModalOpen, closeModal, type }) => {
+
+
   const postdelete = () => {
     //게시글 삭제 로직//
-    deletePost(postId);
-    closeModal();
-  };
+    if (type === "COMMON") {
+      const access = localStorage.getItem('access');
+      axios.delete(`${BASE_URL}/api/profiles/${nickname}/reviews/${postId}`, {
+        headers: {
+          "access" : access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log(response + "리뷰가 성공적으로 삭제되었습니다.");
+        closeModal();
+        
+        // 여기서 추가적인 작업 (예: 페이지 리로드 또는 상태 업데이트)
+      })
+      .catch(error => {
+        console.log("삭제 중 오류 발생:", error);
+      });
+    } else {
+      const access = localStorage.getItem('access');
+      axios.delete(`${BASE_URL}/api/feeds/${postId}`, {
+        headers: {
+          "access" : access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log(response + "피드가 성공적으로 삭제되었습니다.");
+        closeModal();
+        // 여기서 추가적인 작업 (예: 페이지 리로드 또는 상태 업데이트)
+      })
+      .catch(error => {
+        console.log("삭제 중 오류 발생:", error);
+      });
+    }
+    };
+
 
   const cancel = () => {
     closeModal();

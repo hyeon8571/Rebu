@@ -166,7 +166,7 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
       <HeaderText>Profile</HeaderText>
       <ButtonBox>
         <ThemeSwitch theme={theme} toggleTheme={toggleTheme} />
-        {currentUser.nickname === loginUser ? (
+        {currentUser?.nickname === loginUser ? (
           isSettingActive ? (
             <ImgSettingActive onClick={handleSettingClick} />
           ) : (

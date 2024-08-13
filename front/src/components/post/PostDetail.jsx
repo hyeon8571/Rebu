@@ -302,7 +302,7 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
+const PostDetail = ({ information, currentUser, loginUser, type }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const updatedPost = location.state?.post;
@@ -319,7 +319,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
   const [page, setPage] = useState(0);
-  console.log(information);
+ 
   console.log(posts)
 
  
@@ -344,7 +344,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   }, []);
 
   const ModifyModalOpen = (id) => {
-    const post = posts.find((post) => post.feedId === id);
+    const post = posts.find((post) => post.feed.feedId === id);
     setSelectedPost(post);
     setPostModifyModalOpen(true);
   };
@@ -411,10 +411,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
     setPostModifyModalOpen(false);
   };
 
-  const deletePost = (id) => {
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-    closeModal();
-  };
+
 
   const toggleComments = useCallback((index) => {
     setExpandedComments((prevExpandedComments) => {
@@ -476,7 +473,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                 ref={(el) => (dropdownRefs.current[index] = el)}
                 show={showDropdown[index]}
               >
-                <DropdownItem onClick={() => ModifyModalOpen(item.id)}>
+                <DropdownItem onClick={() => ModifyModalOpen(item.feed.feedId)}>
                   게시글 수정
                 </DropdownItem>
                 {postModifyModalOpen && selectedPost && (
@@ -492,16 +489,17 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                   </ModalPortal>
                 )}
                 <hr style={{ margin: "5px 0px" }} />
-                <DropdownItem onClick={() => postDeleteModalOpen(item.id)}>
+                <DropdownItem onClick={() => postDeleteModalOpen(item.feed.feedId)}>
                   게시글 삭제
                 </DropdownItem>
                 {PostDeleteModalOpen && (
                   <ModalPortal>
                     <PostDelete
+                      nickname={loginUser}
                       PostDeleteModalOpen={PostDeleteModalOpen}
                       closeModal={closeModal}
                       postId={postId}
-                      deletePost={() => deletePost(postId)}
+                      type={type}
                     />
                   </ModalPortal>
                 )}
