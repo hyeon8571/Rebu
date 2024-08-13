@@ -85,7 +85,7 @@ public class CommentService {
         Profile profile = profileRepository.findByNickname(requestUserNickname).orElseThrow(ProfileNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!comment.getWriter().equals(profile)) { throw new ProfileUnauthorizedException();}
-        if (comment.isDeleted()) { throw new CommentNotFoundException();}
+        if (comment.getIsDeleted()) { throw new CommentNotFoundException();}
         commentRepository.delete(comment);
         return true;
     }

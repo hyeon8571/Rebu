@@ -31,7 +31,7 @@ public class CommentReadAllDto {
                 .createAt(comment.getCreatedAt())
                 .commentId(comment.getId())
                 .likeCount(likeComment)
-                .isDelete(comment.isDeleted())
+                .isDelete(comment.getIsDeleted())
                 .liked(liked)
                 .type(profile.getType())
                 .build();
