@@ -39,10 +39,13 @@ const ICON_SIZE = 28;
 const ProfileNavItem = () => {
   const navigate = useNavigate();
   // Redux 상태에서 nickname과 type을 가져옴
-  const { nickname, type, imageSrc } = useSelector((state) => state.auth);
+  // const { nickname, type, imageSrc } = useSelector((state) => state.auth);
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
+  const imageSrc = localStorage.getItem("imageSrc");
   // console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
-    navigate(`/profile/${nickname}/${type}`);
+    navigate(`/profile/${nickname}/${type}/own`);
   };
 
   return (

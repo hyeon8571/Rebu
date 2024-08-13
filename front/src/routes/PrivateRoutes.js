@@ -30,7 +30,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route
-      path="/profile/:nickname/:type"
+      path="/profile/:nickname/:type/:owner"
       element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route

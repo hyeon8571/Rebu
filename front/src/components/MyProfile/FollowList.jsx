@@ -129,7 +129,7 @@ const FollowList = ({
   const handleProfileClick = () => {
     // '/profile' 경로로 이동하고, follower.nickname을 state로 전달
     console.log("프로필 클릭:", follower.nickname);
-    navigate(`/profile/${follower.nickname}/${follower.type}`);
+    navigate(`/profile/${follower.nickname}/${follower.type}/others`);
 
     // 함수가 존재할 때만 호출
     if (handleCloseFollowingModal) {

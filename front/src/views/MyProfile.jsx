@@ -7,6 +7,9 @@ import {
   getCommonProfile,
   getEmployeeProfile,
   getShopProfile,
+  getCommonMyProfile,
+  getEmployeeMyProfile,
+  getShopMyProfile,
 } from "../features/common/userSlice";
 
 import TabComponent from "../components/MyProfile/MyProfileTab";
@@ -81,7 +84,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
   // Redux 상태에서 필요한 정보 가져오기
   const { imageSrc } = useSelector((state) => state.auth);
-  const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
+  const { nickname, type, owner } = useParams(); // URL 파라미터에서 nickname과 type을 추출
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
 
@@ -91,22 +94,44 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     const fetchProfile = async () => {
       try {
         let response;
+        switch (owner) {
+          case "others": // 다른 사람의 프로필을 조회하는 경우
+            switch (type) {
+              case "COMMON":
+                response = await getCommonProfile(nickname);
+                break;
+              case "EMPLOYEE":
+                response = await getEmployeeProfile(nickname);
+                break;
+              case "SHOP":
+                response = await getShopProfile(nickname);
+                break;
+              default:
+                throw new Error("Invalid profile type");
+            }
+            break; //'others' case 종료
 
-        switch (type) {
-          case "COMMON":
-            response = await getCommonProfile(nickname);
-            break;
-          case "EMPLOYEE":
-            response = await getEmployeeProfile(nickname);
-            break;
-          case "SHOP":
-            response = await getShopProfile(nickname);
-            break;
+          case "own": // 본인의 프로필을 조회하는 경우
+            switch (type) {
+              case "COMMON":
+                response = await getCommonMyProfile();
+                break;
+              case "EMPLOYEE":
+                response = await getEmployeeMyProfile();
+                break;
+              case "SHOP":
+                response = await getShopMyProfile();
+                break;
+              default:
+                throw new Error("Invalid profile type");
+            }
+            break; // 'own' case 종료
+
           default:
-            throw new Error("Invalid profile type");
+            throw new Error("Invalid owner type");
         }
 
-        if (response.success) {
+        if (response && response.success) {
           setProfile(response.data);
           console.log("success", profile);
         } else {
@@ -119,7 +144,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
 
     fetchProfile();
-  }, [nickname, type]);
+  }, [nickname, type, owner]);
   if (error) {
     console.log(error);
   }
