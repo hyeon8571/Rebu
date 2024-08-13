@@ -23,7 +23,7 @@ const HashTag = styled.button`
   padding: 5px 10px;
   border: none;
   border-radius: 1rem;
-  cursor: pointer;
+  cursor: pointer; /* Make the button look clickable */
   &:hover {
     background-color: #ff4545;
   }
@@ -33,20 +33,18 @@ const isEmptyValue = (value) => {
   return value === null || value === undefined || value.trim() === "";
 };
 
-export default function AddHashTag({
-  review,
-  setReview,
-  hashTags,
-  setHashTags,
-}) {
+export default function FeedHashTag({ feed, setFeed, hashTags, setHashTags }) {
   const [inputHashTag, setInputHashTag] = useState("");
 
-  const addHashTag = () => {
-    if (isEmptyValue(inputHashTag.trim())) {
+  const addHashTag = (e) => {
+    const allowedCommand = ["Comma", "Enter", "Space", "NumpadEnter"];
+    if (!allowedCommand.includes(e.code)) return;
+
+    if (isEmptyValue(e.target.value.trim())) {
       return setInputHashTag("");
     }
 
-    let newHashTag = inputHashTag.trim();
+    let newHashTag = e.target.value.trim();
     const regExp = /[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     if (regExp.test(newHashTag)) {
       newHashTag = newHashTag.replace(regExp, "");
@@ -60,8 +58,8 @@ export default function AddHashTag({
     setHashTags((prevHashTags) => {
       const newSet = [...new Set([...prevHashTags, newHashTag])];
       setReview({
-        ...review,
-        hashtags: newSet,
+        ...reed,
+        hashTags: newSet,
       });
       return newSet;
     });
@@ -69,47 +67,51 @@ export default function AddHashTag({
     setInputHashTag("");
   };
 
-  const keyUpHandler = (e) => {
-    const allowedKeys = ["Enter", "Comma", " "]; // " " is for Space
-    if (allowedKeys.includes(e.key)) {
-      e.preventDefault();
-      addHashTag();
+  const keyDownHandler = (e) => {
+    if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
+    e.preventDefault();
+
+    const regExp = /^[a-z|A-Z|가-힣|ㄱ-ㅎ|ㅏ-ㅣ|0-9| \t|]+$/g;
+    if (!regExp.test(e.target.value)) {
+      setInputHashTag("");
     }
+  };
+
+  const deleteHashTag = (hashTagToDelete) => {
+    const newHashTags = (prevHashTags) =>
+      prevHashTags.filter((hashTag) => hashTag !== hashTagToDelete);
+    setHashTags(newHashTags);
+    setFeed({
+      ...feed,
+      hashtags: newHashTags,
+    });
   };
 
   const changeHashTagInput = (e) => {
     setInputHashTag(e.target.value);
   };
 
-  const deleteHashTag = (hashTagToDelete) => {
-    const newHashTags = hashTags.filter(
-      (hashTag) => hashTag !== hashTagToDelete
-    );
-    setHashTags(newHashTags);
-    setReview({
-      ...review,
-      hashtags: newHashTags,
-    });
-  };
-
   return (
     <HashTagContainer>
       <div className="hashTags">
         {hashTags.length > 0 &&
-          hashTags.map((hashTag) => (
-            <HashTag
-              key={hashTag}
-              onClick={() => deleteHashTag(hashTag)}
-              className="tag"
-            >
-              #{hashTag}
-            </HashTag>
-          ))}
+          hashTags.map((hashTag) => {
+            return (
+              <HashTag
+                key={hashTag}
+                onClick={() => deleteHashTag(hashTag)}
+                className="tag"
+              >
+                #{hashTag}
+              </HashTag>
+            );
+          })}
 
         <input
           value={inputHashTag}
           onChange={changeHashTagInput}
-          onKeyUp={keyUpHandler}
+          onKeyUp={addHashTag}
+          onKeyDown={keyDownHandler}
           placeholder="#해시태그를 등록해보세요. (최대 10개)"
           className="hashTagInput"
         />

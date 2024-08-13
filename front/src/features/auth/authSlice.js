@@ -1,14 +1,15 @@
 // authSlice.js
-import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { BASE_URL } from '../../views/Signup'; // BASE_URL 경로는 확인 필요
+import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URL } from "../../views/Signup"; // BASE_URL 경로는 확인 필요
 
 const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
   imageSrc: "",
-  profile: { //profile 나중에 삭제하기
+  profile: {
+    //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
     followingCnt: 0,
@@ -18,12 +19,12 @@ const initialState = {
     private: false,
     relation: "OWN",
     reviewCnt: 0,
-    scrapCnt: 0
-  }
+    scrapCnt: 0,
+  },
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     loginSuccess(state, action) {
@@ -43,7 +44,7 @@ const authSlice = createSlice({
     },
     setProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
-    }
+    },
   },
 });
 
@@ -64,12 +65,14 @@ export const login = (email, password) => async (dispatch) => {
 
     if (response.data.code === "1A07") {
       const access = response.headers["access"];
-      console.log("로그인 성공", response)
+      console.log("로그인 성공", response);
       const { type, nickname } = response.data.body;
       localStorage.setItem("access", access);
+      localStorage.setItem("nickname", response.data.body.nickname);
+      localStorage.setItem("type", response.data.body.type);
 
       dispatch(loginSuccess({ nickname, type }));
-      console.log("타입, 닉네임", type, nickname)
+      console.log("타입, 닉네임", type, nickname);
 
       // 프로필 가져오기
       // const profileResult = await dispatch(getProfile(nickname));
@@ -79,33 +82,38 @@ export const login = (email, password) => async (dispatch) => {
       // return { success: false, error: profileResult.error };
       // }
     } else {
-      return { success: false, error: "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요." };
+      return {
+        success: false,
+        error:
+          "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요.",
+      };
     }
   } catch (error) {
-    return { success: false, error: "오류가 발생했습니다. 다시 시도해 주세요." };
+    return {
+      success: false,
+      error: "오류가 발생했습니다. 다시 시도해 주세요.",
+    };
   }
 };
-
 
 export const getProfile = (nickname) => async (dispatch) => {
   const access = localStorage.getItem("access");
   try {
     const response = await axios.get(`${BASE_URL}/api/profiles/${nickname}`, {
       headers: {
-        "access": access,
+        access: access,
         "Content-Type": "application/json",
       },
     });
 
-    console.log("getProfile성공", response)
-    console.log(response.data.body)
+    console.log("getProfile성공", response);
+    console.log(response.data.body);
     dispatch(setProfile(response.data.body));
     return { success: true };
   } catch (error) {
     return { success: false, error: "프로필을 가져오는데 실패했습니다." };
   }
 };
-
 
 // export const alarmsAgreement = () => async (dispatch) => {
 //   const access = localStorage.getItem("access");
@@ -180,6 +188,5 @@ export const getProfile = (nickname) => async (dispatch) => {
 //     eventSource = null;
 //   }
 // };
-
 
 export default authSlice.reducer;

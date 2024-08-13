@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SelectComponent from "./../components/AddMenu/MenuSelectBox";
 import ButtonLarge from "../components/common/ButtonLarge";
@@ -159,7 +159,6 @@ export default function AddMenu() {
 
   const IMG_URL = process.env.PUBLIC_URL;
 
-  console.log(category);
   const handleNumberInput = (e) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) {

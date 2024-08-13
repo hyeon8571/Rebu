@@ -27,7 +27,7 @@ const Button = styled.button`
   ${ButtonStyles}
 `;
 
-const Login = () => {
+const Login = ({ navLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -47,6 +47,7 @@ const Login = () => {
         // 로그인 성공
         console.log("로그인 성공", loginResult);
         navigate("/main", { replace: true });
+        navLogin();
       } else {
         // 로그인 실패
         setError(loginResult.error || "로그인에 실패했습니다.");

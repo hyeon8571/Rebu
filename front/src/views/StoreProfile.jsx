@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import TabComponent from "../components/storeProfile/StoreProfileTab";
 import ProfileImage from "../components/storeProfile/StoreProfileImage";
 import ProfileInfo from "../components/storeProfile/StoreProfileInfo";
@@ -28,8 +28,8 @@ const ProfileContainer = styled.div`
 `;
 
 const StickyTabContainer = styled.div`
-  position: ${(props) => (props.isSticky ? 'sticky' : 'relative')};
-  top: ${(props) => (props.isSticky ? '0' : 'auto')};
+  position: ${(props) => (props.isSticky ? "sticky" : "relative")};
+  top: ${(props) => (props.isSticky ? "0" : "auto")};
   left: 0;
   right: 0;
   width: 100%;
@@ -64,68 +64,78 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
   const [key, setKey] = useState(0);
-  const [activeSubTab, setActiveSubTab] = useState('예약현황'); // 중첩된 탭의 상태를 추가합니다.
+  const [activeSubTab, setActiveSubTab] = useState("예약현황"); // 중첩된 탭의 상태를 추가합니다.
   const tabRef = useRef(null);
   const [shopPost, setShopPost] = useState([]);
   const [reviewdata, setReviewdata] = useState([]);
   const [ratingAvg, setRatingAvg] = useState(0);
   const [followerdata, setFollowerData] = useState([]);
-  const [followingdata, setFollowingData] =useState([]);
+  const [followingdata, setFollowingData] = useState([]);
   const [likeshop, setLikeshop] = useState([]);
 
   useEffect(() => {
-    fetch('/mockdata/likeshop.json')
-      .then(res => res.json())
+    fetch("/mockdata/likeshop.json")
+      .then((res) => res.json())
       .then((data) => {
         setLikeshop(data.body);
-      })      
+      });
   }, []);
-  
+
   useEffect(() => {
-    fetch('/mockdata/followerlist.json')
-      .then(res => res.json())
+    fetch("/mockdata/followerlist.json")
+      .then((res) => res.json())
       .then((data) => {
         setFollowerData(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/followinglist.json')
-      .then(res => res.json())
+    fetch("/mockdata/followinglist.json")
+      .then((res) => res.json())
       .then((data) => {
         setFollowingData(data.body);
-      })      
+      });
   }, []);
 
   useEffect(() => {
-    fetch('/mockdata/reviewdata.json')
-      .then(res => res.json())
+    fetch("/mockdata/reviewdata.json")
+      .then((res) => res.json())
       .then((data) => {
-        const shopReview = data.body.filter(review => shopProfile.nickname === review.shopNickname && shopProfile.nickname !== review.nickname);
+        const shopReview = data.body.filter(
+          (review) =>
+            shopProfile.nickname === review.shopNickname &&
+            shopProfile.nickname !== review.nickname
+        );
         setReviewdata(shopReview || data.body);
-      })      
+      });
   }, [reviewdata, shopProfile]);
 
   useEffect(() => {
     if (reviewdata.length > 0) {
-      const totalRating = reviewdata.reduce((acc, review) => acc + review.rating, 0);
-      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(2) : 0;
+      const totalRating = reviewdata.reduce(
+        (acc, review) => acc + review.rating,
+        0
+      );
+      const averageRating =
+        reviewdata.length > 0
+          ? (totalRating / reviewdata.length).toFixed(2)
+          : 0;
       setRatingAvg(averageRating);
     }
   });
-  
+
   useEffect(() => {
-    fetch('/mockdata/shoppost.json')
-      .then(res => res.json())
+    fetch("/mockdata/shoppost.json")
+      .then((res) => res.json())
       .then((data) => {
         setShopPost(data.body);
-      })      
+      });
   }, []);
 
   const updateLikes = (newLikes) => {
     setLikesUser({
       ...likesUser,
-      likes: newLikes
+      likes: newLikes,
     });
   };
 
@@ -145,28 +155,46 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   }, []);
 
   const tabTitle = [
-    { name: "Post", content: "Post", count: shopProfile.feedCnt},
-    { name: "Review", content: "Review", count: shopProfile.reviewCnt},
-    { name: "Reservation", content: "Reservation", count: shopProfile.reservationCnt},
+    { name: "Post", content: "Post", count: shopProfile.feedCnt },
+    { name: "Review", content: "Review", count: shopProfile.reviewCnt },
+    {
+      name: "Reservation",
+      content: "Reservation",
+      count: shopProfile.reservationCnt,
+    },
   ];
 
-  const tabName = ['예약현황', "디자이너"];
+  const tabName = ["예약현황", "디자이너"];
 
   const renderGrid = () => {
     const content = tabTitle[currentTab].content;
 
     if (content === "Post") {
-      return <PostGrid key={key} Card={shopPost} currentUser={shopProfile} loginUser={loginUser}/>;
+      return (
+        <PostGrid
+          key={key}
+          Card={shopPost}
+          currentUser={shopProfile}
+          loginUser={loginUser}
+        />
+      );
     } else if (content === "Review") {
-      return <ReviewGrid key={key} Card={reviewdata} currentUser={shopProfile} loginUser={loginUser}/>;
+      return (
+        <ReviewGrid
+          key={key}
+          Card={reviewdata}
+          currentUser={shopProfile}
+          loginUser={loginUser}
+        />
+      );
     } else if (content === "Reservation") {
-      return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
+      return activeSubTab === "예약현황" ? <TimeTable /> : <DesignerGrid />;
     }
   };
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
-    setKey(prevKey => prevKey + 1);
+    setKey((prevKey) => prevKey + 1);
   };
 
   const handleSubTabChange = (tab) => {
@@ -175,7 +203,12 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
   return (
     <Wrapper>
-      <Header theme={theme} toggleTheme={toggleTheme} currentUser={shopProfile} loginUser={loginUser} />
+      <Header
+        theme={theme}
+        toggleTheme={toggleTheme}
+        currentUser={shopProfile}
+        loginUser={loginUser}
+      />
       <ProfileContainer>
         <IntroduceBox>
           <ProfileImage
@@ -184,7 +217,13 @@ const ProfilePage = ({ theme, toggleTheme }) => {
             followerdata={followerdata}
             followingdata={followingdata}
           />
-          <ProfileInfo currentUser={shopProfile} loginUser={likesUser} updateLikes={updateLikes} rating={ratingAvg} likeshop={likeshop}/>
+          <ProfileInfo
+            currentUser={shopProfile}
+            loginUser={likesUser}
+            updateLikes={updateLikes}
+            rating={ratingAvg}
+            likeshop={likeshop}
+          />
         </IntroduceBox>
         <div ref={tabRef}>
           <StickyTabContainer isSticky={isSticky}>

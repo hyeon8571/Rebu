@@ -7,23 +7,22 @@ import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ModalPortal from "../../util/ModalPortal";
-import MenuDisplay from "./MenuDisPlay";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../util/commonFunction";
+import axios from "axios";
 
 const UpperTabWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  width: 93%;
-  justify-content: space-between;
-  padding-bottom: 10px;
-  margin-top: 10px;
-  border-bottom: 1.5px solid ${(props) => props.theme.primary};
+  flex-direction: column;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid ${(props) => props.theme.primary};
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 const EditDesignerButton = styled.div`
   cursor: pointer;
-  font-size: 13px;
-  margin-right: 5px;
+  font-size: 12px;
   text-decoration: underline;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
   align-self: end;
@@ -31,12 +30,11 @@ const EditDesignerButton = styled.div`
 
 const DesignerCardContainer = styled.div`
   display: grid;
-  width: 88%;
   grid-template-columns: 4fr 1fr;
   background-color: ${(props) =>
-    props.theme.value === "light" ? props.theme.body : props.theme.body};
-  padding: 15px;
-  border-bottom: 1.5px solid ${(props) => props.theme.primary};
+    props.theme.value === "light" ? props.theme.body : props.theme.secondary};
+  padding: 1rem;
+  border-bottom: 2px solid ${(props) => props.theme.primary};
 `;
 
 const DesignerContent = styled.div`
@@ -57,7 +55,7 @@ const DesignerTitle = styled.div`
 `;
 
 const DesignerIntroduction = styled.li`
-  font-size: 13px;
+  font-size: 12px;
   padding-top: 1rem;
   padding-bottom: 1rem;
 `;
@@ -72,7 +70,7 @@ const ReviewContainer = styled.span`
   text-decoration: underline;
   cursor: pointer;
   padding-top: 1rem;
-  font-size: 13px;
+  font-size: 10px;
 `;
 
 const DesignerPhoto = styled.img`
@@ -91,15 +89,14 @@ const ButtonWrapper = styled.div`
 
 const EditButton = styled.div`
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   text-decoration: underline;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
 `;
 
 const SaveButton = styled.div`
   cursor: pointer;
-  font-size: 13px;
-  margin-right: 5px;
+  font-size: 12px;
   text-decoration: underline;
   padding-left: 0.5rem;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
@@ -119,31 +116,43 @@ export default function DesignerDisplay({ profileType }) {
   const [modalContent, setModalContent] = useState(null);
   const [chosenDesigner, setChosenDesigner] = useState(null);
   const [designers, setDesigners] = useState([]);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  // 실제로는 props로 전달
+  // localStorage로 전달
   profileType = 2;
-  //로그인시의 본인 닉네임
-  const currentNickname = "eyuseung0429";
+  //매장 프로필의 닉네임
+  const nickname = "rebu4_hair3";
 
   useEffect(() => {
-    fetch("/mockdata/shopemployees.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+    axios
+      .get(`${BASE_URL}/api/profiles/shop/${nickname}/employees`, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
       })
-      .then((jsondata) => {
-        const data = jsondata.body;
-        console.log(data);
-        setDesigners(data);
+      .then((response) => {
+        console.log(response);
       })
       .catch((error) => {
         console.error("Fetch error:", error);
       });
+    // fetch("/mockdata/shopemployees.json")
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Network response was not ok");
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((jsondata) => {
+    //     const data = jsondata.body;
+    //     console.log(data);
+    //     setDesigners(data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Fetch error:", error);
+    //   });
   }, []);
 
   const toggleHandler = () => {
@@ -155,11 +164,6 @@ export default function DesignerDisplay({ profileType }) {
     setIsEditMode(true);
     setModalContent();
   }
-
-  const handleMenuOpen = () => {
-    setMenuOpen(!menuOpen);
-  }
-
 
   function handleModifyInstruction(introduction) {
     setIsModalOpen(true);
@@ -212,12 +216,12 @@ export default function DesignerDisplay({ profileType }) {
           </EditDesignerButton>
         )}
         {isEditMode && (
-        <ButtonWrapper>
-          {profileType === 3 && (
-            <EditButton onClick={handleAddDesigner}>추가</EditButton>
-          )}
-          <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
-        </ButtonWrapper>
+          <ButtonWrapper>
+            {profileType === 3 && (
+              <EditButton onClick={handleAddDesigner}>추가</EditButton>
+            )}
+            <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
+          </ButtonWrapper>
         )}
       </UpperTabWrapper>
       {designers
@@ -233,12 +237,15 @@ export default function DesignerDisplay({ profileType }) {
               <DesignerIntroduction>
                 {item.workingIntroduction}
               </DesignerIntroduction>
-              <MenuLink onClick={handleMenuOpen}>
+              <MenuLink
+                onClick={() =>
+                  navigate("/menudisplay", {
+                    state: { nickname: currentNickname },
+                  })
+                }
+              >
                 시술 보기
               </MenuLink>
-              {menuOpen && (
-                <MenuDisplay />
-              )}
               <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>

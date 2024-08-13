@@ -157,19 +157,19 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__tile:enabled:focus {
     background: #f8f8fa;
     color: #6f48eb;
-    border-radius: 6px;
+    border-radius: 1px;
   }
 
   .react-calendar__tile--now {
     background: #646269;
-    border-radius: 6px;
+    border-radius: 1px;
     font-weight: bold;
     color: #fff;
   }
   .re .react-calendar__tile--now:enabled:hover,
   .react-calendar__tile--now:enabled:focus {
     background: #6f48eb33;
-    border-radius: 6px;
+    border-radius: 1px;
     font-weight: bold;
     color: ${(props) => props.theme.primary};
   }
@@ -185,7 +185,7 @@ const StyledCalendar = styled(Calendar)`
 
   .react-calendar__tile--active {
     background: ${(props) => props.theme.primary};
-    border-radius: 6px;
+    border-radius: 1px;
     font-weight: bold;
     color: white;
   }
@@ -286,7 +286,7 @@ export default function ReservationCalendar() {
   const chosenDay = convertDate(date);
   const startTime = "08:00";
   const endTime = "20:00";
-  const serviceDuration = 30;
+  const serviceDuration = info.serviceTime;
   const intervalMinutes = 5;
 
   const shopTimeInfo = {

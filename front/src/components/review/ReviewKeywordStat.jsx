@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
-import { MdBorderColor } from "react-icons/md";
+import axios from "axios";
 
 const keywordList = [
   {
@@ -116,23 +116,36 @@ const StatNum = styled.div`
   padding-right: 1rem;
 `;
 
-export default function ReviewKeywordStat({ reviewNum, nickname }) {
+export default function ReviewKeywordStat({ reviewNum }) {
   const [data, setData] = useState([]);
 
   const BASE_URL = "https://www.rebu.kro.kr";
 
+  const nickname = "rebu4_hair3";
+
   useEffect(() => {
-    fetch(`${BASE_URL}/api/review-keywords/counr?nickname=${nickname}`)
-      .then((response) => response.json())
+    axios
+      .get(`${BASE_URL}/api/review-keywords/count?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setData(response.data.body);
+        return response.data.body;
+      })
       .then((jsondata) => {
-        const total = jsondata.body.reduce((acc, item) => acc + item.count, 0);
-        const newEntity = jsondata.body.map((item) => {
+        console.log(jsondata);
+        const total = jsondata.reduce((acc, item) => acc + item.count, 0);
+        const newEntity = jsondata.map((item) => {
           const keywordItem = keywordList.find(
-            (keyword) => keyword.keyword === item.content
+            (keyword) => keyword.keyword === item.keyword
           );
           return {
             ...item,
-            imgURL: keywordItem ? keywordItem.imgURL : "default.png",
+            imgURL: keywordItem.imgURL,
             percent: ((item.count / reviewNum) * 100).toFixed(2),
           };
         });
@@ -143,19 +156,20 @@ export default function ReviewKeywordStat({ reviewNum, nickname }) {
           .slice(0, 5);
 
         setData(top5Entity);
+      })
+      .catch((error) => {
+        console.log(Error);
       });
   }, [reviewNum]);
 
   return (
     <Container>
       <hr style={{ border: "0.5px solid #943aee" }} />
-      {data.length > 0 ? (
+      {data && data.length > 0 ? (
         data.map((item) => (
           <StatBar key={item.content}>
-            <StatIcon
-              src={process.env.PUBLIC_URL + "/keyword/" + item.imgURL}
-            />
-            <KeywordText>{item.content}</KeywordText>
+            <StatIcon src={process.env.PUBLIC_URL + "keyword/" + item.imgURL} />
+            <KeywordText>{item.keyword}</KeywordText>
             <StatNum>{item.count}</StatNum>
             <InsideBar percent={item.percent}></InsideBar>
           </StatBar>

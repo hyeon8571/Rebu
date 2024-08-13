@@ -1,0 +1,125 @@
+{
+  "code": "1R03",
+  "body": [
+    {
+      "id": 15,
+      "startDateTime": "2024-08-05T15:30:00",
+      "reservationStatus": "DONE",
+      "employee": {
+        "nickname": "eyuseung0429",
+        "workingName": "유씅",
+        "role": "사장"
+      },
+      "shop": {
+        "name": "유승샵",
+        "nickname": "syuseung0429",
+        "imageSrc": null
+      },
+      "menu": {
+        "title": "애즈 펌",
+        "timeTaken": 30,
+        "price": 50000
+      }
+    },
+    {
+      "id": 16,
+      "startDateTime": "2024-08-07T10:00:00",
+      "reservationStatus": "REFUSED",
+      "employee": {
+        "nickname": "jdoe1234",
+        "workingName": "John Doe",
+        "role": "헤어 디자이너"
+      },
+      "shop": {
+        "name": "스타일샵",
+        "nickname": "stylingshop123",
+        "imageSrc": "https://example.com/image1.png"
+      },
+      "menu": {
+        "title": "클래식 컷",
+        "timeTaken": 45,
+        "price": 30000
+      }
+    },
+    {
+      "id": 17,
+      "startDateTime": "2024-08-08T14:00:00",
+      "reservationStatus": "NOSHOW",
+      "employee": {
+        "nickname": "hsuhair",
+        "workingName": "황수",
+        "role": "사장"
+      },
+      "shop": {
+        "name": "황수 헤어",
+        "nickname": "hsuhairshop",
+        "imageSrc": "https://example.com/image2.png"
+      },
+      "menu": {
+        "title": "염색",
+        "timeTaken": 60,
+        "price": 70000
+      }
+    },
+    {
+      "id": 18,
+      "startDateTime": "2024-08-12T09:30:00",
+      "reservationStatus": "ACCEPTED",
+      "employee": {
+        "nickname": "mchoi5678",
+        "workingName": "최민수",
+        "role": "헤어 디자이너"
+      },
+      "shop": {
+        "name": "최민수 헤어",
+        "nickname": "mchoishop",
+        "imageSrc": "https://example.com/image3.png"
+      },
+      "menu": {
+        "title": "매직 스트레이트",
+        "timeTaken": 120,
+        "price": 150000
+      }
+    },
+    {
+      "id": 19,
+      "startDateTime": "2024-08-15T16:00:00",
+      "reservationStatus": "RECEIVED",
+      "employee": {
+        "nickname": "slee1234",
+        "workingName": "이승희",
+        "role": "사장"
+      },
+      "shop": {
+        "name": "이승희 헤어",
+        "nickname": "sleehairstudio",
+        "imageSrc": "https://example.com/image4.png"
+      },
+      "menu": {
+        "title": "펌",
+        "timeTaken": 90,
+        "price": 80000
+      }
+    },
+    {
+      "id": 20,
+      "startDateTime": "2024-08-21T16:00:00",
+      "reservationStatus": "CANCLED",
+      "employee": {
+        "nickname": "slee1234",
+        "workingName": "카리나",
+        "role": "디자이너"
+      },
+      "shop": {
+        "name": "이승희 헤어",
+        "nickname": "sleehairstudio",
+        "imageSrc": "https://example.com/image4.png"
+      },
+      "menu": {
+        "title": "펌",
+        "timeTaken": 90,
+        "price": 80000
+      }
+    }
+  ]
+}

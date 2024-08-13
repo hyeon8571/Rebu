@@ -97,7 +97,13 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
+const Header = ({
+  theme,
+  toggleTheme,
+  currentUser,
+  loginUser,
+  handleLogout,
+}) => {
   const [LogoutModalOpen, setLogoutModalOpen] = useState(false);
   const [SecretModalOpen, setSecretModalOpen] = useState(false);
   const [ProfileChangeModalOpen, setProfileChangeModalOpen] = useState(false);
@@ -205,7 +211,11 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
 
         <DropdownItem onClick={logoutModalOpen}>로그아웃</DropdownItem>
         {LogoutModalOpen && (
-          <Logout LogoutModalOpen={LogoutModalOpen} closeModal={closeModal} />
+          <Logout
+            LogoutModalOpen={LogoutModalOpen}
+            closeModal={closeModal}
+            navLogout={handleLogout}
+          />
         )}
         {SecretModalOpen && (
           <SecretMode

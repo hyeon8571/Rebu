@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import VisitedCard from "../components/review/VisitedCard";
 import Header from "../components/common/Header";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Wrapper = styled.div`
   @media (max-width: 768px) {
@@ -15,9 +17,11 @@ const PageTitle = styled.div`
   font-weight: 600;
   font-size: 20px;
 `;
+
 const PageInstruction = styled.div`
   padding-top: 0.3rem;
 `;
+
 const PageTitleContainer = styled.div`
   padding-left: 4rem;
   padding-bottom: 2rem;
@@ -27,9 +31,29 @@ const PageTitleContainer = styled.div`
   }
 `;
 
+const NoDataMessage = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 16px;
+  color: #999;
+`;
+
+function calculateVisit(date, timeTaken) {
+  const givenTime = new Date(date);
+  const currentTime = new Date();
+  const timeAfter = new Date(givenTime.getTime() + timeTaken * 60 * 1000);
+
+  return currentTime > givenTime;
+}
+
+const BASE_URL = "https://www.rebu.kro.kr";
+const nickname = "rebu39";
+
 export default function VisitedPage() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // const { nickname, type, isLogin } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,19 +61,28 @@ export default function VisitedPage() {
   }, []);
 
   useEffect(() => {
-    fetch("/mockdata/visitedData.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+    axios
+      .get(
+        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=2024-08-01&end-date=2025-08-30`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Access:
+              "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsIm5pY2tuYW1lIjoicmVidTM5IiwidHlwZSI6IkNPTU1PTiIsImlhdCI6MTcyMzQ3ODQ5NSwiZXhwIjo5NzIzNDgwMjk1fQ.ca5yEAdzAFZ9SpB2xE1x5IUlfI9_wssEMbVFvANRBMQ",
+          },
         }
-        return response.json();
-      })
-      .then((jsondata) => {
-        setData(jsondata.body);
-        console.log(jsondata.body);
+      )
+      .then((response) => {
+        console.log(response);
+        const sortedData = response.data.body.sort(
+          (a, b) => new Date(b.startDateTime) - new Date(a.sxtartDateTime)
+        );
+        setData(sortedData);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Fetch error:", error);
+        setLoading(false);
       });
   }, []);
 
@@ -61,31 +94,39 @@ export default function VisitedPage() {
           <PageTitle>방문한 곳</PageTitle>
           <PageInstruction>리뷰를 작성할 항목을 선택해주세요</PageInstruction>
         </PageTitleContainer>
-        {data.length === 0 ? (
+        {loading ? (
           <p>Loading...</p>
+        ) : data.length === 0 ? (
+          <NoDataMessage>방문한 곳이 없습니다.</NoDataMessage>
         ) : (
           data
-            .filter((item) => item.reservation.reservationStatus === "DONE")
+            .filter(
+              (item) =>
+                calculateVisit(item.startDateTime, item.menu.timeTaken) &&
+                (item.reservationStatus === "RECEIVED" ||
+                  item.reservationStatus === "ACCEPTED")
+            )
             .map((item) => (
               <VisitedCard
-                key={item.reservation.id}
+                key={item.id}
                 Card={{
                   img: item.shop.imageSrc,
                   title: item.shop.name,
                   menu: item.menu.title,
-                  date: item.reservation.startTime,
+                  date: item.startDateTime,
+                  designer:
+                    item.employee.workingName + " " + item.employee.role,
+                  status: item.isReviewed,
                 }}
                 button={{
-                  id: item.reservation.id,
-                  title:
-                    item.reservation.reviewStatus === "WRITTEN"
-                      ? "작성완료"
-                      : "작성하기",
-                  status: item.reservation.reviewStatus === "WRITTEN",
+                  id: item.id,
+                  title: item.isReviewed ? "작성완료" : "작성하기",
+                  status: item.isReviewed,
                   onClick: () => {
                     navigate("/postrevw", {
                       state: {
                         info: {
+                          reservationId: item.id,
                           img: item.shop.imageSrc,
                           title: item.shop.name,
                           menu: item.menu.title,
@@ -93,14 +134,13 @@ export default function VisitedPage() {
                             item.employee.workingName +
                             " " +
                             item.employee.role,
-                          date: item.reservation.startTime,
+                          date: item.startDateTime,
                           price: item.menu.price,
                         },
                       },
                     });
                   },
-                  highlight:
-                    item.reservation.reviewStatus === "WRITTEN" ? false : true,
+                  highlight: true,
                 }}
               />
             ))

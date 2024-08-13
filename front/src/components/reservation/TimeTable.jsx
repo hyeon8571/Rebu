@@ -15,6 +15,7 @@ import {
 import "./TimeTable.css";
 
 import "moment/locale/ko"; // 한글 로케일을 가져옵니다.
+import Reservation from "../review/ReservationInfo";
 
 moment.locale("kr"); // 한글 로케일 설정
 
@@ -53,32 +54,72 @@ const TimeScaleLayout = ({ style, ...restProps }) => (
 
 const currentDate = `${year}-${month}-${day}`;
 
-const schedulerData = [
-  {
-    startDate: "2024-07-30T10:55",
-    endDate: "2024-07-30T14:00",
-    title: "여성 펌",
-  },
-  {
-    startDate: "2024-07-31T19:00",
-    endDate: "2024-07-31T20:00",
-    title: "그라데이션 네일(행사)",
-  },
-  {
-    startDate: "2024-08-02T13:00",
-    endDate: "2024-08-02T14:00",
-    title: "남성 헤어 커트",
-  }
-];
+function addEndDateTime(jsonData) {
+  // 복사본을 생성하여 원본 데이터는 변경하지 않도록 합니다.
+  const updatedData = JSON.parse(JSON.stringify(jsonData));
+
+  // 예약 배열을 가져옵니다.
+  updatedData.reservation = updatedData.reservation.map((reservation) => {
+    const { startDateTime, timeTaken } = reservation;
+
+    // startDateTime을 Date 객체로 변환합니다.
+    const startDate = new Date(startDateTime);
+
+    // timeTaken(분)을 밀리초로 변환하여 startDate에 더합니다.
+    const endDate = new Date(startDate.getTime() + timeTaken * 60000);
+
+    // endDateTime을 ISO 문자열로 변환합니다.
+    const endTime = endDate.toISOString();
+
+    // 새 항목을 반환합니다.
+    return {
+      ...reservation,
+      startDate: startDate,
+      endDate: endTime,
+    };
+  });
+
+  return updatedData;
+}
+
+// 예시 데이터
+const jsonData = {
+  reservation: [
+    {
+      startDateTime: "2024-08-11T15:30:00",
+      timeTaken: 30,
+    },
+    {
+      startDateTime: "2024-08-12T09:00:00",
+      timeTaken: 60,
+    },
+    {
+      startDateTime: "2024-08-15T13:00:00",
+      timeTaken: 90,
+    },
+    {
+      startDateTime: "2024-08-17T10:00:00",
+      timeTaken: 120,
+    },
+  ],
+};
 
 const ShopStartTime = 8;
 const ShopEndTime = 20;
 
-export default function TimeTable() {
+export default function TimeTable({ designer }) {
   const [date, setDate] = useState(currentDate);
+
+  // 함수 호출 및 결과 확인
+  const updatedJsonData = addEndDateTime(jsonData);
+  console.log(updatedJsonData);
+
   return (
     <Paper>
-      <Scheduler data={schedulerData} locale={"kr-KR"}>
+      <Scheduler
+        data={updatedJsonData && updatedJsonData.reservation}
+        locale={"kr-KR"}
+      >
         <ViewState currentDate={date} onCurrentDateChange={setDate} />
         <WeekView
           startDayHour={ShopStartTime}

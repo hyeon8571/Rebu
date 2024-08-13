@@ -43,7 +43,6 @@ const StyledLottie = styled(Lottie)`
   padding-left: 0.5rem;
 `;
 
-
 const ConstraintText = styled.div`
   font-size: 16px;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
@@ -55,7 +54,13 @@ const photoInRow = (width) => {
   } else return Math.floor((width - 32) / 408);
 };
 
-export default function PostReview2({ animationKey, isImgAlert, setIsImgAlert, review, setReview }) {
+export default function PostReview2({
+  animationKey,
+  isImgAlert,
+  setIsImgAlert,
+  review,
+  setReview,
+}) {
   const [uploadImgUrls, setUploadImgUrls] = useState([]);
   const [imgNum, setImgNum] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -101,10 +106,10 @@ export default function PostReview2({ animationKey, isImgAlert, setIsImgAlert, r
       <ImgUploader
         list={list}
         imgNum={imgNum}
-        uploadImgUrls={uploadImgUrls}
+        uploadImgFiles={uploadImgUrls}
         setImgNum={setImgNum}
-        setUploadImgUrls={setUploadImgUrls}
-        setIsImgAlert ={setIsImgAlert}
+        setUploadImgFiles={setUploadImgUrls}
+        setIsImgAlert={setIsImgAlert}
         review={review}
         setReview={setReview}
       />

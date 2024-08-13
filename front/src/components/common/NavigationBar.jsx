@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 import ProfileSmall from "./ProfileSmall";
 import NavigationItem from "./NavigationItem";
 import { CgAddR } from "react-icons/cg";
@@ -9,6 +10,8 @@ import img from "../../assets/images/cha.png";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ModalPortal from "../../util/ModalPortal";
+import SearchModal from "../Search/SearchModal";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -34,12 +37,22 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const SearchDiv = styled.div`
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 1rem;
+
+  color: ${(props) =>
+    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+  background-color: ${(props) =>
+    props.isModalOpen ? props.theme.body : "none"};
+`;
+
 const ICON_SIZE = 28;
 
 const ProfileNavItem = () => {
   const navigate = useNavigate();
-  // Redux 상태에서 nickname과 type을 가져옴
-  const { nickname, type } = useSelector((state) => state.auth);
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
   // console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
     navigate(`/profile/${nickname}/${type}`);
@@ -54,31 +67,43 @@ const ProfileNavItem = () => {
 
 //default
 export default function NavigationBar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <>
+      <ModalPortal>
+        <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      </ModalPortal>
       <Bar>
         <StyledNavLink to="/main">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/designertab">
+        <SearchDiv isModalOpen={isModalOpen} onClick={toggleModal}>
           <NavigationItem>
             <IoSearch size={ICON_SIZE} />
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/visited">
+        </SearchDiv>
+        <StyledNavLink isModalOpen={isModalOpen} to="/visited">
           <NavigationItem>
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-
         <StyledNavLink to="/component">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-
+        {/* <StyledNavLink to="/profile">
+          <NavigationItem>
+            <ProfileSmall img={img}></ProfileSmall>
+          </NavigationItem>
+        </StyledNavLink> */}
         <ProfileNavItem />
       </Bar>
     </>
