@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 import { FiChevronLeft } from "react-icons/fi";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
+// import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -107,8 +108,8 @@ const Input = styled.input`
   margin-bottom: 10px;
   outline: none;
   &:focus {
-    border: 2px solid #CA9EF6;
-    box-shadow: 0 0 15px rgba(180,	117,	243, 0.5);
+    border: 2px solid #ca9ef6;
+    box-shadow: 0 0 15px rgba(180, 117, 243, 0.5);
   }
 `;
 
@@ -140,7 +141,7 @@ const ButtonContainer = styled.div`
 `;
 
 const EditButton = styled.button`
-  background-color: #943AEE;
+  background-color: #943aee;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -160,7 +161,7 @@ const Button = styled.button`
 `;
 
 const SaveButton = styled(Button)`
-  background: #943AEE;
+  background: #943aee;
   color: white;
   cursor: pointer;
 `;
@@ -181,7 +182,7 @@ const PersonalInfo = () => {
   const email = user.email;
   const birth = user.birth;
   const phone = user.phone;
-  
+
   let type = profile.type;
   if (profile.type === "COMMON") {
     type = "일반 사용자";
@@ -235,7 +236,9 @@ const PersonalInfo = () => {
       nickname: nickname,
       imageSrc: profileImg,
     };
-    navigate('/profile', { state: { user: updatedUser, profile: updatedProfile}});
+    navigate("/profile", {
+      state: { user: updatedUser, profile: updatedProfile },
+    });
     console.log(updatedUser);
   };
 
@@ -247,7 +250,10 @@ const PersonalInfo = () => {
       </Header>
       <ProfileImageWrapper>
         <ProfileImage src={profileImg} alt="Profile" />
-        <ImgUpload onClick={() => document.getElementById('fileInput').click()} />
+        {/* <ProfileImage src={imageSrc ? imageSrc : "/img.webp"} alt="Profile" /> */}
+        <ImgUpload
+          onClick={() => document.getElementById("fileInput").click()}
+        />
         <HiddenFileInput
           type="file"
           id="fileInput"
@@ -257,6 +263,8 @@ const PersonalInfo = () => {
       </ProfileImageWrapper>
       <UserInfo>
         <UserRole>{type}</UserRole>
+        {/* const typeText =
+        type === "EMPLOYEE" ? "디자이너" : type === "SHOP" ? "매장" : "일반 사용자"; // 기본값 설정 */}
       </UserInfo>
       <Form>
         <Label>닉네임</Label>

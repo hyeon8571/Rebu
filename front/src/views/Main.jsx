@@ -23,24 +23,8 @@ function Main({ theme, toggleTheme }) {
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
   const dispatch = useDispatch();
-  // const profile = useSelector((state) => state.auth.profile);
-
-  useEffect(() => {
-    const initializeAlarms = async () => {
-      try {
-        const alarmsResult = await dispatch(alarmsAgreement());
-        console.log("alarmResult", alarmsResult);
-        if (alarmsResult.success) {
-          console.log("Alarms agreement 성공");
-        } else {
-          console.error("Alarms agreement 실패:", alarmsResult.error);
-        }
-      } catch (error) {
-        console.error("Error in alarms agreement:", error);
-      }
-    };
-    initializeAlarms();
-  }, [dispatch]);
+  const { nickname, type, imageSrc } = useSelector((state) => state.auth);
+  console.log("main page", nickname, type, imageSrc);
 
   useEffect(() => {
     fetch("/mockdata/loginuser.json")

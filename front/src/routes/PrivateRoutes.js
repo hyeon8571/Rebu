@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../views/Login";
 import MyProfile from "../views/MyProfile";
@@ -20,7 +20,7 @@ import PostFeedPage from "../views/PostFeedPage";
 
 
 
-  
+
 
 const PrivateRoutes = ({ theme, toggleTheme }) => (
 
@@ -30,7 +30,7 @@ const PrivateRoutes = ({ theme, toggleTheme }) => (
       element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route
-      path="/profile"
+      path="/profile/:nickname/:type"
       element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
     />
     <Route

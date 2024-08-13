@@ -125,8 +125,7 @@ const SignupForm1 = ({
       const { code, body } = response.data;
 
       console.log("이메일 중복 확인 API", response);
-      if (code === "1B01") {
-        //이메일 중복 검사 성공
+      if (code === "이메일 중복 검사 성공") {
         if (body === true) {
           // body가 true인 경우 중복된 이메일
           console.log("Email is already in use:", code, body);
@@ -171,8 +170,7 @@ const SignupForm1 = ({
         });
         console.log("이메일 인증:", response);
 
-        if (response.data.code === "1A01") {
-          //이메일 인증 코드 전송 성공 코드
+        if (response.data.code === "이메일 인증 코드 전송 성공 코드") {
           alert("인증 이메일이 발송되었습니다. 이메일을 확인해주세요.");
           setIsEmailVerified(true);
         } else {
@@ -245,8 +243,7 @@ const SignupForm1 = ({
           }
         );
         console.log("이메일인증", response);
-        if (response.data.code === "1A02") {
-          //이메일 인증 성공 코드
+        if (response.data.code === "이메일 인증 성공 코드") {
           alert("이메일 인증이 완료되었습니다.");
           setIsEmailVerified(true);
           setEmailVeriMsg("이메일 인증이 완료되었습니다.");
