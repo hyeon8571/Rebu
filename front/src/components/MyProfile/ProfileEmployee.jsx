@@ -3,14 +3,10 @@ import styled from "styled-components";
 import { FiChevronLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
-import api from "../../features/auth/api";
 import axios from "axios";
 import { Msg, Tooltip, InfoIconContainer } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BASE_URL } from "../../views/Signup";
-// const Msg = styled.p``;
-// const Tooltip = styled.ul``;
-// const InfoIconContainer = styled.div``;
 
 export const Div = styled.div`
   display: flex;
@@ -203,11 +199,19 @@ export const createEmployeeProfile = async (formData) => {
     // 요청 성공 시 응답 데이터 반환
     if (response.data.code === "1D00") {
       //1D00: 직원 프로필 생성 성공 코드
+      const nickname = formData.get("nickname"); //새로만든 nickname으로 localStorage에 저장
+      const profileImg = formData.get("imgFile"); //새로만든 profileImg로 localStorage에 저장
+
       localStorage.setItem("access", response.data.access); // 토큰 새로 저장
       localStorage.setItem("nickname", nickname); // 닉네임 저장
       localStorage.setItem("type", "EMPLOYEE"); // 타입 저장
-      localStorage.setItem("profileImg", profileImg); // 프로필 이미지 저장
-
+      // If profileImg exists, convert it to a URL string for storage
+      if (profileImg) {
+        // 프로필 이미지 저장
+        localStorage.setItem("profileImg", URL.createObjectURL(profileImg));
+      } else {
+        localStorage.setItem("profileImg", null); //없을 때 null로 저장
+      }
       return { success: true, data: response.data };
     } else if (response.data.code === "0C05") {
       console.log("닉네임 중복 검사 재실시"); //0C05 닉네임 중복 검사 재실시
@@ -217,17 +221,17 @@ export const createEmployeeProfile = async (formData) => {
     }
   } catch (error) {
     // 요청 실패 시 에러 반환 //0C05 닉네임 중복 검사 재실시
-    console.error("프로필 업로드 실패:", error);
+    console.error("프로필 생성 실패:", error);
     return {
       success: false,
-      error: error.response ? error.response.data : "프로필 업로드 실패",
+      error: error.response ? error.response.data : "프로필 생성 실패",
     };
   }
 };
 
 const ProfileEmployee = () => {
   const navigate = useNavigate();
-  const [profileImg, setProfileImg] = useState(null);
+  const [profileImg, setProfileImg] = useState(null); //업로드할 프로필 이미지
   const [nickname, setNickname] = useState("");
   const [nicknameMsg, setNicknameMsg] = useState("");
   const [isNicknameValid, setIsNicknameValid] = useState(false);
@@ -344,15 +348,18 @@ const ProfileEmployee = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     console.log("버튼눌림");
-    if (!isNicknameValid) {
-      alert("유효한 닉네임을 입력하세요.");
+    if (isNicknameValid === false) {
+      alert("유효한 닉네임을 입력하세요." + isNicknameValid);
       return;
+    } else {
+      console.log("유효한 닉네임");
     }
 
+    //제출할 formdata 생성
     const formData = new FormData();
     if (profileImg) {
       console.log("이미지 추가함");
-      formData.append("imgFile", profileImg);
+      formData.append("imgFile", profileImg); //업로드할 프로필 이미지
     }
     formData.append("nickname", nickname);
     formData.append("workingName", workingName);
@@ -368,13 +375,14 @@ const ProfileEmployee = () => {
       const result = await createEmployeeProfile(formData);
       console.log("프로필생성결과", result);
       console.log("formDate", formData.get("nickname"));
+      console.log("profileImg", formData.get("imgFile"));
 
       if (result.success) {
         // 프로필 생성 성공
         setSuccess("직원 프로필이 성공적으로 생성되었습니다.");
         // token 다시 저장하고
         // localStorage.setItem("access", result.data.access);
-        // navaigate(`/profile/${nickname}/EMPLOYEE`);
+        navigate(`/profile/${nickname}/EMPLOYEE`);
       } else {
         setError(result.error || "프로필 생성 실패");
       }
