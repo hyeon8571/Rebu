@@ -1,6 +1,5 @@
 package com.rebu.profile.shop.dto;
 
-import com.rebu.member.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetShopEmployeeResponse {
+public class GetShopProfileInfoResultDto {
     private String imageSrc;
-    private String workingName;
     private String nickname;
-    private String workingIntroduction;
-    private Gender gender;
-    private int reviewCnt;
-    private String role;
+    private String licenseNum;
+    private String name;
+    private String phone;
+    private String address;
 }

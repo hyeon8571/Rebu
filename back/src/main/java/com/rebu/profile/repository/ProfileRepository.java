@@ -1,6 +1,6 @@
 package com.rebu.profile.repository;
 
-import com.rebu.profile.dto.GetProfileResponse;
+import com.rebu.profile.dto.GetProfileResultDto;
 import com.rebu.profile.entity.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -23,7 +23,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     void deleteProfileByMemberId(Long memberId);
 
     @Query("""
-        SELECT new com.rebu.profile.dto.GetProfileResponse(
+        SELECT new com.rebu.profile.dto.GetProfileResultDto(
             p.imageSrc,
             COUNT(DISTINCT fr.id),
             COUNT(DISTINCT fi.id),
@@ -43,7 +43,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
         WHERE p.id = :profileId
         GROUP BY p.id
         """)
-    Optional<GetProfileResponse> getCommonProfileResponseByProfileId(Long profileId);
+    Optional<GetProfileResultDto> getCommonProfileResponseByProfileId(Long profileId);
 
     @Query("""
        SELECT p

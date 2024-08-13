@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
-public class CheckPhoneDuplDto {
-    private String phone;
+public class CheckNicknameDupleDto {
+    private String nickname;
     private String purpose;
 }
