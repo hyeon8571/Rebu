@@ -1,6 +1,6 @@
 package com.rebu.profile.shop.repository;
 
-import com.rebu.profile.shop.dto.GetShopProfileResponse;
+import com.rebu.profile.shop.dto.GetShopProfileResultDto;
 import com.rebu.profile.shop.entity.ShopProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +19,7 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
     Optional<ShopProfile> findByNicknameFetch(String nickname);
 
     @Query("""
-        SELECT new com.rebu.profile.shop.dto.GetShopProfileResponse(
+        SELECT new com.rebu.profile.shop.dto.GetShopProfileResultDto(
             sp.imageSrc,
             sp.nickname,
             sp.name,
@@ -42,6 +42,6 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
         WHERE sp.id = :profileId
         GROUP BY sp.id
     """)
-    Optional<GetShopProfileResponse> getShopProfileResponseByProfileId(Long profileId);
+    Optional<GetShopProfileResultDto> getShopProfileResponseByProfileId(Long profileId);
 
 }

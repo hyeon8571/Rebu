@@ -77,6 +77,10 @@ public class Profile {
         imageSrc = newImageSrc;
     }
 
+    public void updateRecentTime() {
+        recentTime = LocalDateTime.now();
+    }
+
     @PrePersist
     protected void onCreate() {
         recentTime = LocalDateTime.now();
@@ -85,11 +89,6 @@ public class Profile {
         if (type == null) {
             type = Type.COMMON;
         }
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        recentTime = LocalDateTime.now();
     }
 
     @Override

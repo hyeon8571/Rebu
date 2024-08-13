@@ -51,12 +51,6 @@ public class Feed {
     @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<Hashtag> hashtags = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private final Set<Comment> comments = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private final Set<LikeFeed> likeFeeds = new LinkedHashSet<>();
-
     @Formula("(SELECT COUNT(c.id) FROM comment c WHERE c.feed_id = id)")
     private long commentCnt;
 

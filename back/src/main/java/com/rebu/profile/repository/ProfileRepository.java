@@ -1,6 +1,6 @@
 package com.rebu.profile.repository;
 
-import com.rebu.profile.dto.GetProfileResponse;
+import com.rebu.profile.dto.GetProfileResultDto;
 import com.rebu.profile.entity.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -8,10 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long>, ProfileCustomRepository {
@@ -26,7 +23,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     void deleteProfileByMemberId(Long memberId);
 
     @Query("""
-        SELECT new com.rebu.profile.dto.GetProfileResponse(
+        SELECT new com.rebu.profile.dto.GetProfileResultDto(
             p.imageSrc,
             COUNT(DISTINCT fr.id),
             COUNT(DISTINCT fi.id),
@@ -46,29 +43,20 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
         WHERE p.id = :profileId
         GROUP BY p.id
         """)
-    Optional<GetProfileResponse> getCommonProfileResponseByProfileId(Long profileId);
+    Optional<GetProfileResultDto> getCommonProfileResponseByProfileId(Long profileId);
 
     @Query("""
        SELECT p
        FROM Profile p
        WHERE p.nickname LIKE %:keyword%
-       OR p.introduction LIKE %:keyword%
        ORDER BY CASE
        WHEN p.nickname LIKE :keyword THEN 0
        WHEN p.nickname LIKE :keyword% THEN 1
        WHEN p.nickname LIKE %:keyword THEN 2
        WHEN p.nickname LIKE %:keyword% THEN 3
-       WHEN p.introduction LIKE :keyword THEN 4
-       WHEN p.introduction LIKE :keyword% THEN 5
-       WHEN p.introduction LIKE %:keyword THEN 6
-       WHEN p.introduction LIKE %:keyword% THEN 7
-       ELSE 8
+       ELSE 4
        END
        """)
     Slice<Profile> searchProfileByKeyword(String keyword, Pageable pageable);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Profile p SET p.recentTime = :currentTime WHERE p.id = :profileId")
-    void updateRecentTime(@Param("profileId") Long profileId, @Param("currentTime") LocalDateTime currentTime);
 }

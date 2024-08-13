@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FeedExceptionConstants implements ExceptionConstants {
     NOTFOUND("0P00"), CONTENT_MISMATCH("0P01"), IMAGE_MISMATCH("0P02"),
-    REGSELECTS_MISMATCH("OP03"), HASHTAG_MISMATCH("0P04");
+    REGSELECTS_MISMATCH("OP03"), HASHTAG_MISMATCH("0P04"),
+    DISTANCE_MISMATCH("0P05"), LATITUDE_MISMATCH("0P06"),
+    LONGITUDE_MISMATCH("0P07");
     private final String code;
 }

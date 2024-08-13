@@ -154,7 +154,7 @@ public class ReservationService {
     private void checkCreateReservationWorkingInfos(List<WorkingInfo> workingInfos, LocalTime startTime, LocalTime endTime, int day){
         for(WorkingInfo workingInfo : workingInfos){
             if(day == workingInfo.getId().getDay().ordinal()){
-                if(workingInfo.isHoliday())
+                if(workingInfo.getIsHoliday())
                     throw new ReservationNotAcceptableException();
                 if(startTime.isBefore(workingInfo.getOpenAt())||endTime.isAfter(workingInfo.getCloseAt()))
                     throw new ReservationNotAcceptableException();

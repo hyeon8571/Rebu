@@ -1,6 +1,7 @@
 package com.rebu.profile.shop.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
@@ -71,14 +72,15 @@ public class ShopProfileController {
     @GetMapping("/{nickname}/employees")
     public ResponseEntity<?> getShopEmployees(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                               @PathVariable String nickname) {
-        List<GetShopEmployeeResponse> result = shopProfileService.getShopEmployees(new GetShopEmployeeDto(authProfileInfo.getNickname(), nickname));
+        List<GetShopEmployeeResultDto> result = shopProfileService.getShopEmployees(new GetShopEmployeeDto(authProfileInfo.getNickname(), nickname));
         return ResponseEntity.ok(new ApiResponse<>("1E04", result));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @PathVariable String nickname) {
-        GetShopProfileResponse result = shopProfileService.getShopProfile(new GetShopProfileDto(authProfileInfo.getNickname(), nickname));
+        GetShopProfileResultDto result = shopProfileService.getShopProfile(new GetShopProfileDto(authProfileInfo.getNickname(), nickname));
         return ResponseEntity.ok(new ApiResponse<>("1E05", result));
     }
 
@@ -110,6 +112,18 @@ public class ShopProfileController {
                 .endDate(endDate)
                 .build());
         return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopReadPeriodScheduleResponse.from(dto)));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetShopProfileResultDto result = shopProfileService.getMyProfile(authProfileInfo);
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getMyProfileInfo(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetShopProfileInfoResultDto result = shopProfileService.getMyProfileInfo(authProfileInfo);
+        return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 
 }

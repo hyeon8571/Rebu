@@ -27,13 +27,18 @@ public class WorkingInfo {
     private Profile profile;
 
     @Column(nullable = false)
-    private boolean isHoliday;
+    private Boolean isHoliday;
 
     @Column(nullable = false)
     private LocalTime openAt;
 
     @Column(nullable = false)
     private LocalTime closeAt;
+
+    @PrePersist
+    protected void onCreate() {
+        isHoliday = false;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -20,7 +20,7 @@ public class WorkingInfoDto {
     public static WorkingInfoDto from(WorkingInfo workingInfo){
         return WorkingInfoDto.builder()
                 .day(workingInfo.getId().getDay())
-                .isHoliday(workingInfo.isHoliday())
+                .isHoliday(workingInfo.getIsHoliday())
                 .openAt(workingInfo.getOpenAt())
                 .closeAt(workingInfo.getCloseAt())
                 .build();

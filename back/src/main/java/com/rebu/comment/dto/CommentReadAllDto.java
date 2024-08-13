@@ -19,10 +19,11 @@ public class CommentReadAllDto {
     private String content;
     private Long commentId;
     private Long likeCount;
+    private boolean liked;
     private boolean isDelete;
     private Type type;
 
-    public static CommentReadAllDto of(Comment comment, Profile profile, Long likeComment) {
+    public static CommentReadAllDto of(Comment comment, Profile profile, Long likeComment, boolean liked) {
         return CommentReadAllDto.builder()
                 .imageSrc(profile.getImageSrc())
                 .nickname(profile.getNickname())
@@ -30,7 +31,8 @@ public class CommentReadAllDto {
                 .createAt(comment.getCreatedAt())
                 .commentId(comment.getId())
                 .likeCount(likeComment)
-                .isDelete(comment.isDeleted())
+                .isDelete(comment.getIsDeleted())
+                .liked(liked)
                 .type(profile.getType())
                 .build();
     }

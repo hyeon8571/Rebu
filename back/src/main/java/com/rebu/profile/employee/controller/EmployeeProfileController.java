@@ -1,6 +1,7 @@
 package com.rebu.profile.employee.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
@@ -56,17 +57,18 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1D02", null));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getEmployeeProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @PathVariable String nickname) {
-        GetEmployeeProfileResponse result = employeeProfileService.getEmployeeProfile(new GetEmployeeProfileDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("1D03", result));
+        GetEmployeeProfileResultDto result = employeeProfileService.getEmployeeProfile(new GetEmployeeProfileDto(authProfileInfo.getNickname(), nickname));
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
     }
 
     @PatchMapping("/{nickname}/shop")
     public ResponseEntity<?> acceptInvite(@RequestBody AcceptInviteDto acceptInviteDto) {
         employeeProfileService.acceptInvite(acceptInviteDto);
-        return ResponseEntity.ok(new ApiResponse<>("1D04", null));
+        return ResponseEntity.ok(new ApiResponse<>("1D03", null));
     }
 
     @GetMapping("/{nickname}/period-schedule")
@@ -80,5 +82,17 @@ public class EmployeeProfileController {
                 .build());
         EmployeeReadPeriodScheduleResponse response = EmployeeReadPeriodScheduleResponse.from(dto);
         return ResponseEntity.ok(new ApiResponse<>("1R04", response));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetEmployeeProfileResultDto result = employeeProfileService.getMyProfile(authProfileInfo);
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getMyProfileInfo(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetEmployeeProfileInfoResultDto result = employeeProfileService.getMyProfileInfo(authProfileInfo);
+        return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 }

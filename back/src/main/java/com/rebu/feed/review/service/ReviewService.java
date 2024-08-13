@@ -42,7 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -158,114 +160,71 @@ public class ReviewService {
     public List<ReviewToEmployeeDto> readReviewToEmployee(ReviewReadToEmployeeDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
         EmployeeProfile employee = employeeProfileRepository.findByNickname(dto.getEmployeeNickname()).orElseThrow(ProfileNotFoundException::new);
+
         List<Review> reviews = reviewRepository.findByEmployeeProfileAndType(employee, Feed.Type.REVIEW);
         List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
 
-        int sIdx = 0;
-        int lIdx = 0;
+        Map<Long, ReviewToEmployeeDto> map = new LinkedHashMap<>();
 
-        List<ReviewToEmployeeDto> result = new ArrayList<>();
-        for(Review review : reviews){
-            boolean isScraped = false;
-            boolean isLiked = false;
-            if(!scraps.isEmpty() && scraps.get(sIdx) != null && scraps.get(sIdx).getId().equals(review.getId())){
-                sIdx++;
-                isScraped = true;
-            }
-            if(!likeFeeds.isEmpty() && likeFeeds.get(lIdx) != null && likeFeeds.get(lIdx).getId().equals(review.getId())){
-                lIdx++;
-                isLiked = true;
-            }
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewToEmployeeDto.from(review));
 
-            result.add(ReviewToEmployeeDto.builder()
-                    .writer(ProfileDto.from(review.getWriter()))
-                    .shop(ShopProfileDto.from(review.getShopProfile()))
-                    .review(ReviewDto.from(review))
-                    .feedImages(ListUtils.applyFunctionToElements(review.getFeedImages().stream().toList(), FeedImageDto::from))
-                    .hashtags(ListUtils.applyFunctionToElements(review.getHashtags().stream().toList(), HashtagDto::from))
-                    .reviewKeywords(ListUtils.applyFunctionToElements(review.getSelectedReviewKeywords().stream().toList(), ReviewKeywordDto::fromSelectedReviewKeyword))
-                    .isScraped(isScraped)
-                    .isLiked(isLiked)
-                    .build());
-        }
-        return result;
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ReviewByProfileDto> readReviewByProfile(ReviewReadByProfileDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
         Profile searchProfile = profileRepository.findByNickname(dto.getSearchProfileNickname()).orElseThrow(ProfileNotFoundException::new);
-        List <Review> reviews = reviewRepository.findByProfileAndType(searchProfile, Feed.Type.REVIEW);
+
+        List<Review> reviews = reviewRepository.findByProfileAndType(searchProfile, Feed.Type.REVIEW);
         List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
 
-        int sIdx = 0;
-        int lIdx = 0;
+        Map<Long, ReviewByProfileDto> map = new LinkedHashMap<>();
 
-        List<ReviewByProfileDto> result = new ArrayList<>();
-        for(Review review : reviews){
-            boolean isScraped = false;
-            boolean isLiked = false;
-            if(!scraps.isEmpty() && scraps.get(sIdx) != null && scraps.get(sIdx).getId().equals(review.getId())){
-                sIdx++;
-                isScraped = true;
-            }
-            if(!likeFeeds.isEmpty() && likeFeeds.get(lIdx) != null && likeFeeds.get(lIdx).getId().equals(review.getId())){
-                lIdx++;
-                isLiked = true;
-            }
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewByProfileDto.from(review));
 
-            result.add(ReviewByProfileDto.builder()
-                    .writer(ProfileDto.from(review.getWriter()))
-                    .shop(ShopProfileDto.from(review.getShopProfile()))
-                    .review(ReviewDto.from(review))
-                    .feedImages(ListUtils.applyFunctionToElements(review.getFeedImages().stream().toList(), FeedImageDto::from))
-                    .hashtags(ListUtils.applyFunctionToElements(review.getHashtags().stream().toList(), HashtagDto::from))
-                    .reviewKeywords(ListUtils.applyFunctionToElements(review.getSelectedReviewKeywords().stream().toList(), ReviewKeywordDto::fromSelectedReviewKeyword))
-                    .isScraped(isScraped)
-                    .isLiked(isLiked)
-                    .build());
-        }
-        return result;
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ReviewToShopDto> readReviewToShop(ReviewReadToShopDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
         ShopProfile shop = shopProfileRepository.findByNickname(dto.getShopNickname()).orElseThrow(ProfileNotFoundException::new);
+
         List<Review> reviews = reviewRepository.findByShopProfileAndType(shop, Feed.Type.REVIEW);
         List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedInOrderByFeedId(profile, feeds);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
 
-        int sIdx = 0;
-        int lIdx = 0;
+        Map<Long, ReviewToShopDto> map = new LinkedHashMap<>();
 
-        List<ReviewToShopDto> result = new ArrayList<>();
-        for(Review review : reviews){
-            boolean isScraped = false;
-            boolean isLiked = false;
-            if(!scraps.isEmpty() && scraps.get(sIdx) != null && scraps.get(sIdx).getId().equals(review.getId())){
-                sIdx++;
-                isScraped = true;
-            }
-            if(!likeFeeds.isEmpty() && likeFeeds.get(lIdx) != null && likeFeeds.get(lIdx).getId().equals(review.getId())){
-                lIdx++;
-                isLiked = true;
-            }
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewToShopDto.from(review));
 
-            result.add(ReviewToShopDto.builder()
-                    .writer(ProfileDto.from(review.getWriter()))
-                    .shop(ShopProfileDto.from(review.getShopProfile()))
-                    .review(ReviewDto.from(review))
-                    .feedImages(ListUtils.applyFunctionToElements(review.getFeedImages().stream().toList(), FeedImageDto::from))
-                    .hashtags(ListUtils.applyFunctionToElements(review.getHashtags().stream().toList(), HashtagDto::from))
-                    .reviewKeywords(ListUtils.applyFunctionToElements(review.getSelectedReviewKeywords().stream().toList(), ReviewKeywordDto::fromSelectedReviewKeyword))
-                    .isScraped(isScraped)
-                    .isLiked(isLiked)
-                    .build());
-        }
-        return result;
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
     }
 }

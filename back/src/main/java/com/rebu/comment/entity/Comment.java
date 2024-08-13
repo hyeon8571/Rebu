@@ -45,7 +45,7 @@ public class Comment {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @Override
     public boolean equals(Object o) {
@@ -59,4 +59,10 @@ public class Comment {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    @PrePersist
+    protected void onCreate() {
+        isDeleted = false;
+    }
+
 }

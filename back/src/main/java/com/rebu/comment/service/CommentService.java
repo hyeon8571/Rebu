@@ -49,29 +49,33 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<CommentReadAllDto> readCommentAll(Long feedId, Pageable pageable) {
+    public Slice<CommentReadAllDto> readCommentAll(String nickname, Long feedId, Pageable pageable) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
-        Slice<Object[]> result = commentRepository.findCommentsWithoutParentAndLikes(feed, pageable);
+        Profile requestProfile = profileRepository.findByNickname(nickname).orElseThrow(ProfileNotFoundException::new);
+        Slice<Object[]> result = commentRepository.findCommentsWithoutParentAndLikes(feed, requestProfile, pageable);
         List<CommentReadAllDto> commentReadAllDtos = new ArrayList<>();
         for (Object[] resultIn : result) {
             Comment comment = (Comment) resultIn[0];
             Profile writer = comment.getWriter();
             Long likeCount = (Long) resultIn[1];
-            commentReadAllDtos.add(CommentReadAllDto.of(comment,writer,likeCount));
+            boolean liked = (Boolean) resultIn[2];
+            commentReadAllDtos.add(CommentReadAllDto.of(comment, writer, likeCount, liked));
         }
         return new SliceImpl<>(commentReadAllDtos, pageable, result.hasNext());
     }
 
     @Transactional(readOnly = true)
-    public Slice<CommentReadAllDto> readNestedComments(Long commentId, Pageable pageable) {
+    public Slice<CommentReadAllDto> readNestedComments(Long commentId, String nickname, Pageable pageable) {
+        Profile profile = profileRepository.findByNickname(nickname).orElseThrow(ProfileNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        Slice<Object[]> result = commentRepository.findCommentsByParentCommentAndLikes(comment, pageable);
+        Slice<Object[]> result = commentRepository.findNestedCommentForComment(comment, profile, pageable);
         List<CommentReadAllDto> commentReadAllDtos = new ArrayList<>();
         for (Object[] resultIn : result) {
             Comment commentNested = (Comment) resultIn[0];
             Profile writer = commentNested.getWriter();
             Long likeCount = (Long) resultIn[1];
-            commentReadAllDtos.add(CommentReadAllDto.of(commentNested,writer,likeCount));
+            boolean liked = (Boolean) resultIn[2];
+            commentReadAllDtos.add(CommentReadAllDto.of(commentNested, writer, likeCount, liked));
         }
         return new SliceImpl<>(commentReadAllDtos, pageable, result.hasNext());
     }
@@ -81,7 +85,7 @@ public class CommentService {
         Profile profile = profileRepository.findByNickname(requestUserNickname).orElseThrow(ProfileNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!comment.getWriter().equals(profile)) { throw new ProfileUnauthorizedException();}
-        if (comment.isDeleted()) { throw new CommentNotFoundException();}
+        if (comment.getIsDeleted()) { throw new CommentNotFoundException();}
         commentRepository.delete(comment);
         return true;
     }

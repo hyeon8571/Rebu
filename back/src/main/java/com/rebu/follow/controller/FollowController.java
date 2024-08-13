@@ -2,12 +2,8 @@ package com.rebu.follow.controller;
 
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.follow.controller.dto.FollowRequest;
-import com.rebu.follow.dto.FollowDeleteDto;
-import com.rebu.follow.dto.GetFollowersTargetDto;
-import com.rebu.follow.dto.GetFollowingsTargetDto;
+import com.rebu.follow.dto.*;
 import com.rebu.follow.service.FollowService;
-import com.rebu.follow.dto.GetFollowerResponse;
-import com.rebu.follow.dto.GetFollowingResponse;
 import com.rebu.security.dto.AuthProfileInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

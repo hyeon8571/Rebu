@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 public class WorkingNameValidator implements ConstraintValidator<WorkingName, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        System.out.println(value);
 
         if (value == null) {
             throw new WorkingNameMismatchException();
@@ -22,7 +21,6 @@ public class WorkingNameValidator implements ConstraintValidator<WorkingName, St
         Matcher matcher = pattern.matcher(value);
 
         if (!matcher.matches()) {
-            System.out.println("sadasdasdas");
             throw new WorkingNameMismatchException();
         }
         return true;

@@ -3,6 +3,7 @@ package com.rebu.profile.controller;
 import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.controller.dto.*;
 import com.rebu.profile.dto.*;
@@ -38,7 +39,7 @@ public class ProfileController {
     public ResponseEntity<?> checkNickname(@Nickname @RequestParam String nickname,
                                            @NicknameCheckPurpose @RequestParam String purpose,
                                            HttpSession session) {
-        Boolean isExist = profileService.checkNicknameDuplicated(new CheckNicknameDuplDto(nickname, purpose));
+        Boolean isExist = profileService.checkNicknameDuplicated(new CheckNicknameDupleDto(nickname, purpose));
 
         if (!isExist) {
             session.setAttribute("CheckNickname:" + purpose, nickname);
@@ -50,7 +51,7 @@ public class ProfileController {
     public ResponseEntity<?> checkPhone(@Phone @RequestParam String phone,
                                         @PhoneCheckPurpose @RequestParam String purpose,
                                         HttpSession session) {
-        Boolean isExist = profileService.checkPhoneDuplicated(new CheckPhoneDuplDto(phone, purpose));
+        Boolean isExist = profileService.checkPhoneDuplicated(new CheckPhoneDupleDto(phone, purpose));
 
         if (!isExist) {
             session.setAttribute("CheckPhone:" + purpose, phone);
@@ -140,17 +141,30 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1C09", profileInfo));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                         @PathVariable String nickname) {
-        GetProfileResponse result = profileService.getProfile(new GetProfileDto(authProfileInfo.getNickname(), nickname));
+        GetProfileResultDto result = profileService.getProfile(new GetProfileDto(authProfileInfo.getNickname(), nickname));
         return ResponseEntity.ok(new ApiResponse<>("1C10", result));
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchProfile(@RequestParam String keyword,
                                            @PageableDefault(size = 20) Pageable pageable) {
-        Slice<SearchProfileResponse> result = profileService.searchProfile(new SearchProfileDto(keyword, pageable));
+        Slice<SearchProfileResultDto> result = profileService.searchProfile(new SearchProfileDto(keyword, pageable));
+        return ResponseEntity.ok(new ApiResponse<>("1C11", result));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetProfileResultDto result = profileService.getMyProfile(authProfileInfo);
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getMyProfileInfo(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
+        GetProfileInfoResultDto result = profileService.getMyProfileInfo(authProfileInfo);
         return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 

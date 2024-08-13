@@ -1,6 +1,6 @@
 package com.rebu.profile.employee.repository;
 
-import com.rebu.profile.employee.dto.GetEmployeeProfileResponse;
+import com.rebu.profile.employee.dto.GetEmployeeProfileResultDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
 import com.rebu.profile.entity.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +11,6 @@ import java.util.Optional;
 
 public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile, Long> {
     List<EmployeeProfile> findByShopId(Long shopId);
-
-    @Query("SELECT e FROM EmployeeProfile e WHERE e.member.id = :memberId AND e.status <> 'ROLE_DELETED'")
-    Optional<EmployeeProfile> findEmployeeProfileByMemberId(Long memberId);
 
     Optional<EmployeeProfile> findByNickname(String nickname);
 
@@ -27,7 +24,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
 
 
     @Query("""
-        SELECT new com.rebu.profile.employee.dto.GetEmployeeProfileResponse(
+        SELECT new com.rebu.profile.employee.dto.GetEmployeeProfileResultDto(
             e.imageSrc,
             e.nickname,
             e.introduction,
@@ -48,7 +45,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
         WHERE e.id = :profileId
         GROUP BY e.id
     """)
-    Optional<GetEmployeeProfileResponse> getEmployeeProfileResponseByProfileId(Long profileId);
+    Optional<GetEmployeeProfileResultDto> getEmployeeProfileResponseByProfileId(Long profileId);
 
     List<EmployeeProfile> findByShop(Profile profile);
 

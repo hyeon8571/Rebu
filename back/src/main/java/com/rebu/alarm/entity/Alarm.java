@@ -1,6 +1,8 @@
 package com.rebu.alarm.entity;
 
 import com.rebu.alarm.enums.Type;
+import com.rebu.common.validation.annotation.NotNull;
+import com.rebu.member.enums.Status;
 import com.rebu.profile.entity.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,5 +40,12 @@ public abstract class Alarm {
 
     @Enumerated(EnumType.STRING)
     private Type type;
+
+    private Boolean isRead;
+
+    @PrePersist
+    protected void onCreate() {
+        isRead = false;
+    }
 }
 
