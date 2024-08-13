@@ -5,8 +5,10 @@ import { CgAddR } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
-import img from "../../assets/images/cha.png";
+// import img from "../../assets/images/cha.png";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -31,8 +33,30 @@ const StyledNavLink = styled(NavLink)`
     background-color: ${(props) => props.theme.body};
   }
 `;
+
 const ICON_SIZE = 28;
 
+const ProfileNavItem = () => {
+  const navigate = useNavigate();
+  // Redux 상태에서 nickname과 type을 가져옴
+  const { nickname, type, imageSrc } = useSelector((state) => state.auth);
+  // console.log("navigationbar", nickname, type);
+  const handleProfileClick = () => {
+    navigate(`/profile/${nickname}/${type}`);
+  };
+
+  return (
+    <NavigationItem onClick={handleProfileClick}>
+      <ProfileSmall
+        img={
+          imageSrc ? `https://www.rebu.kro.kr/data/${imageSrc}` : "/img.webp"
+        }
+      />
+    </NavigationItem>
+  );
+};
+
+//default
 export default function NavigationBar() {
   return (
     <>
@@ -52,16 +76,14 @@ export default function NavigationBar() {
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
+
         <StyledNavLink to="/component">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/profile">
-          <NavigationItem>
-            <ProfileSmall img={img}></ProfileSmall>
-          </NavigationItem>
-        </StyledNavLink>
+
+        <ProfileNavItem />
       </Bar>
     </>
   );

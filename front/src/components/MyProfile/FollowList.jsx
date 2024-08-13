@@ -128,11 +128,17 @@ const FollowList = ({
 
   const handleProfileClick = () => {
     // '/profile' 경로로 이동하고, follower.nickname을 state로 전달
-    navigate("/profile", {
-      state: { targetNickname: follower.nickname, targetType: follower.type },
-    });
-    handleCloseFollowingModal();
-    handleCloseFollowersModal();
+    console.log("프로필 클릭:", follower.nickname);
+    navigate(`/profile/${follower.nickname}/${follower.type}`);
+
+    // 함수가 존재할 때만 호출
+    if (handleCloseFollowingModal) {
+      handleCloseFollowingModal();
+    }
+
+    if (handleCloseFollowersModal) {
+      handleCloseFollowersModal();
+    }
   };
 
   const handleChat = () => {};
@@ -169,7 +175,7 @@ const FollowList = ({
         <Username onClick={handleProfileClick}>{follower.nickname}</Username>
         <Description>{follower.introduction}</Description>
       </Info>
-      <Button>전송</Button>
+      <Button>DM</Button>
     </FollowerContainer>
   );
 };

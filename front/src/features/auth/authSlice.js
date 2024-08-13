@@ -7,6 +7,7 @@ const initialState = {
   isLogin: false,
   nickname: "",
   type: "COMMON",
+  imageSrc: "",
   profile: { //profile 나중에 삭제하기
     favoritesCnt: 0,
     followersCnt: 0,
@@ -26,17 +27,25 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess(state, action) {
-      const { nickname, type } = action.payload;
+      const { nickname, type, imageSrc } = action.payload;
       state.isLogin = true;
       state.nickname = nickname;
       state.type = type;
+      state.imageSrc = imageSrc;
     },
     logout(state) {
       state.isLogin = false;
       state.nickname = "";
       state.type = "COMMON";
+      state.imageSrc = "";
       state.profile = initialState.profile;
+      // localStorage 지우기
       localStorage.removeItem("access");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("type");
+      localStorage.removeItem("imageSrc");
+      localStorage.removeItem("isLogin");
+      // localStorage.removeItem("refresh");
     },
     setProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
@@ -59,21 +68,17 @@ export const login = (email, password) => async (dispatch) => {
       }
     );
 
-    if (response.data.code === "1A07") {
+    if (response.data.code === "1A07") { //로그인 성공 코드
       const access = response.headers["access"];
       console.log("로그인 성공", response)
-      const { type, nickname } = response.data.body;
+      const { nickname, type, imageSrc } = response.data.body;
       localStorage.setItem("access", access);
+      console.log("login access", access);
 
-      dispatch(loginSuccess({ nickname, type }));
-
-      // 프로필 가져오기
-      // const profileResult = await dispatch(getProfile(nickname));
-      // if (profileResult.success) {
+      dispatch(loginSuccess({ nickname, type, imageSrc }));
+      console.log("타입, 닉네임, 프로필이미지", type, nickname, imageSrc)
       return { success: true };
-      // } else {
-      // return { success: false, error: profileResult.error };
-      // }
+
     } else {
       return { success: false, error: "로그인에 실패했습니다. 이메일이나 비밀번호를 다시 확인해주세요." };
     }
@@ -103,79 +108,39 @@ export const getProfile = (nickname) => async (dispatch) => {
 };
 
 
-// export const alarmsAgreement = () => async (dispatch) => {
-//   const access = localStorage.getItem("access");
-//   try {
-//     const response = await axios.get(`${BASE_URL}/api/alarms/subscribe`, {
-//       headers: {
-//         "access": access,
-//         "Content-Type": "application/json",
-//       },
-//     });
 
-//     console.log("alarm axios", response)
-//     // console.log(response.data.body)
-//     // dispatch(setProfile(response.data.body));
-//     return { success: true };
-//   } catch (error) {
-//     return { success: false, error: "알람 동의 sse연결 실패." };
-//   }
-// };
-
-// SSE 연결을 위한 이벤트 소스 객체
-let eventSource = null;
-
-export const alarmsAgreement = () => async (dispatch) => {
-  const access = localStorage.getItem("access");
-
+export const switchProfile = (nickname) => async (dispatch) => {
+  const access = localStorage.getItem('access');
+  console.log("existing access", access);
+  console.log("switchProfile", nickname);
   try {
-    // 기존 SSE 연결이 있다면 닫기
-    if (eventSource) {
-      eventSource.close();
+    const response = await axios.post(`${BASE_URL}/api/profiles/switch-profile`,
+      // const response = await axios.post(`${BASE_URL}/api/switch-profile`,
+      { nickname },  // 요청 바디에 닉네임을 전달
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access': access
+        }
+      }
+    );
+    console.log("switchProfile", response);
+    if (response.data.code === "1C09") {//프로필 전환 성공
+      console.log(switchProfile, response.data);
+      localStorage.setItem("access", response.headers['access']); // 기존에 있던 access 토큰을 새로운 access 토큰으로 교체
+      const { nickname, type, imageSrc } = response.data.body;
+      dispatch(loginSuccess({ nickname, type, imageSrc }));
+
+      return { success: true, data: response.data.body }
+    } else {
+      return { success: false, data: response.data.body }
     }
-
-    // SSE 연결 설정
-    eventSource = new EventSource(`${BASE_URL}/api/alarms/subscribe`, {
-      headers: {
-        "access": access,
-      },
-      withCredentials: true // 쿠키를 포함하여 요청을 보내려면 이 옵션을 true로 설정
-    });
-
-    // 연결 성공 이벤트
-    eventSource.onopen = () => {
-      console.log("SSE 연결 성공");
-      dispatch({ type: 'ALARMS_AGREEMENT_SUCCESS' });
-    };
-
-    // 메시지 수신 이벤트
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("SSE로부터 메시지 수신:", data);
-      dispatch({ type: 'ALARM_RECEIVED', payload: data });
-    };
-
-    // 에러 처리
-    eventSource.onerror = (error) => {
-      console.error("SSE 연결 에러:", error);
-      eventSource.close();
-      dispatch({ type: 'ALARMS_AGREEMENT_ERROR', payload: "SSE 연결 실패" });
-    };
-
-    return { success: true };
   } catch (error) {
-    console.error("알람 동의 SSE 연결 실패:", error);
-    return { success: false, error: "알람 동의 SSE 연결 실패." };
+    console.error('Error switching profile:', error);
+    return { success: false, error: 'Failed to switch profile.' };
   }
-};
+}
 
-// SSE 연결 종료 함수
-export const closeAlarmsConnection = () => {
-  if (eventSource) {
-    eventSource.close();
-    eventSource = null;
-  }
-};
 
 
 export default authSlice.reducer;
