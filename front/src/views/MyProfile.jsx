@@ -70,7 +70,7 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-const ProfilePage = ({ theme, toggleTheme }) => {
+const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const location = useLocation();
   const updatedUser = location.state?.user;
   const updatedProfile = location.state?.profile;
@@ -79,7 +79,7 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   const [key, setKey] = useState(0);
   const tabRef = useRef(null);
   const [tabTitle, setTabTitle] = useState([]);
-  const [activeSubTab, setActiveSubTab] = useState('예약현황');
+  const [activeSubTab, setActiveSubTab] = useState("예약현황");
   const [likeCard, setLikeCard] = useState([]);
   const [reviewdata, setReveiwData] = useState([]);
   const [ratingAvg, setRatingAvg] = useState(0);
@@ -100,7 +100,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
   // const [tempType, setTempType] = useState(type);
 
   console.log("MyProfile호출!", nickname, type);
-
 
   // 타입별 프로필 정보 조회
   useEffect(() => {
@@ -144,129 +143,131 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     console.log("Loading...");
   }
 
-
-
   // 타입별 리뷰 전체 조회
   useEffect(() => {
     if (type === "COMMON") {
-      
-        const access = localStorage.getItem('access');
-        axios.get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
-          headers : {
-            "access": access,
-            "Content-Type": "application/json"
-          }
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
-          console.log(response.data.body)
+        .then((response) => {
+          console.log(response.data.body);
           setReveiwData(response.data.body);
         })
-        .catch(err => {
-          console.log('사용자 리뷰 데이터를 찾지 못했습니다');
-        })
-     
+        .catch((err) => {
+          console.log("사용자 리뷰 데이터를 찾지 못했습니다");
+        });
     } else if (type === "SHOP") {
-      
-        const access = localStorage.getItem('access');
-        axios.get(`${BASE_URL}/api/feeds/reviews/shops/${nickname}`, {
-          headers : {
-            "access": access,
-            "Content-Type": "application/json"
-          }
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/feeds/reviews/shops/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
-          console.log(response.data.body)
+        .then((response) => {
+          console.log(response.data.body);
           setReveiwData(response.data.body);
         })
-        .catch(err => {
-          console.log('매장 리뷰 데이터를 찾지 못했습니다');
-        })
-      
+        .catch((err) => {
+          console.log("매장 리뷰 데이터를 찾지 못했습니다");
+        });
     } else if (type === "EMPLOYEE") {
-      
-        const access = localStorage.getItem('access');
-        axios.get(`${BASE_URL}/api/feeds/reviews/employees/${nickname}`, {
-          headers : {
-            "access": access,
-            "Content-Type": "application/json"
-          }
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/feeds/reviews/employees/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
-          console.log(response.data.body)
+        .then((response) => {
+          console.log(response.data.body);
           setReveiwData(response.data.body);
         })
-        .catch(err => {
-          console.log('직원 리뷰 데이터를 찾지 못했습니다');
-        })
-    };
+        .catch((err) => {
+          console.log("직원 리뷰 데이터를 찾지 못했습니다");
+        });
+    }
   }, []);
-  
+
   // 가게 평점 계산
   useEffect(() => {
     if (reviewdata?.length > 0) {
-      const totalRating = reviewdata.reduce((acc, review) => acc + review.feed.rating, 0);
-      const averageRating = reviewdata.length > 0 ? (totalRating / reviewdata.length).toFixed(1) : 0;
+      const totalRating = reviewdata.reduce(
+        (acc, review) => acc + review.feed.rating,
+        0
+      );
+      const averageRating =
+        reviewdata.length > 0
+          ? (totalRating / reviewdata.length).toFixed(1)
+          : 0;
       setRatingAvg(averageRating);
     }
   });
-  
+
   // 매장, 직원 피드(post) 조회
   useEffect(() => {
     if (type === "SHOP" && isLogin) {
-      const access = localStorage.getItem('access');
-      axios.get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
-      headers : {
-        "access": access,
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => {
-      console.log(response.data.body)
-      setPostdata(response.data.body);
-    })
-    .catch(err => {
-      console.log('매장 피드 데이터를 찾지 못했습니다');
-    })
-  } else if (type === "EMPLOYEE" && isLogin) {
-      const access = localStorage.getItem('access');
-      axios.get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
-      headers : {
-        "access": access,
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => {
-      console.log(response.data.body)
-      setPostdata(response.data.body);
-    })
-    .catch(err => {
-      console.log('직원 피드 데이터를 찾지 못했습니다');
-    })
-  }
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setPostdata(response.data.body);
+        })
+        .catch((err) => {
+          console.log("매장 피드 데이터를 찾지 못했습니다");
+        });
+    } else if (type === "EMPLOYEE" && isLogin) {
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setPostdata(response.data.body);
+        })
+        .catch((err) => {
+          console.log("직원 피드 데이터를 찾지 못했습니다");
+        });
+    }
   }, []);
-
-
 
   // 매장 즐겨찾기 전체 조회
   useEffect(() => {
     if (type === "COMMON") {
-    const access = localStorage.getItem('access');
-    axios.get(`${BASE_URL}/api/shop-favorites/${nickname}`, {
-      headers : {
-        "access": access,
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => {
-      console.log(response.data.body)
-      setLikeCard(response.data.body);
-    })
-    .catch(err => {
-      console.log('즐겨찾기 데이터를 찾지 못했습니다');
-    })
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/shop-favorites/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setLikeCard(response.data.body);
+        })
+        .catch((err) => {
+          console.log("즐겨찾기 데이터를 찾지 못했습니다");
+        });
     }
   }, []);
-
 
   const handleScroll = () => {
     if (tabRef.current) {
@@ -275,7 +276,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
       setIsSticky(newIsSticky);
     }
   };
-
 
   useEffect(() => {
     // 스크롤 이벤트 리스너 추가
@@ -286,33 +286,36 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     };
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
-useEffect(() => {
-  if (type === "COMMON") {
-    setTabTitle([
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
-    { name: "Likes", content: "Likes", count: profile.favoritesCnt}
-  ])
-} else if (type === "SHOP") {
-    setTabTitle([
-    { name: "Post", content: "Post", count: profile.feedCnt},
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Reservation", content: "Reservation", count: profile.reservationCnt},
-  ])
-} else if (type === "EMPLOYEE") {
-  setTabTitle([
-    { name: "Post", content: "Post", count: profile.feedCnt },
-    { name: "Review", content: "Review", count: profile.reviewCnt},
-    { name: "Scrap", content: "Scrap", count: profile.scrapCnt},
-  ])
-};
-}, [profile]);
+  useEffect(() => {
+    if (type === "COMMON") {
+      setTabTitle([
+        { name: "Review", content: "Review", count: profile.reviewCnt },
+        { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
+        { name: "Likes", content: "Likes", count: profile.favoritesCnt },
+      ]);
+    } else if (type === "SHOP") {
+      setTabTitle([
+        { name: "Post", content: "Post", count: profile.feedCnt },
+        { name: "Review", content: "Review", count: profile.reviewCnt },
+        {
+          name: "Reservation",
+          content: "Reservation",
+          count: profile.reservationCnt,
+        },
+      ]);
+    } else if (type === "EMPLOYEE") {
+      setTabTitle([
+        { name: "Post", content: "Post", count: profile.feedCnt },
+        { name: "Review", content: "Review", count: profile.reviewCnt },
+        { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
+      ]);
+    }
+  }, [profile]);
 
-  const tabName = ['예약현황', "디자이너"];
+  const tabName = ["예약현황", "디자이너"];
 
   const renderGrid = () => {
     const content = tabTitle[currentTab]?.content;
-
 
     if (content === "Post") {
       return (
@@ -343,9 +346,18 @@ useEffect(() => {
         </React.Fragment>
       );
     } else if (content === "Review") {
-      return <ReviewGrid key={key} Card={reviewdata} currentUser={profile} loginUser={nickname} type={type} currentTab={currentTab}/>;
+      return (
+        <ReviewGrid
+          key={key}
+          Card={reviewdata}
+          currentUser={profile}
+          loginUser={nickname}
+          type={type}
+          currentTab={currentTab}
+        />
+      );
     } else if (content === "Reservation") {
-      return activeSubTab === '예약현황' ? <TimeTable /> : <DesignerGrid />;
+      return activeSubTab === "예약현황" ? <TimeTable /> : <DesignerGrid />;
     }
   };
 
@@ -362,51 +374,52 @@ useEffect(() => {
 
   return (
     <Wrapper>
-    {isLogin !== true ? (
-      <Login />
-    ) : (
-     <>
-      <Header
-        theme={theme}
-        toggleTheme={toggleTheme}
-        currentUser={profile}
-        loginUser={nickname}
-      />
-      <ProfileContainer>
-        <IntroduceBox>
-          <ProfileImage currentUser={profile} time={130} />
-          {type === "SHOP" ? (
-            <ShopProfileInfo currentUser={profile} loginUser={nickname} rating={ratingAvg} likeshop={likeCard}/>
-          ) : (
-            <ProfileInfo currentUser={profile} loginUser={nickname} />
-          )}
-          
-        </IntroduceBox>
-        <div ref={tabRef}>
-          <StickyTabContainer isSticky={isSticky}>
+      <>
+        <Header
+          theme={theme}
+          toggleTheme={toggleTheme}
+          currentUser={profile}
+          loginUser={nickname}
+          handleLogout={handleLogout}
+        />
+        <ProfileContainer>
+          <IntroduceBox>
+            <ProfileImage currentUser={profile} time={130} />
             {type === "SHOP" ? (
-              <ShopTabComponent
-              tabTitle={tabTitle}
-              currentTab={currentTab}
-              onTabChange={handleTabChange}
-              tabName={tabName}
-              onSubTabChange={handleSubTabChange} // 서브탭 변경 함수를 전달합니다.
-              activeSubTab={activeSubTab} // 현재 활성화된 서브탭을 전달합니다.
-            />
-            ) : (
-              <TabComponent
-                tabTitle={tabTitle}
-                currentTab={currentTab}
-                onTabChange={handleTabChange}
+              <ShopProfileInfo
+                currentUser={profile}
+                loginUser={nickname}
+                rating={ratingAvg}
+                likeshop={likeCard}
               />
+            ) : (
+              <ProfileInfo currentUser={profile} loginUser={nickname} />
             )}
-          </StickyTabContainer>
-        </div>
-      </ProfileContainer>
-      <GridContainer>{renderGrid()}</GridContainer>
+          </IntroduceBox>
+          <div ref={tabRef}>
+            <StickyTabContainer isSticky={isSticky}>
+              {type === "SHOP" ? (
+                <ShopTabComponent
+                  tabTitle={tabTitle}
+                  currentTab={currentTab}
+                  onTabChange={handleTabChange}
+                  tabName={tabName}
+                  onSubTabChange={handleSubTabChange} // 서브탭 변경 함수를 전달합니다.
+                  activeSubTab={activeSubTab} // 현재 활성화된 서브탭을 전달합니다.
+                />
+              ) : (
+                <TabComponent
+                  tabTitle={tabTitle}
+                  currentTab={currentTab}
+                  onTabChange={handleTabChange}
+                />
+              )}
+            </StickyTabContainer>
+          </div>
+        </ProfileContainer>
+        <GridContainer>{renderGrid()}</GridContainer>
       </>
-    )}
-  </Wrapper>
+    </Wrapper>
   );
 };
 

@@ -1,4 +1,4 @@
-// App.js
+// src/App.js
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./util/theme";
@@ -9,6 +9,7 @@ import NavigationBar from "./components/common/NavigationBar";
 import NavigationRail from "./components/common/NavigationRail";
 import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
+import { isAuthenticated } from "./util/auths"; // isAuthenticated 함수 가져오기
 import axios from "axios";
 
 const Grid = styled.div`
@@ -32,23 +33,21 @@ const Layout = styled.div`
 
 function App() {
   const [theme, setTheme] = useState("light");
+  const [auth, setAuth] = useState(isAuthenticated());
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  // useEffect(() => {
-  //   axios
-  //     .get("/api", {
-  //       params: {},
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         access: localStorage.getItem("access"),
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //     });
-  // }, []);
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const handleLogin = () => {
+    setAuth(true);
+  };
+
+  const handleLogout = () => {
+    setAuth(false);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
   };
 
   return (
@@ -56,14 +55,25 @@ function App() {
       <BrowserRouter>
         <GlobalStyles />
         <Grid>
-          {isMobile ? <NavigationBar /> : <NavigationRail />}
+          {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
+          {auth && (isMobile ? <NavigationBar /> : <NavigationRail />)}
           <Layout>
-            <AppRoutes theme={theme} toggleTheme={toggleTheme} />
-            <PrivateRoutes theme={theme} toggleTheme={toggleTheme} />
+            <AppRoutes
+              theme={theme}
+              toggleTheme={toggleTheme}
+              onLogin={handleLogin}
+              handleLogin={handleLogin}
+            />
+            <PrivateRoutes
+              theme={theme}
+              toggleTheme={toggleTheme}
+              handleLogout={handleLogout}
+            />
           </Layout>
         </Grid>
       </BrowserRouter>
     </ThemeProvider>
   );
 }
+
 export default App;

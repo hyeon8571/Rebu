@@ -68,6 +68,8 @@ export const login = (email, password) => async (dispatch) => {
       console.log("로그인 성공", response);
       const { type, nickname } = response.data.body;
       localStorage.setItem("access", access);
+      localStorage.setItem("nickname", response.data.body.nickname);
+      localStorage.setItem("type", response.data.body.type);
 
       dispatch(loginSuccess({ nickname, type }));
       console.log("타입, 닉네임", type, nickname);

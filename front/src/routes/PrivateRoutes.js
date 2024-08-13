@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+// src/routes/PrivateRoutes.js
+import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "../views/Login";
+import ProtectedRoute from "../components/common/ProtectedRoute";
 import MyProfile from "../views/MyProfile";
 import ReservationCalendar from "../components/reservation/ReservationCalendar";
 import VisitedPage from "../views/VisitedPage";
@@ -18,39 +19,106 @@ import DesignerDisplay from "../components/reservation/DesignerDisplay";
 import PostReview from "../views/PostReviewPage";
 import PostFeedPage from "../views/PostFeedPage";
 import ReviewKeywordStat from "../components/review/ReviewKeywordStat";
+import Main from "../views/Main";
 
-const PrivateRoutes = ({ theme, toggleTheme }) => (
+const PrivateRoutes = ({ theme, toggleTheme, handleLogout }) => (
   <Routes>
     <Route
       path="/personal-info"
-      element={<PersonalInfo theme={theme} toggleTheme={toggleTheme} />}
+      element={
+        <ProtectedRoute
+          element={() => (
+            <PersonalInfo theme={theme} toggleTheme={toggleTheme} />
+          )}
+        />
+      }
     />
     <Route
-      path="/profile"
-      element={<MyProfile theme={theme} toggleTheme={toggleTheme} />}
+      path="/profile/:nickname/:type"
+      element={
+        <ProtectedRoute
+          element={() => (
+            <MyProfile
+              theme={theme}
+              toggleTheme={toggleTheme}
+              handleLogout={handleLogout}
+            />
+          )}
+        />
+      }
     />
     <Route
-      path="/store-profile/"
-      element={<StoreProfile theme={theme} toggleTheme={toggleTheme} />}
+      path="/main"
+      element={
+        <ProtectedRoute
+          element={() => <Main theme={theme} toggleTheme={toggleTheme} />}
+        />
+      }
     />
-    <Route path="/calendar" element={<ReservationCalendar />} />
-    <Route path="/visited" element={<VisitedPage />} />
+    <Route
+      path="/store-profile"
+      element={
+        <ProtectedRoute
+          element={() => (
+            <StoreProfile theme={theme} toggleTheme={toggleTheme} />
+          )}
+        />
+      }
+    />
+    <Route
+      path="/calendar"
+      element={<ProtectedRoute element={ReservationCalendar} />}
+    />
+    <Route path="/visited" element={<ProtectedRoute element={VisitedPage} />} />
     <Route
       path="/component"
-      element={<Components theme={theme} toggleTheme={toggleTheme} />}
+      element={
+        <ProtectedRoute
+          element={() => <Components theme={theme} toggleTheme={toggleTheme} />}
+        />
+      }
     />
-    <Route path="/timetable" element={<TimeTablePage />} />
-    <Route path="/menutab" element={<MenuTab />} />
-    <Route path="/designertab" element={<DesignerTab />} />
-    <Route path="/myreservation" element={<MyReservationCalendar />} />
-    <Route path="/menudisplay" element={<MenuDisplay />} />
-    <Route path="/addmenu" element={<AddMenu />} />
-    <Route path="/setrev" element={<SettingReservation />} />
-    <Route path="/designerdisplay" element={<DesignerDisplay />} />
-    <Route path="/postrevw" element={<PostReview />} />
-    <Route path="/postfeed" element={<PostFeedPage />} />
-    <Route path="/stat" element={<ReviewKeywordStat reviewNum={3} />} />
-    <Route path="/designer" element={<DesignerDisplay />} />
+    <Route
+      path="/timetable"
+      element={<ProtectedRoute element={TimeTablePage} />}
+    />
+    <Route path="/menutab" element={<ProtectedRoute element={MenuTab} />} />
+    <Route
+      path="/designertab"
+      element={<ProtectedRoute element={DesignerTab} />}
+    />
+    <Route
+      path="/myreservation"
+      element={<ProtectedRoute element={MyReservationCalendar} />}
+    />
+    <Route
+      path="/menudisplay"
+      element={<ProtectedRoute element={MenuDisplay} />}
+    />
+    <Route path="/addmenu" element={<ProtectedRoute element={AddMenu} />} />
+    <Route
+      path="/setrev"
+      element={<ProtectedRoute element={SettingReservation} />}
+    />
+    <Route
+      path="/designerdisplay"
+      element={<ProtectedRoute element={DesignerDisplay} />}
+    />
+    <Route path="/postrevw" element={<ProtectedRoute element={PostReview} />} />
+    <Route
+      path="/postfeed"
+      element={<ProtectedRoute element={PostFeedPage} />}
+    />
+    <Route
+      path="/stat"
+      element={
+        <ProtectedRoute element={() => <ReviewKeywordStat reviewNum={3} />} />
+      }
+    />
+    <Route
+      path="/designer"
+      element={<ProtectedRoute element={DesignerDisplay} />}
+    />
   </Routes>
 );
 

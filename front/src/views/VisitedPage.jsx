@@ -53,7 +53,7 @@ export default function VisitedPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { nickname, type, isLogin } = useSelector((state) => state.auth);
+  // const { nickname, type, isLogin } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,13 +67,15 @@ export default function VisitedPage() {
         {
           headers: {
             "Content-Type": "application/json",
-            Access: localStorage.getItem("access"),
+            Access:
+              "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsIm5pY2tuYW1lIjoicmVidTM5IiwidHlwZSI6IkNPTU1PTiIsImlhdCI6MTcyMzQ3ODQ5NSwiZXhwIjo5NzIzNDgwMjk1fQ.ca5yEAdzAFZ9SpB2xE1x5IUlfI9_wssEMbVFvANRBMQ",
           },
         }
       )
       .then((response) => {
+        console.log(response);
         const sortedData = response.data.body.sort(
-          (a, b) => new Date(b.startDateTime) - new Date(a.startDateTime)
+          (a, b) => new Date(b.startDateTime) - new Date(a.sxtartDateTime)
         );
         setData(sortedData);
         setLoading(false);

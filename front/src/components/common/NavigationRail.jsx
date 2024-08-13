@@ -6,8 +6,10 @@ import { IoHome, IoSearch } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import NavigationItem from "./NavigationItem";
 import ProfileMedium from "./ProfileMedium";
-
-import { NavLink } from "react-router-dom";
+import ModalPortal from "../../util/ModalPortal";
+import SearchModal from "../Search/SearchModal";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const GridContainer = styled.div`
   display: grid;
@@ -68,9 +70,10 @@ const ICON_SIZE = 36;
 
 const ProfileNavItem = () => {
   const navigate = useNavigate();
-  // Redux 상태에서 nickname과 type을 가져옴
-  const { nickname, type } = useSelector((state) => state.auth);
-  // console.log("navigationbar", nickname, type);
+
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
+
   const handleProfileClick = () => {
     // console.log(`/profile/${nickname}/${type}`);
     navigate(`/profile/${nickname}/${type}`);
@@ -96,7 +99,7 @@ export default function NavigationRail() {
         <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       </ModalPortal>
       <Rail>
-        <StyledNavLink isModalOpen={isModalOpen} to="/Login">
+        <StyledNavLink isModalOpen={isModalOpen} to="/main">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -120,10 +123,9 @@ export default function NavigationRail() {
         <div></div>
         <div></div>
         <div></div>
-        <ProfileNavLink to="/profile">
+        {/* <ProfileNavLink to="/profile">
           <ProfileMedium img={Img} time={0} />
-        </ProfileNavLink>{" "}
-        */}
+        </ProfileNavLink>{" "} */}
         <ProfileNavItem />
       </Rail>
     </GridContainer>

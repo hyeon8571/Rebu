@@ -102,11 +102,11 @@ export default function PostReview() {
           headers: {
             "Content-Type": "multipart/form-data",
             Access:
-              "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsIm5pY2tuYW1lIjoicmVidTM5IiwidHlwZSI6IkNPTU1PTiIsImlhdCI6MTcyMzQ2OTY5MywiZXhwIjo5NzIzNDcxNDkzfQ.eFy9XkBbjZlkxfrX_Ji_HQKQkUBTqm6Stalhj27K5oU",
+              "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsIm5pY2tuYW1lIjoicmVidTM5IiwidHlwZSI6IkNPTU1PTiIsImlhdCI6MTcyMzQ3ODQ5NSwiZXhwIjo5NzIzNDgwMjk1fQ.ca5yEAdzAFZ9SpB2xE1x5IUlfI9_wssEMbVFvANRBMQ",
           },
         }
       );
-      if (response.status === 200) {
+      if (response.data.body === 200) {
         console.log(response);
         // navigate("/somewhere");
         setIsModalOpen(true);

@@ -8,6 +8,10 @@ import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import img from "../../assets/images/cha.png";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import ModalPortal from "../../util/ModalPortal";
+import SearchModal from "../Search/SearchModal";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -32,12 +36,23 @@ const StyledNavLink = styled(NavLink)`
     background-color: ${(props) => props.theme.body};
   }
 `;
+
+const SearchDiv = styled.div`
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 1rem;
+
+  color: ${(props) =>
+    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+  background-color: ${(props) =>
+    props.isModalOpen ? props.theme.body : "none"};
+`;
+
 const ICON_SIZE = 28;
 
 const ProfileNavItem = () => {
   const navigate = useNavigate();
-  // Redux 상태에서 nickname과 type을 가져옴
-  const { nickname, type } = useSelector((state) => state.auth);
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
   // console.log("navigationbar", nickname, type);
   const handleProfileClick = () => {
     navigate(`/profile/${nickname}/${type}`);
@@ -64,7 +79,7 @@ export default function NavigationBar() {
         <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       </ModalPortal>
       <Bar>
-        <StyledNavLink to="/Login">
+        <StyledNavLink to="/main">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -84,11 +99,12 @@ export default function NavigationBar() {
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/profile">
+        {/* <StyledNavLink to="/profile">
           <NavigationItem>
             <ProfileSmall img={img}></ProfileSmall>
           </NavigationItem>
-        </StyledNavLink>
+        </StyledNavLink> */}
+        <ProfileNavItem />
       </Bar>
     </>
   );
