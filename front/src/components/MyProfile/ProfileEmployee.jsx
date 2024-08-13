@@ -201,9 +201,14 @@ export const createEmployeeProfile = async (formData) => {
     );
     console.log("직원 프로필 생성 테스트", response);
     // 요청 성공 시 응답 데이터 반환
-    return { success: true, data: response.data };
+    if (response.data.code === "1D00") {
+      //1D00: 직원 프로필 생성 성공 코드
+      return { success: true, data: response.data };
+    } else {
+      return { success: false, error: response.data };
+    }
   } catch (error) {
-    // 요청 실패 시 에러 반환
+    // 요청 실패 시 에러 반환 //0C05 닉네임 중복 검사 재실시
     console.error("프로필 업로드 실패:", error);
     return {
       success: false,
@@ -300,21 +305,27 @@ const ProfileEmployee = () => {
         {
           params: {
             nickname: nickname,
-            purpose: "signup",
+            purpose: "generateProfile",
           },
         }
       );
       console.log("닉네임 중복 확인", response);
 
-      if (response.data.code === "닉네임 중복 검사 성공 코드") {
+      if (response.data.code === "1C00") {
+        //1C00
+        //"닉네임 중복 검사 성공 코드"
         console.log("닉네임 중복 검사 성공");
         if (response.data.body === true) {
           setNicknameMsg("중복된 닉네임입니다");
           setIsNicknameValid(false);
         } else {
+          //response.data.body === false
           setNicknameMsg("사용 가능한 닉네임입니다");
           setIsNicknameValid(true);
         }
+      } else {
+        setNicknameMsg("닉네임 중복 확인 중 오류가 발생했습니다.");
+        setIsNicknameValid(false);
       }
     } catch (error) {
       console.error("Error checking nickname availability:", error);
