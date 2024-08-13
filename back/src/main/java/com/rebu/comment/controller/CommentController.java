@@ -31,9 +31,11 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readCommentAll(@PageableDefault(size = 10) Pageable pageable,
+    public ResponseEntity<?> readCommentAll(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+        @PageableDefault(size = 10) Pageable pageable,
         @RequestParam(value = "feedId", required = false) Long feedId) {
-        Slice<CommentReadAllDto> response = commentService.readCommentAll(feedId, pageable);
+        String requestUserNickname = authProfileInfo.getNickname();
+        Slice<CommentReadAllDto> response = commentService.readCommentAll(requestUserNickname, feedId, pageable);
         return new ResponseEntity<>(new ApiResponse<>("1M01", response), HttpStatus.OK);
     }
 
@@ -46,9 +48,10 @@ public class CommentController {
     }
 
     @GetMapping("/nested")
-    public ResponseEntity<?> readNestedCommentAll(@PageableDefault(size = 10) Pageable pageable,
-        @RequestParam(value = "commentId",required = false) Long commentId) {
-        Slice<CommentReadAllDto> response = commentService.readNestedComments(commentId, pageable);
+    public ResponseEntity<?> readNestedCommentAll(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+        @PageableDefault(size = 10) Pageable pageable, @RequestParam(value = "commentId",required = false) Long commentId) {
+        String requestUserNickname = authProfileInfo.getNickname();
+        Slice<CommentReadAllDto> response = commentService.readNestedComments(commentId, requestUserNickname, pageable);
         return new ResponseEntity<>(new ApiResponse<>("1M03", response), HttpStatus.OK);
     }
 }
