@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MdPlace } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
 import MainFilterStat from "./MainFilterStat";
+import CurrentLocation from "../common/CurrentLocation";
 
 const FilterContainer = styled.div`
   display: flex;
@@ -100,7 +101,7 @@ const Button = styled.button`
 `;
 
 
-const MainFilter = () => {
+const MainFilter = ({currentLocation, setCurrentLocation}) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);
 
@@ -123,10 +124,7 @@ const MainFilter = () => {
     <FilterContainer>
 
       <FirstContainer>
-        <Location>
-          <LocationIcon />
-          <MyPlace>구미시</MyPlace>
-        </Location>
+        <CurrentLocation currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
         {isFilterOpen ? (
           <FilterIconActive onClick={handleFilterOpen} />
         ) : (

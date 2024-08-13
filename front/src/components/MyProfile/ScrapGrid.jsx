@@ -9,7 +9,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GridContainer = styled.div`
   width: 100%;
-  max-width: 768px;
+  /* max-width: 768px; */
   margin: 0 auto; /* 중앙 정렬을 위한 추가 */
 `;
 

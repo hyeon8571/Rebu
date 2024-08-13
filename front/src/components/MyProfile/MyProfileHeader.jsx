@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   position: sticky;
   align-items: center;
   height: 50px;
-  max-width: 768px;
+  /* max-width: 768px; */
   width: 100%;
   top: 0;
   z-index: 5;
@@ -166,7 +166,7 @@ const Header = ({ theme, toggleTheme, currentUser, loginUser }) => {
       <HeaderText>Profile</HeaderText>
       <ButtonBox>
         <ThemeSwitch theme={theme} toggleTheme={toggleTheme} />
-        {currentUser.nickname === loginUser.nickname ? (
+        {currentUser.nickname === loginUser ? (
           isSettingActive ? (
             <ImgSettingActive onClick={handleSettingClick} />
           ) : (

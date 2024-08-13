@@ -8,8 +8,6 @@ import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import img from "../../assets/images/cha.png";
 import { NavLink } from "react-router-dom";
-import ModalPortal from "../../util/ModalPortal";
-import SearchModal from "../Search/SearchModal";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -34,18 +32,25 @@ const StyledNavLink = styled(NavLink)`
     background-color: ${(props) => props.theme.body};
   }
 `;
-const SearchDiv = styled.div`
-  transition: background-color 0.3s ease-in-out;
-  border-radius: 1rem;
-
-  color: ${(props) =>
-    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
-  background-color: ${(props) =>
-    props.isModalOpen ? props.theme.body : "none"};
-`;
-
 const ICON_SIZE = 28;
 
+const ProfileNavItem = () => {
+  const navigate = useNavigate();
+  // Redux 상태에서 nickname과 type을 가져옴
+  const { nickname, type } = useSelector((state) => state.auth);
+  // console.log("navigationbar", nickname, type);
+  const handleProfileClick = () => {
+    navigate(`/profile/${nickname}/${type}`);
+  };
+
+  return (
+    <NavigationItem onClick={handleProfileClick}>
+      <ProfileSmall img={img} />
+    </NavigationItem>
+  );
+};
+
+//default
 export default function NavigationBar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -59,7 +64,7 @@ export default function NavigationBar() {
         <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       </ModalPortal>
       <Bar>
-        <StyledNavLink isModalOpen={isModalOpen} to="/Login">
+        <StyledNavLink to="/Login">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
@@ -74,12 +79,12 @@ export default function NavigationBar() {
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink isModalOpen={isModalOpen} to="/component">
+        <StyledNavLink to="/component">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink isModalOpen={isModalOpen} to="/profile">
+        <StyledNavLink to="/profile">
           <NavigationItem>
             <ProfileSmall img={img}></ProfileSmall>
           </NavigationItem>

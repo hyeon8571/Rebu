@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProfileCreateModal from "./ProfileCreateModal";
+import { getAllProfiles } from "../../features/common/userSlice";
+import axios from "axios";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -98,10 +100,11 @@ const ModalText = styled.div`
 
 const ProfileImage = styled.img`
   border-radius: 50%;
-  max-width: 40px; // 원래 크기보다 작게 조정
-  max-height: 40px; // 원래 크기보다 작게 조정
+  max-width: 50px; // 원래 크기보다 작게 조정
+  max-height: 60px; // 원래 크기보다 작게 조정
   object-fit: cover;
   margin-right: 10px; // 이미지와 텍스트 간의 간격
+  margin-bottom: 10px;
 `;
 
 const NicknameText = styled.span`
@@ -112,11 +115,26 @@ const NicknameText = styled.span`
 const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
   const [isProfileCreateModalOpen, setIsProfileCreateModalOpen] =
     useState(false);
+  const [profiles, setProfiles] = useState([]); // profiles 상태
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux 상태에서 프로필 정보 가져오기
-  const profile = useSelector((state) => state.auth.profile);
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const response = await getAllProfiles();
+        console.log("프로필 목록", response);
+        if (response.success) {
+          setProfiles(response.data); // 프로필 상태 업데이트
+        } else {
+          console.log(response);
+        }
+      } catch (err) {
+        console.error("프로필 목록을 불러오는 중 오류 발생", err);
+      }
+    };
+    fetchProfiles(); // 컴포넌트 마운트 시 fetchProfiles 함수 실행
+  }, []);
 
   const handleCreateProfile = () => {
     // 프로필 생성을 위해 ProfileCreateModal을 열도록 설정
@@ -126,21 +144,39 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
     setIsProfileCreateModalOpen(false);
   }; //모달닫기
 
-  const profileImageSrc = profile.imgSrc || "/logo.png";
-
+  // const profileImageSrc = profile.imgSrc || "/logo.png";
+  const profileImageSrc = "/img.webp";
+  // const { nickname } = useSelector((state) => state.auth);
+  const profile2 = useState([]);
   return (
     <>
       {ProfileChangeModalOpen && (
         <ModalOverlay>
           <ModalContent>
+            <h2 style={{ textAlign: "center", marginBottom: 0 }}>
+              프로필 전환
+            </h2>
+            <div>
+              {profiles.map((profile, index) => (
+                <div key={index}>
+                  <ProfileImage
+                    src={
+                      profile.imageSrc
+                        ? `https://www.rebu.kro.kr/data${profile.imageSrc}`
+                        : profileImageSrc
+                    }
+                    alt="Profile"
+                  />
+                  <NicknameText>
+                    {profile.nickname} {profile.type}{" "}
+                  </NicknameText>
+                </div>
+              ))}
+            </div>
             <ModalHeader>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
             </ModalHeader>
-            <ModalText>
-              <ProfileImage src={profileImageSrc} alt="ProfileImage" />
-              <NicknameText>{profile.nickname}</NicknameText>
-            </ModalText>
-            <hr></hr>
+
             <ModalButtonContainer>
               <CreateButton onClick={handleCreateProfile}>
                 Create Profile

@@ -184,25 +184,31 @@ export const formatPhoneNumber = (value) => {
   return value;
 };
 
-const access = localStorage.getItem("access");
-// 직원 프로필 생성 함수
-const createEmployeeProfile = async (formData) => {
+// 직원 프로필 생성 함수 (+ 프로필 이미지 업로드)
+export const createEmployeeProfile = async (formData) => {
+  const access = localStorage.getItem("access"); // access 토큰을 적절히 가져오세요
+
   try {
-    const response = await api.post(
-      `${BASE_URL}/profiles/employees`,
+    const response = await axios.post(
+      `${BASE_URL}/api/profiles/employees`,
       formData,
       {
         headers: {
-          Access: access,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data", // 요청 본문 형식 설정
+          Access: access, // access 토큰을 헤더에 포함
         },
       }
     );
-    console.log("직원 프로필 생성", response);
-    return response.data;
+    console.log("직원 프로필 생성 테스트", response);
+    // 요청 성공 시 응답 데이터 반환
+    return { success: true, data: response.data };
   } catch (error) {
-    console.error("Error creating employee profile:", error);
-    throw error;
+    // 요청 실패 시 에러 반환
+    console.error("프로필 업로드 실패:", error);
+    return {
+      success: false,
+      error: error.response ? error.response.data : "프로필 업로드 실패",
+    };
   }
 };
 
@@ -216,6 +222,9 @@ const ProfileEmployee = () => {
   const [introduction, setIntroduction] = useState("");
   const [phone, setPhone] = useState("");
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -316,7 +325,7 @@ const ProfileEmployee = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-
+    console.log("버튼눌림");
     if (!isNicknameValid) {
       alert("유효한 닉네임을 입력하세요.");
       return;
@@ -324,6 +333,7 @@ const ProfileEmployee = () => {
 
     const formData = new FormData();
     if (profileImg) {
+      console.log("이미지 추가함");
       formData.append("imgFile", profileImg);
     }
     formData.append("nickname", nickname);
@@ -331,11 +341,23 @@ const ProfileEmployee = () => {
     formData.append("introduction", introduction);
     formData.append("phone", phone);
 
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
     try {
-      await createEmployeeProfile(formData);
-      navigate("/main");
+      console.log("프로필생성시작");
+      const result = await createEmployeeProfile(formData);
+      if (result.success) {
+        setSuccess("직원 프로필이 성공적으로 생성되었습니다.");
+        // 추가적인 성공 처리가 필요할 경우 여기에 추가
+      } else {
+        setError(result.error || "프로필 생성 실패");
+      }
     } catch (error) {
-      console.error("Failed to create profile:", error);
+      setError("알 수 없는 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 

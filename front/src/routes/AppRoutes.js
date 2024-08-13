@@ -17,7 +17,7 @@ import SignupForm2 from "../components/user/SignupForm2";
 
 const AppRoutes = ({ theme, toggleTheme }) => (
   <Routes>
-    <Route path="/start" element={<AppStart />} />
+    <Route path="/" element={<AppStart />} />
     <Route path="/main" element={<Main theme={theme} toggleTheme={toggleTheme} />} />
     <Route path="/login" element={<Login />} />
     <Route path="/login/password" element={<ChangePassword />} />

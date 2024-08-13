@@ -1,40 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import { follow } from "../../features/common/followSlice";
+import {
+  getFollowerList,
+  getFollowingList,
+  follow,
+} from "../../features/common/followSlice";
+import { useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import FollowList from "./FollowList";
 import nullImg from "../../assets/images/img.webp";
 
-// 그라디언트 애니메이션을 정의합니다.
+// Gradiant animation
 const rotateGradient = keyframes`
   0% {
     background: linear-gradient(0deg, #943aee, #af4261);
-  }
-  10% {
-    background: linear-gradient(36deg, #943aee, #af4261);
-  }
-  20% {
-    background: linear-gradient(72deg, #943aee, #af4261);
-  }
-  30% {
-    background: linear-gradient(108deg, #943aee, #af4261);
-  }
-  40% {
-    background: linear-gradient(144deg, #943aee, #af4261);
-  }
-  50% {
-    background: linear-gradient(180deg, #943aee, #af4261);
-  }
-  60% {
-    background: linear-gradient(216deg, #943aee, #af4261);
-  }
-  70% {
-    background: linear-gradient(260deg, #943aee, #af4261);
-  }
-  80% {
-    background: linear-gradient(290eg, #943aee, #af4261);
-  }
-  90% {
-    background: linear-gradient(320eg, #943aee, #af4261);
   }
   100% {
     background: linear-gradient(340deg, #943aee, #af4261);
@@ -65,7 +43,7 @@ const OutterCircleOnline = styled.a`
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  animation: ${rotateGradient} 3s linear infinite; /* linear 추가 */
+  animation: ${rotateGradient} 3s linear infinite;
 `;
 
 const OutterCircleOffline = styled.a`
@@ -88,8 +66,9 @@ const Insideimg = styled.img`
 
 const FollowInfo = styled.div`
   display: flex;
+  justify-content: center;
   text-align: center;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 `;
 
 const FollowerInfo = styled.div`
@@ -134,7 +113,7 @@ const FollowListContainer = styled.div`
 
 const ModalOverlay = styled.div`
   position: absolute;
-  top: 70%;
+  top: 80%;
   left: 50%;
   @media (min-width: 768px) {
     left: 55%;
@@ -156,6 +135,8 @@ const ModalContent = styled.div`
   border: 1.5px solid #943aee;
   border-radius: 8px;
   width: 90%;
+  max-height: 50vh;
+  overflow-y: auto;
 `;
 
 const ModalHeader = styled.div`
@@ -178,10 +159,8 @@ const CloseButton = styled.button`
   color: #943aee;
   font-size: 25px;
   border: none;
-  /* padding: 5px; */
   border-radius: 5px;
   cursor: pointer;
-  float: right;
 `;
 
 const FollowButton = styled.button`
@@ -205,36 +184,125 @@ const FollowButton = styled.button`
   }
 `;
 
-export default function ProfileLarge({
-  currentUser,
-  time,
-  followingdata,
-  followerdata,
-}) {
+export default function ProfileLarge({ currentUser, time }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
   const followersModalRef = useRef(null);
   const followingModalRef = useRef(null);
   const [relation, setRelation] = useState(currentUser.relation);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // 팔로잉 목록
+  const [followings, setFollowings] = useState([]); //팔로잉 목록
+  const [followers, setFollowers] = useState([]); //팔로워 목록
+
+  const targetNickname = currentUser.nickname; //현재 프로필 페이지의 사용자 닉네임
+  const { nickname } = useSelector((state) => state.auth); //로그인한 사용자의 닉네임
+
+  // 무한 스크롤 - 페이지네이션
+  const [currentPage, setCurrentPage] = useState(0); // 페이지 번호
+  const [hasMore, setHasMore] = useState(true); // 더 로드할 데이터가 있는지 여부
+
+  // API- 팔로잉 목록 불러오기
+  const loadFollowings = async () => {
+    if (hasMore) {
+      const result = await getFollowingList(targetNickname, currentPage);
+      if (result.success) {
+        setFollowings((prevFollowings) => [
+          ...prevFollowings,
+          ...result.data.body.content,
+        ]);
+        const last = result.data.body.last;
+        setHasMore(last === false); // 마지막 페이지인지 확인
+      } else {
+        setError(result.error);
+      }
+    }
+  };
+
+  // API- 팔로워 목록 불러오기
+  const loadFollowers = async () => {
+    if (hasMore) {
+      const result = await getFollowerList(targetNickname, currentPage);
+      if (result.success) {
+        setFollowers((prevFollowers) => [
+          ...prevFollowers,
+          ...result.data.body.content,
+        ]);
+        const last = result.data.body.last;
+        setHasMore(last === false); // 마지막 페이지인지 확인
+      } else {
+        setError(result.error);
+      }
+    }
+  };
+
+  // 팔로잉 모달을 열 때 데이터 로드
+  const handleOpenFollowingModal = () => {
+    // 상태 초기화
+    setCurrentPage(0);
+    setFollowings([]);
+    setHasMore(true); // 추가된 부분
+
+    // 모달 열기
+    setIsFollowingModalOpen(true);
+
+    // 데이터 로드
+    loadFollowings();
+  };
+
+  // 팔로워 모달을 열 때 데이터 로드
+  const handleOpenFollowersModal = () => {
+    // 상태 초기화
+    setCurrentPage(0);
+    setFollowers([]);
+    setHasMore(true);
+
+    // 모달 열기
+    setIsFollowersModalOpen(true);
+
+    // 데이터 로드
+    loadFollowers();
+  };
+
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (scrollHeight - scrollTop <= clientHeight + 10 && hasMore) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      if (isFollowersModalOpen) {
+        loadFollowers();
+      } else if (isFollowingModalOpen) {
+        loadFollowings();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const modalRef = isFollowersModalOpen
+      ? followersModalRef.current
+      : followingModalRef.current;
+
+    if (modalRef) {
+      modalRef.addEventListener("scroll", handleScroll);
+      return () => modalRef.removeEventListener("scroll", handleScroll);
+    }
+  }, [isFollowersModalOpen, isFollowingModalOpen, hasMore]);
+
   const handleFollow = async () => {
-    setRelation("FOLLOWING");
-    // 팔로우 결과에 따라 버튼이 눌린걸로 바뀌게 해줘야함
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const result = await followUser(targetNickname);
+      const result = await follow(targetNickname);
 
       if (result.success) {
         setSuccess("팔로우가 성공적으로 추가되었습니다.");
-        // 추가적인 성공 처리가 필요할 경우 여기에 추가
+        setRelation("FOLLOWING");
       } else {
         setError(result.error || "팔로우 추가 실패");
       }
@@ -244,25 +312,22 @@ export default function ProfileLarge({
       setLoading(false);
     }
   };
-
   const handleUnfollow = () => {
     setRelation("NONE");
   };
 
-  const handleOpenFollowersModal = () => {
-    setIsFollowersModalOpen(true);
-  };
-
-  const handleCloseFollowersModal = () => {
-    setIsFollowersModalOpen(false);
-  };
-
-  const handleOpenFollowingModal = () => {
-    setIsFollowingModalOpen(true);
-  };
-
   const handleCloseFollowingModal = () => {
     setIsFollowingModalOpen(false);
+    // 추가된 부분
+    setFollowings([]);
+    setCurrentPage(0);
+    setHasMore(true);
+  };
+  const handleCloseFollowersModal = () => {
+    setIsFollowersModalOpen(false);
+    setFollowers([]);
+    setCurrentPage(0);
+    setHasMore(true);
   };
 
   const handleClickOutside = (event) => {
@@ -310,20 +375,28 @@ export default function ProfileLarge({
             </OutterCircleOffline>
           )}
         </React.Fragment>
-        <FollowInfo>
-          <FollowerInfo>
-            <FollowCount>{currentUser.followerCnt}</FollowCount>
-            <FollowText onClick={handleOpenFollowersModal}> 팔로워</FollowText>
-          </FollowerInfo>
-          <FollowingInfo>
-            <FollowCount>{currentUser.followingCnt}</FollowCount>
-            <FollowText onClick={handleOpenFollowingModal}> 팔로잉</FollowText>
-          </FollowingInfo>
-        </FollowInfo>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            // height: "100%",
+            marginLeft: "2rem",
+          }}
+        >
+          <FollowInfo>
+            <FollowerInfo>
+              <FollowCount>{currentUser.followerCnt}</FollowCount>
+              <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
+            </FollowerInfo>
+            <FollowingInfo>
+              <FollowCount>{currentUser.followingCnt}</FollowCount>
+              <FollowText onClick={handleOpenFollowingModal}>팔로잉</FollowText>
+            </FollowingInfo>
+          </FollowInfo>
+        </div>
       </ImgBox>
-      {/* <p>
-        {currentUser.relation} {relation}
-      </p> */}
+
       {currentUser.relation !== "OWN" && (
         <FollowButton
           following={relation}
@@ -346,9 +419,15 @@ export default function ProfileLarge({
             </ModalHeader>
             <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
-              {followerdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
+              {followers.map((follower, index) => (
+                <FollowList
+                  key={index}
+                  follower={follower}
+                  time={130}
+                  handleCloseFollowersModal={handleCloseFollowersModal}
+                />
               ))}
+              {isLoading && <p>로딩 중...</p>}
             </FollowListContainer>
           </ModalContent>
         </ModalOverlay>
@@ -365,9 +444,15 @@ export default function ProfileLarge({
             </ModalHeader>
             <hr style={{ borderColor: "#EDE0FB" }} />
             <FollowListContainer>
-              {followingdata.map((follower, index) => (
-                <FollowList key={index} follower={follower} time={130} />
+              {followings.map((follower, index) => (
+                <FollowList
+                  key={index}
+                  follower={follower}
+                  time={130}
+                  handleCloseFollowingModal={handleCloseFollowingModal}
+                />
               ))}
+              {isLoading && <p>로딩 중...</p>}
             </FollowListContainer>
           </ModalContent>
         </ModalOverlay>

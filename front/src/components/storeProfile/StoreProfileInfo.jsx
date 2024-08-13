@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
 import StoreMark from "../../assets/images/storemark.png";
+import { BASE_URL } from '../../views/Signup';
+import axios from 'axios';
 
 const InfoBox = styled.div`
   margin-left: 30px;
@@ -162,15 +164,23 @@ const CloseButton = styled.button`
   }
 `;
 
-const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }) => {
+const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
+  const [isLikes, setIsLikes] = useState(false);
 
-  // useEffect(() => {
-  //   setNewIntroduce(currentUser.introduction);
-  //   setTempIntroduce(currentUser.introduction);
-  // }, [currentUser.introduction]);
+  useEffect(() => {
+    if (likeshop.map((shop) => {shop.nickname === currentUser.nickname})) {
+      setIsLikes(true);
+    };
+  }, []);
+  
+
+  useEffect(() => {
+    setNewIntroduce(currentUser.introduction);
+    setTempIntroduce(currentUser.introduction);
+  }, [currentUser.introduction]);
 
   const openModal = () => {
     setTempIntroduce(newIntroduce);
@@ -184,19 +194,47 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }
   const handleIntroduceChange = (e) => {
     setTempIntroduce(e.target.value);
   };
+  
+  const handleLikeToggle = () => {
+    // 매장 즐겨찾기 등록 api psot 호출
+    setIsLikes(!isLikes)
 
-  const saveIntroduce = () => {
-    // Introduce 정보를 업데이트하는 로직을 여기에 추가합니다.
-    setNewIntroduce(tempIntroduce);
-    closeModal();
   };
 
-  const handleLikeToggle = () => {
-    const updatedLikes = loginUser.likes.includes(currentUser.nickname)
-      ? loginUser.likes.filter(like => like !== currentUser.nickname)
-      : [...loginUser.likes, currentUser.nickname];
-    
-    updateLikes(updatedLikes);
+  const handleunLikeToggle = () => {
+    // 매장 즐겨찾기 삭제 api delete 호출
+    setIsLikes(!isLikes)
+  };
+
+  const saveIntroduce = async () => {
+    try {
+      const access = localStorage.getItem('access');
+      // 백엔드 API 엔드포인트 주소
+      const url = `${BASE_URL}/api/profiles/${currentUser.nickname}/introduction`;
+
+      // 업데이트할 데이터
+      // const updatedData = {
+      //   introduction: tempIntroduce,
+      // };
+
+      const headers = {
+        "Content-Type": "application/json",
+        "access" : access
+      }
+
+      // PATCH 요청 보내기
+      const response = await axios.patch(url, {
+        introduction: tempIntroduce,
+      }, {headers});
+
+      // 성공 시 추가로 처리할 작업이 있다면 여기에 작성
+      console.log('소개글이 성공적으로 수정되었습니다:', response.data);
+    } catch (error) {
+      // 에러 처리 로직 작성
+      console.error('소개글 수정에 실패했습니다:', error);
+    }
+    setNewIntroduce(tempIntroduce)
+    closeModal();
   };
 
   return (
@@ -212,9 +250,9 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }
           </Rating>
         </LeftContainer>
         <RightContainer>
-          {currentUser.nickname !== loginUser.nickname ? (
-            likeshop.map((shop) => {shop.nickname === currentUser.nickname}) ? (
-              <ImgLikeActive onClick={handleLikeToggle} />
+          {currentUser.nickname !== loginUser ? (
+            isLikes ? (
+              <ImgLikeActive onClick={handleunLikeToggle} />
             ) : (<ImgLike onClick={handleLikeToggle} />)
           ) : ("")}
         </RightContainer>
@@ -222,7 +260,7 @@ const InfoComponent = ({ currentUser, loginUser, updateLikes, rating, likeshop }
 
       <IntroduceInfo>
         <Introduction>{newIntroduce}</Introduction> &nbsp;
-        {currentUser.nickname === loginUser.nickname && (
+        {currentUser.nickname === loginUser && (
           <ImgEdit onClick={openModal} />
         )}
       </IntroduceInfo>

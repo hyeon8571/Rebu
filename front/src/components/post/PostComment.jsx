@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegHeart, FaHeart, FaArrowRight, FaTrashAlt } from "react-icons/fa";
+import axios from "axios";
+import { BASE_URL } from "../../views/Signup";
 
 const CommentItem = styled.div`
   display: flex;
@@ -173,7 +175,7 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostComment = ({ comment, information, posts, setPosts, currentUser, index }) => {
+const PostComment = ({ information, posts, setPosts, currentUser, index, feedId }) => {
   const [newComments, setNewComments] = useState(
     Array(information.length).fill("")
   );
@@ -187,6 +189,59 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
     updatedNewComments[index] = value;
     setNewComments(updatedNewComments);
   };
+
+  const [comment, setComment] = useState([]);
+  const [commentNested, setCommentNested] = useState([]);
+  const [selectCommentId, setSelectCommentId] = useState(null);
+  const [page, setPage] = useState(0);
+
+  // 댓글 조회
+  useEffect(() => {
+    const access = localStorage.getItem('access');
+    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=${page}&size=10`, {
+      headers : {
+        "access" : access,
+        "Content-Type": "application/json",
+      }
+    })
+    .then(res => {
+      console.log(res.data.body.content);
+      setComment(res.data.body.content);
+    })
+    .catch(err => {
+      console.log(err + '댓글을 찾지 못했습니다');
+    })
+  }, [page]);
+
+
+  // 대댓글 조회
+  useEffect(() => {
+    const fetchReplies = async () => {
+      const access = localStorage.getItem('access');
+      try {
+        if (selectCommentId && showReplies[selectCommentId]) { // reply가 보여지도록 toggle된 경우에만 요청
+          const res = await axios.get(`${BASE_URL}/api/comments/nested`, {
+            headers: {
+              "access": access,
+              "Content-Type": "application/json",
+            },
+            params : {
+              commentId: selectCommentId,
+              page: page,
+              size: 10,
+            }
+          }
+        );
+          setCommentNested(res.data.body.content);
+        }
+      } catch (err) {
+        console.log(err + '대댓글을 찾지 못했습니다.');
+      }
+    };
+
+    fetchReplies();
+  }, [showReplies, page]); // commentId와 page를 의존성 배열에 추가
+
 
   const handleReplyChange = (commentId, value) => {
     setReplies({
@@ -259,12 +314,15 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
     setReplyingTo(replyingTo === commentId ? null : commentId);
   };
 
+  
   const handleShowRepliesToggle = (commentId) => {
+    setSelectCommentId(commentId);
     setShowReplies({
       ...showReplies,
       [commentId]: !showReplies[commentId],
     });
   };
+
 
   const handleLikeToggle = (
     postIndex,
@@ -309,44 +367,44 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
         <div key={idx}>
           <CommentItem>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <CommentUserImage src={comment.comment.imageSrc} alt="User" />
+              <CommentUserImage src={"https://www.rebu.kro.kr/data/" + comment.imageSrc} alt="User" />
               <CommnetDetails>
                 <CommentHeader>
-                  <CommentUsername>{comment.comment.nickname}</CommentUsername>
+                  <CommentUsername>{comment.nickname}</CommentUsername>
                   <CommentTime>
-                    {timeSince(new Date(comment.comment.createAt))}
+                    {timeSince(new Date(comment.createAt))}
                   </CommentTime>
                 </CommentHeader>
-                <CommentContent>{comment.comment.content}</CommentContent>
+                <CommentContent>{comment.content}</CommentContent>
                 <div style={{ display: "flex" }}>
-                  <ReplyLink onClick={() => handleShowRepliesToggle(comment.comment.commentId)}>
-                    {showReplies[comment.comment.commentId] ? "답글숨기기" : "답글보기"}
+                  <ReplyLink onClick={() => handleShowRepliesToggle(comment.commentId)}>
+                    {showReplies[comment.commentId] ? "답글숨기기" : "답글보기"}
                   </ReplyLink> &nbsp;&nbsp;
-                  <ReplyLink onClick={() => handleReplyToggle(comment.comment.commentId)}>
+                  <ReplyLink onClick={() => handleReplyToggle(comment.commentId)}>
                     답글달기
                   </ReplyLink>
                 </div>
               </CommnetDetails>
             </div>
             <div>
-              {comment.comment.nickname === currentUser.nickname && (
+              {comment.nickname === currentUser.nickname && (
                 <DeleteButton onClick={() => handleDeleteComment(index, idx)}>
                   <FaTrashAlt />
                 </DeleteButton>
               )}
               <LikeButton onClick={() => handleLikeToggle(index, idx)}>
-                {likes[comment.comment.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
+                {likes[comment.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
               </LikeButton>
-              {comment.comment.likeCount > 0 && <LikeCount>{comment.comment.likeCount}</LikeCount>}
+              {comment.likeCount > 0 && <LikeCount>{comment.likeCount}</LikeCount>}
             </div>
           </CommentItem>
 
-          {showReplies[comment.comment.commentId] &&
-            comment.commentNested &&
-            comment.commentNested.map((reply, replyIdx) => (
+          {showReplies[comment.commentId] &&
+            commentNested &&
+            commentNested.map((reply, replyIdx) => (
               <CommentItem key={replyIdx} style={{ marginLeft: "40px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <CommentUserImage src={reply.imageSrc} alt="User" />
+                  <CommentUserImage src={"https://www.rebu.kro.kr/data/" + reply.imageSrc} alt="User" />
                   <CommnetDetails>
                     <CommentHeader>
                       <CommentUsername>{reply.nickname}</CommentUsername>
@@ -377,23 +435,23 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
               </CommentItem>
             ))}
 
-          {replyingTo === comment.comment.commentId && (
+          {replyingTo === comment.commentId && (
             <CommentInputWrapper>
-              <CommentImage src={currentUser.imageSrc} alt="User" />
+              <CommentImage src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc} alt="User" />
               <CommentInputContainer>
                 <CommentTextInput
                   type="text"
                   placeholder="답글 추가"
-                  value={replies[comment.comment.commentId] || ""}
+                  value={replies[comment.commentId] || ""}
                   onChange={(e) =>
-                    handleReplyChange(comment.comment.commentId, e.target.value)
+                    handleReplyChange(comment.commentId, e.target.value)
                   }
                   onKeyPress={(e) =>
-                    handleKeyPress(e, index, "reply", comment.comment.commentId)
+                    handleKeyPress(e, index, "reply", comment.commentId)
                   }
                 />
                 <NewCommentButton
-                  onClick={() => handleAddReply(index, comment.comment.commentId)}
+                  onClick={() => handleAddReply(index, comment.commentId)}
                 >
                   <FaArrowRight />
                 </NewCommentButton>
@@ -403,7 +461,7 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
         </div>
       ))}
       <CommentInputWrapper>
-        <CommentImage src={currentUser.imageSrc} alt="User" />
+        <CommentImage src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc} alt="User" />
         <CommentInputContainer>
           <CommentTextInput
             type="text"
@@ -420,5 +478,6 @@ const PostComment = ({ comment, information, posts, setPosts, currentUser, index
     </>
   );
 };
+
 
 export default PostComment;

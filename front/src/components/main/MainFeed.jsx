@@ -316,6 +316,8 @@ const PostDetail = ({ information, currentUser, loginUser }) => {
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetch('/mockdata/shopdata.json')
