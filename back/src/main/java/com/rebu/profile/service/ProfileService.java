@@ -11,6 +11,7 @@ import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.MemberNotMatchException;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
+import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.storage.exception.FileUploadFailException;
@@ -205,6 +206,14 @@ public class ProfileService {
         Slice<Profile> profiles = profileRepository.searchProfileByKeyword(searchProfileDto.getKeyword(), searchProfileDto.getPageable());
 
         return profiles.map(SearchProfileResponse::from);
+    }
+
+    @Transactional
+    public void updateRecentTime(AuthProfileInfo authProfileInfo) {
+        Profile profile = profileRepository.findByNickname(authProfileInfo.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        profile.updateRecentTime();
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {

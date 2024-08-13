@@ -3,6 +3,7 @@ package com.rebu.profile.controller;
 import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.controller.dto.*;
 import com.rebu.profile.dto.*;
@@ -140,6 +141,7 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1C09", profileInfo));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                         @PathVariable String nickname) {

@@ -1,6 +1,7 @@
 package com.rebu.profile.shop.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
@@ -75,6 +76,7 @@ public class ShopProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1E04", result));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @PathVariable String nickname) {

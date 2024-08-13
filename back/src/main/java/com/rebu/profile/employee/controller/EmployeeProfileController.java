@@ -1,6 +1,7 @@
 package com.rebu.profile.employee.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
@@ -56,6 +57,7 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1D02", null));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getEmployeeProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @PathVariable String nickname) {
