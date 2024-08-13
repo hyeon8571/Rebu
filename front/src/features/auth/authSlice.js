@@ -39,7 +39,13 @@ const authSlice = createSlice({
       state.type = "COMMON";
       state.imageSrc = "";
       state.profile = initialState.profile;
+      // localStorage 지우기
       localStorage.removeItem("access");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("type");
+      localStorage.removeItem("imageSrc");
+      localStorage.removeItem("isLogin");
+      // localStorage.removeItem("refresh");
     },
     setProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
