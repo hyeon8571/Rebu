@@ -39,5 +39,3 @@ server:
   servlet:
     session:
       timeout: 15m
-      cookie:
-        max-age: 900
