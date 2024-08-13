@@ -30,6 +30,7 @@ import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.reservation.dto.ReservationDto;
 import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.repository.ReservationRepository;
+import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
@@ -123,14 +124,14 @@ public class ShopProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetShopEmployeeResponse> getShopEmployees(GetShopEmployeeDto getShopEmployeeDto) {
+    public List<GetShopEmployeeResultDto> getShopEmployees(GetShopEmployeeDto getShopEmployeeDto) {
         ShopProfile shopProfile = shopProfileRepository.findByNicknameFetch(getShopEmployeeDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        List <GetShopEmployeeResponse> responseList = new ArrayList<>();
+        List <GetShopEmployeeResultDto> responseList = new ArrayList<>();
 
         for (EmployeeProfile employeeProfile : shopProfile.getEmployeeProfiles()) {
-            GetShopEmployeeResponse getShopEmployeeResponse = GetShopEmployeeResponse.builder()
+            GetShopEmployeeResultDto getShopEmployeeResultDto = GetShopEmployeeResultDto.builder()
                     .imageSrc(employeeProfile.getImageSrc())
                     .nickname(employeeProfile.getNickname())
                     .workingName(employeeProfile.getWorkingName())
@@ -138,33 +139,33 @@ public class ShopProfileService {
                     .role(employeeProfile.getRole())
                     .reviewCnt(reviewRepository.findAllByEmployeeProfileId(employeeProfile.getId()).size())
                     .build();
-            responseList.add(getShopEmployeeResponse);
+            responseList.add(getShopEmployeeResultDto);
         }
 
         return responseList;
     }
 
     @Transactional
-    public GetShopProfileResponse getShopProfile(GetShopProfileDto getShopProfileDto) {
+    public GetShopProfileResultDto getShopProfile(GetShopProfileDto getShopProfileDto) {
         ShopProfile targetProfile = shopProfileRepository.findByNickname(getShopProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
         Profile profile = profileRepository.findByNickname(getShopProfileDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        GetShopProfileResponse getShopProfileResponse = shopProfileRepository.getShopProfileResponseByProfileId(targetProfile.getId())
+        GetShopProfileResultDto getShopProfileResultDto = shopProfileRepository.getShopProfileResponseByProfileId(targetProfile.getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
         if (targetProfile.getNickname().equals(getShopProfileDto.getNickname())) {
-            getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.OWN);
+            getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.OWN);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
-            getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.FOLLOWING);
-            getShopProfileResponse.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
+            getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.FOLLOWING);
+            getShopProfileResultDto.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
         } else {
-            getShopProfileResponse.setRelation(GetShopProfileResponse.Relation.NONE);
+            getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.NONE);
         }
 
-        return getShopProfileResponse;
+        return getShopProfileResultDto;
     }
 
     @Transactional
@@ -271,6 +272,33 @@ public class ShopProfileService {
                 .build();
 
         return ShopPeriodScheduleWithEmployeesPeriodScheduleDto.of(shopDto, employeeDtos);
+    }
+
+    @Transactional
+    public GetShopProfileResultDto getMyProfile(AuthProfileInfo authProfileInfo) {
+        ShopProfile myShopProfile = shopProfileRepository.findByNickname(authProfileInfo.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        GetShopProfileResultDto result = shopProfileRepository.getShopProfileResponseByProfileId(myShopProfile.getId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        result.setRelation(GetShopProfileResultDto.Relation.OWN);
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public GetShopProfileInfoResultDto getMyProfileInfo(AuthProfileInfo authProfileInfo) {
+        ShopProfile myShopProfile = shopProfileRepository.findByNickname(authProfileInfo.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        return GetShopProfileInfoResultDto.builder()
+                .imageSrc(myShopProfile.getImageSrc())
+                .licenseNum(myShopProfile.getLicenseNum())
+                .name(myShopProfile.getName())
+                .phone(myShopProfile.getPhone())
+                .address(myShopProfile.getAddress())
+                .build();
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {

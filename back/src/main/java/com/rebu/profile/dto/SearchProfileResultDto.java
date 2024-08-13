@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SearchProfileResponse {
+public class SearchProfileResultDto {
     private String imageSrc;
     private String nickname;
     private Type type;
 
-    public static SearchProfileResponse from(Profile profile) {
-        return SearchProfileResponse.builder()
+    public static SearchProfileResultDto from(Profile profile) {
+        return SearchProfileResultDto.builder()
                 .imageSrc(profile.getImageSrc())
                 .nickname(profile.getNickname())
                 .type(profile.getType())

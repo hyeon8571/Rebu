@@ -51,13 +51,13 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public Boolean checkNicknameDuplicated(CheckNicknameDuplDto checkNicknameDuplDto) {
-        return profileRepository.findByNickname(checkNicknameDuplDto.getNickname()).isPresent();
+    public Boolean checkNicknameDuplicated(CheckNicknameDupleDto checkNicknameDupleDto) {
+        return profileRepository.findByNickname(checkNicknameDupleDto.getNickname()).isPresent();
     }
 
     @Transactional(readOnly = true)
-    public Boolean checkPhoneDuplicated(CheckPhoneDuplDto checkPhoneDuplDto) {
-        return profileRepository.findByPhone(checkPhoneDuplDto.getPhone()).isPresent();
+    public Boolean checkPhoneDuplicated(CheckPhoneDupleDto checkPhoneDupleDto) {
+        return profileRepository.findByPhone(checkPhoneDupleDto.getPhone()).isPresent();
     }
 
     @Transactional
@@ -177,35 +177,35 @@ public class ProfileService {
     }
 
     @Transactional
-    public GetProfileResponse getProfile(GetProfileDto getProfileDto) {
+    public GetProfileResultDto getProfile(GetProfileDto getProfileDto) {
         Profile targetProfile = profileRepository.findByNickname(getProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
         Profile profile = profileRepository.findByNickname(getProfileDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        GetProfileResponse getProfileResponse = profileRepository.getCommonProfileResponseByProfileId(targetProfile.getId())
+        GetProfileResultDto result = profileRepository.getCommonProfileResponseByProfileId(targetProfile.getId())
                 .orElseThrow(ProfileNotFoundException::new);
 
 
         if (getProfileDto.getNickname().equals(getProfileDto.getTargetNickname())) {
-            getProfileResponse.setRelation(GetProfileResponse.Relation.OWN);
+            result.setRelation(GetProfileResultDto.Relation.OWN);
         } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
-            getProfileResponse.setRelation(GetProfileResponse.Relation.FOLLOWING);
-            getProfileResponse.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
+            result.setRelation(GetProfileResultDto.Relation.FOLLOWING);
+            result.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
         } else {
-            getProfileResponse.setRelation(GetProfileResponse.Relation.NONE);
+            result.setRelation(GetProfileResultDto.Relation.NONE);
         }
 
-        return getProfileResponse;
+        return result;
     }
 
     @Transactional(readOnly = true)
-    public Slice<SearchProfileResponse> searchProfile(SearchProfileDto searchProfileDto) {
+    public Slice<SearchProfileResultDto> searchProfile(SearchProfileDto searchProfileDto) {
 
         Slice<Profile> profiles = profileRepository.searchProfileByKeyword(searchProfileDto.getKeyword(), searchProfileDto.getPageable());
 
-        return profiles.map(SearchProfileResponse::from);
+        return profiles.map(SearchProfileResultDto::from);
     }
 
     @Transactional
@@ -214,6 +214,35 @@ public class ProfileService {
                 .orElseThrow(ProfileNotFoundException::new);
 
         profile.updateRecentTime();
+    }
+
+    @Transactional
+    public GetProfileResultDto getMyProfile(AuthProfileInfo authProfileInfo) {
+
+        Profile myProfile = profileRepository.findByNickname(authProfileInfo.getNickname())
+                        .orElseThrow(ProfileNotFoundException::new);
+
+        GetProfileResultDto result = profileRepository.getCommonProfileResponseByProfileId(myProfile.getId())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        result.setRelation(GetProfileResultDto.Relation.OWN);
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public GetProfileInfoResultDto getMyProfileInfo(AuthProfileInfo authProfileInfo) {
+        Profile myProfile = profileRepository.findByNickname(authProfileInfo.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        return GetProfileInfoResultDto.builder()
+                .imageSrc(myProfile.getImageSrc())
+                .nickname(myProfile.getNickname())
+                .email(myProfile.getMember().getEmail())
+                .birth(myProfile.getMember().getBirth())
+                .phone(myProfile.getPhone())
+                .gender(myProfile.getMember().getGender().toString())
+                .build();
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {

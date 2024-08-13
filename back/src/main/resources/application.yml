@@ -20,18 +20,24 @@ spring:
         format_sql: true
         highlight_sql: true
         default_batch_fetch_size: 1000
-  data:
-    redis:
-      host: redis
-      port: 6379
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 10MB
       enabled: true
+  mustache:
+    servlet:
+      expose-request-attributes:
 
 feed:
   cnt_image_max_limit: 5
   cnt_hashtag_max_limit: 5
   cnt_review_keyword_max_limit: 5
   storage_base_url: "/feeds"
+
+server:
+  servlet:
+    session:
+      timeout: 15m
+      cookie:
+        max-age: 900

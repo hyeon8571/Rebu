@@ -1,37 +1,41 @@
-package com.rebu.profile.employee.dto;
+package com.rebu.profile.shop.dto;
 
 import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class GetEmployeeProfileResponse {
+public class GetShopProfileResultDto {
     private String imageSrc;
     private String nickname;
+    private String name;
     private String introduction;
-    private boolean isPrivate;
-    private String workingName;
+    private String address;
+    private String phone;
     private Long followingCnt;
     private Long followerCnt;
     private Long feedCnt;
     private Long reviewCnt;
-    private Long scrapCnt;
+    private Long reservationCnt;
+    private boolean isPrivate;
     private Relation relation;
     private Long followId;
 
-    public GetEmployeeProfileResponse(String imageSrc, String nickname, String introduction, boolean isPrivate, String workingName, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long scrapCnt) {
+    public GetShopProfileResultDto(String imageSrc, String nickname, String name, String introduction, String address, String phone, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long reservationCnt, boolean isPrivate) {
         this.imageSrc = imageSrc;
         this.nickname = nickname;
+        this.name = name;
         this.introduction = introduction;
-        this.isPrivate = isPrivate;
-        this.workingName = workingName;
+        this.address = address;
+        this.phone = phone;
         this.followingCnt = followingCnt;
         this.followerCnt = followerCnt;
         this.feedCnt = feedCnt;
         this.reviewCnt = reviewCnt;
-        this.scrapCnt = scrapCnt;
+        this.reservationCnt = reservationCnt;
+        this.isPrivate = isPrivate;
     }
 
     public enum Relation {
