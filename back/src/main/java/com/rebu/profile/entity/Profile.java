@@ -65,7 +65,7 @@ public class Profile {
         introduction = newIntroduction;
     }
 
-    public void changeIsPrivate(boolean newIsPrivate) {
+    public void changeIsPrivate(Boolean newIsPrivate) {
         isPrivate = newIsPrivate;
     }
 

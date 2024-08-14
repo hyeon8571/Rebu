@@ -8,7 +8,7 @@ import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.shop_favorite.dto.AddFavoriteDto;
 import com.rebu.shop_favorite.dto.DeleteFavoriteDto;
 import com.rebu.shop_favorite.dto.GetFavoriteDto;
-import com.rebu.shop_favorite.dto.GetShopFavoriteResponse;
+import com.rebu.shop_favorite.controller.dto.GetShopFavoriteResponse;
 import com.rebu.shop_favorite.entity.ShopFavoriteId;
 import com.rebu.shop_favorite.exception.AlreadyFavoriteException;
 import com.rebu.shop_favorite.repository.ShopFavoriteRepository;

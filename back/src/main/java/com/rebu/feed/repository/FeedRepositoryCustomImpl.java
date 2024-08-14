@@ -1,14 +1,8 @@
 package com.rebu.feed.repository;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.NumberTemplate;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rebu.feed.dto.FeedSearchDto;
@@ -17,16 +11,12 @@ import static com.rebu.feed.entity.QFeed.feed;
 import static com.rebu.feed.entity.QFeedImage.feedImage;
 import static com.rebu.feed.entity.QHashtag.hashtag;
 import static com.rebu.feed.review.entity.QReview.review;
-import static com.rebu.like.entity.QLikeFeed.likeFeed;
 import static com.rebu.profile.shop.entity.QShopProfile.shopProfile;
 import static com.rebu.reviewkeyword.entity.QReviewKeyword.reviewKeyword;
 import static com.rebu.reviewkeyword.entity.QSelectedReviewKeyword.selectedReviewKeyword;
 import static com.rebu.scrap.entity.QScrap.scrap;
 
 import com.rebu.feed.entity.Feed;
-import com.rebu.feed.entity.QFeed;
-import com.rebu.like.entity.QLikeFeed;
-import com.rebu.member.entity.QMember;
 import com.rebu.profile.shop.entity.QShopProfile;
 import lombok.AllArgsConstructor;
 

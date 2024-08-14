@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ReservationRequestValidator.class)
 public @interface ReservationRequest {
-    String message() default "";
+    String message() default "예약 요청 사항";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

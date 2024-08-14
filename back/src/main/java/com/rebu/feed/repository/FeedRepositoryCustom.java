@@ -6,6 +6,5 @@ import com.rebu.feed.dto.FeedOrReviewDto;
 import java.util.List;
 
 public interface FeedRepositoryCustom {
-
     List<FeedOrReviewDto> searchFeeds(FeedSearchDto dto);
 }

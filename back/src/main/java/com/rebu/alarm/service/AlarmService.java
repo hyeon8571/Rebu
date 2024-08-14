@@ -349,7 +349,7 @@ public class AlarmService {
         if (!alarmInviteEmployee.getReceiverProfile().equals(profile)) {
             throw new ProfileUnauthorizedException();
         }
-        alarmInviteEmployee.updateIsAccept(dto.isAccept());
+        alarmInviteEmployee.updateIsAccept(dto.getIsAccept());
         alarmInviteEmployee.updateRole(dto.getRole());
         return true;
     }

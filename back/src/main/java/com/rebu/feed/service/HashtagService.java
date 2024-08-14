@@ -35,5 +35,4 @@ public class HashtagService {
     public void deleteHashTags(Long feedId) {
         hashtagRepository.deleteByFeedId(feedId);
     }
-
 }

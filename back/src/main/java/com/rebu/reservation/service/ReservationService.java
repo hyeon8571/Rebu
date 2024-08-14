@@ -49,6 +49,23 @@ public class ReservationService {
     private final AbsenceRepository absenceRepository;
     private final AlarmService alarmService;
 
+    /**
+     * ReservationService :: readProfileReservations method
+     * 일반 프로필이 예약한 예약 정보를 조회
+     * @param dto 검색할 예약 정보
+     */
+    @Transactional(readOnly = true)
+    public List<ReservationByProfileDto> readProfileReservations(ReservationReadByProfileDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
+        List<ReservationAndReviewDto> reservationAndReviews = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
+        return ListUtils.applyFunctionToElements(reservationAndReviews, ReservationByProfileDto::from);
+    }
+
+    /**
+     * ReservationService :: create method
+     * 예약 작성
+     * @param dto 작성할 예약 정보
+     */
     @Transactional
     @Authorized(allowed = {Type.COMMON})
     public void create(@Valid ReservationCreateDto dto){
@@ -90,6 +107,11 @@ public class ReservationService {
         alarmService.alarmReservation(reservation);
     }
 
+    /**
+     * ReservationService :: modifyReservationStatus method
+     * 예약 상태 수정
+     * @param dto 수정할 예약 정보
+     */
     @Transactional
     @Authorized(allowed = {Type.EMPLOYEE})
     public void modifyReservationStatus(@Valid ReservationStatusModifyDto dto) {
@@ -97,7 +119,6 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(dto.getReservationId()).orElseThrow(ReservationNotFoundException::new);
         if(!employee.equals(reservation.getEmployeeProfile()))
             throw new ProfileUnauthorizedException();
-
         switch(dto.getReservationStatus()){
             case ACCEPTED: checkModifyReservationStatusToAccepted(reservation); break;
             case REFUSED: checkModifyReservationStatusToRefused(reservation); break;
@@ -105,10 +126,14 @@ public class ReservationService {
             default: throw new ReservationStatusMismatchException();
         }
         reservation.changeReservationStatus(dto.getReservationStatus());
-
         alarmService.alarmReservationResponse(reservation, reservation.getProfile(), reservation.getEmployeeProfile());
     }
 
+    /**
+     * ReservationService :: deleteReservationStatus method
+     * 예약 취소
+     * @param dto 취소할 예약 정보
+     */
     @Transactional
     @Authorized(allowed = {Type.COMMON})
     public void deleteReservationStatus(@Valid ReservationStatusDeleteDto dto) {
@@ -121,13 +146,6 @@ public class ReservationService {
             throw new ReservationStatusNotChangeableException();
         reservation.changeReservationStatus(Reservation.ReservationStatus.CANCLED);
         alarmService.alarmReservationResponse(reservation, reservation.getEmployeeProfile(), reservation.getProfile());
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReservationByProfileDto> readProfileReservations(ReservationReadByProfileDto dto) {
-        Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
-        List<ReservationAndReviewDto> reservationAndReviews = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
-        return ListUtils.applyFunctionToElements(reservationAndReviews, ReservationByProfileDto::from);
     }
 
     private void checkModifyReservationStatusToAccepted(Reservation reservation) {

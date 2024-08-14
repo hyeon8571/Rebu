@@ -4,7 +4,6 @@ import com.rebu.feed.entity.Hashtag;
 import lombok.Builder;
 import lombok.Getter;
 
-
 @Getter
 @Builder
 public class HashtagDto {

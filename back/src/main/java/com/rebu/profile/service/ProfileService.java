@@ -92,7 +92,7 @@ public class ProfileService {
         Profile profile = profileRepository.findByNickname(changeIsPrivateDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        profile.changeIsPrivate(changeIsPrivateDto.isVisible());
+        profile.changeIsPrivate(changeIsPrivateDto.getIsPrivate());
     }
 
     @Transactional
