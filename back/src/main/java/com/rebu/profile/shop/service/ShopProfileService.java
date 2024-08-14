@@ -104,7 +104,11 @@ public class ShopProfileService {
         ShopProfile shopProfile = shopProfileRepository.findByNickname(changeAddressDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
+        ConvertAddressDto convertAddressDto = convertAddressService.convert(changeAddressDto.getAddress());
+
         shopProfile.changeAddress(changeAddressDto.getAddress());
+
+        shopProfile.changeLatAndLng(convertAddressDto.getLat(), convertAddressDto.getLng());
     }
 
     @Transactional
