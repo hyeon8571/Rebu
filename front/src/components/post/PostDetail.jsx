@@ -425,7 +425,55 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
     }
   }, []);
 
-  const handleScrapToggle = useCallback((index) => {
+  const handleScrapToggle = useCallback((feedId, index) => {
+
+    // 스크랩 api 호출
+    const access = localStorage.getItem('access');
+
+    const isCurrentScraped = posts[index].isScraped;
+
+    // 스크랩 취소
+    if (isCurrentScraped) {
+      axios.delete(`${BASE_URL}/api/scraps/${feedId}`, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("스크랩 취소");
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts];
+          updatedPosts[index].isScraped = false;
+          return updatedPosts;
+        });
+      })
+      .catch(error => {
+        console.log("스크랩 취소 오류 발생:", error);
+      });
+    } // 스크랩
+    else {
+      axios.post(`${BASE_URL}/api/scraps`, {
+        feedId: feedId,
+      }, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("스크랩 성공");
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts];
+          updatedPosts[index].isScraped = true;
+          return updatedPosts;
+        });
+      })
+      .catch(error => {
+        console.log("스크랩 오류 발생:", error);
+      });
+    }
+
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       updatedPosts[index].isScraped = !updatedPosts[index].isScraped;
@@ -549,8 +597,8 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
                   <FiMoreVertical />
                 </IconBox>
               ) : (
-                <IconBox onClick={() => handleScrapToggle(index)}>
-                  {item.feed.isScraped ? <FaBookmark /> : <FaRegBookmark />}
+                <IconBox onClick={() => handleScrapToggle(item.feed.feedId, index)}>
+                  {item.isScraped ? <FaBookmark /> : <FaRegBookmark />}
                 </IconBox>
               )}
               <DropdownMenu
