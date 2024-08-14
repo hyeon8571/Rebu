@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChangeIsPrivateDto {
     private String nickname;
-    private boolean visible;
+    private Boolean isPrivate;
 }

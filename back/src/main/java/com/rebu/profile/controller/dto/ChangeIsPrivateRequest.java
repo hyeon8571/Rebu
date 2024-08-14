@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChangeIsPrivateRequest {
 
-    private boolean visible;
+    private Boolean isPrivate;
 
     public ChangeIsPrivateDto toDto(String nickname) {
         return ChangeIsPrivateDto.builder()
                 .nickname(nickname)
-                .visible(visible)
+                .isPrivate(isPrivate)
                 .build();
     }
 }
