@@ -77,7 +77,7 @@ public class AlarmService {
                     .build());
 
             if (AlarmController.sseEmitters.containsKey(userNickname)) {
-                SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
+                SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);  //@@@  ㅁaaaa
                 try {
                     LocalDateTime now = LocalDateTime.now();
                     Map<String, Object> eventData = new LinkedHashMap<>();
@@ -131,7 +131,6 @@ public class AlarmService {
 
                     Long alarmCount = alarmRepository.countByReceiverProfileAndIsReadFalse(profile);
                     sseEmitter.send(SseEmitter.event().name("alarmCount").data(alarmCount));
-
                 } catch (IOException e) {
                     AlarmController.sseEmitters.remove(userNickname);
                 }
@@ -301,10 +300,10 @@ public class AlarmService {
         }
     }
 
+    @Transactional
     public Slice<AlarmReadDto> read(String userNickname, Pageable pageable) throws IOException {
         Profile requestProfile = profileRepository.findByNickname(userNickname).orElseThrow(ProfileNotFoundException::new);
         Slice<Alarm> alarms = alarmRepository.findByReceiverProfile(requestProfile, pageable);
-
         List<AlarmReadDto> alarmReadDtos = new ArrayList<>();
         for (Alarm alarm : alarms) {
             switch (alarm.getType()) {
@@ -328,13 +327,14 @@ public class AlarmService {
                     break;
             }
         }
+
         SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
         alarmRepository.markAllAsReadByReceiverProfile(requestProfile);
         sseEmitter.send(SseEmitter.event().name("alarmCount").data(0));
-
         return new SliceImpl<>(alarmReadDtos, pageable, alarms.hasNext());
     }
 
+    @Transactional
     public boolean inviteEmployeeUpdate(AlarmInviteEmployeeUpdateDto dto) {
         AlarmInviteEmployee alarmInviteEmployee = alarmInviteEmployeeRepository.findById(dto.getAlarmId()).orElseThrow(AlarmNotFoundException::new);
         Profile profile = profileRepository.findByNickname(dto.getNickName()).orElseThrow(ProfileNotFoundException::new);
@@ -342,9 +342,13 @@ public class AlarmService {
             throw new ProfileUnauthorizedException();
         }
         alarmInviteEmployee.updateIsAccept(dto.isAccept());
+        System.out.println(dto.isAccept());
+        alarmInviteEmployee.updateRole(dto.getRole());
+        System.out.println(dto.getRole());
         return true;
     }
 
+    @Transactional
     public boolean delete(Long alarmId, String userNickname, String type) throws IOException {
         Profile profile = profileRepository.findByNickname(userNickname).orElseThrow(ProfileNotFoundException::new);
         switch (Type.valueOf(type)) {
@@ -378,7 +382,6 @@ public class AlarmService {
         SseEmitter sseEmitter = AlarmController.sseEmitters.get(userNickname);
         Long alarmCount = alarmRepository.countByReceiverProfileAndIsReadFalse(profile);
         sseEmitter.send(SseEmitter.event().name("alarmCount").data(alarmCount));
-
         return true;
     }
 }
