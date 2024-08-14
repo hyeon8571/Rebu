@@ -12,7 +12,8 @@ public enum ShopProfileExceptionConstants implements ExceptionConstants {
     ADDRESS_MISMATCH("0E02"),
     SHOP_NAME_MISMATCH("0E03"),
     WORKING_INTRO_MISMATCH("0E04"),
-    CONVERT_ADDRESS_FAIL("0E05");
+    CONVERT_ADDRESS_FAIL("0E05"),
+    NOT_SHOP_EMPLOYEE("0E06"),;
 
     final String code;
 }
