@@ -118,6 +118,9 @@ const ProfileChangeModal = ({
   ProfileChangeModalOpen,
   closeModal,
   handleSettingClick,
+  setNickname,
+  setType,
+  setImageSrc,
 }) => {
   const [isProfileCreateModalOpen, setIsProfileCreateModalOpen] =
     useState(false);
@@ -198,9 +201,15 @@ const ProfileChangeModal = ({
               {profiles.map((profile, index) => (
                 <ProfileContainer
                   key={index}
-                  onClick={() =>
-                    handleProfileClick(profile.nickname, profile.type)
-                  }
+                  onClick={() => {
+                    handleProfileClick(profile.nickname, profile.type);
+                    localStorage.setItem("nickname", profile.nickname);
+                    localStorage.setItem("type", profile.type);
+                    localStorage.setItem("imageSrc", profile.imageSrc);
+                    setNickname(profile.nickname);
+                    setImageSrc(profile.imageSrc);
+                    setType(profile.type);
+                  }}
                 >
                   <ProfileImage
                     src={

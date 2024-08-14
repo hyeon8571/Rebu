@@ -13,6 +13,7 @@ import SearchModal from "../Search/SearchModal";
 import apiClient from "../../util/apiClient";
 import { BASE_URL } from "../../util/commonFunction";
 import { BASE_IMG_URL } from "../../util/commonFunction";
+import Img from "../../assets/images/img.webp";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -53,7 +54,7 @@ const ICON_SIZE = 28;
 //default
 export default function NavigationBar({ nickname, type, profileImg }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate();
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -87,7 +88,13 @@ export default function NavigationBar({ nickname, type, profileImg }) {
         </StyledNavLink>
         <StyledNavLink to={`/profile/${nickname}/${type}`}>
           <NavigationItem>
-            <ProfileSmall img={profileImg}></ProfileSmall>
+            <ProfileSmall
+              img={
+                profileImg === null || profileImg === "null"
+                  ? Img
+                  : `${BASE_IMG_URL}/${profileImg}`
+              }
+            ></ProfileSmall>
           </NavigationItem>
         </StyledNavLink>
       </Bar>

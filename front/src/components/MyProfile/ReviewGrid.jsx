@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import PostDetail from "../post/PostDetail";
 import ReviewKeywordStat from "../review/ReviewKeywordStat";
 
@@ -15,48 +15,46 @@ const GridContainer = styled.div`
 
 const ReviewKeywordBtn = styled.button`
   background-color: ${(props) =>
-    props.theme.value === "light" ? "#f4ebfd" :"#9e4def"};
+    props.theme.value === "light" ? "#f4ebfd" : "#9e4def"};
   border: 1.5px solid #d1a6f7;
   outline: none;
-  border-radius: 12px;      
+  border-radius: 12px;
   padding: 5px 10px;
-  margin-bottom: 10px; 
-  font-size: 13px;       
-  color: ${(props) =>
-    props.theme.value === "light" ? "#000" :"#fff"};        
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: ${(props) => (props.theme.value === "light" ? "#000" : "#fff")};
   cursor: pointer;
   &:hover {
     border-color: #b475f3;
     box-shadow: 0 0 15px rgba(186, 126, 250, 0.3);
   }
- `;
+`;
 
 const ReviewKeywordBtnActive = styled.button`
   background-color: ${(props) =>
-    props.theme.value === "light" ? "#f4ebfd" :"#b475f3"};
+    props.theme.value === "light" ? "#f4ebfd" : "#b475f3"};
   border: 1.5px solid #b475f3;
   /* box-shadow: 0 0 15px rgba(186, 126, 250, 0.4); */
   outline: none;
-  border-radius: 12px;      
+  border-radius: 12px;
   padding: 5px 10px;
   margin-bottom: 10px;
-  font-size: 13px;       
-  color: ${(props) =>
-    props.theme.value === "light" ? "#000" :"#fff"};     
+  font-size: 13px;
+  color: ${(props) => (props.theme.value === "light" ? "#000" : "#fff")};
   cursor: pointer;
   &:hover {
     border-color: #b475f3;
     box-shadow: 0 0 15px rgba(186, 126, 250, 0.3);
   }
-  `;
+`;
 
- const ReviewKeywordList = styled.div`
+const ReviewKeywordList = styled.div`
   padding: 0 10px;
   width: 90%;
   max-height: ${(props) => (props.expanded ? "auto" : "0")};
   overflow: hidden;
   transition: max-height 0.3s ease;
- `;
+`;
 
 const GridItem = styled.div`
   padding: 5px;
@@ -74,14 +72,20 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewdata }) {
+function GridComponent({
+  Card,
+  currentUser,
+  loginUser,
+  type,
+  currentTab,
+  reviewdata,
+}) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
   const [openReviewKeyword, setOpenReviewKeyword] = useState(false);
   const [keywordBtnActive, setKeywordBtnActive] = useState(false);
-  
 
   const scrollDown = () => {
     window.scrollBy({
@@ -95,10 +99,9 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewd
     setOpenReviewKeyword(!openReviewKeyword);
     setKeywordBtnActive(!keywordBtnActive);
     if (!openReviewKeyword) {
-    setTimeout(() => scrollDown(), 100);
+      setTimeout(() => scrollDown(), 100);
     }
   };
-
 
   const generateLayout = useCallback((photos) => {
     return photos?.map((photo, index) => ({
@@ -142,38 +145,50 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewd
 
   return (
     <>
-      {Card == false && type === "SHOP" &&  currentTab === 0 && (
-        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+      {Card == false && type === "SHOP" && currentTab === 0 && (
+        <h3 style={{ color: "#b475f3", fontSize: "18px" }}>
           작성한 게시글이 없습니다
         </h3>
       )}
       {Card == false && type === "SHOP" && currentTab === 1 && (
-        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+        <h3 style={{ color: "#b475f3", fontSize: "18px" }}>
           작성된 리뷰가 없습니다
         </h3>
       )}
       {Card == false && type === "COMMON" && (
-        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+        <h3 style={{ color: "#b475f3", fontSize: "18px" }}>
           작성한 리뷰가 없습니다
         </h3>
       )}
-      {Card == true && type === "SHOP" && currentTab === 1 && (
+      {Card && type === "SHOP" && currentTab === 1 && (
         <>
           {keywordBtnActive ? (
-            <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
+            <ReviewKeywordBtnActive onClick={handletoggleContent}>
+              리뷰 키워드
+            </ReviewKeywordBtnActive>
           ) : (
-            <ReviewKeywordBtn onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtn>
+            <ReviewKeywordBtn onClick={handletoggleContent}>
+              리뷰 키워드
+            </ReviewKeywordBtn>
           )}
           <ReviewKeywordList expanded={openReviewKeyword}>
             {openReviewKeyword && (
-              <ReviewKeywordStat reviewNum={reviewdata.length} nickname={currentUser.nickname}/>
+              <ReviewKeywordStat
+                reviewNum={reviewdata.length}
+                nickname={currentUser.nickname}
+              />
             )}
           </ReviewKeywordList>
         </>
       )}
-  
+
       {selectedPhotos ? (
-        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} type={type}/>
+        <PostDetail
+          information={selectedPhotos}
+          currentUser={currentUser}
+          loginUser={loginUser}
+          type={type}
+        />
       ) : (
         <GridContainer ref={containerRef}>
           <ResponsiveGridLayout
@@ -181,7 +196,9 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewd
             breakpoints={{ lg: 768, md: 425 }}
             cols={{ lg: 3, md: 3 }}
             rowHeight={rowHeight}
-            width={containerRef.current ? containerRef.current.clientWidth : 768}
+            width={
+              containerRef.current ? containerRef.current.clientWidth : 768
+            }
             isDraggable={false}
             isResizable={false}
           >
@@ -191,7 +208,12 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewd
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-              <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
+                <Photo
+                  src={
+                    "https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]
+                  }
+                  alt={`uploaded-${index}`}
+                />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

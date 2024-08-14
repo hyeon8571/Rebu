@@ -19,7 +19,7 @@ import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
-import TimeTable from "../components/reservation/TimeTable";
+import TimeTable from "../views/TimeTablePage";
 import DesignerGrid from "../components/reservation/DesignerDisplay";
 import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
@@ -73,7 +73,14 @@ const IntroduceBox = styled.div`
   height: 30%;
 `;
 
-const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
+const ProfilePage = ({
+  theme,
+  toggleTheme,
+  handleLogout,
+  setNickname,
+  setType,
+  setImageSrc,
+}) => {
   const location = useLocation();
   const updatedUser = location.state?.user;
   const updatedProfile = location.state?.profile;
@@ -441,6 +448,9 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           loginUser={loginNickname}
           handleLogout={handleLogout}
           setProfile={setProfile}
+          setNickname={setNickname}
+          setType={setType}
+          setImageSrc={setImageSrc}
         />
         <ProfileContainer>
           <IntroduceBox>

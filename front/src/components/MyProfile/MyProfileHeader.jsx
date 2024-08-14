@@ -103,6 +103,9 @@ const Header = ({
   currentUser,
   loginUser,
   handleLogout,
+  setNickname,
+  setType,
+  setImageSrc,
 }) => {
   const [LogoutModalOpen, setLogoutModalOpen] = useState(false);
   const [SecretModalOpen, setSecretModalOpen] = useState(false);
@@ -237,6 +240,9 @@ const Header = ({
             setLogoutModalOpen={setLogoutModalOpen}
             setSecretModalOpen={setSecretModalOpen}
             handleSettingClick={handleSettingClick} //프로필 전환 모달에서 설정창 닫기
+            setNickname={setNickname}
+            setType={setType}
+            setImageSrc={setImageSrc}
           />
         )}
       </DropdownMenu>

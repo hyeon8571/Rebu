@@ -20,7 +20,14 @@ import PostFeedPage from "../views/PostFeedPage";
 import ReviewKeywordStat from "../components/review/ReviewKeywordStat";
 import Main from "../views/Main";
 
-const PrivateRoutes = ({ theme, toggleTheme, handleLogout }) => (
+const PrivateRoutes = ({
+  theme,
+  toggleTheme,
+  handleLogout,
+  setNickname,
+  setType,
+  setImageSrc,
+}) => (
   <Routes>
     <Route
       path="/personal-info"
@@ -41,6 +48,9 @@ const PrivateRoutes = ({ theme, toggleTheme, handleLogout }) => (
               theme={theme}
               toggleTheme={toggleTheme}
               handleLogout={handleLogout}
+              setNickname={setNickname}
+              setType={setType}
+              setImageSrc={setImageSrc}
             />
           )}
         />

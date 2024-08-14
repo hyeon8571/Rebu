@@ -75,7 +75,6 @@ export default function NavigationRail({ nickname, type, profileImg }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
-
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -113,7 +112,11 @@ export default function NavigationRail({ nickname, type, profileImg }) {
         <ProfileDiv onClick={() => navigate(`/profile/${nickname}/${type}`)}>
           <NavigationItem>
             <ProfileMedium
-              img={profileImg ? BASE_IMG_URL + profileImg : Img}
+              img={
+                profileImg === null || profileImg === "null"
+                  ? Img
+                  : `${BASE_IMG_URL}/${profileImg}`
+              }
               time={0}
             />
           </NavigationItem>

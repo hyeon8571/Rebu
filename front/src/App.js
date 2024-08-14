@@ -39,15 +39,11 @@ function App() {
   const [theme, setTheme] = useState("light");
   const [auth, setAuth] = useState(isAuthenticated());
 
+  const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
+  const [type, setType] = useState(localStorage.getItem("type"));
+  const [imageSrc, setImageSrc] = useState(localStorage.getItem("imageSrc"));
+
   const isMobile = useMediaQuery({ maxWidth: 768 });
-
-  // const nickname = localStorage.getItem("nickname");
-  // const type = localStorage.getItem("type");
-  // const imageSrc = localStorage.getItem("imgSrc");
-
-  const nickname = useLocalStorage("nickname");
-  const type = useLocalStorage("type");
-  const imageSrc = useLocalStorage("imgSrc");
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -95,6 +91,9 @@ function App() {
               theme={theme}
               toggleTheme={toggleTheme}
               handleLogout={handleLogout}
+              setNickname={setNickname}
+              setType={setType}
+              setImageSrc={setImageSrc}
             />
           </Layout>
         </Grid>
