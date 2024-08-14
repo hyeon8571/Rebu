@@ -1,7 +1,6 @@
 package com.rebu.feed.review.dto;
 
 import com.rebu.common.util.ListUtils;
-import com.rebu.feed.dto.FeedDto;
 import com.rebu.feed.dto.FeedImageDto;
 import com.rebu.feed.dto.HashtagDto;
 import com.rebu.feed.review.entity.Review;

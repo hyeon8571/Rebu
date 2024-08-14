@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class AlarmInviteEmployeeUpdateDto {
     private Long alarmId;
     private String nickName;
-    private boolean isAccept;
+    private Boolean isAccept;
     private String role;
 }

@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = StartDateTimeValidator.class)
 public @interface StartDateTime {
-    String message() default "";
+    String message() default "예약 시작 시간";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

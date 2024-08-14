@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FeedRegSelectsValidator.class)
 public @interface FeedRegSelects {
-    String message() default "피드 등록 선택";
+    String message() default "피드 등록 타입";
     Class[] groups() default {};
     Class[] payload() default {};
 }

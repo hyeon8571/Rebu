@@ -19,11 +19,11 @@ public class ReviewKeywordController {
 
     @GetMapping
     public ResponseEntity<?> readAll(){
-        return ResponseEntity.ok(new ApiResponse<>("1R00", reviewKeywordService.readAll()));
+        return ResponseEntity.ok(new ApiResponse<>("1H00", reviewKeywordService.readAll()));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<?> countByProfileId(@Nickname @RequestParam(required = true) String nickname){
-        return ResponseEntity.ok(new ApiResponse<>("1R01", reviewKeywordService.countByNickname(nickname)));
+    public ResponseEntity<?> countByProfileNickname(@Nickname @RequestParam(required = true) String nickname){
+        return ResponseEntity.ok(new ApiResponse<>("1H01", reviewKeywordService.countByNickname(nickname)));
     }
 }

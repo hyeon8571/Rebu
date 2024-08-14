@@ -10,12 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ReservationReadByProfileResponse {
-
     private Long id;
     private LocalDateTime startDateTime;
     private Reservation.ReservationStatus reservationStatus;
     private Boolean isReviewed;
-
     private EmployeeProfile employee;
     private ShopProfile shop;
     private MenuProfile menu;

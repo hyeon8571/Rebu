@@ -5,7 +5,6 @@ import com.rebu.feed.entity.Feed;
 import com.rebu.profile.dto.ProfileDto;
 import com.rebu.profile.employee.dto.EmployeeProfileDto;
 import com.rebu.profile.employee.entity.EmployeeProfile;
-import com.rebu.profile.shop.dto.ShopProfileDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +24,6 @@ public class FeedByEmployeeDto {
     private List<FeedImageDto> feedImages;
     private List<HashtagDto> hashtags;
 
-
     public static FeedByEmployeeDto of(Feed feed, EmployeeProfile employee){
         return FeedByEmployeeDto.builder()
                 .writer(ProfileDto.from(feed.getWriter()))
@@ -37,5 +35,4 @@ public class FeedByEmployeeDto {
                 .isScraped(false)
                 .build();
     }
-
 }

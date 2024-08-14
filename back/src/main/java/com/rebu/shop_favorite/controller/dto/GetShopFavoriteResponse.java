@@ -1,4 +1,4 @@
-package com.rebu.shop_favorite.dto;
+package com.rebu.shop_favorite.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ public class GetShopFavoriteResponse {
     private String nickname;
     private String name;
     private Double ratingAvg;
-    private boolean isFavorite;
+    private Boolean isPrivate;
     private String introduction;
     private Long feedCnt;
     private Long reviewCnt;

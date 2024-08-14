@@ -16,7 +16,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SelectedReviewKeyword {
-
     @EmbeddedId
     private SelectedReviewKeywordId selectedReviewKeywordId;
 
