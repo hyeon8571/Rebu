@@ -40,7 +40,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
         LEFT JOIN Follow fr ON fr.follower.id = e.id
         LEFT JOIN Follow fi ON fi.following.id = e.id
         LEFT JOIN Review rv ON rv.employeeProfile.id = e.id
-        LEFT JOIN Feed fe ON fe.writer.id = e.id
+        LEFT JOIN Feed fe ON fe.owner.id = e.id
         LEFT JOIN Scrap sc ON sc.profile.id = e.id
         WHERE e.id = :profileId
         GROUP BY e.id

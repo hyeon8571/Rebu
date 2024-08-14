@@ -156,6 +156,7 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 
+    @UpdateRecentTime
     @GetMapping("/mypage")
     public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
         GetProfileResultDto result = profileService.getMyProfile(authProfileInfo);

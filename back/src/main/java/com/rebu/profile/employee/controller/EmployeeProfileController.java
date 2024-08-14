@@ -84,6 +84,7 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1R04", response));
     }
 
+    @UpdateRecentTime
     @GetMapping("/mypage")
     public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo) {
         GetEmployeeProfileResultDto result = employeeProfileService.getMyProfile(authProfileInfo);

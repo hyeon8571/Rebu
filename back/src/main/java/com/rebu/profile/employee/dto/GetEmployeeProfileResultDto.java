@@ -11,7 +11,7 @@ public class GetEmployeeProfileResultDto {
     private String imageSrc;
     private String nickname;
     private String introduction;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private String workingName;
     private Long followingCnt;
     private Long followerCnt;
@@ -21,7 +21,7 @@ public class GetEmployeeProfileResultDto {
     private Relation relation;
     private Long followId;
 
-    public GetEmployeeProfileResultDto(String imageSrc, String nickname, String introduction, boolean isPrivate, String workingName, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long scrapCnt) {
+    public GetEmployeeProfileResultDto(String imageSrc, String nickname, String introduction, Boolean isPrivate, String workingName, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long scrapCnt) {
         this.imageSrc = imageSrc;
         this.nickname = nickname;
         this.introduction = introduction;

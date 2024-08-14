@@ -32,6 +32,7 @@ public class MemberController {
     public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequest memberJoinRequest,
                                   HttpSession session) {
         memberService.join(memberJoinRequest.toMemberJoinDto(), memberJoinRequest.toProfileGenerateDto(), session);
+        session.invalidate();
         return ResponseEntity.ok(new ApiResponse<>("1B00", null));
     }
 
