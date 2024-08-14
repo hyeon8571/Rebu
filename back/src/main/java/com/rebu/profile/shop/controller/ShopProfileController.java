@@ -81,7 +81,7 @@ public class ShopProfileController {
     public ResponseEntity<?> getShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @PathVariable String nickname) {
         GetShopProfileResultDto result = shopProfileService.getShopProfile(new GetShopProfileDto(authProfileInfo.getNickname(), nickname));
-        return ResponseEntity.ok(new ApiResponse<>("1E05", result));
+        return ResponseEntity.ok(new ApiResponse<>("1C10", result));
     }
 
     @Authorized(allowed = {Type.SHOP})
@@ -89,7 +89,7 @@ public class ShopProfileController {
     public ResponseEntity<?> inviteEmployee(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @RequestBody InviteEmployeeRequest inviteEmployeeRequest) {
         shopProfileService.inviteEmployee(inviteEmployeeRequest.toDto(authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("1E06", null));
+        return ResponseEntity.ok(new ApiResponse<>("1E05", null));
     }
 
     @GetMapping("/{nickname}/daily-schedule")
@@ -111,7 +111,7 @@ public class ShopProfileController {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build());
-        return ResponseEntity.ok(new ApiResponse<>("일일 일정 조회 성공", ShopReadPeriodScheduleResponse.from(dto)));
+        return ResponseEntity.ok(new ApiResponse<>("기간 일정 조회 성공", ShopReadPeriodScheduleResponse.from(dto)));
     }
 
     @GetMapping("/mypage")
@@ -126,4 +126,20 @@ public class ShopProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1C11", result));
     }
 
+    @Authorized(allowed = {Type.SHOP})
+    @DeleteMapping("/{shopNickname}/employees/{employeeNickname}")
+    public ResponseEntity<?> deleteEmployee(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                            @PathVariable String employeeNickname) {
+        shopProfileService.deleteEmployee(new DeleteEmployeeDto(authProfileInfo.getNickname(), employeeNickname));
+        return ResponseEntity.ok(new ApiResponse<>("1E06", null));
+    }
+
+    @Authorized(allowed = {Type.SHOP})
+    @PatchMapping("/{shopNickname}/employees/{employeeNickname}/role")
+    public ResponseEntity<?> updateEmployeeRole(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
+                                                @PathVariable String employeeNickname,
+                                                @RequestBody UpdateEmployeeRoleRequest updateEmployeeRoleRequest) {
+        shopProfileService.updateEmployeeRole(updateEmployeeRoleRequest.toDto(authProfileInfo.getNickname(), employeeNickname));
+        return ResponseEntity.ok(new ApiResponse<>("1E07", null));
+    }
 }

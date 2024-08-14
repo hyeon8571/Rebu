@@ -26,6 +26,7 @@ import com.rebu.profile.service.ProfileService;
 import com.rebu.profile.shop.dto.ShopDailyScheduleWithEmployeesDailyScheduleDto;
 import com.rebu.profile.shop.dto.*;
 import com.rebu.profile.shop.entity.ShopProfile;
+import com.rebu.profile.shop.exception.NotShopEmployeeException;
 import com.rebu.profile.shop.repository.ShopProfileRepository;
 import com.rebu.reservation.dto.ReservationDto;
 import com.rebu.reservation.entity.Reservation;
@@ -303,6 +304,29 @@ public class ShopProfileService {
                 .phone(myShopProfile.getPhone())
                 .address(myShopProfile.getAddress())
                 .build();
+    }
+
+    @Transactional
+    public void deleteEmployee(DeleteEmployeeDto deleteEmployeeDto) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findByNickname(deleteEmployeeDto.getEmployeeNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        employeeProfile.changeShop(null);
+    }
+
+    @Transactional
+    public void updateEmployeeRole(UpdateEmployeeRoleDto updateEmployeeRoleDto) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findByNickname(updateEmployeeRoleDto.getEmployeeNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        ShopProfile shopProfile = shopProfileRepository.findByNickname(updateEmployeeRoleDto.getShopNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        if (!employeeProfile.getShop().getId().equals(shopProfile.getId())) {
+            throw new NotShopEmployeeException();
+        }
+
+        employeeProfile.changeRole(updateEmployeeRoleDto.getRole());
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
