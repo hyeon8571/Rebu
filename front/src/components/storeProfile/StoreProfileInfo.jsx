@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
@@ -168,7 +168,7 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
-  const [isLikes, setIsLikes] = useState(false);
+  const [isLikes, setIsLikes] = useState(currentUser.isfavorite);
 
   useEffect(() => {
     if (likeshop.map((shop) => {shop.nickname === currentUser.nickname})) {
@@ -195,16 +195,52 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
     setTempIntroduce(e.target.value);
   };
   
-  const handleLikeToggle = () => {
-    // 매장 즐겨찾기 등록 api psot 호출
-    setIsLikes(!isLikes)
 
-  };
+  const handleLikeToggle = useCallback(() => {
+    
+    const access = localStorage.getItem('access');
 
-  const handleunLikeToggle = () => {
-    // 매장 즐겨찾기 삭제 api delete 호출
-    setIsLikes(!isLikes)
-  };
+    // const isCurrentlyLiked = profile.isfavorite;
+
+    // 좋아요 취소
+    if (isLikes) {
+      axios.delete(`${BASE_URL}/api/shop-favorites/${currentUser.nickname}`, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("좋아요 취소");
+        setIsLikes(false);
+      })
+      .catch(error => {
+        console.log("좋아요 취소 오류 발생:", error);
+      });
+    } // 좋아요 
+    else {
+      axios.post(`${BASE_URL}/api/shop-favorites`, {
+        shopNickname: currentUser.nickname,
+      }, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("좋아요 성공");
+        setIsLikes(true);
+      })
+      .catch(error => {
+        console.log("좋아요 오류 발생:", error);
+      });
+    }
+  }, []);
+
+  // const handleunLikeToggle = () => {
+  //   // 매장 즐겨찾기 삭제 api delete 호출
+  //   setIsLikes(!isLikes)
+  // };
 
   const saveIntroduce = async () => {
     try {
@@ -252,7 +288,7 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
         <RightContainer>
           {currentUser.nickname !== loginUser ? (
             isLikes ? (
-              <ImgLikeActive onClick={handleunLikeToggle} />
+              <ImgLikeActive onClick={handleLikeToggle} />
             ) : (<ImgLike onClick={handleLikeToggle} />)
           ) : ("")}
         </RightContainer>

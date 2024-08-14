@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import PropTypes from 'prop-types';
 import PostDetail from "../post/PostDetail";
-import ReviewKeywordStat from "../storeProfile/ReviewKeywordStat";
+import ReviewKeywordStat from "../review/ReviewKeywordStat";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -19,7 +19,8 @@ const ReviewKeywordBtn = styled.button`
   border: 1.5px solid #d1a6f7;
   outline: none;
   border-radius: 12px;      
-  padding: 5px 10px;      
+  padding: 5px 10px;
+  margin-bottom: 10px; 
   font-size: 13px;       
   color: ${(props) =>
     props.theme.value === "light" ? "#000" :"#fff"};        
@@ -37,7 +38,8 @@ const ReviewKeywordBtnActive = styled.button`
   /* box-shadow: 0 0 15px rgba(186, 126, 250, 0.4); */
   outline: none;
   border-radius: 12px;      
-  padding: 5px 10px;      
+  padding: 5px 10px;
+  margin-bottom: 10px;
   font-size: 13px;       
   color: ${(props) =>
     props.theme.value === "light" ? "#000" :"#fff"};     
@@ -72,7 +74,7 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
+function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewdata }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
@@ -99,7 +101,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
 
 
   const generateLayout = useCallback((photos) => {
-    return photos.map((photo, index) => ({
+    return photos?.map((photo, index) => ({
       i: `photo-${index}`,
       x: index % 3,
       y: Math.floor(index / 3),
@@ -138,11 +140,24 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
     setSelectedPhotos(Card.slice(index));
   };
 
-
-
   return (
     <>
-      {type === "SHOP" && currentTab === 1 && (
+      {Card == false && type === "SHOP" &&  currentTab === 0 && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성한 게시글이 없습니다
+        </h3>
+      )}
+      {Card == false && type === "SHOP" && currentTab === 1 && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성된 리뷰가 없습니다
+        </h3>
+      )}
+      {Card == false && type === "COMMON" && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성한 리뷰가 없습니다
+        </h3>
+      )}
+      {Card == true && type === "SHOP" && currentTab === 1 && (
         <>
           {keywordBtnActive ? (
             <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
@@ -151,14 +166,14 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
           )}
           <ReviewKeywordList expanded={openReviewKeyword}>
             {openReviewKeyword && (
-              <ReviewKeywordStat reviewNum={100}/>
+              <ReviewKeywordStat reviewNum={reviewdata.length} nickname={currentUser.nickname}/>
             )}
           </ReviewKeywordList>
         </>
       )}
   
       {selectedPhotos ? (
-        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
+        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} type={type}/>
       ) : (
         <GridContainer ref={containerRef}>
           <ResponsiveGridLayout
@@ -170,13 +185,13 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
             isDraggable={false}
             isResizable={false}
           >
-            {Card.map((item, index) => (
+            {Card?.map((item, index) => (
               <GridItem
                 key={`photo-${index}`}
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
+              <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

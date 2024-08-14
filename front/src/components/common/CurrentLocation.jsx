@@ -34,6 +34,7 @@ export default function CurrentLocation({
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
+        
         mapApi(longitude, latitude);
       },
       (error) => {
@@ -61,18 +62,18 @@ export default function CurrentLocation({
         .then((response) => {
           const location = response.data.documents[0];
           setCurrentLocation({
+            ...currentLocation,
             si: location.address.region_1depth_name,
             gu: location.address.region_2depth_name,
             dong: location.address.region_3depth_name,
-            locationX: location.address.x,
-            locationY: location.address.y,
+            longitude :longitude,
+            latitude : latitude,
           });
         });
     } catch (error) {
       console.log(error.message);
     }
   };
-
   return (
     <Location>
       <LocationIcon />

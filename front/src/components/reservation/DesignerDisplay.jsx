@@ -11,19 +11,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
 import apiClient from "../../util/apiClient";
+import nullImg from "../../assets/images/img.webp";
 
 const UpperTabWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid ${(props) => props.theme.primary};
-  padding-left: 1rem;
-  padding-right: 1rem;
+  flex-direction: row;
+  width: 93%;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  border-bottom: 1.5px solid ${(props) => props.theme.primary};
 `;
 
 const EditDesignerButton = styled.div`
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
+  margin-right: 5px;
   text-decoration: underline;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
   align-self: end;
@@ -31,11 +34,12 @@ const EditDesignerButton = styled.div`
 
 const DesignerCardContainer = styled.div`
   display: grid;
+  width: 88%;
   grid-template-columns: 4fr 1fr;
   background-color: ${(props) =>
     props.theme.value === "light" ? props.theme.body : props.theme.secondary};
   padding: 1rem;
-  border-bottom: 2px solid ${(props) => props.theme.primary};
+  border-bottom: 1.5px solid ${(props) => props.theme.primary};
 `;
 
 const DesignerContent = styled.div`
@@ -56,7 +60,7 @@ const DesignerTitle = styled.div`
 `;
 
 const DesignerIntroduction = styled.li`
-  font-size: 12px;
+  font-size: 13px;
   padding-top: 1rem;
   padding-bottom: 1rem;
 `;
@@ -68,10 +72,11 @@ const DesignerPhotoContainer = styled.div`
 `;
 
 const ReviewContainer = styled.span`
+  display: flex;
   text-decoration: underline;
   cursor: pointer;
   padding-top: 1rem;
-  font-size: 10px;
+  font-size: 13px;
 `;
 
 const DesignerPhoto = styled.img`
@@ -98,7 +103,7 @@ const EditButton = styled.div`
 
 const SaveButton = styled.div`
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: underline;
   padding-left: 0.5rem;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
@@ -234,11 +239,15 @@ export default function DesignerDisplay() {
               >
                 시술 보기
               </MenuLink>
-              <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
+              <ReviewContainer
+                onClick={() => navigate(`/profile/${item.nickname}/EMPLOYEE`)}
+              >
+                방문자 리뷰 {item.reviewCnt}개
+              </ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
               <DesignerPhoto
-                src={"http://www.rebu.kro.kr/data/" + item.imageSrc}
+                src={"https://www.rebu.kro.kr/data" + item.imageSrc}
               />
             </DesignerPhotoContainer>
             {isEditMode && (

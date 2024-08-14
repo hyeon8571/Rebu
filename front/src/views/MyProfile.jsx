@@ -83,7 +83,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const [likeCard, setLikeCard] = useState([]);
   const [reviewdata, setReveiwData] = useState([]);
   const [ratingAvg, setRatingAvg] = useState(0);
-  // const [scrapdata, setScrapData] = useState([]);
+  const [scrapdata, setScrapData] = useState([]);
   const [postdata, setPostdata] = useState([]);
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] = useState([]);
@@ -192,7 +192,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("직원 리뷰 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   // 가게 평점 계산
   useEffect(() => {
@@ -208,6 +208,32 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
       setRatingAvg(averageRating);
     }
   });
+
+
+  // 스크랩 조회
+  useEffect(() => {
+    if (type !== 'SHOP') {
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/feeds`, {
+        params: {
+          scrapedBy: nickname
+        },
+        headers : {
+          "access" : access,
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        console.log("스크랩 데이터를 조회했습니다")
+        console.log(response.data.body)
+        setScrapData(response.data.body);
+      })
+      .catch(err => {
+        console.log('스크랩 데이터를 찾지 못했습니다');
+      })
+    }
+  }, [profile]);
+
 
   // 매장, 직원 피드(post) 조회
   useEffect(() => {
@@ -244,7 +270,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("직원 피드 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   // 매장 즐겨찾기 전체 조회
   useEffect(() => {
@@ -265,7 +291,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("즐겨찾기 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   const handleScroll = () => {
     if (tabRef.current) {
@@ -284,31 +310,29 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
     };
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
-  useEffect(() => {
-    if (type === "COMMON") {
-      setTabTitle([
-        { name: "Review", content: "Review", count: profile.reviewCnt },
-        { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
-        { name: "Likes", content: "Likes", count: profile.favoritesCnt },
-      ]);
-    } else if (type === "SHOP") {
-      setTabTitle([
-        { name: "Post", content: "Post", count: profile.feedCnt },
-        { name: "Review", content: "Review", count: profile.reviewCnt },
-        {
-          name: "Reservation",
-          content: "Reservation",
-          count: profile.reservationCnt,
-        },
-      ]);
-    } else if (type === "EMPLOYEE") {
-      setTabTitle([
-        { name: "Post", content: "Post", count: profile.feedCnt },
-        { name: "Review", content: "Review", count: profile.reviewCnt },
-        { name: "Scrap", content: "Scrap", count: profile.scrapCnt },
-      ]);
-    }
-  }, [profile]);
+
+  //타입별 탭 구분
+useEffect(() => {
+  if (type === "COMMON") {
+    setTabTitle([
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile?.scrapCnt},
+    { name: "Likes", content: "Likes", count: profile?.favoritesCnt}
+  ])
+} else if (type === "SHOP") {
+    setTabTitle([
+    { name: "Post", content: "Post", count: profile?.feedCnt},
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Reservation", content: "Reservation", count: profile?.reservationCnt},
+  ])
+} else if (type === "EMPLOYEE") {
+  setTabTitle([
+    { name: "Post", content: "Post", count: profile?.feedCnt },
+    { name: "Review", content: "Review", count: profile?.reviewCnt},
+    { name: "Scrap", content: "Scrap", count: profile?.scrapCnt},
+  ])
+};
+}, [profile]);
 
   const tabName = ["예약현황", "디자이너"];
 
@@ -324,24 +348,25 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           loginUser={nickname}
           type={type}
           currentTab={currentTab}
+          reviewdata={renderGrid}
         />
       );
     } else if (content === "Scrap") {
       return (
         <ScrapGrid
           key={key}
-          Card={reviewdata}
+          Card={scrapdata}
           currentUser={profile}
           loginUser={nickname}
         />
       );
     } else if (content === "Likes") {
       return (
-        <React.Fragment key={key}>
-          {likeCard.map((item) => (
+        <>
+          {likeCard?.map((item) => (
             <LikesCard key={item.id} Card={item} loginUser={nickname} />
           ))}
-        </React.Fragment>
+        </>
       );
     } else if (content === "Review") {
       return (
@@ -352,6 +377,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           loginUser={nickname}
           type={type}
           currentTab={currentTab}
+          reviewdata={reviewdata}
         />
       );
     } else if (content === "Reservation") {

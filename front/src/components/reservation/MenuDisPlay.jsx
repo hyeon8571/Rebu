@@ -293,7 +293,7 @@ export default function MenuDisplay() {
                 }}
               >
                 <PhotoContainer
-                  src={"http://www.rebu.kro.kr/data" + item.images}
+                  src={"https://www.rebu.kro.kr/data/" + item.images[0]}
                 />
                 <ContentContainer>
                   <MenuTitleContainer>{item.title}</MenuTitleContainer>
