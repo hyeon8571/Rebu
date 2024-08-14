@@ -16,11 +16,11 @@ public class GetProfileResultDto {
     private Long reviewCnt;
     private Long scrapCnt;
     private Long favoritesCnt;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private Relation relation;
     private Long followId;
 
-    public GetProfileResultDto(String imageSrc, Long followingCnt, Long followerCnt, String nickname, String introduction, Long reviewCnt, Long scrapCnt, Long favoritesCnt, boolean isPrivate) {
+    public GetProfileResultDto(String imageSrc, Long followingCnt, Long followerCnt, String nickname, String introduction, Long reviewCnt, Long scrapCnt, Long favoritesCnt, Boolean isPrivate) {
         this.imageSrc = imageSrc;
         this.followingCnt = followingCnt;
         this.followerCnt = followerCnt;

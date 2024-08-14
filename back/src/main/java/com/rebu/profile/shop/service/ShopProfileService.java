@@ -34,6 +34,8 @@ import com.rebu.reservation.repository.ReservationRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
+import com.rebu.shop_favorite.entity.ShopFavoriteId;
+import com.rebu.shop_favorite.repository.ShopFavoriteRepository;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
 import com.rebu.workingInfo.entity.WorkingInfo;
 import com.rebu.workingInfo.enums.Days;
@@ -68,6 +70,7 @@ public class ShopProfileService {
     private final WorkingInfoRepository workingInfoRepository;
     private final AbsenceRepository absenceRepository;
     private final ReservationRepository reservationRepository;
+    private final ShopFavoriteRepository shopFavoriteRepository;
 
     @Transactional
     public ProfileInfo generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
@@ -155,7 +158,7 @@ public class ShopProfileService {
         ShopProfile targetProfile = shopProfileRepository.findByNickname(getShopProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
-        Profile profile = profileRepository.findByNickname(getShopProfileDto.getNickname())
+        Profile myProfile = profileRepository.findByNickname(getShopProfileDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
 
         GetShopProfileResultDto getShopProfileResultDto = shopProfileRepository.getShopProfileResponseByProfileId(targetProfile.getId())
@@ -163,11 +166,17 @@ public class ShopProfileService {
 
         if (targetProfile.getNickname().equals(getShopProfileDto.getNickname())) {
             getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.OWN);
-        } else if (followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).isPresent()) {
+        } else if (followRepository.findByFollowerIdAndFollowingId(myProfile.getId(), targetProfile.getId()).isPresent()) {
             getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.FOLLOWING);
-            getShopProfileResultDto.setFollowId(followRepository.findByFollowerIdAndFollowingId(profile.getId(), targetProfile.getId()).get().getId());
+            getShopProfileResultDto.setFollowId(followRepository.findByFollowerIdAndFollowingId(myProfile.getId(), targetProfile.getId()).get().getId());
         } else {
             getShopProfileResultDto.setRelation(GetShopProfileResultDto.Relation.NONE);
+        }
+
+        if (myProfile.getType() == Type.COMMON) {
+            if (shopFavoriteRepository.findById(new ShopFavoriteId(myProfile, targetProfile)).isPresent()) {
+                getShopProfileResultDto.setIsFavorite(true);
+            }
         }
 
         return getShopProfileResultDto;

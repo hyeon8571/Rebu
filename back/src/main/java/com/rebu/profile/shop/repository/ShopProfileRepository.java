@@ -36,7 +36,7 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
         FROM ShopProfile sp
         LEFT JOIN Follow fr ON fr.follower.id = sp.id
         LEFT JOIN Follow fi ON fi.following.id = sp.id
-        LEFT JOIN Feed fe ON fe.writer.id = sp.id
+        LEFT JOIN Feed fe ON fe.owner.id = sp.id
         LEFT JOIN Review re ON re.shopProfile.id = sp.id
         LEFT JOIN Reservation rs ON rs.shopProfile.id = sp.id
         WHERE sp.id = :profileId

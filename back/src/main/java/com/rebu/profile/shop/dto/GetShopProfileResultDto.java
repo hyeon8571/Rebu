@@ -19,11 +19,12 @@ public class GetShopProfileResultDto {
     private Long feedCnt;
     private Long reviewCnt;
     private Long reservationCnt;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private Relation relation;
     private Long followId;
+    private Boolean isFavorite;
 
-    public GetShopProfileResultDto(String imageSrc, String nickname, String name, String introduction, String address, String phone, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long reservationCnt, boolean isPrivate) {
+    public GetShopProfileResultDto(String imageSrc, String nickname, String name, String introduction, String address, String phone, Long followingCnt, Long followerCnt, Long feedCnt, Long reviewCnt, Long reservationCnt, Boolean isPrivate) {
         this.imageSrc = imageSrc;
         this.nickname = nickname;
         this.name = name;
