@@ -34,7 +34,7 @@ export default function CurrentLocation({
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        
+
         mapApi(longitude, latitude);
       },
       (error) => {
@@ -48,6 +48,7 @@ export default function CurrentLocation({
       }
     );
   }, []);
+
   const mapApi = async (longitude, latitude) => {
     try {
       await axios
@@ -66,8 +67,8 @@ export default function CurrentLocation({
             si: location.address.region_1depth_name,
             gu: location.address.region_2depth_name,
             dong: location.address.region_3depth_name,
-            longitude :longitude,
-            latitude : latitude,
+            longitude: longitude,
+            latitude: latitude,
           });
         });
     } catch (error) {
