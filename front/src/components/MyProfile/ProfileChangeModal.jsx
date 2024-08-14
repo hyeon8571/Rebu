@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProfileCreateModal from "./ProfileCreateModal";
 import { getAllProfiles } from "../../features/common/userSlice";
-import axios from "axios";
 import { switchProfile } from "../../features/auth/authSlice";
 
 const ModalOverlay = styled.div`
@@ -175,10 +174,8 @@ const ProfileChangeModal = ({
     const switchResult = await handleProfileSwitch(nickname);
     if (switchResult && switchResult.success) {
       console.log("프로필 전환 성공:", switchResult.data);
-      const owner = "own";
       navigate(
-        `/profile/${switchResult.data.nickname}/${switchResult.data.type}/${owner}`,
-        { replace: true }
+        `/profile/${switchResult.data.nickname}/${switchResult.data.type}`
       ); // 프로필 페이지로 이동
       handleSettingClick(); // 설정 모달 닫기
     }

@@ -10,8 +10,11 @@ import NavigationRail from "./components/common/NavigationRail";
 import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import { isAuthenticated } from "./util/auths"; // isAuthenticated 함수 가져오기
-import axios from "axios";
+import apiClient from "./util/apiClient";
 import { BASE_URL } from "./util/commonFunction";
+import defaultImg from "./assets/images/img.webp";
+import { useLocalStorage } from "../src/util/customHooks/useLocalStorage";
+import axios from "axios";
 
 const Grid = styled.div`
   @media (min-width: 769px) {
@@ -35,7 +38,16 @@ const Layout = styled.div`
 function App() {
   const [theme, setTheme] = useState("light");
   const [auth, setAuth] = useState(isAuthenticated());
+
   const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  // const nickname = localStorage.getItem("nickname");
+  // const type = localStorage.getItem("type");
+  // const imageSrc = localStorage.getItem("imgSrc");
+
+  const nickname = useLocalStorage("nickname");
+  const type = useLocalStorage("type");
+  const imageSrc = useLocalStorage("imgSrc");
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -49,26 +61,27 @@ function App() {
     setAuth(false);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
-  //     .then((response) => {
-  //       console.log(response);
-  //     });
-  // }, []);
-
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <BrowserRouter>
         <GlobalStyles />
         <Grid>
           {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
-
           {auth &&
             (isMobile ? (
-              <NavigationBar auth={auth} />
+              <NavigationBar
+                auth={auth}
+                nickname={nickname}
+                type={type}
+                profileImg={imageSrc}
+              />
             ) : (
-              <NavigationRail auth={auth} />
+              <NavigationRail
+                auth={auth}
+                nickname={nickname}
+                type={type}
+                profileImg={imageSrc}
+              />
             ))}
 
           <Layout>

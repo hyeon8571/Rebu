@@ -20,7 +20,7 @@ export const Container = styled.div`
   border-radius: 8px;
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@ const Header = styled.div`
     props.theme.value === "light" ? "#fff" : props.theme.body};
 `;
 
-const HeaderText = styled.p`
+export const HeaderText = styled.p`
   font-size: 20px;
   margin-left: 15px;
 `;
@@ -39,21 +39,21 @@ export const BackButton = styled(FiChevronLeft)`
   cursor: pointer;
 `;
 
-const ProfileImageWrapper = styled.div`
+export const ProfileImageWrapper = styled.div`
   position: relative;
   width: 100px;
   height: 100px;
   margin-top: 5px;
 `;
 
-const ProfileImage = styled.img`
+export const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 50%;
   margin-top: 5px;
 `;
 
-const ImgUpload = styled(AiTwotonePlusCircle)`
+export const ImgUpload = styled(AiTwotonePlusCircle)`
   color: #757575;
   font-size: 28px;
   position: absolute;
@@ -81,7 +81,7 @@ const UserRole = styled.span`
   color: #000000;
 `;
 
-export const Form = styled.div`
+const Form = styled.div`
   margin-top: 20px;
   padding: 10px 20px;
   border-radius: 8px;
@@ -175,10 +175,10 @@ const DeleteButton = styled(Button)`
 `;
 
 export const PersonalInfo = () => {
-  const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
+  const nickname = localStorage.getItem("nickname");
   const type = localStorage.getItem("type");
   const imageSrc = localStorage.getItem("imageSrc");
-  console.log("nickname", nickname, "type:", type, "imageSrc", imageSrc);
+  console.log("imageSrc", imageSrc);
   const [profileImg, setProfileImg] = useState(imageSrc);
 
   const handleBackClick = () => {
@@ -191,7 +191,7 @@ export const PersonalInfo = () => {
     const file = event.target.files[0];
 
     if (file) {
-      const result = await updateProfileImage(nickname, file);
+      const result = await updateProfileImage(file); //nickname
 
       if (result.success) {
         const newImageSrc = result.data.imageSrc; // 예를 들어 API 응답에 새로운 이미지 URL이 있다고 가정
@@ -202,17 +202,6 @@ export const PersonalInfo = () => {
         console.error("프로필 이미지 변경에 실패했습니다:", result.error);
       }
     }
-  };
-
-  // 닉네임 수정
-  const handleChange = (e) => {
-    setNickname(e.target.value);
-  };
-  const handleEdit = () => {
-    const updateNickname = {
-      nickname: nickname,
-    };
-    console.log(updateNickname);
   };
 
   return (
@@ -247,14 +236,8 @@ export const PersonalInfo = () => {
             : "일반 사용자"}
         </UserRole>
       </UserInfo>
-      <Form>
-        <Label>닉네임</Label>
-        <Input type="text" value={nickname} onChange={handleChange} />
-        <EditButton onClick={handleEdit}>수정</EditButton>
-        <br />
-        {/* type이 "COMMON"일 때만 PersonalInfoCommon을 렌더링 */}
-        {type === "COMMON" && <PersonalInfoCommon />}{" "}
-      </Form>
+      {/* type이 "COMMON"일 때만 PersonalInfoCommon을 렌더링 */}
+      {type === "COMMON" && <PersonalInfoCommon />}{" "}
     </Container>
   );
 };

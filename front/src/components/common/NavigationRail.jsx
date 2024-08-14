@@ -71,42 +71,14 @@ const ProfileDiv = styled.div`
 
 const ICON_SIZE = 36;
 
-const nickname = localStorage.getItem("nickname");
-const type = localStorage.getItem("type");
-
-export default function NavigationRail() {
+export default function NavigationRail({ nickname, type, profileImg }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState(null);
+
   const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  useEffect(() => {
-    let EndPoint = "";
-    switch (localStorage.getItem("type")) {
-      case "COMMON":
-        EndPoint = "/api/profiles";
-        break;
-      case "EMPLOYEE":
-        EndPoint = "/api/profiles/employees";
-        break;
-      case "SHOP":
-        EndPoint = "/api/profiles/shops";
-        break;
-    }
-
-    const nickname = localStorage.getItem("nickname");
-
-    apiClient
-      .get(`${BASE_URL}${EndPoint}/${nickname}`)
-      .then((response) => {
-        setProfileImg(response.data.body.imageSrc);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   return (
     <GridContainer>

@@ -32,11 +32,11 @@ apiClient.interceptors.response.use(
             .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
             .then((res) => {
               console.log(res);
-              // const newAccessToken = res.headers["access"];
-              // localStorage.setItem("access", newAccessToken);
+              const newAccessToken = res.headers["access"];
+              localStorage.setItem("access", newAccessToken);
 
               // 새로운 토큰으로 헤더 업데이트
-              // originalRequest.headers["access"] = `${newAccessToken}`;
+              originalRequest.headers["access"] = `${newAccessToken}`;
 
               // 원래 요청을 다시 시도
               return apiClient(originalRequest);

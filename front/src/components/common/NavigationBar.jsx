@@ -51,37 +51,8 @@ const SearchDiv = styled.div`
 const ICON_SIZE = 28;
 
 //default
-export default function NavigationBar() {
+export default function NavigationBar({ nickname, type, profileImg }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState(null);
-
-  const nickname = localStorage.getItem("nickname");
-  const type = localStorage.getItem("type");
-  useEffect(() => {
-    let EndPoint = "";
-    switch (localStorage.getItem("type")) {
-      case "COMMON":
-        EndPoint = "/api/profiles";
-        break;
-      case "EMPLOYEE":
-        EndPoint = "/api/profiles/employees";
-        break;
-      case "SHOP":
-        EndPoint = "/api/profiles/shops";
-        break;
-    }
-
-    const nickname = localStorage.getItem("nickname");
-
-    apiClient
-      .get(`${BASE_URL}${EndPoint}/${nickname}`)
-      .then((response) => {
-        setProfileImg(response.data.body.imageSrc);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -116,7 +87,7 @@ export default function NavigationBar() {
         </StyledNavLink>
         <StyledNavLink to={`/profile/${nickname}/${type}`}>
           <NavigationItem>
-            <ProfileSmall img={BASE_IMG_URL + profileImg}></ProfileSmall>
+            <ProfileSmall img={profileImg}></ProfileSmall>
           </NavigationItem>
         </StyledNavLink>
       </Bar>
