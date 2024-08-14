@@ -143,7 +143,7 @@ public class ProfileService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GetProfileListDto> getProfileList(String email) {
         Member member = memberRepository.findByEmailFetch(email)
                 .orElseThrow(MemberNotFoundException::new);
@@ -176,7 +176,7 @@ public class ProfileService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetProfileResultDto getProfile(GetProfileDto getProfileDto) {
         Profile targetProfile = profileRepository.findByNickname(getProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -216,7 +216,7 @@ public class ProfileService {
         profile.updateRecentTime();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetProfileResultDto getMyProfile(AuthProfileInfo authProfileInfo) {
 
         Profile myProfile = profileRepository.findByNickname(authProfileInfo.getNickname())

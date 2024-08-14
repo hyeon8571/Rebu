@@ -19,7 +19,7 @@ public class EmployeeProfileDto {
     private String introduction;
     private LocalDateTime recentTime;
     private String phone;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private Status status;
     private String role;
     private String workingName;
@@ -35,7 +35,7 @@ public class EmployeeProfileDto {
                 .introduction(employeeProfile.getIntroduction())
                 .recentTime(employeeProfile.getRecentTime())
                 .phone(employeeProfile.getPhone())
-                .isPrivate(employeeProfile.isPrivate())
+                .isPrivate(employeeProfile.getIsPrivate())
                 .status(employeeProfile.getStatus())
                 .role(employeeProfile.getRole())
                 .workingName(employeeProfile.getWorkingName())

@@ -145,7 +145,7 @@ public class ShopProfileService {
         return responseList;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetShopProfileResultDto getShopProfile(GetShopProfileDto getShopProfileDto) {
         ShopProfile targetProfile = shopProfileRepository.findByNickname(getShopProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -274,7 +274,7 @@ public class ShopProfileService {
         return ShopPeriodScheduleWithEmployeesPeriodScheduleDto.of(shopDto, employeeDtos);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetShopProfileResultDto getMyProfile(AuthProfileInfo authProfileInfo) {
         ShopProfile myShopProfile = shopProfileRepository.findByNickname(authProfileInfo.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);

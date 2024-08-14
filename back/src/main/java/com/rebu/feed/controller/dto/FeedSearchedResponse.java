@@ -1,11 +1,9 @@
 package com.rebu.feed.controller.dto;
 
 import com.rebu.common.util.ListUtils;
-import com.rebu.feed.dto.FeedByShopDto;
 import com.rebu.feed.dto.FeedImageDto;
 import com.rebu.feed.dto.FeedSearchedDto;
 import com.rebu.feed.dto.HashtagDto;
-import com.rebu.feed.entity.Feed;
 import com.rebu.reviewkeyword.dto.ReviewKeywordDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +23,7 @@ public class FeedSearchedResponse {
     @Getter
     @Builder
     private static class Writer {
-        private String imageSrc;
+        private String profileImageSrc;
         private String nickname;
     }
 
@@ -47,8 +45,8 @@ public class FeedSearchedResponse {
     @Getter
     @Builder
     private static class Shop {
-        private String name;
-        private String nickname;
+        private String shopName;
+        private String shopNickname;
     }
 
     public static FeedSearchedResponse from(FeedSearchedDto dto){
@@ -56,7 +54,7 @@ public class FeedSearchedResponse {
                 .isScraped(dto.getIsScraped())
                 .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
-                        .imageSrc(dto.getWriter().getImageSrc())
+                        .profileImageSrc(dto.getWriter().getImageSrc())
                         .nickname(dto.getWriter().getNickname())
                         .build())
                 .feed(Feed.builder()
@@ -72,8 +70,8 @@ public class FeedSearchedResponse {
                         .rating(dto.getReview() != null ? dto.getReview().getRating() : null)
                         .build())
                 .shop(Shop.builder()
-                        .name(dto.getShop().getName())
-                        .nickname(dto.getShop().getNickname())
+                        .shopName(dto.getShop().getName())
+                        .shopNickname(dto.getShop().getNickname())
                         .build())
                 .build();
     }

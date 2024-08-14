@@ -2,6 +2,8 @@ package com.rebu.follow.controller;
 
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.follow.controller.dto.FollowRequest;
+import com.rebu.follow.controller.dto.GetFollowerResponse;
+import com.rebu.follow.controller.dto.GetFollowingResponse;
 import com.rebu.follow.dto.*;
 import com.rebu.follow.service.FollowService;
 import com.rebu.security.dto.AuthProfileInfo;
