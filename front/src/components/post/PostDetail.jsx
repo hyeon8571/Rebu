@@ -320,6 +320,7 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
   const [shopdata, setShopData] = useState([]);
   const [page, setPage] = useState(0);
  
+  console.log(information)
   console.log(posts)
 
  
@@ -349,12 +350,55 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
     setPostModifyModalOpen(true);
   };
 
-  const handleLikeToggle = useCallback((index) => {
-    setPosts((prevPosts) => {
-      const updatedPosts = [...prevPosts];
-      updatedPosts[index].isLiked = !updatedPosts[index].isLiked;
-      return updatedPosts;
-    });
+  const handleLikeToggle = useCallback((feedId, index) => {
+    
+    const access = localStorage.getItem('access');
+
+    const isCurrentlyLiked = posts[index].isLiked;
+
+    // 좋아요 취소
+    if (isCurrentlyLiked) {
+      axios.delete(`${BASE_URL}/api/likes/feed/${feedId}`, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("좋아요 취소");
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts];
+          updatedPosts[index].isLiked = false;
+          updatedPosts[index].feed.likeCnt -= 1;
+          return updatedPosts;
+        });
+      })
+      .catch(error => {
+        console.log("좋아요 취소 오류 발생:", error);
+      });
+    } // 좋아요 
+    else {
+      axios.post(`${BASE_URL}/api/likes/feed`, {
+        feedId: feedId,
+      }, {
+        headers: {
+          "access": access,
+          "Content-Type": "application/json",
+        }
+      })
+      .then(response => {
+        console.log("좋아요 성공");
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts];
+          updatedPosts[index].isLiked = true;
+          updatedPosts[index].feed.likeCnt += 1;
+          return updatedPosts;
+        });
+      })
+      .catch(error => {
+        console.log("좋아요 오류 발생:", error);
+      });
+    }
   }, []);
 
   const handleScrapToggle = useCallback((index) => {
@@ -405,6 +449,11 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
     setPostId(id);
   };
 
+  const handleDelete = (deletedPostId) => {
+    // 삭제된 게시글을 제외한 나머지 게시글로 상태 업데이트
+    setPosts(posts.filter(post => post.feedId !== deletedPostId));
+  };
+
   const closeModal = () => {
     setPostDeleteModalOpen(false);
     setShowDropdown(Array(information.length).fill(false));
@@ -449,16 +498,18 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
               ) : (
                 <ProfileImage src={"https://www.rebu.kro.kr/data/" + item.writer.profileImageSrc} alt="Profile" />
               )}
+
               <ProfileDetails>
                 <Username>{item.writer.nickname}</Username>
                 <Location>
-                  <LocationIcon />
-                  <ShopName onClick={() => handleShopNameClick(item.shop.shopNickname)}>
-                    {item.shop.shopName}
+                  {item.shop && (<LocationIcon />)}
+                  <ShopName onClick={() => handleShopNameClick(item.shop?.shopNickname)}>
+                    {item.shop?.shopName}
                   </ShopName>
                 </Location>
               </ProfileDetails>
             </div>
+
             <div style={{ position: "relative" }}>
               {item.writer.nickname === loginUser ? (
                 <IconBox onClick={() => handleMoreOptionToggle(index)}>
@@ -484,6 +535,7 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
                       post={selectedPost}
                       currentUser={currentUser}
                       index={index}
+                      feedId={item.feed.feedId}
                       onSave={handlePostSave}
                     />
                   </ModalPortal>
@@ -500,12 +552,15 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
                       closeModal={closeModal}
                       postId={postId}
                       type={type}
+                      onDelete={() => handleDelete(postId)}
                     />
                   </ModalPortal>
                 )}
               </DropdownMenu>
             </div>
           </PostHeader>
+
+
           <SlideImg>
             <SlideBack onClick={() => prevSlide(index)} />
             <SlideFront onClick={() => nextSlide(index)} />
@@ -523,9 +578,11 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
               ))}
             </DotsWrapper>
           </SlideImg>
+
+
           <PostActions>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <ActionIcon onClick={() => handleLikeToggle(index)}>
+              <ActionIcon onClick={() => handleLikeToggle(item.feed.feedId, index)}>
                 {item.isLiked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
               </ActionIcon>
               <ActionIcon>
@@ -549,7 +606,7 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
           </PostActions>
           <Likes>좋아요 {item.feed.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.content : item.feed.content}
+            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.feed.content : item.feed.content}
           </PostDescription>
           <HashtagContainer>
             {item.feed.hashtags?.map((hashtag) => (

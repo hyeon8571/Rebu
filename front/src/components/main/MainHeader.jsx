@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   position: sticky;
   align-items: center;
   height: 50px;
-  max-width: 768px;
   width: 100%;
   top: 0;
   z-index: 5;

@@ -7,22 +7,26 @@ import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ModalPortal from "../../util/ModalPortal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
+import apiClient from "../../util/apiClient";
+import nullImg from "../../assets/images/img.webp";
 
 const UpperTabWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid ${(props) => props.theme.primary};
-  padding-left: 1rem;
-  padding-right: 1rem;
+  flex-direction: row;
+  width: 93%;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  border-bottom: 1.5px solid ${(props) => props.theme.primary};
 `;
 
 const EditDesignerButton = styled.div`
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
+  margin-right: 5px;
   text-decoration: underline;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
   align-self: end;
@@ -30,11 +34,12 @@ const EditDesignerButton = styled.div`
 
 const DesignerCardContainer = styled.div`
   display: grid;
+  width: 88%;
   grid-template-columns: 4fr 1fr;
   background-color: ${(props) =>
     props.theme.value === "light" ? props.theme.body : props.theme.secondary};
   padding: 1rem;
-  border-bottom: 2px solid ${(props) => props.theme.primary};
+  border-bottom: 1.5px solid ${(props) => props.theme.primary};
 `;
 
 const DesignerContent = styled.div`
@@ -55,7 +60,7 @@ const DesignerTitle = styled.div`
 `;
 
 const DesignerIntroduction = styled.li`
-  font-size: 12px;
+  font-size: 13px;
   padding-top: 1rem;
   padding-bottom: 1rem;
 `;
@@ -67,10 +72,11 @@ const DesignerPhotoContainer = styled.div`
 `;
 
 const ReviewContainer = styled.span`
+  display: flex;
   text-decoration: underline;
   cursor: pointer;
   padding-top: 1rem;
-  font-size: 10px;
+  font-size: 13px;
 `;
 
 const DesignerPhoto = styled.img`
@@ -96,7 +102,7 @@ const EditButton = styled.div`
 
 const SaveButton = styled.div`
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: underline;
   padding-left: 0.5rem;
   color: ${(props) => (props.theme.value === "light" ? "gray" : "lightgray")};
@@ -109,8 +115,8 @@ const MenuLink = styled.div`
 `;
 
 //profileType 1은 일반프로필, 2는 디자이너, 3은 매장
-export default function DesignerDisplay({ profileType }) {
-  const [isMale, setIsMale] = useState(false);
+export default function DesignerDisplay() {
+  const [isMale, setIsMale] = useState("MALE");
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -119,45 +125,29 @@ export default function DesignerDisplay({ profileType }) {
 
   const navigate = useNavigate();
 
-  // localStorage로 전달
-  profileType = 2;
   //매장 프로필의 닉네임
-  const nickname = "rebu4_hair3";
+  const { nickname, type } = useParams();
+  // const nickname = localStorage.getItem("nickname");
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/profiles/shop/${nickname}/employees`, {
-        headers: {
-          "Content-Type": "application/json",
-          Access: localStorage.getItem("access"),
-        },
-      })
+    apiClient
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
       .then((response) => {
         console.log(response);
+        setDesigners(response.data.body);
       })
       .catch((error) => {
-        console.error("Fetch error:", error);
+        console.error("Failed to fetch ", error);
       });
-    // fetch("/mockdata/shopemployees.json")
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((jsondata) => {
-    //     const data = jsondata.body;
-    //     console.log(data);
-    //     setDesigners(data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Fetch error:", error);
-    //   });
   }, []);
 
   const toggleHandler = () => {
     // isMale의 상태를 변경하는 메소드를 구현
-    setIsMale(!isMale);
+    if (isMale === "MALE") {
+      setIsMale("FEMALE");
+    } else {
+      setIsMale("MALE");
+    }
   };
 
   function handleModifyDesigner() {
@@ -209,15 +199,17 @@ export default function DesignerDisplay({ profileType }) {
         </ModalNoBackNoExit>
       </ModalPortal>
       <UpperTabWrapper>
-        <Switch isMan={isMale} toggleHandler={toggleHandler} />
-        {(profileType === 2 || profileType === 3) && !isEditMode && (
-          <EditDesignerButton onClick={handleModifyDesigner}>
-            디자이너 관리
-          </EditDesignerButton>
-        )}
+        <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
+        {(localStorage.getItem("type") === "DESIGNER" ||
+          localStorage.getItem("type") === "SHOP") &&
+          !isEditMode && (
+            <EditDesignerButton onClick={handleModifyDesigner}>
+              디자이너 관리
+            </EditDesignerButton>
+          )}
         {isEditMode && (
           <ButtonWrapper>
-            {profileType === 3 && (
+            {localStorage.getItem("type") === "SHOP" && (
               <EditButton onClick={handleAddDesigner}>추가</EditButton>
             )}
             <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
@@ -240,22 +232,27 @@ export default function DesignerDisplay({ profileType }) {
               <MenuLink
                 onClick={() =>
                   navigate("/menudisplay", {
-                    state: { nickname: currentNickname },
+                    state: { nickname: item.nickname },
                   })
                 }
               >
                 시술 보기
               </MenuLink>
-              <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
+              <ReviewContainer
+                onClick={() => 
+                  navigate(`/profile/${item.nickname}/EMPLOYEE`)
+                }>
+                방문자 리뷰 {item.reviewCnt}개
+              </ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
               <DesignerPhoto
-                src={process.env.PUBLIC_URL + "keyword/" + item.image}
+                src={"https://www.rebu.kro.kr/data" + item.imageSrc}
               />
             </DesignerPhotoContainer>
             {isEditMode && (
               <ButtonWrapper>
-                {item.nickname === currentNickname && (
+                {item.nickname === localStorage.getItem("nickname") && (
                   <EditButton
                     onClick={() =>
                       handleModifyInstruction(item.workingIntroduction)
@@ -264,7 +261,8 @@ export default function DesignerDisplay({ profileType }) {
                     수정
                   </EditButton>
                 )}
-                {profileType === 3 || item.nickname === currentNickname ? (
+                {localStorage.getItem("type") === "SHOP" ||
+                item.nickname === localStorage.getItem("nickname") ? (
                   <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
                 ) : null}
               </ButtonWrapper>

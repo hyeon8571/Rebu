@@ -190,7 +190,7 @@ export default function ProfileLarge({ currentUser, time }) {
   const online = time < 300;
   const followersModalRef = useRef(null);
   const followingModalRef = useRef(null);
-  const [relation, setRelation] = useState(currentUser.relation);
+  const [relation, setRelation] = useState(currentUser?.relation);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -200,7 +200,7 @@ export default function ProfileLarge({ currentUser, time }) {
   const [followings, setFollowings] = useState([]); //팔로잉 목록
   const [followers, setFollowers] = useState([]); //팔로워 목록
 
-  const targetNickname = currentUser.nickname; //현재 프로필 페이지의 사용자 닉네임
+  const targetNickname = currentUser?.nickname; //현재 프로필 페이지의 사용자 닉네임
   const { nickname } = useSelector((state) => state.auth); //로그인한 사용자의 닉네임
 
   // 무한 스크롤 - 페이지네이션
@@ -356,21 +356,21 @@ export default function ProfileLarge({ currentUser, time }) {
     <ProfileContainer>
       <ImgBox>
         <React.Fragment>
-          {currentUser.imageSrc === null ? (
+          {currentUser?.imageSrc === null ? (
             <OutterCircleOffline>
               <Insideimg src={nullImg}></Insideimg>
             </OutterCircleOffline>
           ) : online ? (
             <OutterCircleOnline>
               <Insideimg
-                src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc}
+                src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
                 alt="Profile"
               />
             </OutterCircleOnline>
           ) : (
             <OutterCircleOffline>
               <Insideimg
-                src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc}
+                src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
               ></Insideimg>
             </OutterCircleOffline>
           )}
@@ -386,11 +386,11 @@ export default function ProfileLarge({ currentUser, time }) {
         >
           <FollowInfo>
             <FollowerInfo>
-              <FollowCount>{currentUser.followerCnt}</FollowCount>
+              <FollowCount>{currentUser?.followerCnt}</FollowCount>
               <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
             </FollowerInfo>
             <FollowingInfo>
-              <FollowCount>{currentUser.followingCnt}</FollowCount>
+              <FollowCount>{currentUser?.followingCnt}</FollowCount>
               <FollowText onClick={handleOpenFollowingModal}>팔로잉</FollowText>
             </FollowingInfo>
           </FollowInfo>
@@ -401,10 +401,10 @@ export default function ProfileLarge({ currentUser, time }) {
         <FollowButton
           following={relation}
           onClick={
-            currentUser.relation === "FOLLOWING" ? handleUnfollow : handleFollow
+            currentUser?.relation === "FOLLOWING" ? handleUnfollow : handleFollow
           }
         >
-          {currentUser.relation === "FOLLOWING" ? "팔로우 취소" : "팔로우"}
+          {currentUser?.relation === "FOLLOWING" ? "팔로우 취소" : "팔로우"}
         </FollowButton>
       )}
 

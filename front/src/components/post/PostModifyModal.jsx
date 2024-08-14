@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { IoIosClose } from "react-icons/io";
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { useNavigate, useLocation } from 'react-router-dom'; // useNavigate 훅을 가져옵니다.
+import axios from 'axios';
+import { BASE_URL } from '../../views/Signup';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -209,7 +211,7 @@ const SaveButton = styled(Button)`
   cursor: pointer;
 `;
 
-const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser, onSave }) => {
+const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser, feedId, onSave }) => {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const [current, setCurrent] = useState(0);
@@ -235,21 +237,42 @@ const PostModify = ({ postModifyModalOpen, closeModal, index, post, currentUser,
   };
 
   const handleSaveClick = () => {
-    const updatedPost = {
-      ...post,
-      content: content,
-      // modifiedDate: today
-    };
+    const access = localStorage.getItem('access');
+    axios.put(`${BASE_URL}/api/feeds/${feedId}`, {
+      images: post.feed.imageSrcs,
+      content: content
+    }, {
+      headers: {
+        "access": access,
+        "Content-Type": "application/json",
+      }
+    })
+    .then(response => {
+      // 수정 후 로직
+      const updatedPost = {
+        ...post,
+        content: content,
+        modifiedDate: today
+      };
+      onSave(updatedPost, index);
+      console.log("피드가 수정되었습니다.");
+    })
+    .catch(error => {
+      console.log("피드 수정 중 오류 발생:", error);
+    });
+
+
+    
 
     // 부모 컴포넌트에 수정된 게시글을 전달
-    onSave(updatedPost, index);
+    
 
     // 게시글 상세 페이지로 이동
-    if (currentUser.type === "COMMON") {
-      navigate('/profile', { state: { post: updatedPost, postId: index } });
-    } else if (currentUser.type === "SHOP") {
-      navigate('/store-profile', { state: { post: updatedPost, postId: index } });
-    };
+    // if (currentUser.type === "COMMON") {
+    //   navigate('/profile', { state: { post: updatedPost, postId: index } });
+    // } else if (currentUser.type === "SHOP") {
+    //   navigate('/store-profile', { state: { post: updatedPost, postId: index } });
+    // };
     
     // 모달 닫기
     closeModal();

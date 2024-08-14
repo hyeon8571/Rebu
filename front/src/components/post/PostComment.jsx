@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import styled from "styled-components";
 import { FaRegHeart, FaHeart, FaArrowRight, FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
 import { BASE_URL } from "../../views/Signup";
+import debounce from "lodash.debounce";
 
 const CommentItem = styled.div`
   display: flex;
@@ -157,7 +158,7 @@ const CommentInputContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-// 시간 계산 함수
+
 const timeSince = (date) => {
   const milliSeconds = new Date() - date;
   const seconds = milliSeconds / 1000;
@@ -185,24 +186,80 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
   const [comments, setComments] = useState([]);
   const [nestedComments, setNestedComments] = useState({});
   const [page, setPage] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const observer = useRef();
+ 
   // 댓글 조회
+  // useEffect(() => {
+  //   const access = localStorage.getItem('access');
+  //   axios.get(`${BASE_URL}/api/comments`, {
+  //     headers: {
+  //       "access": access,
+  //       "Content-Type": "application/json",
+  //     },
+  //     params: {
+  //       feedId: feedId,
+  //       page: 1,
+  //       size: 10,
+  //     }
+  //   })
+  //   .then(res => {
+  //     console.log(res.data.body.content);
+  //     setComments(res.data.body.content);
+  //   })
+  //   .catch(err => {
+  //     console.log(err + '댓글을 찾지 못했습니다');
+  //   });
+  const fetchComments = useCallback(() => {
+    const access = localStorage.getItem("access");
+    setIsLoading(true);
+    axios
+      .get(`${BASE_URL}/api/comments`, {
+        headers: {
+          access: access,
+          "Content-Type": "application/json",
+        },
+        params: {
+          feedId: feedId,
+          page: page,
+          size: 10,
+        },
+      })
+      .then((res) => {
+        setComments((prevComments) => [...prevComments, ...res.data.body.content]);
+        setIsLoading(false);
+        
+      })
+      .catch((err) => {
+        console.log(err + "댓글을 찾지 못했습니다");
+        setIsLoading(false);
+      });
+    }, [feedId, page]);
+
+
   useEffect(() => {
-    const access = localStorage.getItem('access');
-    axios.get(`${BASE_URL}/api/comments?feedId=${feedId}&page=${page}&size=10`, {
-      headers: {
-        "access": access,
-        "Content-Type": "application/json",
-      }
-    })
-    .then(res => {
-      console.log(res.data.body.content)
-      setComments(res.data.body.content);
-    })
-    .catch(err => {
-      console.log(err + '댓글을 찾지 못했습니다');
-    });
-  }, [feedId, page]);
+    fetchComments();
+  }, [fetchComments]);
+
+  // 스크롤이 하단에 도달했을 때 다음 페이지 댓글을 불러오는 로직
+  const lastCommentElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+  
+      if (observer.current) observer.current.disconnect();
+  
+      observer.current = new IntersectionObserver(
+        debounce((entries) => {
+          if (entries[0].isIntersecting && !isLoading) {
+            setPage((prevPage) => prevPage + 1);
+          }
+        }, 200) // 200ms의 디바운스 적용
+      );
+  
+      if (node) observer.current.observe(node);
+    },
+    [isLoading]
+  );
 
   // 새로운 댓글 입력
   const handleNewCommentChange = (index, value) => {
@@ -214,6 +271,19 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
   // 댓글 등록
   const handleAddComment = (index) => {
     const access = localStorage.getItem('access');
+
+    const newComment = {
+      commentId: currentUser.id,
+      nickname: currentUser.nickname,
+      imageSrc: currentUser.imageSrc,
+      content: newComments[index],
+      createAt: new Date().toISOString(),
+      delete: false,
+      likeCount: 0,
+    };
+
+    setComments((prevComments) => [newComment, ...prevComments]);
+
     axios.post(`${BASE_URL}/api/comments`, {
       feedId: feedId,
       content: newComments[index],
@@ -225,19 +295,33 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
     })
     .then(response => {
       console.log("댓글이 등록되었습니다.");
-      setComments(prevComments => [response.data.body, ...prevComments]);
+      // fetchComments();
+      // setComments((prevComments) => [response.data.body, ...prevComments]);
+      // const updatedNewComments = [...newComments];
+      // updatedNewComments[index] = ""; 
+      // setNewComments(updatedNewComments);
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment.commentId === tempId
+            ? { ...comment, commentId: response.data.body.commentId }
+            : comment
+        )
+      );
       const updatedNewComments = [...newComments];
-      updatedNewComments[index] = ""; 
+      updatedNewComments[index] = "";
       setNewComments(updatedNewComments);
-      console.log(comments)
     })
     .catch(error => {
       console.log("등록 중 오류 발생:", error);
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.commentId !== tempId)
+      );
     });
+
+    fetchComments();
   };
 
-
-// 댓글 삭제
+  // 댓글 삭제
   const handleDeleteComment = (commentId) => {
     const access = localStorage.getItem('access');
     axios.delete(`${BASE_URL}/api/comments/${commentId}`, {
@@ -247,7 +331,11 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
       }
     })
     .then(() => {
-      setComments(prevComments => prevComments.filter(comment => comment.commentId !== commentId));
+      setComments(prevComments => prevComments.map(comment => 
+        comment.commentId === commentId 
+        ? { ...comment, delete: true, content: "(삭제된 댓글입니다)" }
+        : comment
+      ));
       console.log("댓글이 삭제되었습니다.");
     })
     .catch(error => {
@@ -265,7 +353,7 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
   // 대댓글 등록
   const handleAddReply = (commentId) => {
     const access = localStorage.getItem('access');
-    axios.post(`${BASE_URL}/api/comments/`, {
+    axios.post(`${BASE_URL}/api/comments`, {
       feedId: feedId,
       parentCommentId: commentId,
       content: replies[commentId],
@@ -293,6 +381,9 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
     .catch(error => {
       console.log("대댓글 등록 중 오류 발생:", error);
     });
+
+    fetchReplies(commentId);
+
   };
 
   // 대댓글 삭제
@@ -307,7 +398,11 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
     .then(() => {
       setNestedComments(prevNestedComments => ({
         ...prevNestedComments,
-        [commentId]: prevNestedComments[commentId].filter(nested => nested.commentId !== nestedCommentId)
+        [commentId]: prevNestedComments[commentId].map(nested => 
+          nested.commentId === nestedCommentId 
+          ? { ...nested, delete: true, content: "(삭제된 댓글입니다)" }
+          : nested
+        )
       }));
       console.log("대댓글이 삭제되었습니다.");
     })
@@ -331,7 +426,7 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
       }
     })
     .then(res => {
-      console.log(res.data.body)
+      console.log(res.data.body.content);
       setNestedComments(prevNestedComments => ({
         ...prevNestedComments,
         [commentId]: res.data.body.content
@@ -353,42 +448,83 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
     }
   };
 
+  const access = localStorage.getItem('access');
+
+  const isCurrentlyLiked = posts[index].isLiked;
+
   // 댓글 좋아요
   const handleLikeToggle = (commentId, isNested = false, nestedCommentId = null) => {
     const access = localStorage.getItem('access');
-    const url = `${BASE_URL}/api/likes/comment/`
+    const targetId = isNested ? nestedCommentId : commentId;
+    const isLiked = likes[targetId]; // 현재 좋아요 상태 확인
 
-    axios.post(url, {commentId}, {
-      headers: {
-        "access": access,
-        "Content-Type": "application/json",
+    if (isLiked) {
+       axios.delete(`${BASE_URL}/api/likes/comment/${commentId}`, {
+          headers: {
+            "access": access,
+            "Content-Type": "application/json",
+          }
+        })
+        .then(() => {
+          //좋아요 취소 후 로직
+          if (isNested) {
+            setNestedComments(prevNestedComments => ({
+              ...prevNestedComments,
+              [commentId]: prevNestedComments[commentId].map(nested => 
+                nested.commentId === nestedCommentId 
+                ? { ...nested, likeCount: nested.likeCount - 1 } 
+                : nested
+              )
+            }));
+          } else {
+            setComments(prevComments => prevComments.map(comment => 
+              comment.commentId === commentId 
+              ? { ...comment, likeCount: comment.likeCount - 1 } 
+              : comment
+            ));
+          }
+          setLikes(prevLikes => ({
+            ...prevLikes,
+            [targetId]: false,
+          }));
+        })
+        .catch(error => {
+          console.log("좋아요 취소 중 오류 발생:", error);
+        });
+    } else {
+        axios.post(`${BASE_URL}/api/likes/comment`, {commentId : commentId}, {
+           headers: {
+            "access": access,
+            "Content-Type": "application/json",
+          }
+        })
+        // 좋아요 등록 후 로직
+        .then(() => {
+          if (isNested) {
+            setNestedComments(prevNestedComments => ({
+              ...prevNestedComments,
+              [commentId]: prevNestedComments[commentId].map(nested => 
+                nested.commentId === nestedCommentId 
+                ? { ...nested, likeCount: nested.likeCount + (likes[nestedCommentId] ? -1 : 1) } 
+                : nested
+              )
+            }));
+          } else {
+            setComments(prevComments => prevComments.map(comment => 
+              comment.commentId === commentId 
+              ? { ...comment, likeCount: comment.likeCount + (likes[commentId] ? -1 : 1) } 
+              : comment
+            ));
+          }
+          setLikes(prevLikes => ({
+            ...prevLikes,
+            [isNested ? nestedCommentId : commentId]: !prevLikes[isNested ? nestedCommentId : commentId],
+          }));
+        })
+        .catch(error => {
+          console.log("좋아요 토글 중 오류 발생:", error);
+        });
       }
-    })
-    .then(() => {
-      if (isNested) {
-        setNestedComments(prevNestedComments => ({
-          ...prevNestedComments,
-          [commentId]: prevNestedComments[commentId].map(nested => 
-            nested.commentId === nestedCommentId 
-            ? { ...nested, likeCount: nested.likeCount + (likes[nestedCommentId] ? -1 : 1) } 
-            : nested
-          )
-        }));
-      } else {
-        setComments(prevComments => prevComments.map(comment => 
-          comment.commentId === commentId 
-          ? { ...comment, likeCount: comment.likeCount + (likes[commentId] ? -1 : 1) } 
-          : comment
-        ));
-      }
-      setLikes(prevLikes => ({
-        ...prevLikes,
-        [isNested ? nestedCommentId : commentId]: !prevLikes[isNested ? nestedCommentId : commentId],
-      }));
-    })
-    .catch(error => {
-      console.log("좋아요 토글 중 오류 발생:", error);
-    });
   };
 
   // 입력
@@ -405,39 +541,45 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
 
   return (
     <>
-      {comments.map((comment, idx) => (
-        <div key={idx}>
+      {comments?.map((comment, idx) => (
+        <>
+        {!comment || !comment?.imageSrc || !comment?.nickname && (
+          isLoading && <div>Loading...</div>
+        )}
+        <div ref={lastCommentElementRef} key={idx}>
           <CommentItem>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <CommentUserImage src={"https://www.rebu.kro.kr/data/" + comment.imageSrc} alt="User" />
+              <CommentUserImage src={"https://www.rebu.kro.kr/data/" + comment?.imageSrc} alt="User" />
               <CommnetDetails>
                 <CommentHeader>
-                  <CommentUsername>{comment.nickname}</CommentUsername>
+                  <CommentUsername>{comment?.nickname}</CommentUsername>
                   <CommentTime>
-                    {timeSince(new Date(comment.createAt))}
+                    {timeSince(new Date(comment?.createAt))}
                   </CommentTime>
                 </CommentHeader>
-                <CommentContent>{comment.content}</CommentContent>
+                <CommentContent>{comment?.delete ? "(삭제된 댓글입니다)" : comment?.content}</CommentContent>
                 <div style={{ display: "flex" }}>
                   <ReplyLink onClick={() => handleShowRepliesToggle(comment?.commentId)}>
                     {showReplies[comment?.commentId] ? "답글숨기기" : "답글보기"}
                   </ReplyLink> &nbsp;&nbsp;
-                  <ReplyLink onClick={() => setReplyingTo(replyingTo === comment.commentId ? null : comment.commentId)}>
+                  <ReplyLink onClick={() => setReplyingTo(replyingTo === comment?.commentId ? null : comment?.commentId)}>
                     답글달기
                   </ReplyLink>
                 </div>
               </CommnetDetails>
             </div>
             <div>
-              {comment?.nickname === currentUser.nickname && (
+              {!comment?.delete && comment?.nickname === currentUser.nickname && (
                 <DeleteButton onClick={() => handleDeleteComment(comment?.commentId)}>
                   <FaTrashAlt />
                 </DeleteButton>
               )}
-              <LikeButton onClick={() => handleLikeToggle(comment?.commentId)}>
-                {likes[comment?.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
-              </LikeButton>
-              {comment?.likeCount > 0 && <LikeCount>{comment?.likeCount}</LikeCount>}
+              {!comment?.delete && (
+                <LikeButton onClick={() => handleLikeToggle(comment?.commentId)}>
+                  {likes[comment?.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
+                </LikeButton>
+              )}
+              {!comment?.delete && comment?.likeCount > 0 && <LikeCount>{comment?.likeCount}</LikeCount>}
             </div>
           </CommentItem>
 
@@ -452,19 +594,21 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
                       {timeSince(new Date(reply?.createAt))}
                     </CommentTime>
                   </CommentHeader>
-                  <CommentContent>{reply?.content}</CommentContent>
+                  <CommentContent>{reply?.delete ? "(삭제된 댓글입니다)" : reply?.content}</CommentContent>
                 </CommnetDetails>
               </div>
               <div>
-                {reply?.nickname === currentUser.nickname && (
+                {!reply?.delete && reply?.nickname === currentUser.nickname && (
                   <DeleteButton onClick={() => handleDeleteReply(comment?.commentId, reply?.commentId)}>
                     <FaTrashAlt />
                   </DeleteButton>
                 )}
-                <LikeButton onClick={() => handleLikeToggle(comment?.commentId, true, reply?.commentId)}>
-                  {likes[reply?.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
-                </LikeButton>
-                {reply?.likeCount > 0 && <LikeCount>{reply?.likeCount}</LikeCount>}
+                {!reply?.delete && (
+                  <LikeButton onClick={() => handleLikeToggle(comment?.commentId, true, reply?.commentId)}>
+                    {likes[reply?.commentId] ? <FaHeart color="red" /> : <FaRegHeart />}
+                  </LikeButton>
+                )}
+                {!reply?.delete && reply?.likeCount > 0 && <LikeCount>{reply?.likeCount}</LikeCount>}
               </div>
             </CommentItem>
           ))}
@@ -487,6 +631,7 @@ const PostComment = ({ information, posts, setPosts, currentUser, index, feedId 
             </CommentInputWrapper>
           )}
         </div>
+        </>
       ))}
       <CommentInputWrapper>
         <CommentImage src={"https://www.rebu.kro.kr/data/" + currentUser.imageSrc} alt="User" />

@@ -83,7 +83,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const [likeCard, setLikeCard] = useState([]);
   const [reviewdata, setReveiwData] = useState([]);
   const [ratingAvg, setRatingAvg] = useState(0);
-  // const [scrapdata, setScrapData] = useState([]);
+  const [scrapdata, setScrapData] = useState([]);
   const [postdata, setPostdata] = useState([]);
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] = useState([]);
@@ -194,7 +194,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("직원 리뷰 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   // 가게 평점 계산
   useEffect(() => {
@@ -211,9 +211,35 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
     }
   });
 
+
+  // 스크랩 조회
+  useEffect(() => {
+    if (type !== 'SHOP') {
+      const access = localStorage.getItem('access');
+      axios.get(`${BASE_URL}/api/feeds`, {
+        params: {
+          scrapedBy: nickname
+        },
+        headers : {
+          "access" : access,
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        console.log("스크랩 데이터를 조회했습니다")
+        console.log(response.data.body)
+        setScrapData(response.data.body);
+      })
+      .catch(err => {
+        console.log('스크랩 데이터를 찾지 못했습니다');
+      })
+    }
+  }, [profile]);
+
+
   // 매장, 직원 피드(post) 조회
   useEffect(() => {
-    if (type === "SHOP" && isLogin) {
+    if (type === "SHOP") {
       const access = localStorage.getItem("access");
       axios
         .get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
@@ -229,7 +255,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
         .catch((err) => {
           console.log("매장 피드 데이터를 찾지 못했습니다");
         });
-    } else if (type === "EMPLOYEE" && isLogin) {
+    } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
       axios
         .get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
@@ -246,7 +272,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("직원 피드 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   // 매장 즐겨찾기 전체 조회
   useEffect(() => {
@@ -267,7 +293,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
           console.log("즐겨찾기 데이터를 찾지 못했습니다");
         });
     }
-  }, []);
+  }, [profile]);
 
   const handleScroll = () => {
     if (tabRef.current) {
@@ -286,6 +312,8 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
     };
   }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
+
+  //타입별 탭 구분
 useEffect(() => {
   if (type === "COMMON") {
     setTabTitle([
@@ -322,13 +350,14 @@ useEffect(() => {
           loginUser={nickname}
           type={type}
           currentTab={currentTab}
+          reviewdata={renderGrid}
         />
       );
     } else if (content === "Scrap") {
       return (
         <ScrapGrid
           key={key}
-          Card={reviewdata}
+          Card={scrapdata}
           currentUser={profile}
           loginUser={nickname}
         />
@@ -350,6 +379,7 @@ useEffect(() => {
           loginUser={nickname}
           type={type}
           currentTab={currentTab}
+          reviewdata={reviewdata}
         />
       );
     } else if (content === "Reservation") {

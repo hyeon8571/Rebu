@@ -74,7 +74,7 @@ const PostDeleteButton = styled.button`
 `;
 
 
-const PostDelete = ({nickname, postId, PostDeleteModalOpen, closeModal, type }) => {
+const PostDelete = ({nickname, postId, PostDeleteModalOpen, closeModal, type, onDelete }) => {
 
 
   const postdelete = () => {
@@ -90,7 +90,9 @@ const PostDelete = ({nickname, postId, PostDeleteModalOpen, closeModal, type }) 
       .then(response => {
         console.log(response + "리뷰가 성공적으로 삭제되었습니다.");
         closeModal();
-        
+        if (onDelete) {
+          onDelete(); // 부모 컴포넌트로 상태 업데이트 알림
+        }
         // 여기서 추가적인 작업 (예: 페이지 리로드 또는 상태 업데이트)
       })
       .catch(error => {
@@ -107,6 +109,9 @@ const PostDelete = ({nickname, postId, PostDeleteModalOpen, closeModal, type }) 
       .then(response => {
         console.log(response + "피드가 성공적으로 삭제되었습니다.");
         closeModal();
+        if (onDelete) {
+          onDelete();
+        }
         // 여기서 추가적인 작업 (예: 페이지 리로드 또는 상태 업데이트)
       })
       .catch(error => {

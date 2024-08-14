@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import PropTypes from 'prop-types';
 import PostDetail from "../post/PostDetail";
-import ReviewKeywordStat from "../storeProfile/ReviewKeywordStat";
+import ReviewKeywordStat from "../review/ReviewKeywordStat";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -74,7 +74,7 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
+function GridComponent({ Card, currentUser, loginUser, type, currentTab, reviewdata }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
@@ -142,9 +142,14 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
 
   return (
     <>
-      {Card == false && type === "SHOP" && (
+      {Card == false && type === "SHOP" &&  currentTab === 0 && (
         <h3 style={{color: "#b475f3", fontSize: "18px"}}>
           작성한 게시글이 없습니다
+        </h3>
+      )}
+      {Card == false && type === "SHOP" && currentTab === 1 && (
+        <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+          작성된 리뷰가 없습니다
         </h3>
       )}
       {Card == false && type === "COMMON" && (
@@ -152,7 +157,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
           작성한 리뷰가 없습니다
         </h3>
       )}
-      {type === "SHOP" && currentTab === 1 && (
+      {Card == true && type === "SHOP" && currentTab === 1 && (
         <>
           {keywordBtnActive ? (
             <ReviewKeywordBtnActive onClick={handletoggleContent}>리뷰 키워드</ReviewKeywordBtnActive>
@@ -161,7 +166,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
           )}
           <ReviewKeywordList expanded={openReviewKeyword}>
             {openReviewKeyword && (
-              <ReviewKeywordStat reviewNum={100}/>
+              <ReviewKeywordStat reviewNum={reviewdata.length} nickname={currentUser.nickname}/>
             )}
           </ReviewKeywordList>
         </>
@@ -186,7 +191,7 @@ function GridComponent({ Card, currentUser, loginUser, type, currentTab }) {
                 data-grid={layouts.lg[index]}
                 onClick={() => handlePhotoClick(index)}
               >
-                <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
+              <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
               </GridItem>
             ))}
           </ResponsiveGridLayout>

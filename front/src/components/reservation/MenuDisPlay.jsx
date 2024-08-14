@@ -6,7 +6,8 @@ import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../util/apiClient";
+
 const Wrapper = styled.div`
   padding-left: 1rem;
   padding-right: 1rem;
@@ -112,7 +113,7 @@ export default function MenuDisplay() {
   const BASE_URL = "https://www.rebu.kro.kr";
 
   useEffect(() => {
-    axios
+    apiClient
       .get(`${BASE_URL}/api/menus?employeeNickname=` + nickname, {
         headers: {
           "Content-Type": "application/json",
@@ -280,7 +281,7 @@ export default function MenuDisplay() {
                 }}
               >
                 <PhotoContainer
-                  src={process.env.PUBLIC_URL + "images/" + item.images[0]}
+                  src={"https://www.rebu.kro.kr/data/" + item.images[0]}
                 />
                 <ContentContainer>
                   <MenuTitleContainer>{item.title}</MenuTitleContainer>

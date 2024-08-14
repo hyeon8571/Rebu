@@ -6,7 +6,7 @@ const apiClient = axios.create({
   baseURL: "https://www.rebu.kro.kr", // 백엔드 API 주소
   headers: {
     "Content-Type": "application/json",
-    access: `${localStorage.getItem("access_token")}`,
+    access: `${localStorage.getItem("access")}`,
   },
   withCredentials: true, // 쿠키 전송 설정
 });

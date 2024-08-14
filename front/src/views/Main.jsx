@@ -9,6 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "./Signup";
 import Login from "./Login";
 
+
 const Wrapper = styled.div`
   background-color: ${(props) =>
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
@@ -17,29 +18,94 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  max-width: 768px;
   margin-bottom: 70px;
 `;
+
 
 function Main({ theme, toggleTheme }) {
   const [loginUser, setLoginUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
+  const [distance, setDistance] = useState(5);
+  const [period, setPeriod] = useState('');
+  const [sortedLike, setSortedLike] = useState(false);
+  const [category, setCategory] = useState('');
   const [alarmdata, setAlarmdata] = useState([]);
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
   const dispatch = useDispatch();
+  const nickname = localStorage.getItem('nickname');
+  const type = localStorage.getItem('type');
+  const access = localStorage.getItem("access");
+  const [error, setError] = useState(null);
+  
 
-  //리덕스에서 정보 가져오기
-  const {
-    nickname,
-    type,
-    isLogin,
-  } = useSelector((state) => state.auth);
+  // 로그인 사용자 프로필 정보 조회
+  useEffect(() => {
+    if (type === "COMMON") {
+      axios
+        .get(`${BASE_URL}/api/profiles/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("사용자 프로필 데이터를 찾지 못했습니다");
+        });
+    } else if (type === "SHOP") {
+      axios
+        .get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("사용자 프로필 데이터를 찾지 못했습니다");
+        });
+    } else if (type === "EMPLOYEE") {
+      axios
+        .get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("사용자 프로필 데이터를 찾지 못했습니다");
+        });
+    };
+  }, []);
+    
 
+  // 전체 피드 조회
   useEffect(() => {
     const access = localStorage.getItem('access');
-    axios.get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
+    const lat = currentLocation.latitude
+    const lng = currentLocation.longitude
+
+    axios.get(`${BASE_URL}/api/feeds`, {
+      params: {
+        lat: lat,
+        lng: lng,
+        distance: distance,
+        category: category,
+        period: period,
+        sortedLike: sortedLike
+      },
       headers : {
         "access" : access,
         "Content-Type": "application/json"
@@ -47,7 +113,9 @@ function Main({ theme, toggleTheme }) {
     })
     .then(response => {
       console.log(response)
-      setPostdata(response.data.body);
+      console.log("피드 데이터를 조회했습니다")
+      console.log(response.data.body)
+      setFeed(response.data.body);
     })
     .catch(err => {
       console.log('피드 데이터를 찾지 못했습니다');
@@ -64,7 +132,7 @@ function Main({ theme, toggleTheme }) {
         setAlarmdata(alarm || data.body);
         setAlarmCount(alarm.length);
       });
-  }, [loginUser]);
+  }, [feed]);
 
   // useEffect(() => {
   //   const initializeAlarms = async () => {
@@ -87,9 +155,23 @@ function Main({ theme, toggleTheme }) {
 
   return (
     <Wrapper>
-      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={loginUser} Count={alarmCount} alarmdata={alarmdata}/>
-      <MainFilter currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
-      <MainFeed information={feed} currentUser={profile} loginUser={loginUser} />
+      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={nickname} Count={alarmCount} alarmdata={alarmdata}/>
+      <MainFilter 
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
+        category={category}
+        setCategory={setCategory}
+        distance={distance}
+        setDistance={setDistance}
+        sortedLike={sortedLike}
+        setSortedLike={setSortedLike}
+        period={period}
+        setPeriod={setPeriod}
+        feed={feed}
+        setFeed={setFeed}
+
+        />
+      <MainFeed information={feed} currentUser={profile} loginUser={nickname} type={type}/>
     </Wrapper>
   );
 }
