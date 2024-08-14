@@ -5,6 +5,11 @@ spring:
     include: secret
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 100
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000명
   #  sql:
   #    init:
   #      data-locations: classpath:data.sql
