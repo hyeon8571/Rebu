@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
+import { BASE_IMG_URL } from "../../util/commonFunction";
+import { Link, NavLink } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +74,7 @@ const TitleWrapper = styled.div`
   }
 `;
 
-const TitleText = styled.div`
+const TitleText = styled(NavLink)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -145,11 +147,11 @@ export default function ShopCard({ Card }) {
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.img} />
+          <Photo src={BASE_IMG_URL + "/" + Card.img} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText>
+            <TitleText to={`/profiles/${nickname}/shop`}>
               {Card.title}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>

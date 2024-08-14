@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Img from "../../assets/images/img.webp";
 import { CgAddR } from "react-icons/cg";
@@ -9,7 +9,8 @@ import ProfileMedium from "./ProfileMedium";
 import ModalPortal from "../../util/ModalPortal";
 import SearchModal from "../Search/SearchModal";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { BASE_IMG_URL, BASE_URL } from "../../util/commonFunction";
+import apiClient from "../../util/apiClient";
 
 const GridContainer = styled.div`
   display: grid;
@@ -64,34 +65,48 @@ const SearchDiv = styled.div`
     props.isModalOpen ? props.theme.body : "none"};
 `;
 
-const ProfileNavLink = styled(NavLink)``;
+const ProfileDiv = styled.div`
+  cursor: pointer;
+`;
 
 const ICON_SIZE = 36;
 
-const ProfileNavItem = () => {
-  const navigate = useNavigate();
-
-  const nickname = localStorage.getItem("nickname");
-  const type = localStorage.getItem("type");
-
-  const handleProfileClick = () => {
-    // console.log(`/profile/${nickname}/${type}`);
-    navigate(`/profile/${nickname}/${type}`);
-  };
-
-  return (
-    <div onClick={handleProfileClick}>
-      <ProfileMedium img={Img} time={0} />
-    </div>
-  );
-};
+const nickname = localStorage.getItem("nickname");
+const type = localStorage.getItem("type");
 
 export default function NavigationRail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImg, setProfileImg] = useState(null);
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+  useEffect(() => {
+    let EndPoint = "";
+    switch (localStorage.getItem("type")) {
+      case "COMMON":
+        EndPoint = "/api/profiles";
+        break;
+      case "EMPLOYEE":
+        EndPoint = "/api/profiles/employees";
+        break;
+      case "SHOP":
+        EndPoint = "/api/profiles/shops";
+        break;
+    }
+
+    const nickname = localStorage.getItem("nickname");
+
+    apiClient
+      .get(`${BASE_URL}${EndPoint}/${nickname}`)
+      .then((response) => {
+        setProfileImg(response.data.body.imageSrc);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <GridContainer>
@@ -123,10 +138,14 @@ export default function NavigationRail() {
         <div></div>
         <div></div>
         <div></div>
-        {/* <ProfileNavLink to="/profile">
-          <ProfileMedium img={Img} time={0} />
-        </ProfileNavLink>{" "} */}
-        <ProfileNavItem />
+        <ProfileDiv onClick={() => navigate(`/profile/${nickname}/${type}`)}>
+          <NavigationItem>
+            <ProfileMedium
+              img={profileImg ? BASE_IMG_URL + profileImg : Img}
+              time={0}
+            />
+          </NavigationItem>
+        </ProfileDiv>
       </Rail>
     </GridContainer>
   );

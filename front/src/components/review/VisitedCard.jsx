@@ -3,6 +3,8 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import noImg from "../../assets/images/img.webp";
 import { formatDateTime } from "../../util/commonFunction";
 import ReviewButton from "./ReviewButton";
+import { BASE_IMG_URL } from "../../util/commonFunction";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -133,15 +135,18 @@ export default function VisitedCard({ Card, button }) {
     console.log("카드 컴포넌트 불러오기 실패");
     return null;
   }
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.img ? Card.img : noImg} />
+          <Photo src={BASE_IMG_URL + "/" + (Card.img ? Card.img : noImg)} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText>
+            <TitleText
+              onClick={() => navigate(`/profile/${Card.nickname}/SHOP`)}
+            >
               {Card.title}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>

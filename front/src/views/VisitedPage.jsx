@@ -114,6 +114,7 @@ export default function VisitedPage() {
                   title: item.shop.name,
                   menu: item.menu.title,
                   date: item.startDateTime,
+                  nickname: item.shop.nickname,
                   designer:
                     item.employee.workingName + " " + item.employee.role,
                   status: item.isReviewed,
@@ -130,6 +131,7 @@ export default function VisitedPage() {
                           img: item.shop.imageSrc,
                           title: item.shop.name,
                           menu: item.menu.title,
+                          nickname: item.shop.nickname,
                           designer:
                             item.employee.workingName +
                             " " +

@@ -16,7 +16,7 @@ import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/MyProfile/ReviewGrid";
 import ScrapGrid from "../components/MyProfile/ScrapGrid";
 import LikesCard from "../components/MyProfile/LikesCard";
-import TimeTable from "../components/reservation/TimeTable";
+import TimeTable from "../views/TimeTablePage";
 import DesignerGrid from "../components/reservation/DesignerDisplay";
 import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
@@ -89,8 +89,6 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const [followingdata, setFollowingData] = useState([]);
   const [loginUser, setLoginUser] = useState([]);
 
-  // Redux 상태에서 필요한 정보 가져오기
-  const { isLogin } = useSelector((state) => state.auth);
   const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
@@ -213,7 +211,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
 
   // 매장, 직원 피드(post) 조회
   useEffect(() => {
-    if (type === "SHOP" && isLogin) {
+    if (type === "SHOP") {
       const access = localStorage.getItem("access");
       axios
         .get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
@@ -229,7 +227,7 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
         .catch((err) => {
           console.log("매장 피드 데이터를 찾지 못했습니다");
         });
-    } else if (type === "EMPLOYEE" && isLogin) {
+    } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
       axios
         .get(`${BASE_URL}/api/feeds/employees/${nickname}`, {

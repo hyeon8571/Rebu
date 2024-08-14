@@ -22,7 +22,7 @@ export const GlobalStyles = createGlobalStyle`
     margin : 0;
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
-    transition: background-color 0.50s linear;
+    transition: background-color 0.50s linear !important;
     font-family: 'SUIT-Regular';
   }
   

@@ -44,7 +44,7 @@ export default function Components({ theme, toggleTheme }) {
   const buttons2 = {
     id: 1,
     onClick: () => {
-      navigate("/designer");
+      navigate("/designertab");
     },
     highlight: true,
     title: "에약 플로우",

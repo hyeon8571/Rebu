@@ -11,6 +11,7 @@ import AppRoutes from "./routes/AppRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import { isAuthenticated } from "./util/auths"; // isAuthenticated 함수 가져오기
 import axios from "axios";
+import { BASE_URL } from "./util/commonFunction";
 
 const Grid = styled.div`
   @media (min-width: 769px) {
@@ -46,9 +47,15 @@ function App() {
 
   const handleLogout = () => {
     setAuth(false);
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
   };
+
+  // useEffect(() => {
+  //   axios
+  //     .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
+  //     .then((response) => {
+  //       console.log(response);
+  //     });
+  // }, []);
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
@@ -56,7 +63,12 @@ function App() {
         <GlobalStyles />
         <Grid>
           {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
-          {auth && (isMobile ? <NavigationBar /> : <NavigationRail />)}
+          {auth &&
+            (isMobile ? (
+              <NavigationBar auth={auth} />
+            ) : (
+              <NavigationRail auth={auth} />
+            ))}
           <Layout>
             <AppRoutes
               theme={theme}

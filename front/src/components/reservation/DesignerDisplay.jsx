@@ -7,9 +7,10 @@ import InviteDesigner from "./InviteDesigner";
 import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ModalPortal from "../../util/ModalPortal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
+import apiClient from "../../util/apiClient";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -74,7 +75,8 @@ const ReviewContainer = styled.span`
 `;
 
 const DesignerPhoto = styled.img`
-  width: 100%;
+  width: 125px;
+  height: 125px;
   max-width: 150px;
   border-radius: 50rem;
 `;
@@ -109,8 +111,8 @@ const MenuLink = styled.div`
 `;
 
 //profileType 1은 일반프로필, 2는 디자이너, 3은 매장
-export default function DesignerDisplay({ profileType }) {
-  const [isMale, setIsMale] = useState(false);
+export default function DesignerDisplay() {
+  const [isMale, setIsMale] = useState("MALE");
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -119,45 +121,29 @@ export default function DesignerDisplay({ profileType }) {
 
   const navigate = useNavigate();
 
-  // localStorage로 전달
-  profileType = 2;
   //매장 프로필의 닉네임
-  const nickname = "rebu4_hair3";
+  const { nickname, type } = useParams();
+  // const nickname = localStorage.getItem("nickname");
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/profiles/shop/${nickname}/employees`, {
-        headers: {
-          "Content-Type": "application/json",
-          Access: localStorage.getItem("access"),
-        },
-      })
+    apiClient
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
       .then((response) => {
         console.log(response);
+        setDesigners(response.data.body);
       })
       .catch((error) => {
-        console.error("Fetch error:", error);
+        console.error("Failed to fetch ", error);
       });
-    // fetch("/mockdata/shopemployees.json")
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((jsondata) => {
-    //     const data = jsondata.body;
-    //     console.log(data);
-    //     setDesigners(data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Fetch error:", error);
-    //   });
   }, []);
 
   const toggleHandler = () => {
     // isMale의 상태를 변경하는 메소드를 구현
-    setIsMale(!isMale);
+    if (isMale === "MALE") {
+      setIsMale("FEMALE");
+    } else {
+      setIsMale("MALE");
+    }
   };
 
   function handleModifyDesigner() {
@@ -209,15 +195,17 @@ export default function DesignerDisplay({ profileType }) {
         </ModalNoBackNoExit>
       </ModalPortal>
       <UpperTabWrapper>
-        <Switch isMan={isMale} toggleHandler={toggleHandler} />
-        {(profileType === 2 || profileType === 3) && !isEditMode && (
-          <EditDesignerButton onClick={handleModifyDesigner}>
-            디자이너 관리
-          </EditDesignerButton>
-        )}
+        <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
+        {(localStorage.getItem("type") === "DESIGNER" ||
+          localStorage.getItem("type") === "SHOP") &&
+          !isEditMode && (
+            <EditDesignerButton onClick={handleModifyDesigner}>
+              디자이너 관리
+            </EditDesignerButton>
+          )}
         {isEditMode && (
           <ButtonWrapper>
-            {profileType === 3 && (
+            {localStorage.getItem("type") === "SHOP" && (
               <EditButton onClick={handleAddDesigner}>추가</EditButton>
             )}
             <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
@@ -240,7 +228,7 @@ export default function DesignerDisplay({ profileType }) {
               <MenuLink
                 onClick={() =>
                   navigate("/menudisplay", {
-                    state: { nickname: currentNickname },
+                    state: { nickname: item.nickname },
                   })
                 }
               >
@@ -250,12 +238,12 @@ export default function DesignerDisplay({ profileType }) {
             </DesignerContent>
             <DesignerPhotoContainer>
               <DesignerPhoto
-                src={process.env.PUBLIC_URL + "keyword/" + item.image}
+                src={"http://www.rebu.kro.kr/data/" + item.imageSrc}
               />
             </DesignerPhotoContainer>
             {isEditMode && (
               <ButtonWrapper>
-                {item.nickname === currentNickname && (
+                {item.nickname === localStorage.getItem("nickname") && (
                   <EditButton
                     onClick={() =>
                       handleModifyInstruction(item.workingIntroduction)
@@ -264,7 +252,8 @@ export default function DesignerDisplay({ profileType }) {
                     수정
                   </EditButton>
                 )}
-                {profileType === 3 || item.nickname === currentNickname ? (
+                {localStorage.getItem("type") === "SHOP" ||
+                item.nickname === localStorage.getItem("nickname") ? (
                   <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
                 ) : null}
               </ButtonWrapper>

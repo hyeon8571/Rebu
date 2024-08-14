@@ -3,6 +3,9 @@ import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import ButtonDisabled from "../common/ButtonDisabled";
 import { formatDateTime } from "../../util/commonFunction";
+import { BASE_IMG_URL } from "../../util/commonFunction";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const GridContainer = styled.div`
   display: grid;
@@ -131,14 +134,15 @@ const DesignerWrapper = styled.div`
 `;
 
 export default function Reservation({ info, button }) {
+  const navigate = useNavigate();
   return (
     <GridContainer>
       <PhotoSection>
-        <Photo src={info.img} />
+        <Photo src={BASE_IMG_URL + info.img} />
       </PhotoSection>
       <Content>
         <TitleWrapper>
-          <TitleText>
+          <TitleText onClick={() => navigate(`/profile/${info.nickname}/SHOP`)}>
             {info.title}
             <HiOutlineChevronRight></HiOutlineChevronRight>
           </TitleText>

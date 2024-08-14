@@ -117,20 +117,9 @@ export default function ImgUploader({
   const onchangeImageUpload = (e) => {
     const { files } = e.target;
     const uploadFiles = Array.from(files);
-    const newUrls = [];
 
-    uploadFiles.forEach((uploadFile) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadFile);
-      reader.onloadend = () => {
-        newUrls.push(reader.result);
-        // 모든 파일이 다 읽힌 후 상태 업데이트
-        if (newUrls.length === uploadFiles.length) {
-          const allUrls = [...uploadImgUrls, ...newUrls];
-          setUploadImgUrls(allUrls);
-        }
-      };
-    });
+    const allFiles = [...uploadImgUrls, ...uploadFiles];
+    setUploadImgUrls(allFiles);
   };
 
   const handleDelete = (index) => {
@@ -141,12 +130,15 @@ export default function ImgUploader({
   return (
     <ImgDisplayer>
       {uploadImgUrls &&
-        uploadImgUrls.map((url, index) => (
-          <ImgWrapper key={index} onClick={() => handleDelete(index)}>
-            <UploadedImg src={url} alt={`upload-${index}`} />
-            <DelIcon size={24} />
-          </ImgWrapper>
-        ))}
+        uploadImgUrls.map((file, index) => {
+          const url = URL.createObjectURL(file);
+          return (
+            <ImgWrapper key={index} onClick={() => handleDelete(index)}>
+              <UploadedImg src={url} alt={`upload-${index}`} />
+              <DelIcon size={24} />
+            </ImgWrapper>
+          );
+        })}
 
       {uploadImgUrls && uploadImgUrls.length < imgLimit && (
         <label htmlFor="file">

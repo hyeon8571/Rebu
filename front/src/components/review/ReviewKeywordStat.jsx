@@ -116,12 +116,10 @@ const StatNum = styled.div`
   padding-right: 1rem;
 `;
 
-export default function ReviewKeywordStat({ reviewNum }) {
+export default function ReviewKeywordStat({ reviewNum, nickname }) {
   const [data, setData] = useState([]);
 
   const BASE_URL = "https://www.rebu.kro.kr";
-
-  const nickname = "rebu4_hair3";
 
   useEffect(() => {
     axios

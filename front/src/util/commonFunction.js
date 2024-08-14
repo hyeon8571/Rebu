@@ -1,4 +1,5 @@
 export const BASE_URL = "https://www.rebu.kro.kr";
+export const BASE_IMG_URL = "https://www.rebu.kro.kr/data";
 
 export function formatDateTime(dateString) {
   // Date 객체로 변환

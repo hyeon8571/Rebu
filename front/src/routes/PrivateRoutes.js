@@ -79,7 +79,7 @@ const PrivateRoutes = ({ theme, toggleTheme, handleLogout }) => (
       }
     />
     <Route
-      path="/timetable"
+      path="/profile/:nickname/SHOP/timetable"
       element={<ProtectedRoute element={TimeTablePage} />}
     />
     <Route path="/menutab" element={<ProtectedRoute element={MenuTab} />} />

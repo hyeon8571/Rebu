@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import { useState } from "react";
 import ButtonLarge from "../components/common/ButtonLarge";
-import PostReview2 from "../components/review/PostReview2";
 import PostFeed from "../components/PostFeed/PostFeed";
+import axios from "axios";
+import { BASE_URL } from "../util/commonFunction";
+import ModalPortal from "../util/ModalPortal";
+import ModalNoBackNoExit from "../components/common/ModalNoBackNoExit";
+import CheckFeed from "../components/PostFeed/CheckFeed";
 
 const ButtonWrapper = styled.div`
   margin-top: 3rem;
@@ -22,11 +26,57 @@ function scrollUp(top) {
 export default function PostFeedPage() {
   const [feed, setFeed] = useState({
     images: [],
-    contents: "",
-    hashTags: [],
+    content: "",
+    hashtags: [],
   });
   const [animationKey, setAnimationKey] = useState(0);
   const [isImgAlert, setIsImgAlert] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [isSubmitOk, setIsSubmitOk] = useState(false);
+
+  async function submitFeed() {
+    let endpointURL = "";
+    if (localStorage.getItem("type") === "EMPLOYEE") {
+      endpointURL = "/api/feeds/employee";
+    } else if (localStorage.getItem("type") === "SHOP") {
+      endpointURL = "/api/feeds/shop";
+    }
+
+    console.log({
+      images: feed.images,
+      content: feed.content,
+      hashtags: feed.hashtags,
+    });
+    await axios
+      .post(
+        `${BASE_URL}${endpointURL}`,
+        {
+          images: feed.images,
+          content: feed.content,
+          hashtags: feed.hashtags,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Access: `${localStorage.getItem("access")}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        console.log(feed);
+        setIsModalOpen(true);
+        setSubmitLoading(false);
+        setIsSubmitOk("OK");
+      })
+      .catch((error) => {
+        console.error("Error submitting the Feed:", error);
+        setSubmitLoading(false);
+        setIsSubmitOk("FAIL");
+        return false;
+      });
+  }
 
   function ValidationFeed() {
     const imgPosition =
@@ -35,15 +85,31 @@ export default function PostFeedPage() {
       setIsImgAlert(true);
       setAnimationKey(animationKey + 1);
       setTimeout(() => scrollUp(imgPosition), 100);
+      return false;
     }
+    return true;
   }
 
   function handleSubmit() {
-    ValidationFeed();
+    if (ValidationFeed()) {
+      submitFeed();
+    }
     console.log(feed);
   }
   return (
     <>
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          <CheckFeed
+            setIsModalOpen={setIsModalOpen}
+            submitFeed={handleSubmit}
+            setSubmitLoading={setSubmitLoading}
+            setIsSubmitOk={setIsSubmitOk}
+            isSubmitOk={isSubmitOk}
+            uploaded={isSubmitOk}
+          ></CheckFeed>
+        </ModalNoBackNoExit>
+      </ModalPortal>
       <PostFeed
         feed={feed}
         setFeed={setFeed}
@@ -57,7 +123,7 @@ export default function PostFeedPage() {
             id: 1,
             title: "작성",
             onClick: () => {
-              handleSubmit();
+              setIsModalOpen(true);
             },
             highlight: true,
           }}

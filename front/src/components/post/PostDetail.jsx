@@ -1,11 +1,18 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaRegHeart, FaHeart, FaRegComment, FaRegBookmark, FaBookmark, FaRegStar } from "react-icons/fa";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaRegComment,
+  FaRegBookmark,
+  FaBookmark,
+  FaRegStar,
+} from "react-icons/fa";
 import { FiMoreVertical } from "react-icons/fi";
 import { MdPlace } from "react-icons/md";
 import { RiSendPlaneLine } from "react-icons/ri";
-import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import PostDelete from "./PostDeleteModal";
 import PostComment from "./PostComment";
 import PostModifyModal from "./PostModifyModal";
@@ -15,7 +22,8 @@ import { BASE_URL } from "../../views/Signup";
 import nullImg from "../../assets/images/img.webp";
 
 const PostWrapper = styled.div`
-  background-color: ${(props) => (props.theme.value === "light" ? "#fbf8fe" : "#404040")};
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#fbf8fe" : "#404040"};
   width: 70%;
   @media (max-width: 425px) {
     width: 80%;
@@ -80,7 +88,7 @@ const ShopName = styled.span`
 `;
 
 const IconBox = styled.div`
-  color: #943AEE;
+  color: #943aee;
   font-size: 25px;
   margin-top: 10px;
   position: relative;
@@ -97,7 +105,8 @@ const DropdownMenu = styled.div`
   padding: 5px;
   z-index: 1;
   border-radius: 10px;
-  background-color: ${(props) => (props.theme.value === "light" ? "#ffffff" : "#e5e5e5")};
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#ffffff" : "#e5e5e5"};
   color: black;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(21, 17, 17, 0.1);
@@ -307,29 +316,37 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   const navigate = useNavigate();
   const updatedPost = location.state?.post;
   const modifyPostId = location.state?.postId;
-  const [showDropdown, setShowDropdown] = useState(Array(information.length).fill(false));
+  const [showDropdown, setShowDropdown] = useState(
+    Array(information.length).fill(false)
+  );
   const [postModifyModalOpen, setPostModifyModalOpen] = useState(false);
   const [PostDeleteModalOpen, setPostDeleteModalOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [isCommnetActive, setIsCommentActive] = useState(Array(information.length).fill(false));
-  const [posts, setPosts] = useState(information.map((post) => ({ ...post, currentIndex: 0 })));
-  const [expandedComments, setExpandedComments] = useState(Array(information.length).fill(false));
+  const [isCommnetActive, setIsCommentActive] = useState(
+    Array(information.length).fill(false)
+  );
+  const [posts, setPosts] = useState(
+    information.map((post) => ({ ...post, currentIndex: 0 }))
+  );
+  const [expandedComments, setExpandedComments] = useState(
+    Array(information.length).fill(false)
+  );
   const dropdownRefs = useRef([]);
   const [comment, setComment] = useState([]);
   const [shopdata, setShopData] = useState([]);
   const [page, setPage] = useState(0);
   console.log(information);
-  console.log(posts)
-
- 
-
+  console.log(posts);
 
   const nextSlide = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       const length = updatedPosts[index].feed.imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === length - 1 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex + 1;
+      updatedPosts[index].currentIndex =
+        updatedPosts[index].currentIndex === length - 1
+          ? updatedPosts[index].currentIndex
+          : updatedPosts[index].currentIndex + 1;
       return updatedPosts;
     });
   }, []);
@@ -338,7 +355,10 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       const length = updatedPosts[index].feed.imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === 0 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex - 1;
+      updatedPosts[index].currentIndex =
+        updatedPosts[index].currentIndex === 0
+          ? updatedPosts[index].currentIndex
+          : updatedPosts[index].currentIndex - 1;
       return updatedPosts;
     });
   }, []);
@@ -386,7 +406,7 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
   }, []);
 
   const handlePostSave = (updatedPost, index) => {
-    setPosts(prevPosts => {
+    setPosts((prevPosts) => {
       const newPosts = [...prevPosts];
       newPosts[index] = updatedPost;
       return newPosts;
@@ -416,18 +436,21 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
     closeModal();
   };
 
-  const toggleComments = useCallback((index) => {
-    setExpandedComments((prevExpandedComments) => {
-      const updatedExpandedComments = Array(information.length).fill(false);
-      updatedExpandedComments[index] = !prevExpandedComments[index];
-      return updatedExpandedComments;
-    });
-    setIsCommentActive((prevIsCommentActive) => {
-      const updatedIsCommentActive = Array(information.length).fill(false);
-      updatedIsCommentActive[index] = !prevIsCommentActive[index];
-      return updatedIsCommentActive;
-    });
-  }, [information.length]);
+  const toggleComments = useCallback(
+    (index) => {
+      setExpandedComments((prevExpandedComments) => {
+        const updatedExpandedComments = Array(information.length).fill(false);
+        updatedExpandedComments[index] = !prevExpandedComments[index];
+        return updatedExpandedComments;
+      });
+      setIsCommentActive((prevIsCommentActive) => {
+        const updatedIsCommentActive = Array(information.length).fill(false);
+        updatedIsCommentActive[index] = !prevIsCommentActive[index];
+        return updatedIsCommentActive;
+      });
+    },
+    [information.length]
+  );
 
   const handleShopNameClick = (nickname) => {
     navigate(`/profile/${nickname}/SHOP`);
@@ -450,14 +473,22 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
               {item.writer.profileImageSrc === null ? (
                 <ProfileImage src={nullImg} alt="Porfile" />
               ) : (
-                <ProfileImage src={"https://www.rebu.kro.kr/data/" + item.writer.profileImageSrc} alt="Profile" />
+                <ProfileImage
+                  src={
+                    "https://www.rebu.kro.kr/data/" +
+                    item.writer.profileImageSrc
+                  }
+                  alt="Profile"
+                />
               )}
               <ProfileDetails>
                 <Username>{item.writer.nickname}</Username>
                 <Location>
-                  <LocationIcon />
-                  <ShopName onClick={() => handleShopNameClick(item.shop.shopNickname)}>
-                    {item.shop.shopName}
+                  {item.shop && <LocationIcon />}
+                  <ShopName
+                    onClick={() => handleShopNameClick(item.shop?.shopNickname)}
+                  >
+                    {item.shop?.shopName}
                   </ShopName>
                 </Location>
               </ProfileDetails>
@@ -516,7 +547,9 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                 key={imgIndex}
                 src={"https://www.rebu.kro.kr/data/" + slide}
                 alt={`Slide ${imgIndex}`}
-                style={{ display: imgIndex === item.currentIndex ? "block" : "none" }}
+                style={{
+                  display: imgIndex === item.currentIndex ? "block" : "none",
+                }}
               />
             ))}
             <DotsWrapper>
@@ -528,16 +561,27 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
           <PostActions>
             <div style={{ display: "flex", alignItems: "center" }}>
               <ActionIcon onClick={() => handleLikeToggle(index)}>
-                {item.isLiked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
+                {item.isLiked ? (
+                  <FaHeart style={{ color: "red" }} />
+                ) : (
+                  <FaRegHeart />
+                )}
               </ActionIcon>
               <ActionIcon>
                 {isCommnetActive[index] ? (
                   <CommentIcon onClick={() => toggleComments(index)} />
                 ) : (
-                  <FaRegComment onClick={() => { toggleComments(index); scrollDown(); }} />
+                  <FaRegComment
+                    onClick={() => {
+                      toggleComments(index);
+                      scrollDown();
+                    }}
+                  />
                 )}
               </ActionIcon>
-              <ActionIcon><ShareIcon /></ActionIcon>
+              <ActionIcon>
+                <ShareIcon />
+              </ActionIcon>
             </div>
 
             {item.feed.rating ? (
@@ -546,12 +590,17 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
                 &nbsp;
                 <RatingText>{item.feed.rating}</RatingText>
               </Rating>
-            ) : ("")}
-
+            ) : (
+              ""
+            )}
           </PostActions>
           <Likes>좋아요 {item.feed.likeCnt}개</Likes>
           <PostDescription>
-            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.content : item.feed.content}
+            {updatedPost &&
+            modifyPostId === index &&
+            item.writer.nickname === loginUser
+              ? updatedPost.content
+              : item.feed.content}
           </PostDescription>
           <HashtagContainer>
             {item.feed.hashtags?.map((hashtag) => (
@@ -559,7 +608,12 @@ const PostDetail = ({ information, currentUser, loginUser, feedId }) => {
             ))}
           </HashtagContainer>
           <BottomWrapper>
-            <CommentText onClick={() => {toggleComments(index); scrollDown();}} >
+            <CommentText
+              onClick={() => {
+                toggleComments(index);
+                scrollDown();
+              }}
+            >
               댓글 {item.feed.commentCnt}개
             </CommentText>
             <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>

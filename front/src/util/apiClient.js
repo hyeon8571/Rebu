@@ -1,12 +1,13 @@
 // src/apiClient.js
 import axios from "axios";
+import { BASE_URL } from "./commonFunction";
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
   baseURL: "https://www.rebu.kro.kr", // 백엔드 API 주소
   headers: {
     "Content-Type": "application/json",
-    access: `${localStorage.getItem("access_token")}`,
+    Access: `${localStorage.getItem("access")}`,
   },
   withCredentials: true, // 쿠키 전송 설정
 });
@@ -28,13 +29,14 @@ apiClient.interceptors.response.use(
         originalRequest._retry = true;
         try {
           return axios
-            .post("/api/auths/refresh", {}, { withCredentials: true })
+            .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
             .then((res) => {
-              const newAccessToken = res.data.access;
-              localStorage.setItem("access", newAccessToken);
+              console.log(res);
+              // const newAccessToken = res.headers["access"];
+              // localStorage.setItem("access", newAccessToken);
 
               // 새로운 토큰으로 헤더 업데이트
-              originalRequest.headers["access"] = `${newAccessToken}`;
+              // originalRequest.headers["access"] = `${newAccessToken}`;
 
               // 원래 요청을 다시 시도
               return apiClient(originalRequest);

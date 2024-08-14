@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CancelButton from "./CancelButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
-
+import { BASE_IMG_URL } from "../../util/commonFunction";
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -208,7 +208,7 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.img} />
+          <Photo src={BASE_IMG_URL + Card.img} />
         </PhotoSection>
         <Content>
           <TitleWrapper>

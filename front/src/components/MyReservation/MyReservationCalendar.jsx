@@ -6,8 +6,9 @@ import ReservationCard from "./ReservationCard";
 import ModalPortal from "../../util/ModalPortal";
 import CheckCancelModal from "./CheckCancelModal";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
+import apiClient from "../../util/apiClient";
+import { BASE_URL } from "../../util/commonFunction";
 
-// 스타일 정의는 기존과 동일하게 유지합니다.
 const CalendarWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -266,28 +267,47 @@ export default function MyReservationCalendar() {
   const [selectedDateReservations, setSelectedDateReservations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCancel, setIsCancel] = useState(true);
-  const fetchReservations = async () => {
-    try {
-      const response = await fetch("/mockdata/reservationdata.json");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
 
-      if (data && data.body) {
-        setReservations(data.body);
-      } else {
-        console.error("Reservations data is missing or incorrect format.");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchReservations = async () => {
+  //   try {
+  //     const response = await fetch("/mockdata/reservationdata.json");
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const data = await response.json();
 
+  //     if (data && data.body) {
+  //       setReservations(data.body);
+  //     } else {
+  //       console.error("Reservations data is missing or incorrect format.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchReservations();
+  // }, []);
+
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
+  console.log(nickname + type);
   useEffect(() => {
-    fetchReservations();
+    apiClient
+      .get(
+        `${BASE_URL}/api/reservations/profiles/rebu1?start-date=2023-01-01&end-date=2024-12-31`
+      )
+      .then((response) => {
+        console.log(response);
+        setReservations(response.data.body);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch ", error);
+      });
   }, []);
 
   const reservationCounts = reservations.reduce((acc, reservation) => {

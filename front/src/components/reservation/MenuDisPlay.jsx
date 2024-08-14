@@ -6,7 +6,8 @@ import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../util/apiClient";
+
 const Wrapper = styled.div`
   padding-left: 1rem;
   padding-right: 1rem;
@@ -112,7 +113,7 @@ export default function MenuDisplay() {
   const BASE_URL = "https://www.rebu.kro.kr";
 
   useEffect(() => {
-    axios
+    apiClient
       .get(`${BASE_URL}/api/menus?employeeNickname=` + nickname, {
         headers: {
           "Content-Type": "application/json",
@@ -124,6 +125,19 @@ export default function MenuDisplay() {
         setMenuData(response.data.body);
       });
   }, [nickname]);
+
+  async function deleteMenu(item) {
+    try {
+      const response = await apiClient
+        .delete(`${BASE_URL}/menus/${item.id}`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => console.log);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function handleSettingMode() {
     if (isSettingMode) {
@@ -140,9 +154,7 @@ export default function MenuDisplay() {
       setModalContent(
         <>
           <ModalContentWrapper>
-            <PhotoContainer
-              src={process.env.PUBLIC_URL + "images/" + item.images[0]}
-            />
+            <PhotoContainer src={"http://www.rebu.kro.kr/data" + item.images} />
             <ModalContent>
               <MenuTitleContainer>{item.title}</MenuTitleContainer>
               <ModalDescription>{item.content}</ModalDescription>
@@ -185,6 +197,7 @@ export default function MenuDisplay() {
                 id: 1,
                 onClick: () => {
                   window.alert("삭제");
+                  deleteMenu(item);
                   setIsModalOpen(false);
                 },
                 highlight: true,
@@ -280,7 +293,7 @@ export default function MenuDisplay() {
                 }}
               >
                 <PhotoContainer
-                  src={process.env.PUBLIC_URL + "images/" + item.images[0]}
+                  src={"http://www.rebu.kro.kr/data" + item.images}
                 />
                 <ContentContainer>
                   <MenuTitleContainer>{item.title}</MenuTitleContainer>

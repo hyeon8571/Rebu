@@ -7,7 +7,7 @@ import ProfileInfo from "../components/storeProfile/StoreProfileInfo";
 import Header from "../components/MyProfile/MyProfileHeader";
 import ReviewGrid from "../components/storeProfile/ReviewGrid";
 import PostGrid from "../components/storeProfile/PostGrid";
-import TimeTable from "../components/reservation/TimeTable";
+import TimeTable from "../views/TimeTablePage";
 import DesignerGrid from "../components/reservation/DesignerDisplay";
 
 const Wrapper = styled.div`

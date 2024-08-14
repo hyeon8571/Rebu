@@ -106,9 +106,9 @@ export default function PostFeed({
       <ImgUploader
         list={list}
         imgNum={imgNum}
-        uploadImgUrls={uploadImgUrls}
+        uploadImgFiles={uploadImgUrls}
         setImgNum={setImgNum}
-        setUploadImgUrls={setUploadImgUrls}
+        setUploadImgFiles={setUploadImgUrls}
         setIsImgAlert={setIsImgAlert}
         review={feed}
         setReview={setFeed}
