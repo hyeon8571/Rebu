@@ -178,7 +178,7 @@ export const PersonalInfo = () => {
   const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
   const type = localStorage.getItem("type");
   const imageSrc = localStorage.getItem("imageSrc");
-  console.log("imageSrc", imageSrc);
+  console.log("nickname", nickname, "type:", type, "imageSrc", imageSrc);
   const [profileImg, setProfileImg] = useState(imageSrc);
 
   const handleBackClick = () => {

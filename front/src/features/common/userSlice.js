@@ -26,6 +26,55 @@ export const getCommonProfile = async (nickname) => {
 };
 
 
+
+// 직원 프로필 조회 API
+export const getEmployeeProfile = async (nickname) => {
+  const access = localStorage.getItem("access");
+  console.log("getEmployeeProfile", nickname);
+  try {
+    // Axios 요청 보내기
+    const response = await axios.get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "access": access
+      }
+    });
+    console.log("getEmployeeProfile", response);
+    // 요청 성공 시 응답 데이터 반환
+    if (response.data.code === "1D03") {//직원 프로필 조회 완료 코드
+      console.log("직원 프로필 요청 성공:", response);
+      return { success: true, data: response.data.body };
+    } else {
+      console.log("직원 프로필 요청 실패:", response);
+      return { success: false, error: "직원 프로필 요청 실패." };
+    }
+  } catch (error) {
+    // 요청 실패 시 에러 메시지 반환
+    console.error("직원 프로필 요청 실패:", error);
+    return { success: false, error: "직원 프로필 요청 실패." };
+  }
+};
+
+// 매장 프로필 조회 API
+export const getShopProfile = async (nickname) => {
+  const access = localStorage.getItem('access'); // 토큰을 로컬 스토리지에서 가져옴
+  console.log('getShopProfile', nickname);
+  try {
+    const response = await axios.get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'access': access
+      }
+    });
+
+    return { success: true, data: response.data.body };
+  } catch (error) {
+    console.error('Error fetching shop profile:', error);
+    return { success: false, error: 'Failed to fetch shop profile.' };
+  }
+};
+
+
 // 일반 프로필 마이페이지 조회
 export const getCommonMyProfile = async () => {
   const access = localStorage.getItem("access");
@@ -107,52 +156,7 @@ export const getShopMyProfile = async () => {
 
 
 
-// 직원 프로필 조회 API
-export const getEmployeeProfile = async (nickname) => {
-  const access = localStorage.getItem("access");
-  console.log("getEmployeeProfile", nickname);
-  try {
-    // Axios 요청 보내기
-    const response = await axios.get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "access": access
-      }
-    });
-    console.log("getEmployeeProfile", response);
-    // 요청 성공 시 응답 데이터 반환
-    if (response.data.code === "1D03") {//직원 프로필 조회 완료 코드
-      console.log("직원 프로필 요청 성공:", response);
-      return { success: true, data: response.data.body };
-    } else {
-      console.log("직원 프로필 요청 실패:", response);
-      return { success: false, error: "직원 프로필 요청 실패." };
-    }
-  } catch (error) {
-    // 요청 실패 시 에러 메시지 반환
-    console.error("직원 프로필 요청 실패:", error);
-    return { success: false, error: "직원 프로필 요청 실패." };
-  }
-};
 
-// 매장 프로필 조회 API
-export const getShopProfile = async (nickname) => {
-  const access = localStorage.getItem('access'); // 토큰을 로컬 스토리지에서 가져옴
-  console.log('getShopProfile', nickname);
-  try {
-    const response = await axios.get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'access': access
-      }
-    });
-
-    return { success: true, data: response.data.body };
-  } catch (error) {
-    console.error('Error fetching shop profile:', error);
-    return { success: false, error: 'Failed to fetch shop profile.' };
-  }
-};
 
 // 가지고 있는 모든 프로필 목록 조회
 export const getAllProfiles = async () => {

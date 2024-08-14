@@ -32,6 +32,7 @@ const authSlice = createSlice({
       state.nickname = nickname;
       state.type = type;
       state.imageSrc = imageSrc;
+
     },
     logout(state) {
       state.isLogin = false;
@@ -130,6 +131,11 @@ export const switchProfile = (nickname) => async (dispatch) => {
       localStorage.setItem("access", response.headers['access']); // 기존에 있던 access 토큰을 새로운 access 토큰으로 교체
       const { nickname, type, imageSrc } = response.data.body;
       dispatch(loginSuccess({ nickname, type, imageSrc }));
+      // localStorage에 저장
+      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("type", type);
+      localStorage.setItem("imageSrc", imageSrc);
+      localStorage.setItem("isLogin", true);
 
       return { success: true, data: response.data.body }
     } else {

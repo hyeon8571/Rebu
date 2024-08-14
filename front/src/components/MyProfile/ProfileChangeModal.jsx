@@ -174,8 +174,10 @@ const ProfileChangeModal = ({
     const switchResult = await handleProfileSwitch(nickname);
     if (switchResult && switchResult.success) {
       console.log("프로필 전환 성공:", switchResult.data);
+      const owner = "own";
       navigate(
-        `/profile/${switchResult.data.nickname}/${switchResult.data.type}`
+        `/profile/${switchResult.data.nickname}/${switchResult.data.type}/${owner}`,
+        { replace: true }
       ); // 프로필 페이지로 이동
       handleSettingClick(); // 설정 모달 닫기
     }

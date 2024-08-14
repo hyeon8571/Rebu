@@ -84,7 +84,8 @@ const ProfilePage = ({ theme, toggleTheme }) => {
 
   // Redux 상태에서 필요한 정보 가져오기
   const { imageSrc } = useSelector((state) => state.auth);
-  const { nickname, type, owner } = useParams(); // URL 파라미터에서 nickname과 type을 추출
+  const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
+  const { myProfile = "no" } = location.state || {}; // location.state에서 myProfile를 추출 - 없으면 "no"로 설정
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
 
@@ -94,8 +95,23 @@ const ProfilePage = ({ theme, toggleTheme }) => {
     const fetchProfile = async () => {
       try {
         let response;
-        switch (owner) {
-          case "others": // 다른 사람의 프로필을 조회하는 경우
+        switch (myProfile) {
+          case "yes": // 본인의 프로필을 조회하는 경우
+            switch (type) {
+              case "COMMON":
+                response = await getCommonMyProfile();
+                break;
+              case "EMPLOYEE":
+                response = await getEmployeeMyProfile();
+                break;
+              case "SHOP":
+                response = await getShopMyProfile();
+                break;
+              default:
+                throw new Error("Invalid profile type");
+            }
+            break; // 'own' case 종료
+          case "no": // 다른 사람의 프로필을 조회하는 경우
             switch (type) {
               case "COMMON":
                 response = await getCommonProfile(nickname);
@@ -111,22 +127,6 @@ const ProfilePage = ({ theme, toggleTheme }) => {
             }
             break; //'others' case 종료
 
-          case "own": // 본인의 프로필을 조회하는 경우
-            switch (type) {
-              case "COMMON":
-                response = await getCommonMyProfile();
-                break;
-              case "EMPLOYEE":
-                response = await getEmployeeMyProfile();
-                break;
-              case "SHOP":
-                response = await getShopMyProfile();
-                break;
-              default:
-                throw new Error("Invalid profile type");
-            }
-            break; // 'own' case 종료
-
           default:
             throw new Error("Invalid owner type");
         }
@@ -139,12 +139,13 @@ const ProfilePage = ({ theme, toggleTheme }) => {
           setError("Failed to load profile");
         }
       } catch (err) {
+        console.log(err);
         setError("An error occurred while fetching the profile");
       }
     };
 
     fetchProfile();
-  }, [nickname, type, owner]);
+  }, [nickname, type]);
   if (error) {
     console.log(error);
   }
