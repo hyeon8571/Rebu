@@ -76,7 +76,7 @@ const CancelButton = styled.button`
   cursor: pointer;
 `;
 
-const Logout = ({ LogoutModalOpen, closeModal }) => {
+const Logout = ({ LogoutModalOpen, closeModal, navLogout }) => {
   // const logout = () => {
   //   //로그아웃 로직//
   //   closeModal();
@@ -90,10 +90,13 @@ const Logout = ({ LogoutModalOpen, closeModal }) => {
     try {
       // 로그아웃 API 호출
       await axios.post(`${BASE_URL}/api/auths/logout`);
-
       dispatch(logout()); // Dispatch the logout action
       navigate("/login", { replace: true });
       closeModal();
+      navLogout();
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("access");
+      localStorage.removeItem("type");
     } catch (error) {
       console.log("로그아웃 중 오류 발생: ", error);
       alert("로그아웃 실패");

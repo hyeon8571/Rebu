@@ -1,6 +1,13 @@
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Calendar from "react-calendar";
-import { useState } from "react";
+import moment from "moment";
+import ReservationCard from "./ReservationCard";
+import ModalPortal from "../../util/ModalPortal";
+import CheckCancelModal from "./CheckCancelModal";
+import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
+import apiClient from "../../util/apiClient";
+import { BASE_URL } from "../../util/commonFunction";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -51,6 +58,9 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__month-view__days__day abbr {
+    position: relative;
+    bottom: 25%;
+    right: 5%;
   }
 
   .react-calendar button:enabled:hover {
@@ -71,6 +81,9 @@ const StyledCalendar = styled(Calendar)`
     font-weight: 800;
     border: 0;
     margin-top: 8px;
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
   }
 
   .react-calendar__navigation button:disabled:first-of-type {
@@ -138,12 +151,13 @@ const StyledCalendar = styled(Calendar)`
     padding: 10px 6.6667px;
     border: 0;
     box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px 0px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     background: ${(props) =>
       props.theme.value === "light" ? "#ffffff" : "#d1d1d1"};
     vertical-align: top;
     text-align: left;
     font-weight: 600;
-    line-height: 36px;
+    height: 100%;
 
     @media (max-width: 768px) {
     }
@@ -169,7 +183,7 @@ const StyledCalendar = styled(Calendar)`
     font-weight: bold;
     color: #fff;
   }
-  .re .react-calendar__tile--now:enabled:hover,
+  .react-calendar__tile--now:enabled:hover,
   .react-calendar__tile--now:enabled:focus {
     background: #6f48eb33;
     border-radius: 6px;
@@ -199,23 +213,181 @@ const StyledCalendar = styled(Calendar)`
     color: white;
   }
 `;
+
+const NumInCalendar = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000000;
+  width: 50%;
+  height: 60%;
+  bottom: 80%;
+  left: 25%;
+  border-radius: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  background-color: ${(props) => props.theme.secondary};
+  line-height: 150%;
+  font-weight: 600;
+
+  @media (min-width: 769px) {
+    height: 100%;
+    line-height: 250%;
+  }
+`;
+
+const EmptyDiv = styled.div`
+  position: relative;
+  bottom: 80%;
+  width: 50%;
+  height: 60%;
+  left: 25%;
+  padding: 0;
+  margin: 0;
+  line-height: 150%;
+  color: white;
+
+  @media (min-width: 769px) {
+    line-height: 250%;
+  }
+`;
+
+const InnerText = styled.div``;
+
+const ReservationDetails = styled.div`
+  margin-top: 1em;
+  margin-bottom: auto;
+`;
+
 export default function MyReservationCalendar() {
   const [date, setDate] = useState(new Date());
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDateReservations, setSelectedDateReservations] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCancel, setIsCancel] = useState(true);
 
-  const moment = require("moment");
+  // const fetchReservations = async () => {
+  //   try {
+  //     const response = await fetch("/mockdata/reservationdata.json");
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const data = await response.json();
+
+  //     if (data && data.body) {
+  //       setReservations(data.body);
+  //     } else {
+  //       console.error("Reservations data is missing or incorrect format.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchReservations();
+  // }, []);
+
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
+  console.log(nickname + type);
+  useEffect(() => {
+    apiClient
+      .get(
+        `${BASE_URL}/api/reservations/profiles/rebu1?start-date=2023-01-01&end-date=2024-12-31`
+      )
+      .then((response) => {
+        console.log(response);
+        setReservations(response.data.body);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch ", error);
+      });
+  }, []);
+
+  const reservationCounts = reservations.reduce((acc, reservation) => {
+    const dateStr = moment(reservation.startDateTime).format("YYYY-MM-DD");
+    acc[dateStr] = (acc[dateStr] || 0) + 1;
+    return acc;
+  }, {});
+
+  // 선택된 날짜의 예약을 필터링하는 함수
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+    const selectedDateStr = moment(newDate).format("YYYY-MM-DD");
+    const reservationsForDate = reservations.filter(
+      (reservation) =>
+        moment(reservation.startDateTime).format("YYYY-MM-DD") ===
+        selectedDateStr
+    );
+    setSelectedDateReservations(reservationsForDate);
+  };
 
   return (
     <CalendarWrapper>
-      <StyledCalendar
-        onChange={setDate}
-        minDetail="month"
-        formatDay={(locale, date) => moment(date).format("D")}
-        calendarType="gregory" // 일요일 부터 시작
-        tileContent={({ date, view }) =>
-          view === "month" && date.getDay() === 0 ? <div>10</div> : null
-        }
-        value={date}
-      />
+      <ModalPortal>
+        <ModalNoBackNoExit isOpen={isModalOpen}>
+          <CheckCancelModal
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+          />
+        </ModalNoBackNoExit>
+      </ModalPortal>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <StyledCalendar
+            onChange={handleDateChange}
+            minDetail="month"
+            formatDay={(locale, date) => moment(date).format("D")}
+            calendarType="gregory"
+            tileContent={({ date, view }) =>
+              view === "month" ? (
+                reservationCounts[moment(date).format("YYYY-MM-DD")] ? (
+                  <NumInCalendar>
+                    <InnerText>
+                      {reservationCounts[moment(date).format("YYYY-MM-DD")]}
+                    </InnerText>
+                  </NumInCalendar>
+                ) : (
+                  <EmptyDiv>ㅤ</EmptyDiv>
+                )
+              ) : null
+            }
+            value={date}
+          />
+          <ReservationDetails>
+            <h2>예약 상세 정보</h2>
+            {selectedDateReservations.length > 0 ? (
+              selectedDateReservations.map((rev) => (
+                <ReservationCard
+                  key={rev.id}
+                  Card={{
+                    img: rev.shop.imageSrc,
+                    title: rev.shop.name,
+                    menu: rev.menu.title,
+                    designer:
+                      rev.employee.workingName + " " + rev.employee.role,
+                    price: rev.menu.price,
+                    time: rev.startDateTime,
+                    status: rev.reservationStatus,
+                  }}
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
+                ></ReservationCard>
+              ))
+            ) : (
+              <p>선택된 날짜에 예약이 없습니다.</p>
+            )}
+          </ReservationDetails>
+        </>
+      )}
     </CalendarWrapper>
   );
 }

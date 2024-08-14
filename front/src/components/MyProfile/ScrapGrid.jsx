@@ -9,7 +9,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GridContainer = styled.div`
   width: 100%;
-  max-width: 768px;
+  /* max-width: 768px; */
   margin: 0 auto; /* 중앙 정렬을 위한 추가 */
 `;
 
@@ -50,7 +50,7 @@ function GridComponent({ Card, currentUser, loginUser }) {
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
-  const [isPrivate, setIsPrivate] = useState(currentUser.isPrivate);
+  const [isPrivate, setIsPrivate] = useState(currentUser.private);
 
   const generateLayout = useCallback((photos) => {
     return photos.map((photo, index) => ({
@@ -101,33 +101,38 @@ function GridComponent({ Card, currentUser, loginUser }) {
         </PrivateContainer>
       ) : (
         <>
-      {selectedPhotos ? (
-        <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} />
-      ) : (
-        <GridContainer ref={containerRef}>
-          <ResponsiveGridLayout
-            layouts={layouts}
-            breakpoints={{ lg: 768, md: 425 }}
-            cols={{ lg: 3, md: 3 }}
-            rowHeight={rowHeight}
-            width={containerRef.current ? containerRef.current.clientWidth : 768}
-            isDraggable={false}
-            isResizable={false}
-          >
-            {Card.map((item, index) => (
-              <GridItem
-                key={`photo-${index}`}
-                data-grid={layouts.lg[index]}
-                onClick={() => handlePhotoClick(index)}
-              >
-                <Photo src={item.imageSrcs[0]} alt={`uploaded-${index}`} />
-              </GridItem>
-            ))}
-          </ResponsiveGridLayout>
-        </GridContainer>
+        {Card == false && (
+          <h3 style={{color: "#b475f3", fontSize: "18px"}}>
+            스크랩한 게시글이 없습니다
+          </h3>
+        )}
+        {selectedPhotos ? (
+          <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} type={type} />
+        ) : (
+          <GridContainer ref={containerRef}>
+            <ResponsiveGridLayout
+              layouts={layouts}
+              breakpoints={{ lg: 768, md: 425 }}
+              cols={{ lg: 3, md: 3 }}
+              rowHeight={rowHeight}
+              width={containerRef.current ? containerRef.current.clientWidth : 768}
+              isDraggable={false}
+              isResizable={false}
+            >
+              {Card.map((item, index) => (
+                <GridItem
+                  key={`photo-${index}`}
+                  data-grid={layouts.lg[index]}
+                  onClick={() => handlePhotoClick(index)}
+                >
+                <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
+                </GridItem>
+              ))}
+            </ResponsiveGridLayout>
+          </GridContainer>
+        )}
+        </>
       )}
-      </>
-    )}
     </>
   );
 }

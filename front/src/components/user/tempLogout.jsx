@@ -7,7 +7,7 @@ const navigate = useNavigate();
 
 const handleLogout = () => {
   // Clear stored tokens or any other necessary cleanup
-  localStorage.removeItem("accessToken");
+  localStorage.removeItem("access");
 
   // Dispatch the logout action
   dispatch(logout());

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Switch from "../common/Switch";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Checkbox from "../common/StyledCheckbox";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import Img from "../../assets/images/img.webp";
@@ -9,8 +9,9 @@ import EditDesignerIntroduction from "./EditDesignerIntroduction";
 import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
 import ModalPortal from "../../util/ModalPortal";
-import { useNavigate } from "react-router-dom";
-import { designerData } from "../../util/visitedDatas";
+import { useNavigate, useParams } from "react-router-dom";
+import apiClient from "../../util/apiClient";
+import { BASE_URL } from "../../util/commonFunction";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -112,7 +113,8 @@ const NextButtonWrapper = styled.div`
 `;
 
 export default function DesignerTab() {
-  const [isMale, setIsMale] = useState(false);
+  const [designers, setDesigners] = useState([]);
+  const [isMale, setIsMale] = useState("FEMALE");
   const [isEditMode, setIsEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -120,24 +122,28 @@ export default function DesignerTab() {
 
   const navigate = useNavigate();
 
-  // 예약화면일때
-  const isReservation = true;
+  // const { nickname } = useParams();
+  const nickname = "rebu4_hair3";
 
-  // 디자이너일때
-  const isDesigner = false;
-
-  // 가게 프로필 일떄
-  const isShop = false;
-
-  // 손님일때
-  const isCustomer = true;
-
-  // 디자이너인데 자기자신 항목인지 (테스트용 변수 실제로는 map 내부에서 판단해야함)
-  const isMine = false;
+  useEffect(() => {
+    apiClient
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
+      .then((response) => {
+        console.log(response);
+        setDesigners(response.data.body);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch ", error);
+      });
+  }, []);
 
   const toggleHandler = () => {
     // isMale의 상태를 변경하는 메소드를 구현
-    setIsMale(!isMale);
+    if (isMale === "FEMALE") {
+      setIsMale("MALE");
+    } else {
+      setIsMale("FEMALE");
+    }
   };
 
   function handleModifyDesigner() {
@@ -189,37 +195,21 @@ export default function DesignerTab() {
         </ModalNoBackNoExit>
       </ModalPortal>
       <UpperTabWrapper>
-        <Switch isMan={isMale} toggleHandler={toggleHandler} />
-        {(isDesigner || isShop) && !isEditMode && (
-          <EditDesignerButton onClick={handleModifyDesigner}>
-            디자이너 관리
-          </EditDesignerButton>
-        )}
-        {isEditMode && (
-          <ButtonWrapper>
-            {isShop && (
-              <EditButton onClick={handleAddDesigner}>추가</EditButton>
-            )}
-            <SaveButton onClick={handleSaveDesigner}>저장</SaveButton>
-          </ButtonWrapper>
-        )}
+        <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
       </UpperTabWrapper>
-      {designerData
+      {designers
         .filter((item) => item.gender === isMale)
         .map((item) => (
           <DesignerCardContainer key={item.nickname}>
             <DesignerContent>
               <DesignerTitle>
-                {isReservation && (
-                  <Checkbox
-                    key={item.nickname}
-                    value={
-                      chosenDesigner &&
-                      item.nickname === chosenDesigner.nickname
-                    }
-                    onChange={(e) => handleChosenDesigner(item)}
-                  />
-                )}
+                <Checkbox
+                  key={item.nickname}
+                  value={
+                    chosenDesigner && item.nickname === chosenDesigner.nickname
+                  }
+                  onChange={(e) => handleChosenDesigner(item)}
+                />
                 <div onClick={() => handleChosenDesigner(item)}>
                   {item.workingName} {item.role}
                 </div>
@@ -227,56 +217,40 @@ export default function DesignerTab() {
               <DesignerIntroduction>
                 {item.workingIntroduction}
               </DesignerIntroduction>
-              <ReviewContainer>방문자 리뷰 {item.review}개</ReviewContainer>
+              <ReviewContainer onClick={() => {}}>
+                방문자 리뷰 {item.reviewCnt}개
+              </ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
               <DesignerPhoto src={Img} />
             </DesignerPhotoContainer>
-            {isEditMode && (
-              <ButtonWrapper>
-                {isMine && (
-                  <EditButton
-                    onClick={() =>
-                      handleModifyInstruction(item.workingIntroduction)
-                    }
-                  >
-                    수정
-                  </EditButton>
-                )}
-                {isShop || isMine ? (
-                  <SaveButton onClick={handleDeleteDesigner}>삭제</SaveButton>
-                ) : null}
-              </ButtonWrapper>
-            )}
           </DesignerCardContainer>
         ))}
-      {isReservation && (
-        <NextButtonWrapper>
-          <ButtonSmall
-            button={{
-              id: 1,
-              title: "다음",
-              onClick: () => {
-                if (chosenDesigner) {
-                  navigate("/menutab", {
-                    state: {
-                      info: {
-                        shopTitle: "싸피 헤어샵",
-                        nickname: chosenDesigner.nickname,
-                        workingName: chosenDesigner.workingName,
-                        role: chosenDesigner.role,
-                      },
+      <NextButtonWrapper>
+        <ButtonSmall
+          button={{
+            id: 1,
+            title: "다음",
+            onClick: () => {
+              if (chosenDesigner) {
+                navigate("/menutab", {
+                  state: {
+                    info: {
+                      shopTitle: "싸피 헤어샵",
+                      nickname: chosenDesigner.nickname,
+                      workingName: chosenDesigner.workingName,
+                      role: chosenDesigner.role,
                     },
-                  });
-                } else {
-                  window.alert("디자이너를 선택해주세요");
-                }
-              },
-              highlight: true,
-            }}
-          ></ButtonSmall>
-        </NextButtonWrapper>
-      )}
+                  },
+                });
+              } else {
+                window.alert("디자이너를 선택해주세요");
+              }
+            },
+            highlight: true,
+          }}
+        ></ButtonSmall>
+      </NextButtonWrapper>
     </>
   );
 }

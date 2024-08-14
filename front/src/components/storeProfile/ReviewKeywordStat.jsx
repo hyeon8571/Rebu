@@ -1,6 +1,8 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import { MdBorderColor } from "react-icons/md";
+import { useParams } from "react-router-dom";
+import apiClient from "../../util/apiClient";
 
 const keywordList = [
   {
@@ -94,7 +96,7 @@ const InsideBar = styled.div`
   width: ${(props) => props.percent}%;
   height: 33px;
   background-color: ${(props) =>
-    props.theme.value === "light" ? "#e3cbfb" :"#b475f3"};
+    props.theme.value === "light" ? "#e3cbfb" : "#b475f3"};
   border-radius: 100rem;
   animation: ${grow} 2s forwards;
 `;
@@ -118,16 +120,21 @@ const StatNum = styled.div`
 
 export default function ReviewKeywordStat({ reviewNum }) {
   const [data, setData] = useState([]);
+  const { nickname, type } = useParams();
+  const BASE_URL = "https://www.rebu.kro.kr";
+
+  reviewNum = 5;
 
   useEffect(() => {
-    fetch("/mockdata/keywordstat.json")
-      .then((response) => response.json())
-      .then((jsondata) => {
-        const total = jsondata.body.reduce((acc, item) => acc + item.count, 0);
-        const newEntity = jsondata.body.map((item) => {
+    apiClient
+      .get(`${BASE_URL}/api/review-keywords/count?nickname=${nickname}`)
+      .then((response) => {
+        console.log(response);
+        const newEntity = response.data.body.map((item) => {
           const keywordItem = keywordList.find(
-            (keyword) => keyword.keyword === item.content
+            (keyword) => keyword.keyword === item.keyword
           );
+          console.log(keywordItem);
           return {
             ...item,
             imgURL: keywordItem ? keywordItem.imgURL : "default.png",
@@ -146,14 +153,14 @@ export default function ReviewKeywordStat({ reviewNum }) {
 
   return (
     <Container>
-      <hr style={{border: "0.5px solid #943aee"}} />
+      <hr style={{ border: "0.5px solid #943aee" }} />
       {data.length > 0 ? (
         data.map((item) => (
-          <StatBar key={item.content}>
+          <StatBar key={item.keyword}>
             <StatIcon
               src={process.env.PUBLIC_URL + "/keyword/" + item.imgURL}
             />
-            <KeywordText>{item.content}</KeywordText>
+            <KeywordText>{item.keyword}</KeywordText>
             <StatNum>{item.count}</StatNum>
             <InsideBar percent={item.percent}></InsideBar>
           </StatBar>
@@ -161,7 +168,7 @@ export default function ReviewKeywordStat({ reviewNum }) {
       ) : (
         <div>Loading...</div>
       )}
-      <hr style={{border: "0.5px solid #943aee"}} />
+      <hr style={{ border: "0.5px solid #943aee" }} />
     </Container>
   );
 }

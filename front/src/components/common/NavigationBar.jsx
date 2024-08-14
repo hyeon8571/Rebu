@@ -1,14 +1,18 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
 import ProfileSmall from "./ProfileSmall";
 import NavigationItem from "./NavigationItem";
 import { CgAddR } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
 import { RiCalendarScheduleLine } from "react-icons/ri";
-// import img from "../../assets/images/cha.png";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ModalPortal from "../../util/ModalPortal";
+import SearchModal from "../Search/SearchModal";
+import apiClient from "../../util/apiClient";
+import { BASE_URL } from "../../util/commonFunction";
+import { BASE_IMG_URL } from "../../util/commonFunction";
 
 const Bar = styled.div`
   padding-top: 10px;
@@ -34,44 +38,72 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const SearchDiv = styled.div`
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 1rem;
+
+  color: ${(props) =>
+    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+  background-color: ${(props) =>
+    props.isModalOpen ? props.theme.body : "none"};
+`;
+
 const ICON_SIZE = 28;
-
-const ProfileNavItem = () => {
-  const navigate = useNavigate();
-  // Redux 상태에서 nickname과 type을 가져옴
-  const { nickname, type, imageSrc } = useSelector((state) => state.auth);
-  // console.log("navigationbar", nickname, type);
-  const handleProfileClick = () => {
-    navigate(`/profile/${nickname}/${type}`);
-  };
-
-  return (
-    <NavigationItem onClick={handleProfileClick}>
-      <ProfileSmall
-        img={
-          imageSrc ? `https://www.rebu.kro.kr/data/${imageSrc}` : "/img.webp"
-        }
-      />
-    </NavigationItem>
-  );
-};
 
 //default
 export default function NavigationBar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImg, setProfileImg] = useState(null);
+
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
+  useEffect(() => {
+    let EndPoint = "";
+    switch (localStorage.getItem("type")) {
+      case "COMMON":
+        EndPoint = "/api/profiles";
+        break;
+      case "EMPLOYEE":
+        EndPoint = "/api/profiles/employees";
+        break;
+      case "SHOP":
+        EndPoint = "/api/profiles/shops";
+        break;
+    }
+
+    const nickname = localStorage.getItem("nickname");
+
+    apiClient
+      .get(`${BASE_URL}${EndPoint}/${nickname}`)
+      .then((response) => {
+        setProfileImg(response.data.body.imageSrc);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <>
+      <ModalPortal>
+        <SearchModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      </ModalPortal>
       <Bar>
-        <StyledNavLink to="/login">
+        <StyledNavLink to="/main">
           <NavigationItem>
             <IoHome size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to="/designertab">
+        <SearchDiv isModalOpen={isModalOpen} onClick={toggleModal}>
           <NavigationItem>
             <IoSearch size={ICON_SIZE} />
           </NavigationItem>
-        </StyledNavLink>
-        <StyledNavLink to="/visited">
+        </SearchDiv>
+        <StyledNavLink isModalOpen={isModalOpen} to="/visited">
           <NavigationItem>
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
@@ -82,8 +114,11 @@ export default function NavigationBar() {
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-
-        <ProfileNavItem />
+        <StyledNavLink to={`/profile/${nickname}/${type}`}>
+          <NavigationItem>
+            <ProfileSmall img={BASE_IMG_URL + profileImg}></ProfileSmall>
+          </NavigationItem>
+        </StyledNavLink>
       </Bar>
     </>
   );

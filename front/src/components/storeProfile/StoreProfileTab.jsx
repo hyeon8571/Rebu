@@ -8,7 +8,7 @@ const TabMenu = styled.ul`
     props.theme.value === "light" ? "#000000" : props.theme.text};
   display: flex;
   margin: auto;
-  max-width: 768px;
+  /* max-width: 768px; */
   height: 60px;
   flex-direction: row;
   align-items: center;
@@ -105,7 +105,7 @@ const Tab = ({ tabTitle, currentTab, onTabChange, tabName, onSubTabChange, activ
   return (
     <>
       <TabMenu>
-        {tabTitle.map((el, index) => (
+        {tabTitle?.map((el, index) => (
           <li
             key={index}
             className={index === currentTab ? "submenu focused" : "submenu"}
@@ -119,7 +119,7 @@ const Tab = ({ tabTitle, currentTab, onTabChange, tabName, onSubTabChange, activ
         ))}
       </TabMenu>
       <Desc>
-        <TabTitle>{tabTitle[currentTab].content}</TabTitle>
+        <TabTitle>{tabTitle[currentTab]?.content}</TabTitle>
         {currentTab === 2 && (
           <TabContainer>
             <Tabs active={activeSubTab === tabName[0]} onClick={() => handleTabClick(tabName[0])}>예약현황</Tabs>

@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { menuData } from "../../util/visitedDatas";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "../common/StyledCheckbox";
 import { useLocation, useNavigate } from "react-router-dom";
 import ButtonSmall from "../common/ButtonSmall";
+import apiClient from "../../util/apiClient";
+import { BASE_URL } from "../../util/commonFunction";
+import { BASE_IMG_URL } from "../../util/commonFunction";
 
 const MenuCardContainer = styled.div`
   display: grid;
@@ -38,13 +41,14 @@ const MenuPhotoContainer = styled.div`
 `;
 
 const MenuPhoto = styled.img`
-  width: 100%;
+  width: 100px;
+  height: 100px;
   max-width: 150px;
   border-radius: 0.5rem;
 `;
 
-const MenuIntroduction = styled.li`
-  font-size: 12px;
+const MenuIntroduction = styled.div`
+  font-size: 14px;
   padding-top: 1rem;
   padding-bottom: 1rem;
 `;
@@ -73,14 +77,27 @@ const MenuTitleWrapper = styled.div`
 export default function MenuTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
   const [menuType, setMenuType] = useState(null);
+  const [menuData, setMenuData] = useState([]);
   const location = useLocation();
   const { info } = location.state;
 
   const navigate = useNavigate();
 
-  console.log(info.nickname);
+  useEffect(() => {
+    console.log(info.nickname);
+    apiClient
+      .get(`${BASE_URL}/api/menus?employeeNickname=${info.nickname}`)
+      .then((response) => {
+        console.log(response);
+        setMenuData(response.data.body);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [info]);
+
   function handleChosenMenu(value) {
-    if (chosenMenu && value.menuId === chosenMenu.menuId) {
+    if (chosenMenu && value.id === chosenMenu.id) {
       setChosenMenu(null);
     } else {
       setChosenMenu(value);
@@ -88,30 +105,28 @@ export default function MenuTab() {
   }
   return (
     <>
-      {menuData
-        .filter((item) => item.nickname === info.nickname)
-        .map((item) => (
-          <MenuCardContainer key={item.menuId}>
-            <MenuContent>
-              <MenuTitle>
-                <Checkbox
-                  key={item.nickname}
-                  value={chosenMenu ? item.menuId === chosenMenu.menuId : false}
-                  onChange={() => handleChosenMenu(item)}
-                />
-                <MenuTitleWrapper onClick={() => handleChosenMenu(item)}>
-                  {item.title}
-                </MenuTitleWrapper>
-              </MenuTitle>
-              <MenuIntroduction>{item.description}</MenuIntroduction>
-              <ServiceTimeText>시술 시간 : {item.duration}분</ServiceTimeText>
-              <PriceText>가격 : {item.cost}원</PriceText>
-            </MenuContent>
-            <MenuPhotoContainer>
-              <MenuPhoto src={item.img} />
-            </MenuPhotoContainer>
-          </MenuCardContainer>
-        ))}
+      {menuData.map((item) => (
+        <MenuCardContainer key={item.id}>
+          <MenuContent>
+            <MenuTitle>
+              <Checkbox
+                key={item.id}
+                value={chosenMenu ? item.id === chosenMenu.id : false}
+                onChange={() => handleChosenMenu(item)}
+              />
+              <MenuTitleWrapper onClick={() => handleChosenMenu(item)}>
+                {item.title}
+              </MenuTitleWrapper>
+            </MenuTitle>
+            <MenuIntroduction>{item.content}</MenuIntroduction>
+            <ServiceTimeText>시술 시간 : {item.timeTaken}분</ServiceTimeText>
+            <PriceText>가격 : {item.price}원</PriceText>
+          </MenuContent>
+          <MenuPhotoContainer>
+            <MenuPhoto src={BASE_IMG_URL + "/" + item.images[0]} />
+          </MenuPhotoContainer>
+        </MenuCardContainer>
+      ))}
       <ButtonWrapper>
         <ButtonSmall
           button={{
@@ -123,8 +138,8 @@ export default function MenuTab() {
                   state: {
                     info: {
                       ...info,
-                      menu: chosenMenu.title,
-                      nickname: chosenMenu.nickname,
+                      menuId: chosenMenu.id,
+                      ShopNickname: chosenMenu.nickname,
                       serviceTime: chosenMenu.duration,
                       cost: chosenMenu.cost,
                     },

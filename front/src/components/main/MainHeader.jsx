@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FiSend } from "react-icons/fi";
 import { FaRegBell, FaBell } from "react-icons/fa";
 import ThemeSwitch from "../../util/ThemeSwitch";
-import AlarmModalOpen from "./MainAlarmModal";
+import AlarmModal from "./MainAlarmModal";
 import RebuImg from "../../assets/images/logo.png";
 
 const Wrapper = styled.div`
@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   position: sticky;
   align-items: center;
   height: 50px;
-  max-width: 768px;
   width: 100%;
   top: 0;
   z-index: 5;
@@ -60,6 +59,10 @@ const IconBox = styled.div`
   margin-right: 15px;
   gap: 10px;
 `;
+const NotificationIconWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
 
 const AlarmIcon = styled(FaRegBell)`
   width: 22px;
@@ -75,6 +78,22 @@ const AlarmIconActive = styled(FaBell)`
   cursor: pointer;
 `;
 
+const Badge = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+`;
+
 const SendIcon = styled(FiSend)`
   width: 22px;
   height: 22px;
@@ -83,31 +102,21 @@ const SendIcon = styled(FiSend)`
 `;
 
 
-const MainHeader = ({ theme, toggleTheme, currentUser, loginUser }) => {
+const MainHeader = ({ theme, toggleTheme, currentUser, loginUser, alarmdata, Count }) => {
   const [isAlarm, setIsAlarm] = useState(false);
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
-
-  const notifications = [
-    {
-      time: '10분 전',
-      title: '싸피 헤어샵',
-      text: '여성 세팅펌 이용 30분 전입니다. 2024년 07월 17일 오후 3시 15분'
-    },
-    {
-      time: '4시간 전',
-      title: '싸피 헤어샵',
-      text: '오늘은 여성 세팅펌 이용일입니다. 2024년 07월 17일 오후 3시 15분'
-    }
-  ];
+  const [alarmcount, setAlarmcount] = useState(alarmdata.length);
 
   const handleAlarmActive = () => {
     setIsAlarm(!isAlarm);
     setIsAlarmModalOpen(!isAlarm);
+    setAlarmcount(0);
   }
 
   const closeModal = () => {
     setIsAlarmModalOpen(false);
     setIsAlarm(false);
+    // setAlarmcount(0);
   }
 
 
@@ -122,12 +131,18 @@ const MainHeader = ({ theme, toggleTheme, currentUser, loginUser }) => {
       </MainTitleContainer>
       <IconBox>
         {isAlarm ? (
+          <NotificationIconWrapper>
           <AlarmIconActive onClick={handleAlarmActive} />
+          <Badge>{alarmcount}</Badge>
+          </NotificationIconWrapper>
         ) : (
+          <NotificationIconWrapper>
           <AlarmIcon onClick={handleAlarmActive} />
+          <Badge>{alarmcount}</Badge>
+          </NotificationIconWrapper>
         )}
         {isAlarmModalOpen && (
-          <AlarmModalOpen notifications={notifications} closeModal={closeModal}/>
+          <AlarmModal notifications={alarmdata} closeModal={closeModal} loginUser={loginUser}/>
         )}
         <SendIcon />
       </IconBox>

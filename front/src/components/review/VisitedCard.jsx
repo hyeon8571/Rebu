@@ -1,7 +1,10 @@
 import styled from "styled-components";
-import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
-import ButtonDisabled from "../common/ButtonDisabled";
+import noImg from "../../assets/images/img.webp";
+import { formatDateTime } from "../../util/commonFunction";
+import ReviewButton from "./ReviewButton";
+import { BASE_IMG_URL } from "../../util/commonFunction";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,7 +13,7 @@ const Wrapper = styled.div`
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 3fr;
-  height: 150px;
+  height: 170px;
   width: 85%;
   max-width: 500px;
   background: ${(props) =>
@@ -111,6 +114,16 @@ const VisitStatus = styled.div`
   text-align: center;
 `;
 
+const DesignerWrapper = styled.div`
+  padding-top: 0.3rem;
+  color: ${(props) => (props.theme.value === "light" ? "#ef4f91" : "#cfcfcf")};
+  font-weight: 600;
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-top: 5%;
+  }
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -122,31 +135,29 @@ export default function VisitedCard({ Card, button }) {
     console.log("카드 컴포넌트 불러오기 실패");
     return null;
   }
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.img} />
+          <Photo src={BASE_IMG_URL + "/" + (Card.img ? Card.img : noImg)} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText>
+            <TitleText
+              onClick={() => navigate(`/profile/${Card.nickname}/SHOP`)}
+            >
               {Card.title}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>
             <VisitStatus>방문완료</VisitStatus>
           </TitleWrapper>
           <MenuWrapper>{Card.menu}</MenuWrapper>
-          <DateWrapper>{Card.date}</DateWrapper>
-          {button.status ? (
-            <ButtonWrapper>
-              <ButtonDisabled button={button}></ButtonDisabled>
-            </ButtonWrapper>
-          ) : (
-            <ButtonWrapper>
-              <ButtonDisabled button={button}></ButtonDisabled>
-            </ButtonWrapper>
-          )}
+          <DesignerWrapper>{Card.designer}</DesignerWrapper>
+          <DateWrapper>{formatDateTime(Card.date)}</DateWrapper>
+          <ButtonWrapper>
+            <ReviewButton button={button}></ReviewButton>
+          </ButtonWrapper>
         </Content>
       </GridContainer>
     </Wrapper>

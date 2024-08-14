@@ -8,6 +8,7 @@ import axios from "axios";
 import { Msg, Tooltip, InfoIconContainer } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BASE_URL } from "../../views/Signup";
+
 // const Msg = styled.p``;
 // const Tooltip = styled.ul``;
 // const InfoIconContainer = styled.div``;

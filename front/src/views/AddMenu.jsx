@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SelectComponent from "./../components/AddMenu/MenuSelectBox";
 import ButtonLarge from "../components/common/ButtonLarge";
@@ -11,6 +11,8 @@ import ButtonSmall from "../components/common/ButtonSmall";
 import confirmLottie from "../assets/images/confirmLottie.json";
 import Header from "../components/common/Header";
 import ImgUploader from "../components/common/MultipleImgUploader";
+import axios from "axios";
+import { BASE_URL } from "../util/commonFunction";
 
 // 공통 스타일 분리
 const StyledInputBox = styled.input`
@@ -154,12 +156,98 @@ export default function AddMenu() {
   const [animationKey, setAnimationKey] = useState(0);
   const [isError, setIsError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitOk, setIsSubmitOk] = useState("FAIL");
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (
+      localStorage.getItem("type") === "COMMON" ||
+      localStorage.getItem("type") === "SHOP"
+    ) {
+      alert("접근 권한이 없습니다.");
+      navigate(-1);
+    }
+  }, []);
+
+  async function submitEditMenu() {
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/api/menus${originMenu.id}`,
+        {
+          category: category,
+          title: name,
+          content: description,
+          timeTaken: Number(time),
+          price: Number(cost),
+          images: uploadImgUrls,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Access: `${localStorage.getItem("access")}`,
+          },
+        }
+      );
+      if (response.data.code && response.data.code.startsWith("1")) {
+        console.log(response);
+        setIsModalOpen(true);
+        setIsSubmitOk("OK");
+        return true;
+      }
+    } catch (error) {
+      console.error("Error editting the menu:", error);
+      setTimeout(() => {
+        setIsSubmitOk("FAIL");
+      }, 100);
+      return false;
+    }
+  }
+
+  async function submitAddMenu() {
+    console.log({
+      category: category,
+      title: name,
+      content: description,
+      timeTaken: Number(time),
+      price: Number(cost),
+      images: uploadImgUrls,
+    });
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/menus`,
+        {
+          category: category,
+          title: name,
+          content: description,
+          timeTaken: Number(time),
+          price: Number(cost),
+          images: uploadImgUrls,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Access: `${localStorage.getItem("access")}`,
+          },
+        }
+      );
+
+      if (response.data.code && response.data.code.startsWith("1")) {
+        console.log(response);
+        setIsModalOpen(true);
+        setIsSubmitOk("OK");
+        return true;
+      }
+      console.log(response);
+    } catch (error) {
+      console.error("Error editting the menu:", error);
+      setIsSubmitOk("FAIL");
+      return false;
+    }
+  }
+
   const IMG_URL = process.env.PUBLIC_URL;
 
-  console.log(category);
   const handleNumberInput = (e) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) {
@@ -185,21 +273,18 @@ export default function AddMenu() {
     if (!uploadImgUrls) newErrors.uploadImgUrl = "사진을 업로드해주세요";
 
     if (Object.keys(newErrors).length > 0) {
+      console.log("??");
       setAnimationKey(animationKey + 1);
       setErrors(newErrors);
       setIsError(true);
     } else {
       setIsError(false);
       setIsModalOpen(true);
-      const formData = {
-        category,
-        name,
-        description,
-        time: timeValue,
-        cost: costValue,
-        images: uploadImgUrls,
-      };
-      console.log(formData);
+      if (originMenu) {
+        submitEditMenu();
+      } else {
+        submitAddMenu();
+      }
       // formData 객체를 이용하여 필요한 작업 수행
       setErrors({});
     }
@@ -218,7 +303,7 @@ export default function AddMenu() {
                   ? "시술이 수정되었습니다."
                   : "시술이 추가되었습니다."}
               </DescriptionContainer>
-              {isModalOpen && (
+              {isSubmitOk === "OK" && (
                 <Lottie
                   loop={false}
                   autoPlay={true}

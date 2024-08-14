@@ -5,19 +5,13 @@ import { useRef, useState, useEffect } from "react";
 import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
-import AddMenuModal from "./AddMenuModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import apiClient from "../../util/apiClient";
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 15px;
   padding-left: 1rem;
   padding-right: 1rem;
   height: 100%;
-  width: 100%;
 `;
 
 const Grid = styled.div`
@@ -34,8 +28,13 @@ const Card = styled.div`
 `;
 
 const PhotoContainer = styled.img`
-  width: 100%;
-  height: 100%;
+  @media (max-width: 768px) {
+    width: 80%;
+    width: 125px;
+    height: 125px;
+  }
+  width: 200px;
+  height: 200px;
   border-radius: 0.3rem;
 `;
 
@@ -106,7 +105,6 @@ export default function MenuDisplay() {
   const [isSettingMode, setIsSettingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [addMenuModalOpen, setAddMenuModalOpen] = useState(false);
   const navigation = useNavigate();
 
   const location = useLocation();
@@ -114,41 +112,31 @@ export default function MenuDisplay() {
 
   const BASE_URL = "https://www.rebu.kro.kr";
 
-  const closeModal = () => {
-   setAddMenuModalOpen(false); 
-  }
-
   useEffect(() => {
-    fetch("/mockdata/menudata.json")
+    apiClient
+      .get(`${BASE_URL}/api/menus?employeeNickname=` + nickname, {
+        headers: {
+          "Content-Type": "application/json",
+          Access: localStorage.getItem("access"),
+        },
+      })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((jsondata) => {
-        const data = jsondata.body;
-        console.log(data);
-        setMenuData(data);
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error);
+        console.log(response.data.body);
+        setMenuData(response.data.body);
       });
-    // axios
-    //   .get(BASE_URL + "/api/menus?nickname=" + nickname, {
-    //     params: {},
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       access: localStorage.getItem("access"),
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   });
-  }, []);
+  }, [nickname]);
 
-  function handleAddMenuModalOpen() {
-    setAddMenuModalOpen(!addMenuModalOpen);
+  async function deleteMenu(item) {
+    try {
+      const response = await apiClient
+        .delete(`${BASE_URL}/menus/${item.id}`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => console.log);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function handleSettingMode() {
@@ -166,9 +154,7 @@ export default function MenuDisplay() {
       setModalContent(
         <>
           <ModalContentWrapper>
-            <PhotoContainer
-              src={process.env.PUBLIC_URL + "images/" + item.images[0]}
-            />
+            <PhotoContainer src={"http://www.rebu.kro.kr/data" + item.images} />
             <ModalContent>
               <MenuTitleContainer>{item.title}</MenuTitleContainer>
               <ModalDescription>{item.content}</ModalDescription>
@@ -211,6 +197,7 @@ export default function MenuDisplay() {
                 id: 1,
                 onClick: () => {
                   window.alert("삭제");
+                  deleteMenu(item);
                   setIsModalOpen(false);
                 },
                 highlight: true,
@@ -232,7 +219,7 @@ export default function MenuDisplay() {
       );
     } else if (isEditMode) {
       navigation("/addMenu", {
-        state: { categories: [{ value: "뭔데", title: "뭐가" }], originMenu: item },
+        state: { categories: null, originMenu: item },
       });
     }
     setIsModalOpen(true);
@@ -246,12 +233,11 @@ export default function MenuDisplay() {
         </ModalNoBackNoExit>
       </ModalPortal>
       <Wrapper>
-        <IconWrapper>
+        <IconWrapper onClick={handleSettingMode}>
           <IoSettings
             style={{ paddingRight: "12px" }}
             size={24}
             fill={isSettingMode ? "#999999" : "#000"}
-            onClick={handleSettingMode}
           ></IoSettings>
         </IconWrapper>
         {!isSettingMode || isDeleteMode || isEditMode ? (
@@ -261,7 +247,9 @@ export default function MenuDisplay() {
             <ButtonSmall
               button={{
                 id: 1,
-                onClick: handleAddMenuModalOpen,
+                onClick: () => {
+                  navigation("/addmenu");
+                },
                 highlight: true,
                 title: "메뉴 추가",
               }}
@@ -288,12 +276,6 @@ export default function MenuDisplay() {
             ></ButtonSmall>
           </ButtonWrapper>
         )}
-        {addMenuModalOpen && (
-          <AddMenuModal 
-            addMenuModalOpen={addMenuModalOpen}
-            closeModal={closeModal}
-          />
-        )}
         {isDeleteMode && (
           <InsturctionText>삭제할 항목을 클릭해주세요</InsturctionText>
         )}
@@ -311,7 +293,7 @@ export default function MenuDisplay() {
                 }}
               >
                 <PhotoContainer
-                  src={process.env.PUBLIC_URL + "images/" + item.images[0]}
+                  src={"https://www.rebu.kro.kr/data/" + item.images[0]}
                 />
                 <ContentContainer>
                   <MenuTitleContainer>{item.title}</MenuTitleContainer>

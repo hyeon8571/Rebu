@@ -98,28 +98,35 @@ const keywordList = [
   },
 ];
 
-
-
-export default function PostReview1({ isRateAlert, setIsRateAlert, isAlert, setIsAlert, animationKey, setAnimationKey, info, review, setReview }) {
+export default function PostReview1({
+  isRateAlert,
+  setIsRateAlert,
+  isAlert,
+  setIsAlert,
+  animationKey,
+  setAnimationKey,
+  info,
+  review,
+  setReview,
+}) {
   const [rate, setRate] = useState(0);
   const [selectedKeyword, setSelectedKeyword] = useState(0);
   const [keywords, setKeywords] = useState(keywordList);
   const LIMIT_KEYWORD_NUM = 4;
 
-  
   function handleRate(rate) {
     const doubleRate = rate * 2;
     setIsRateAlert(false);
     setReview({
       ...review,
-      rate: Number(doubleRate),
+      rating: Number(doubleRate),
     });
     setRate(rate);
   }
   function handleChecked(index) {
     if (keywords[index].checked || selectedKeyword <= LIMIT_KEYWORD_NUM) {
       const newKeywords = keywords.map((item) => {
-        if (item.id === index+1) {
+        if (item.id === index + 1) {
           return {
             ...item,
             checked: !item.checked,
@@ -137,7 +144,7 @@ export default function PostReview1({ isRateAlert, setIsRateAlert, isAlert, setI
 
       setReview({
         ...review,
-        keywords: keywordIds,
+        reviewKeywordIds: keywordIds,
       });
       setIsAlert(false);
     } else {

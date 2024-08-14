@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { FiChevronLeft } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
+import { updateProfileImage } from "../features/common/userSlice";
+import { PersonalInfoCommon } from "../components/MyProfile/PersonalInfoCommon";
 // import { useSelector } from "react-redux";
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +33,7 @@ const HeaderText = styled.p`
   margin-left: 15px;
 `;
 
-const BackButton = styled(FiChevronLeft)`
+export const BackButton = styled(FiChevronLeft)`
   width: 24px;
   height: 24px;
   cursor: pointer;
@@ -79,7 +81,7 @@ const UserRole = styled.span`
   color: #000000;
 `;
 
-const Form = styled.div`
+export const Form = styled.div`
   margin-top: 20px;
   padding: 10px 20px;
   border-radius: 8px;
@@ -172,74 +174,45 @@ const DeleteButton = styled(Button)`
   cursor: pointer;
 `;
 
-const PersonalInfo = () => {
-  const location = useLocation();
-  const user = location.state?.user;
-  const profile = location.state?.profile;
-  const navigate = useNavigate();
-  const [profileImg, setProfileImg] = useState(profile.imageSrc);
-  const [nickname, setNickname] = useState(user.nickname);
-  const email = user.email;
-  const birth = user.birth;
-  const phone = user.phone;
-
-  let type = profile.type;
-  if (profile.type === "COMMON") {
-    type = "일반 사용자";
-  } else if (profile.type === "EMPLOYEE") {
-    type = "디자이너";
-  } else if (profile.type === "SHOP") {
-    type = "매장";
-  }
-
-  let gender = user.gender;
-  if (user.gender === "MALE") {
-    gender = "남";
-  } else if (user.gender === "FEMALE") {
-    gender = "여";
-  }
+export const PersonalInfo = () => {
+  const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
+  const type = localStorage.getItem("type");
+  const imageSrc = localStorage.getItem("imageSrc");
+  console.log("nickname", nickname, "type:", type, "imageSrc", imageSrc);
+  const [profileImg, setProfileImg] = useState(imageSrc);
 
   const handleBackClick = () => {
+    //뒤로가기 버튼
     window.history.back();
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfileImg(reader.result);
-    };
+  // 프로필 수정 API 호출
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+
     if (file) {
-      reader.readAsDataURL(file);
+      const result = await updateProfileImage(nickname, file);
+
+      if (result.success) {
+        const newImageSrc = result.data.imageSrc; // 예를 들어 API 응답에 새로운 이미지 URL이 있다고 가정
+        localStorage.setItem("imageSrc", newImageSrc); // localStorage에 새로운 이미지 URL 저장
+        setProfileImg(newImageSrc); // 컴포넌트 상태 업데이트
+        console.log("프로필 이미지가 성공적으로 변경되었습니다.");
+      } else {
+        console.error("프로필 이미지 변경에 실패했습니다:", result.error);
+      }
     }
   };
 
+  // 닉네임 수정
   const handleChange = (e) => {
     setNickname(e.target.value);
   };
-
   const handleEdit = () => {
     const updateNickname = {
-      ...user,
       nickname: nickname,
     };
     console.log(updateNickname);
-  };
-
-  const handleSave = () => {
-    const updatedUser = {
-      ...user,
-      nickname: nickname,
-    };
-    const updatedProfile = {
-      ...profile,
-      nickname: nickname,
-      imageSrc: profileImg,
-    };
-    navigate("/profile", {
-      state: { user: updatedUser, profile: updatedProfile },
-    });
-    console.log(updatedUser);
   };
 
   return (
@@ -249,8 +222,11 @@ const PersonalInfo = () => {
         <HeaderText>개인정보 확인</HeaderText>
       </Header>
       <ProfileImageWrapper>
-        <ProfileImage src={profileImg} alt="Profile" />
-        {/* <ProfileImage src={imageSrc ? imageSrc : "/img.webp"} alt="Profile" /> */}
+        {/* <ProfileImage src={profileImg} alt="Profile" /> */}
+        <ProfileImage
+          src={profileImg ? profileImg : "/img.webp"}
+          alt="Profile"
+        />
         <ImgUpload
           onClick={() => document.getElementById("fileInput").click()}
         />
@@ -262,33 +238,24 @@ const PersonalInfo = () => {
         />
       </ProfileImageWrapper>
       <UserInfo>
-        <UserRole>{type}</UserRole>
-        {/* const typeText =
-        type === "EMPLOYEE" ? "디자이너" : type === "SHOP" ? "매장" : "일반 사용자"; // 기본값 설정 */}
+        {/* <UserRole>{type}</UserRole> */}
+        <UserRole>
+          {type === "EMPLOYEE"
+            ? "디자이너"
+            : type === "SHOP"
+            ? "매장"
+            : "일반 사용자"}
+        </UserRole>
       </UserInfo>
       <Form>
         <Label>닉네임</Label>
         <Input type="text" value={nickname} onChange={handleChange} />
         <EditButton onClick={handleEdit}>수정</EditButton>
         <br />
-        <Label>이메일</Label>
-        <InfoBox type="email" value={email} readOnly />
-        <br />
-        <Label>생년월일</Label>
-        <InfoBox type="text" value={birth} readOnly />
-        <br />
-        <Label>전화번호</Label>
-        <InfoBox type="text" value={phone} readOnly />
-        <br />
-        <Label>성별</Label>
-        <InfoBox type="text" value={gender} readOnly />
+        {/* type이 "COMMON"일 때만 PersonalInfoCommon을 렌더링 */}
+        {type === "COMMON" && <PersonalInfoCommon />}{" "}
       </Form>
-      <ButtonContainer>
-        <DeleteButton>회원탈퇴</DeleteButton>
-        <SaveButton onClick={handleSave}>저장</SaveButton>
-      </ButtonContainer>
     </Container>
   );
 };
-
 export default PersonalInfo;
