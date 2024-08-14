@@ -13,4 +13,5 @@ public class AlarmInviteEmployeeUpdateDto {
     private Long alarmId;
     private String nickName;
     private boolean isAccept;
+    private String role;
 }

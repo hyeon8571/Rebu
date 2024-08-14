@@ -12,13 +12,17 @@ import lombok.NoArgsConstructor;
 public class AlarmInviteEmployeeUpdateRequest {
 
     @NotNull
-    boolean isAccept;
+    private Boolean isAccept;
+
+    @NotNull
+    private String role;
 
     public AlarmInviteEmployeeUpdateDto toDto(String nickName, Long alarmId) {
         return AlarmInviteEmployeeUpdateDto.builder()
                 .alarmId(alarmId)
                 .nickName(nickName)
                 .isAccept(this.isAccept)
+                .role(this.role)
                 .build();
     }
 }

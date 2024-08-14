@@ -1,8 +1,14 @@
 package com.rebu.feed.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rebu.feed.dto.FeedSearchDto;
@@ -18,6 +24,9 @@ import static com.rebu.reviewkeyword.entity.QSelectedReviewKeyword.selectedRevie
 import static com.rebu.scrap.entity.QScrap.scrap;
 
 import com.rebu.feed.entity.Feed;
+import com.rebu.feed.entity.QFeed;
+import com.rebu.like.entity.QLikeFeed;
+import com.rebu.member.entity.QMember;
 import com.rebu.profile.shop.entity.QShopProfile;
 import lombok.AllArgsConstructor;
 
@@ -72,14 +81,12 @@ public class FeedRepositoryCustomImpl implements FeedRepositoryCustom{
             query.join(scrap).on(feed.id.eq(scrap.feed.id));
 
         if(dto.getSortedLike()) {
-            query.leftJoin(likeFeed).on(likeFeed.feed.id.eq(feed.id))
-                    .groupBy(feed.id)
-                    .orderBy(likeFeed.count().desc(), feed.createdAt.desc());
+            query.orderBy(feed.likeFeedCnt.desc(), feed.createdAt.desc());
         }
         else{
             query.orderBy(feed.createdAt.desc());
         }
 
-        return query.groupBy(feed.id).fetch();
+        return query.distinct().fetch();
     }
 }

@@ -1,10 +1,7 @@
 package com.rebu.alarm.entity;
 
 import com.rebu.profile.shop.entity.ShopProfile;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AlarmInviteEmployee extends Alarm{
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopProfile_id", nullable = false)
     private ShopProfile shopProfile;
 
@@ -25,7 +22,9 @@ public class AlarmInviteEmployee extends Alarm{
 
     private Boolean isAccept;
 
-    public void updateIsAccept(boolean isAccept) {
+    public void updateIsAccept(Boolean isAccept) {
         this.isAccept = isAccept;
     }
+
+    public void updateRole(String role) {this.role = role;}
 }

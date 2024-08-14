@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
@@ -49,7 +50,7 @@ public class ReviewReadByProfileResponse {
     }
 
     public static ReviewReadByProfileResponse from(ReviewByProfileDto dto){
-        return ReviewReadByProfileResponse.builder()
+        ReviewReadByProfileResponse response =  ReviewReadByProfileResponse.builder()
                 .isScraped(dto.getIsScraped())
                 .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
@@ -72,5 +73,8 @@ public class ReviewReadByProfileResponse {
                         .shopNickname(dto.getShop().getNickname())
                         .build())
                 .build();
+        response.feed.imageSrcs.sort(Comparator.naturalOrder());
+        response.feed.hashtags.sort(Comparator.naturalOrder());
+        return response;
     }
 }

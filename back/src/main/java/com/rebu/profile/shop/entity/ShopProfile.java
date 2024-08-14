@@ -49,6 +49,11 @@ public class ShopProfile extends Profile {
         address = newAddress;
     }
 
+    public void changeLatAndLng(double newLat, double newLng) {
+        lat = newLat;
+        lng = newLng;
+    }
+
     public void changeShopName(String newName) {
         name = newName;
     }

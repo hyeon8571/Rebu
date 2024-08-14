@@ -15,7 +15,7 @@ public class AddressValidator implements ConstraintValidator<Address, String> {
             throw new AddressMismatchException();
         }
 
-        String regex = "^[가-힣a-zA-Z0-9\\s\\-.,()]*\\d{5}(-\\d{3})?\\)?[가-힣a-zA-Z0-9\\s\\-.,()]*$";
+        String regex = "^[가-힣a-zA-Z0-9\\s\\-.,()\\u00C0-\\u017F]+(?:\\s*\\d{1,5}(?:[-\\s]\\d{1,4})?)?$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         if (!matcher.matches()) {
