@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
@@ -47,7 +48,7 @@ public class FeedReadByEmployeeResponse {
     }
 
     public static FeedReadByEmployeeResponse from(FeedByEmployeeDto dto){
-        return FeedReadByEmployeeResponse.builder()
+        FeedReadByEmployeeResponse response = FeedReadByEmployeeResponse.builder()
                 .isScraped(dto.getIsScraped())
                 .isLiked(dto.getIsLiked())
                 .writer(Writer.builder()
@@ -68,5 +69,8 @@ public class FeedReadByEmployeeResponse {
                         .nickname(dto.getEmployee().getNickname())
                         .build())
                 .build();
+        response.feed.imageSrcs.sort(Comparator.naturalOrder());
+        response.feed.hashtags.sort(Comparator.naturalOrder());
+        return response;
     }
 }

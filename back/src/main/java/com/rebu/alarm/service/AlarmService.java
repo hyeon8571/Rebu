@@ -342,9 +342,7 @@ public class AlarmService {
             throw new ProfileUnauthorizedException();
         }
         alarmInviteEmployee.updateIsAccept(dto.isAccept());
-        System.out.println(dto.isAccept());
         alarmInviteEmployee.updateRole(dto.getRole());
-        System.out.println(dto.getRole());
         return true;
     }
 
