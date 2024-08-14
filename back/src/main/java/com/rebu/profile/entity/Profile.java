@@ -52,7 +52,7 @@ public class Profile {
     private String phone;
 
     @Column(nullable = false)
-    private boolean isPrivate;
+    private Boolean isPrivate;
 
     @Enumerated(EnumType.STRING)
     private Status status;

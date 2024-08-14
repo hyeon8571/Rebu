@@ -20,7 +20,7 @@ public class ShopProfileDto {
     private String introduction;
     private LocalDateTime recentTime;
     private String phone;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private Status status;
     private String licenseNum;
     private String name;
@@ -39,7 +39,7 @@ public class ShopProfileDto {
                 .introduction(shopProfile.getIntroduction())
                 .recentTime(shopProfile.getRecentTime())
                 .phone(shopProfile.getPhone())
-                .isPrivate(shopProfile.isPrivate())
+                .isPrivate(shopProfile.getIsPrivate())
                 .status(shopProfile.getStatus())
                 .licenseNum(shopProfile.getLicenseNum())
                 .name(shopProfile.getName())

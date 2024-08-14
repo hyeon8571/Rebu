@@ -101,7 +101,7 @@ public class EmployeeProfileService {
         employeeProfile.changeWorkingName(changeWorkingNameDto.getWorkingName());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetEmployeeProfileResultDto getEmployeeProfile(GetEmployeeProfileDto getEmployeeProfileDto) {
         EmployeeProfile targetProfile = employeeProfileRepository.findByNickname(getEmployeeProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -167,7 +167,7 @@ public class EmployeeProfileService {
         return EmployeePeriodScheduleWithShopPeriodScheduleDto.of(shopDto, employeeDto);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetEmployeeProfileResultDto getMyProfile(AuthProfileInfo authProfileInfo) {
         EmployeeProfile myEmployeeProfile = employeeProfileRepository.findByNickname(authProfileInfo.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
