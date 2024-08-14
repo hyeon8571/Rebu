@@ -103,8 +103,8 @@ const jsonData = {
   ],
 };
 
-const ShopStartTime = 8;
-const ShopEndTime = 20;
+const ShopStartTime = 9;
+const ShopEndTime = 18;
 
 export default function TimeTable({ designer }) {
   const [date, setDate] = useState(currentDate);

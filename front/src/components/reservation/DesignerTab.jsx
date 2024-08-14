@@ -217,7 +217,9 @@ export default function DesignerTab() {
               <DesignerIntroduction>
                 {item.workingIntroduction}
               </DesignerIntroduction>
-              <ReviewContainer>방문자 리뷰 {item.reviewCnt}개</ReviewContainer>
+              <ReviewContainer onClick={() => {}}>
+                방문자 리뷰 {item.reviewCnt}개
+              </ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
               <DesignerPhoto src={Img} />

@@ -65,7 +65,7 @@ export default function PostFeedPage() {
       )
       .then((response) => {
         console.log(response);
-        console.log(feed);
+        console.log(feed.images);
         setIsModalOpen(true);
         setSubmitLoading(false);
         setIsSubmitOk("OK");

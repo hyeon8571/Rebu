@@ -63,12 +63,14 @@ function App() {
         <GlobalStyles />
         <Grid>
           {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
+
           {auth &&
             (isMobile ? (
               <NavigationBar auth={auth} />
             ) : (
               <NavigationRail auth={auth} />
             ))}
+
           <Layout>
             <AppRoutes
               theme={theme}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import stringSimilarity from "string-similarity";
 import ProfileMedium from "../common/ProfileMedium";
@@ -8,6 +8,7 @@ import AlternativeImg from "../../assets/images/img.webp";
 import Lottie from "lottie-react";
 import Loading from "../../assets/images/LoadingLottie.json";
 import { throttle } from "lodash";
+import { BASE_IMG_URL } from "../../util/commonFunction";
 
 const SearchModalWrapper = styled.div`
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
@@ -120,6 +121,7 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
   const size = 10;
 
   const resultListRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchProfiles = useCallback(async (newQuery, newPage) => {
     setLoading(true);
@@ -231,6 +233,14 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
   }, [query, fetchProfiles]);
 
   useEffect(() => {
+    setQuery("");
+    setProfiles([]);
+    setPage(0);
+    setIsHashtag(false);
+    setHasMore(true);
+  }, [isOpen]);
+
+  useEffect(() => {
     console.log(page);
     if (page > 0 && query.length > 0) {
       fetchProfiles(query, page);
@@ -254,7 +264,6 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
           />
           <CloseButton
             onClick={() => {
-              setPage(0);
               setQuery("");
               setHasMore(true);
               setIsOpen(false);
@@ -271,29 +280,32 @@ const SearchModal = ({ isOpen, setIsOpen }) => {
         ) : (
           <ResultList ref={resultListRef} id="modal-content">
             {profiles.map((profile, index) => (
-              <Link
-                to={
-                  query.startsWith("#")
-                    ? `/hashtag/${profile.hashtag}`
-                    : `/profile/${profile.nickname}`
-                }
+              <ResultItem
                 key={index}
-                style={{ textDecoration: "none" }}
+                onClick={() => {
+                  if (!query.startsWith("#")) {
+                    navigate(`/profile/${profile.nickname}/${profile.type}`);
+                    setIsOpen(false);
+                  }
+                }}
+                isHashtag={query.startsWith("#")}
               >
-                <ResultItem key={index} isHashtag={query.startsWith("#")}>
-                  {!isHashtag && (
-                    <ProfileMedium
-                      img={profile.imgSrc ? profile.imgSrc : AlternativeImg}
-                      time={0}
-                    />
-                  )}
-                  <span>
-                    {query.startsWith("#")
-                      ? "#" + profile.hashtag
-                      : profile.nickname}
-                  </span>
-                </ResultItem>
-              </Link>
+                {!isHashtag && (
+                  <ProfileMedium
+                    img={
+                      profile.imageSrc
+                        ? BASE_IMG_URL + "/" + profile.imageSrc
+                        : AlternativeImg
+                    }
+                    time={0}
+                  />
+                )}
+                <span>
+                  {query.startsWith("#")
+                    ? "#" + profile.hashtag
+                    : profile.nickname}
+                </span>
+              </ResultItem>
             ))}
           </ResultList>
         )}
