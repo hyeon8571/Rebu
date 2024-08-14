@@ -9,7 +9,7 @@ spring:
       maximum-pool-size: 100
       minimum-idle: 10
       idle-timeout: 600000
-      max-lifetime: 1800000명
+      max-lifetime: 1800000
   #  sql:
   #    init:
   #      data-locations: classpath:data.sql
