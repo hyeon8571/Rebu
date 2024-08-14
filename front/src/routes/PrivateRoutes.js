@@ -1,5 +1,4 @@
-// src/routes/PrivateRoutes.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import MyProfile from "../views/MyProfile";

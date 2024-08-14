@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
-import { BASE_URL } from "./Signup";
+import { useLocation } from "react-router-dom";
 import {
   getCommonProfile,
   getEmployeeProfile,
   getShopProfile,
+  getCommonMyProfile,
+  getEmployeeMyProfile,
+  getShopMyProfile,
 } from "../features/common/userSlice";
 import TabComponent from "../components/MyProfile/MyProfileTab";
 import ProfileImage from "../components/MyProfile/MyProfileImage";
@@ -88,171 +90,94 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const [followerdata, setFollowerData] = useState([]);
   const [followingdata, setFollowingData] = useState([]);
   const [loginUser, setLoginUser] = useState([]);
-
-  // Redux 상태에서 필요한 정보 가져오기
-  const loginNickname = localStorage.getItem("nickname");
-  const loginType = localStorage.getItem("type");
-  const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
 
-  // 다른사람 프로필 조회시 필요한 정보
-  // const [tempNickname, setTempNickname] = useState(nickname);
-  // const [tempType, setTempType] = useState(type);
-  console.log(nickname);
-  console.log(loginNickname);
-  console.log("MyProfile호출!", nickname, type);
+  // state로부터 targetNickname을 가져오기 - 다른 사람 프로필 조회 시 사용
+  const { targetNickname, targetType } = location.state || {
+    targetNickname: null,
+    targetType: null,
+  };
+
+  // Redux 상태에서 필요한 정보 가져오기
+  const {
+    nickname: reduxNickname,
+    type: reduxType,
+    isLogin,
+  } = useSelector((state) => state.auth);
+  const [nickname, setNickname] = useState(reduxNickname);
+  const [type, setType] = useState(reduxType);
 
   // 타입별 프로필 조회
   useEffect(() => {
-    if (type === "COMMON") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/profiles/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setProfile(response.data.body);
-        })
-        .catch((err) => {
-          console.log("사용자 프로필 데이터를 찾지 못했습니다");
-        });
-    } else if (type === "SHOP") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setProfile(response.data.body);
-        })
-        .catch((err) => {
-          console.log("매장 프로필 데이터를 찾지 못했습니다");
-        });
-    } else if (type === "EMPLOYEE") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setProfile(response.data.body);
-        })
-        .catch((err) => {
-          console.log("직원 프로필 데이터를 찾지 못했습니다");
-        });
+    if (reduxNickname !== targetNickname) {
+      setNickname(targetNickname);
+      setType(targetType);
     }
-  }, [nickname, type]);
 
-  // 타입별 프로필 정보 조회
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       let response;
+    if (type === "COMMON" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getCommonProfile(nickname);
+        console.log("프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    } else if (type === "EMPLOYEE" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getEmployeeProfile(nickname);
+        console.log("직원 프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    } else if (type === "SHOP" && isLogin) {
+      const fetchProfile = async () => {
+        const result = await getShopProfile(nickname);
+        console.log("매장 프로필조회", result);
+        if (result.success) {
+          console.log("프로필조회성공", result);
+          setProfile(result.data);
+        } else {
+          setError(result.error);
+        }
+      };
+      fetchProfile();
+    }
+  }, [reduxNickname, targetNickname, targetType]);
 
-  //       switch (type) {
-  //         case "COMMON":
-  //           response = await getCommonProfile(nickname);
-  //           break;
-  //         case "EMPLOYEE":
-  //           response = await getEmployeeProfile(nickname);
-  //           break;
-  //         case "SHOP":
-  //           response = await getShopProfile(nickname);
-  //           break;
-  //         default:
-  //           throw new Error("Invalid profile type");
-  //       }
-
-  //       if (response.success) {
-  //         setProfile(response.data);
-  //         console.log("success", profile);
-  //       } else {
-  //         console.log("Failed to load profile");
-  //         setError("Failed to load profile");
-  //       }
-  //     } catch (err) {
-  //       setError("An error occurred while fetching the profile");
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, [nickname, type]);
-
-  // if (error) {
-  //   console.log(error);
-  // }
-
-  // if (!profile) {
-  //   console.log("Loading...");
-  // }
-
-  // 타입별 리뷰 전체 조회
   useEffect(() => {
-    if (type === "COMMON") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setReveiwData(response.data.body);
-        })
-        .catch((err) => {
-          console.log("사용자 리뷰 데이터를 찾지 못했습니다");
-        });
-    } else if (type === "SHOP") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/feeds/reviews/shops/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setReveiwData(response.data.body);
-        })
-        .catch((err) => {
-          console.log("매장 리뷰 데이터를 찾지 못했습니다");
-        });
-    } else if (type === "EMPLOYEE") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/feeds/reviews/employees/${nickname}`, {
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.body);
-          setReveiwData(response.data.body);
-        })
-        .catch((err) => {
-          console.log("직원 리뷰 데이터를 찾지 못했습니다");
-        });
-    }
-  }, [profile]);
+    fetch("/mockdata/loginuser.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setLoginUser(data.body);
+      });
+  }, []);
 
-  // 가게 평점 계산
+  useEffect(() => {
+    fetch("/mockdata/followerlist.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setFollowerData(data.body);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("/mockdata/followinglist.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setFollowingData(data.body);
+      });
+  }, []);
+
   useEffect(() => {
     if (reviewdata?.length > 0) {
       const totalRating = reviewdata.reduce(
@@ -269,30 +194,24 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
 
   // 스크랩 조회
   useEffect(() => {
-    if (type !== "SHOP") {
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/feeds`, {
-          params: {
-            scrapedBy: nickname,
-          },
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("스크랩 데이터를 조회했습니다");
-          console.log(response.data.body);
-          setScrapData(response.data.body);
-        })
-        .catch((err) => {
-          console.log("스크랩 데이터를 찾지 못했습니다");
-        });
-    }
-  }, [profile]);
+    fetch("/mockdata/likeshop.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setLikeCard(data.body);
+      });
+  }, []);
 
-  // 매장, 직원 피드(post) 조회
+  // useEffect(() => {
+  //   fetch("/mockdata/personalprofile.json")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const matchedProfile = data.body.find(
+  //         (profile) => profile.nickname === loginUser.nickname
+  //       );
+  //       setProfile(matchedProfile || data.body);
+  //     });
+  // }, [loginUser]);
+
   useEffect(() => {
     if (type === "SHOP") {
       const access = localStorage.getItem("access");
@@ -458,51 +377,33 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
 
   return (
     <Wrapper>
-      <>
-        <Header
-          theme={theme}
-          toggleTheme={toggleTheme}
-          currentUser={profile}
-          loginUser={loginNickname}
-          handleLogout={handleLogout}
-        />
-        <ProfileContainer>
-          <IntroduceBox>
-            <ProfileImage currentUser={profile} time={130} />
-            {type === "SHOP" ? (
-              <ShopProfileInfo
-                currentUser={profile}
-                loginUser={loginNickname}
-                rating={ratingAvg}
-                likeshop={likeCard}
-              />
-            ) : (
-              <ProfileInfo currentUser={profile} loginUser={loginNickname} />
-            )}
-          </IntroduceBox>
-          <div ref={tabRef}>
-            <StickyTabContainer isSticky={isSticky}>
-              {type === "SHOP" ? (
-                <ShopTabComponent
-                  tabTitle={tabTitle}
-                  currentTab={currentTab}
-                  onTabChange={handleTabChange}
-                  tabName={tabName}
-                  onSubTabChange={handleSubTabChange} // 서브탭 변경 함수를 전달합니다.
-                  activeSubTab={activeSubTab} // 현재 활성화된 서브탭을 전달합니다.
-                />
-              ) : (
-                <TabComponent
-                  tabTitle={tabTitle}
-                  currentTab={currentTab}
-                  onTabChange={handleTabChange}
-                />
-              )}
-            </StickyTabContainer>
-          </div>
-        </ProfileContainer>
-        <GridContainer>{renderGrid()}</GridContainer>
-      </>
+      <Header
+        theme={theme}
+        toggleTheme={toggleTheme}
+        currentUser={profile}
+        loginUser={profile}
+      />
+      <ProfileContainer>
+        <IntroduceBox>
+          <ProfileImage
+            currentUser={profile}
+            time={130}
+            followerdata={followerdata}
+            followingdata={followingdata} // 팔로잉 목록에 보여줄 mock데이터
+          />
+          <ProfileInfo currentUser={profile} loginUser={profile} />
+        </IntroduceBox>
+        <div ref={tabRef}>
+          <StickyTabContainer isSticky={isSticky}>
+            <TabComponent
+              tabTitle={tabTitle}
+              currentTab={currentTab}
+              onTabChange={handleTabChange}
+            />
+          </StickyTabContainer>
+        </div>
+      </ProfileContainer>
+      <GridContainer>{renderGrid()}</GridContainer>
     </Wrapper>
   );
 };

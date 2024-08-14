@@ -314,149 +314,158 @@ export default function ProfileLarge({ currentUser, time }) {
   };
   const handleUnfollow = () => {
     setRelation("NONE");
-  };
+    // setLoading(true);
+    // setError(null);
+    // setSuccess(null);
 
-  const handleCloseFollowingModal = () => {
-    setIsFollowingModalOpen(false);
-    // 추가된 부분
-    setFollowings([]);
-    setCurrentPage(0);
-    setHasMore(true);
-  };
-  const handleCloseFollowersModal = () => {
-    setIsFollowersModalOpen(false);
-    setFollowers([]);
-    setCurrentPage(0);
-    setHasMore(true);
-  };
-
-  const handleClickOutside = (event) => {
-    if (
-      followersModalRef.current &&
-      !followersModalRef.current.contains(event.target)
-    ) {
-      setIsFollowersModalOpen(false);
-    }
-    if (
-      followingModalRef.current &&
-      !followingModalRef.current.contains(event.target)
-    ) {
+    const handleCloseFollowingModal = () => {
       setIsFollowingModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      // 추가된 부분
+      setFollowings([]);
+      setCurrentPage(0);
+      setHasMore(true);
     };
-  }, []);
+    const handleCloseFollowersModal = () => {
+      setIsFollowersModalOpen(false);
+      setFollowers([]);
+      setCurrentPage(0);
+      setHasMore(true);
+    };
 
-  return (
-    <ProfileContainer>
-      <ImgBox>
-        <React.Fragment>
-          {currentUser?.imageSrc === null ? (
-            <OutterCircleOffline>
-              <Insideimg src={nullImg}></Insideimg>
-            </OutterCircleOffline>
-          ) : online ? (
-            <OutterCircleOnline>
-              <Insideimg
-                src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
-                alt="Profile"
-              />
-            </OutterCircleOnline>
-          ) : (
-            <OutterCircleOffline>
-              <Insideimg
-                src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
-              ></Insideimg>
-            </OutterCircleOffline>
-          )}
-        </React.Fragment>
+    const handleClickOutside = (event) => {
+      if (
+        followersModalRef.current &&
+        !followersModalRef.current.contains(event.target)
+      ) {
+        setIsFollowersModalOpen(false);
+      }
+      if (
+        followingModalRef.current &&
+        !followingModalRef.current.contains(event.target)
+      ) {
+        setIsFollowingModalOpen(false);
+      }
+    };
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            // height: "100%",
-            marginLeft: "2rem",
-          }}
-        >
-          <FollowInfo>
-            <FollowerInfo>
-              <FollowCount>{currentUser?.followerCnt}</FollowCount>
-              <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
-            </FollowerInfo>
-            <FollowingInfo>
-              <FollowCount>{currentUser?.followingCnt}</FollowCount>
-              <FollowText onClick={handleOpenFollowingModal}>팔로잉</FollowText>
-            </FollowingInfo>
-          </FollowInfo>
-        </div>
-      </ImgBox>
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
 
-      {currentUser.relation !== "OWN" && (
-        <FollowButton
-          following={relation}
-          onClick={
-            currentUser?.relation === "FOLLOWING" ? handleUnfollow : handleFollow
-          }
-        >
-          {currentUser?.relation === "FOLLOWING" ? "팔로우 취소" : "팔로우"}
-        </FollowButton>
-      )}
-
-      {isFollowersModalOpen && (
-        <ModalOverlay>
-          <ModalContent ref={followersModalRef}>
-            <ModalHeader>
-              <ModalTitle>팔로워 목록</ModalTitle>
-              <CloseButton onClick={handleCloseFollowersModal}>
-                &times;
-              </CloseButton>
-            </ModalHeader>
-            <hr style={{ borderColor: "#EDE0FB" }} />
-            <FollowListContainer>
-              {followers.map((follower, index) => (
-                <FollowList
-                  key={index}
-                  follower={follower}
-                  time={130}
-                  handleCloseFollowersModal={handleCloseFollowersModal}
+    return (
+      <ProfileContainer>
+        <ImgBox>
+          <React.Fragment>
+            {currentUser?.imageSrc === null ? (
+              <OutterCircleOffline>
+                <Insideimg src={nullImg}></Insideimg>
+              </OutterCircleOffline>
+            ) : online ? (
+              <OutterCircleOnline>
+                <Insideimg
+                  src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
+                  alt="Profile"
                 />
-              ))}
-              {isLoading && <p>로딩 중...</p>}
-            </FollowListContainer>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+              </OutterCircleOnline>
+            ) : (
+              <OutterCircleOffline>
+                <Insideimg
+                  src={"https://www.rebu.kro.kr/data/" + currentUser?.imageSrc}
+                ></Insideimg>
+              </OutterCircleOffline>
+            )}
+          </React.Fragment>
 
-      {isFollowingModalOpen && (
-        <ModalOverlay>
-          <ModalContent ref={followingModalRef}>
-            <ModalHeader>
-              <ModalTitle>팔로잉 목록</ModalTitle>
-              <CloseButton onClick={handleCloseFollowingModal}>
-                &times;
-              </CloseButton>
-            </ModalHeader>
-            <hr style={{ borderColor: "#EDE0FB" }} />
-            <FollowListContainer>
-              {followings.map((follower, index) => (
-                <FollowList
-                  key={index}
-                  follower={follower}
-                  time={130}
-                  handleCloseFollowingModal={handleCloseFollowingModal}
-                />
-              ))}
-              {isLoading && <p>로딩 중...</p>}
-            </FollowListContainer>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-    </ProfileContainer>
-  );
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              // height: "100%",
+              marginLeft: "2rem",
+            }}
+          >
+            <FollowInfo>
+              <FollowerInfo>
+                <FollowCount>{currentUser?.followerCnt}</FollowCount>
+                <FollowText onClick={handleOpenFollowersModal}>
+                  팔로워
+                </FollowText>
+              </FollowerInfo>
+              <FollowingInfo>
+                <FollowCount>{currentUser?.followingCnt}</FollowCount>
+                <FollowText onClick={handleOpenFollowingModal}>
+                  팔로잉
+                </FollowText>
+              </FollowingInfo>
+            </FollowInfo>
+          </div>
+        </ImgBox>
+
+        {currentUser.relation !== "OWN" && (
+          <FollowButton
+            following={relation}
+            onClick={
+              currentUser?.relation === "FOLLOWING"
+                ? handleUnfollow
+                : handleFollow
+            }
+          >
+            {currentUser?.relation === "FOLLOWING" ? "팔로우 취소" : "팔로우"}
+          </FollowButton>
+        )}
+
+        {isFollowersModalOpen && (
+          <ModalOverlay>
+            <ModalContent ref={followersModalRef}>
+              <ModalHeader>
+                <ModalTitle>팔로워 목록</ModalTitle>
+                <CloseButton onClick={handleCloseFollowersModal}>
+                  &times;
+                </CloseButton>
+              </ModalHeader>
+              <hr style={{ borderColor: "#EDE0FB" }} />
+              <FollowListContainer>
+                {followers.map((follower, index) => (
+                  <FollowList
+                    key={index}
+                    follower={follower}
+                    time={130}
+                    handleCloseFollowersModal={handleCloseFollowersModal}
+                  />
+                ))}
+                {isLoading && <p>로딩 중...</p>}
+              </FollowListContainer>
+            </ModalContent>
+          </ModalOverlay>
+        )}
+
+        {isFollowingModalOpen && (
+          <ModalOverlay>
+            <ModalContent ref={followingModalRef}>
+              <ModalHeader>
+                <ModalTitle>팔로잉 목록</ModalTitle>
+                <CloseButton onClick={handleCloseFollowingModal}>
+                  &times;
+                </CloseButton>
+              </ModalHeader>
+              <hr style={{ borderColor: "#EDE0FB" }} />
+              <FollowListContainer>
+                {followings.map((follower, index) => (
+                  <FollowList
+                    key={index}
+                    follower={follower}
+                    time={130}
+                    handleCloseFollowingModal={handleCloseFollowingModal}
+                  />
+                ))}
+                {isLoading && <p>로딩 중...</p>}
+              </FollowListContainer>
+            </ModalContent>
+          </ModalOverlay>
+        )}
+      </ProfileContainer>
+    );
+  };
 }

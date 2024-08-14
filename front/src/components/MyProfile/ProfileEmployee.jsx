@@ -8,6 +8,7 @@ import axios from "axios";
 import { Msg, Tooltip, InfoIconContainer } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BASE_URL } from "../../views/Signup";
+
 // const Msg = styled.p``;
 // const Tooltip = styled.ul``;
 // const InfoIconContainer = styled.div``;
@@ -201,9 +202,22 @@ export const createEmployeeProfile = async (formData) => {
     );
     console.log("직원 프로필 생성 테스트", response);
     // 요청 성공 시 응답 데이터 반환
-    return { success: true, data: response.data };
+    if (response.data.code === "1D00") {
+      //1D00: 직원 프로필 생성 성공 코드
+      localStorage.setItem("access", response.data.access); // 토큰 새로 저장
+      localStorage.setItem("nickname", nickname); // 닉네임 저장
+      localStorage.setItem("type", "EMPLOYEE"); // 타입 저장
+      localStorage.setItem("profileImg", profileImg); // 프로필 이미지 저장
+
+      return { success: true, data: response.data };
+    } else if (response.data.code === "0C05") {
+      console.log("닉네임 중복 검사 재실시"); //0C05 닉네임 중복 검사 재실시
+      return { success: false, error: response.data };
+    } else {
+      return { success: false, error: response.data };
+    }
   } catch (error) {
-    // 요청 실패 시 에러 반환
+    // 요청 실패 시 에러 반환 //0C05 닉네임 중복 검사 재실시
     console.error("프로필 업로드 실패:", error);
     return {
       success: false,
@@ -300,21 +314,26 @@ const ProfileEmployee = () => {
         {
           params: {
             nickname: nickname,
-            purpose: "signup",
+            purpose: "generateProfile",
           },
         }
       );
       console.log("닉네임 중복 확인", response);
 
-      if (response.data.code === "닉네임 중복 검사 성공 코드") {
+      //"닉네임 중복 검사 성공 코드"
+      if (response.data.code === "1C00") {
         console.log("닉네임 중복 검사 성공");
         if (response.data.body === true) {
           setNicknameMsg("중복된 닉네임입니다");
           setIsNicknameValid(false);
         } else {
+          //response.data.body === false
           setNicknameMsg("사용 가능한 닉네임입니다");
           setIsNicknameValid(true);
         }
+      } else {
+        setNicknameMsg("닉네임 중복 확인 중 오류가 발생했습니다.");
+        setIsNicknameValid(false);
       }
     } catch (error) {
       console.error("Error checking nickname availability:", error);
@@ -348,9 +367,15 @@ const ProfileEmployee = () => {
     try {
       console.log("프로필생성시작");
       const result = await createEmployeeProfile(formData);
+      console.log("프로필생성결과", result);
+      console.log("formDate", formData.get("nickname"));
+
       if (result.success) {
+        // 프로필 생성 성공
         setSuccess("직원 프로필이 성공적으로 생성되었습니다.");
-        // 추가적인 성공 처리가 필요할 경우 여기에 추가
+        // token 다시 저장하고
+        // localStorage.setItem("access", result.data.access);
+        // navaigate(`/profile/${nickname}/EMPLOYEE`);
       } else {
         setError(result.error || "프로필 생성 실패");
       }

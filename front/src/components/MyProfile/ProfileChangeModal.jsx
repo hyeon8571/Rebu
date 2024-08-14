@@ -5,6 +5,7 @@ import styled from "styled-components";
 import ProfileCreateModal from "./ProfileCreateModal";
 import { getAllProfiles } from "../../features/common/userSlice";
 import axios from "axios";
+import { switchProfile } from "../../features/auth/authSlice";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -27,6 +28,9 @@ const ModalContent = styled.div`
   width: 300px;
   max-width: 80%;
   position: relative; /* Add this line */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 컨텐츠를 가운데 정렬 */
 `;
 
 const ModalHeader = styled.div`
@@ -82,14 +86,6 @@ const CancelButton = styled.button`
   cursor: pointer;
 `;
 
-// const ProfileImage = styled.img`
-//   border-radius: 50%;
-//   width: 50px;
-//   height: 50px;
-//   object-fit: cover;
-//   margin-bottom: 10px;
-// `;
-
 const ModalText = styled.div`
   display: flex;
   align-items: center;
@@ -97,14 +93,21 @@ const ModalText = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
 `;
+const ProfileContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* 각 프로필 간의 간격을 위해 */
+  width: 100%;
+  cursor: pointer; /* 클릭 가능하게 설정 */
+`;
 
 const ProfileImage = styled.img`
   border-radius: 50%;
-  max-width: 50px; // 원래 크기보다 작게 조정
-  max-height: 60px; // 원래 크기보다 작게 조정
+  width: 50px; // 원래 크기보다 작게 조정
+  height: 50px; // 원래 크기보다 작게 조정
   object-fit: cover;
-  margin-right: 10px; // 이미지와 텍스트 간의 간격
-  margin-bottom: 10px;
+  margin-right: 15px; // 이미지와 텍스트 간의 간격
+  /* margin-bottom: 10px; */
 `;
 
 const NicknameText = styled.span`
@@ -112,10 +115,16 @@ const NicknameText = styled.span`
   font-weight: bold;
 `;
 
-const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
+const ProfileChangeModal = ({
+  ProfileChangeModalOpen,
+  closeModal,
+  handleSettingClick,
+}) => {
   const [isProfileCreateModalOpen, setIsProfileCreateModalOpen] =
     useState(false);
   const [profiles, setProfiles] = useState([]); // profiles 상태
+  const [error, setError] = useState(null); // error 상태
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -144,21 +153,58 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
     setIsProfileCreateModalOpen(false);
   }; //모달닫기
 
-  // const profileImageSrc = profile.imgSrc || "/logo.png";
+  // switchProfile 함수 호출
+  const handleProfileSwitch = async (nickname) => {
+    try {
+      console.log("handleProfileSwitch", nickname);
+      const switchResult = await dispatch(switchProfile(nickname));
+      console.log("handleProfileSwitch 결과", switchResult);
+      if (switchResult.success) {
+        console.log("프로필 전환 요청이 성공적으로 전송되었습니다.");
+      } else {
+        console.error("프로필 전환 요청 중 오류 발생:", error);
+      }
+      return switchResult;
+    } catch (error) {
+      console.error("프로필 전환 요청 중 오류 발생:", error);
+    }
+  };
+
+  // 프로필 전환
+  const handleProfileClick = async (nickname) => {
+    const switchResult = await handleProfileSwitch(nickname);
+    if (switchResult && switchResult.success) {
+      console.log("프로필 전환 성공:", switchResult.data);
+      const owner = "own";
+      navigate(
+        `/profile/${switchResult.data.nickname}/${switchResult.data.type}/${owner}`,
+        { replace: true }
+      ); // 프로필 페이지로 이동
+      handleSettingClick(); // 설정 모달 닫기
+    }
+  };
   const profileImageSrc = "/img.webp";
-  // const { nickname } = useSelector((state) => state.auth);
-  const profile2 = useState([]);
+  // const profile2 = useState([]);
   return (
     <>
       {ProfileChangeModalOpen && (
         <ModalOverlay>
           <ModalContent>
-            <h2 style={{ textAlign: "center", marginBottom: 0 }}>
-              프로필 전환
-            </h2>
-            <div>
+            <h2 style={{ textAlign: "center" }}>프로필 전환</h2>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                textAlign: "start",
+              }}
+            >
               {profiles.map((profile, index) => (
-                <div key={index}>
+                <ProfileContainer
+                  key={index}
+                  onClick={() =>
+                    handleProfileClick(profile.nickname, profile.type)
+                  }
+                >
                   <ProfileImage
                     src={
                       profile.imageSrc
@@ -168,9 +214,14 @@ const ProfileChangeModal = ({ ProfileChangeModalOpen, closeModal }) => {
                     alt="Profile"
                   />
                   <NicknameText>
-                    {profile.nickname} {profile.type}{" "}
+                    {profile.nickname} &nbsp;
+                    {profile.type === "SHOP"
+                      ? "매장"
+                      : profile.type === "EMPLOYEE"
+                      ? "디자이너"
+                      : ""}
                   </NicknameText>
-                </div>
+                </ProfileContainer>
               ))}
             </div>
             <ModalHeader>

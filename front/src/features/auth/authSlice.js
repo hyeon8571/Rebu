@@ -40,7 +40,13 @@ const authSlice = createSlice({
       state.type = "COMMON";
       state.imageSrc = "";
       state.profile = initialState.profile;
+      // localStorage 지우기
       localStorage.removeItem("access");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("type");
+      localStorage.removeItem("imageSrc");
+      localStorage.removeItem("isLogin");
+      // localStorage.removeItem("refresh");
     },
     setProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
@@ -64,23 +70,21 @@ export const login = (email, password) => async (dispatch) => {
     );
 
     if (response.data.code === "1A07") {
+      //로그인 성공 코드
       const access = response.headers["access"];
       console.log("로그인 성공", response);
-      const { type, nickname } = response.data.body;
+      const { nickname, type, imageSrc } = response.data.body;
       localStorage.setItem("access", access);
       localStorage.setItem("nickname", response.data.body.nickname);
       localStorage.setItem("type", response.data.body.type);
 
-      dispatch(loginSuccess({ nickname, type }));
-      console.log("타입, 닉네임", type, nickname);
-
       // 프로필 가져오기
       // const profileResult = await dispatch(getProfile(nickname));
       // if (profileResult.success) {
+
+      dispatch(loginSuccess({ nickname, type, imageSrc }));
+      console.log("타입, 닉네임, 프로필이미지", type, nickname, imageSrc);
       return { success: true };
-      // } else {
-      // return { success: false, error: profileResult.error };
-      // }
     } else {
       return {
         success: false,
@@ -115,71 +119,44 @@ export const getProfile = (nickname) => async (dispatch) => {
   }
 };
 
-// export const alarmsAgreement = () => async (dispatch) => {
-//   const access = localStorage.getItem("access");
-//   try {
-//     const response = await axios.get(`${BASE_URL}/api/alarms/subscribe`, {
-//       headers: {
-//         "access": access,
-//         "Content-Type": "application/json",
-//       },
-//     });
+export const switchProfile = (nickname) => async (dispatch) => {
+  const access = localStorage.getItem("access");
+  console.log("existing access", access);
+  console.log("switchProfile", nickname);
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/profiles/switch-profile`,
+      // const response = await axios.post(`${BASE_URL}/api/switch-profile`,
+      { nickname }, // 요청 바디에 닉네임을 전달
+      {
+        headers: {
+          "Content-Type": "application/json",
+          access: access,
+        },
+      }
+    );
+    console.log("switchProfile", response);
+    if (response.data.code === "1C09") {
+      //프로필 전환 성공
+      console.log(switchProfile, response.data);
+      localStorage.setItem("access", response.headers["access"]); // 기존에 있던 access 토큰을 새로운 access 토큰으로 교체
+      const { nickname, type, imageSrc } = response.data.body;
+      dispatch(loginSuccess({ nickname, type, imageSrc }));
+      // localStorage에 저장
+      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("type", type);
+      localStorage.setItem("imageSrc", imageSrc);
+      localStorage.setItem("isLogin", true);
 
-//     console.log("alarm axios", response)
-//     // console.log(response.data.body)
-//     // dispatch(setProfile(response.data.body));
-//     return { success: true };
-//   } catch (error) {
-//     return { success: false, error: "알람 동의 sse연결 실패." };
-//   }
-// };
-
-// SSE 연결을 위한 이벤트 소스 객체
-// let eventSource = null;
-
-// export const alarmsAgreement = () => async (dispatch) => {
-//   const access = localStorage.getItem("access");
-
-//   try {
-//     // 기존 SSE 연결이 있다면 닫기
-//     if (eventSource) {
-//       eventSource.close();
-//     }
-
-//     // SSE 연결 설정
-//     eventSource = new EventSource(`${BASE_URL}/api/alarms/subscribe`, {
-//       headers: {
-//         "access": access,
-//       },
-//       withCredentials: true // 쿠키를 포함하여 요청을 보내려면 이 옵션을 true로 설정
-//     });
-
-//     // 연결 성공 이벤트
-//     eventSource.onopen = () => {
-//       console.log("SSE 연결 성공");
-//       dispatch({ type: 'ALARMS_AGREEMENT_SUCCESS' });
-//     };
-
-//     // 메시지 수신 이벤트
-//     eventSource.onmessage = (event) => {
-//       const data = JSON.parse(event.data);
-//       console.log("SSE로부터 메시지 수신:", data);
-//       dispatch({ type: 'ALARM_RECEIVED', payload: data });
-//     };
-
-//     // 에러 처리
-//     eventSource.onerror = (error) => {
-//       console.error("SSE 연결 에러:", error);
-//       eventSource.close();
-//       dispatch({ type: 'ALARMS_AGREEMENT_ERROR', payload: "SSE 연결 실패" });
-//     };
-
-//     return { success: true };
-//   } catch (error) {
-//     console.error("알람 동의 SSE 연결 실패:", error);
-//     return { success: false, error: "알람 동의 SSE 연결 실패." };
-//   }
-// };
+      return { success: true, data: response.data.body };
+    } else {
+      return { success: false, data: response.data.body };
+    }
+  } catch (error) {
+    console.error("Error switching profile:", error);
+    return { success: false, error: "Failed to switch profile." };
+  }
+};
 
 // // SSE 연결 종료 함수
 // export const closeAlarmsConnection = () => {

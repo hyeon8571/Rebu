@@ -108,6 +108,7 @@ export default function NavigationBar() {
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
+
         <StyledNavLink to="/component">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
