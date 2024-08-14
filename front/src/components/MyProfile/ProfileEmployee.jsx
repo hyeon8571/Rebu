@@ -3,78 +3,22 @@ import styled from "styled-components";
 import { FiChevronLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
-import api from "../../features/auth/api";
 import axios from "axios";
 import { Msg, Tooltip, InfoIconContainer } from "../user/SignupForm2";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BASE_URL } from "../../views/Signup";
-
-// const Msg = styled.p``;
-// const Tooltip = styled.ul``;
-// const InfoIconContainer = styled.div``;
+import { LOCAL_URL } from "../../views/Login";
+import {
+  Container,
+  ProfileImageWrapper,
+  ProfileImage,
+  ImgUpload,
+} from "../../views/PersonalInfo";
 
 export const Div = styled.div`
   display: flex;
   justify-content: center;
   /* flex: 1; */
-`;
-
-const Container = styled.div`
-  display: flex;
-
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  max-width: 768px;
-  margin: 0 auto;
-  margin-bottom: 70px;
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#fff" : props.theme.body};
-  border-radius: 8px;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  background-color: ${(props) =>
-    props.theme.value === "light" ? "#fff" : props.theme.body};
-  margin-left: -4rem;
-`;
-
-const HeaderText = styled.p`
-  font-size: 20px;
-  margin-left: 15px;
-`;
-
-const BackButton = styled(FiChevronLeft)`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
-
-const ProfileImageWrapper = styled.div`
-  position: relative;
-  width: 100px;
-  height: 100px;
-  margin-top: 10px;
-`;
-
-const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-top: 5px;
-`;
-
-const ImgUpload = styled(AiTwotonePlusCircle)`
-  color: #757575;
-  font-size: 28px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  cursor: pointer;
 `;
 
 const HiddenFileInput = styled.input`
@@ -204,11 +148,19 @@ export const createEmployeeProfile = async (formData) => {
     // 요청 성공 시 응답 데이터 반환
     if (response.data.code === "1D00") {
       //1D00: 직원 프로필 생성 성공 코드
+      const nickname = formData.get("nickname"); //새로만든 nickname으로 localStorage에 저장
+      const uploadImg = formData.get("imgFile"); //새로만든 uploadImg로 localStorage에 저장
+
       localStorage.setItem("access", response.data.access); // 토큰 새로 저장
       localStorage.setItem("nickname", nickname); // 닉네임 저장
       localStorage.setItem("type", "EMPLOYEE"); // 타입 저장
-      localStorage.setItem("profileImg", profileImg); // 프로필 이미지 저장
-
+      // If uploadImg exists, convert it to a URL string for storage
+      if (uploadImg) {
+        // 프로필 이미지 저장
+        localStorage.setItem("uploadImg", URL.createObjectURL(uploadImg));
+      } else {
+        localStorage.setItem("uploadImg", null); //없을 때 null로 저장
+      }
       return { success: true, data: response.data };
     } else if (response.data.code === "0C05") {
       console.log("닉네임 중복 검사 재실시"); //0C05 닉네임 중복 검사 재실시
@@ -218,17 +170,17 @@ export const createEmployeeProfile = async (formData) => {
     }
   } catch (error) {
     // 요청 실패 시 에러 반환 //0C05 닉네임 중복 검사 재실시
-    console.error("프로필 업로드 실패:", error);
+    console.error("프로필 생성 실패:", error);
     return {
       success: false,
-      error: error.response ? error.response.data : "프로필 업로드 실패",
+      error: error.response ? error.response.data : "프로필 생성 실패",
     };
   }
 };
 
 const ProfileEmployee = () => {
   const navigate = useNavigate();
-  const [profileImg, setProfileImg] = useState(null);
+  const [uploadImg, setUploadImg] = useState(null); //업로드할 프로필 이미지
   const [nickname, setNickname] = useState("");
   const [nicknameMsg, setNicknameMsg] = useState("");
   const [isNicknameValid, setIsNicknameValid] = useState(false);
@@ -243,7 +195,7 @@ const ProfileEmployee = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileImg(file);
+      setUploadImg(file);
     }
   };
 
@@ -344,16 +296,26 @@ const ProfileEmployee = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
     console.log("버튼눌림");
-    if (!isNicknameValid) {
-      alert("유효한 닉네임을 입력하세요.");
+    if (isNicknameValid === false) {
+      alert("유효한 닉네임을 입력하세요." + isNicknameValid);
       return;
+    } else {
+      console.log("유효한 닉네임");
     }
 
+    // 필수 필드 검증
+    // if (!nickname || !workingName || !phone) {
+    //   alert("필수 항목을 모두 입력해주세요.");
+    //   return;
+    // }
+
+    //제출할 formdata 생성
     const formData = new FormData();
-    if (profileImg) {
+    if (uploadImg) {
       console.log("이미지 추가함");
-      formData.append("imgFile", profileImg);
+      formData.append("imgFile", uploadImg); //업로드할 프로필 이미지
     }
     formData.append("nickname", nickname);
     formData.append("workingName", workingName);
@@ -368,19 +330,23 @@ const ProfileEmployee = () => {
       console.log("프로필생성시작");
       const result = await createEmployeeProfile(formData);
       console.log("프로필생성결과", result);
-      console.log("formDate", formData.get("nickname"));
+      // FormData 내용 로깅 (디버깅용)
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
       if (result.success) {
         // 프로필 생성 성공
         setSuccess("직원 프로필이 성공적으로 생성되었습니다.");
         // token 다시 저장하고
         // localStorage.setItem("access", result.data.access);
-        // navaigate(`/profile/${nickname}/EMPLOYEE`);
+        navigate(`/profile/${nickname}/EMPLOYEE`);
       } else {
         setError(result.error || "프로필 생성 실패");
       }
     } catch (error) {
       setError("알 수 없는 오류가 발생했습니다.");
+      console.error("프로필 생성 중 오류:", error);
     } finally {
       setLoading(false);
     }
@@ -388,12 +354,9 @@ const ProfileEmployee = () => {
 
   return (
     <Container>
-      <Header>
-        <CloseButton onClick={() => navigate(-1)}>&times;</CloseButton>
-      </Header>
       <ProfileImageWrapper>
         <ProfileImage
-          src={profileImg ? URL.createObjectURL(profileImg) : "/logo.png"}
+          src={uploadImg ? URL.createObjectURL(uploadImg) : "/logo.png"}
           alt="Profile"
         />
         <ImgUpload

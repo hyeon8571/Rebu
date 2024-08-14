@@ -4,7 +4,6 @@ import { FiChevronLeft } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
 import { getCommonProfileInfo } from "../../features/common/userSlice";
-import { Form } from "../../views/PersonalInfo";
 
 const Header = styled.div`
   width: 100%;
@@ -65,6 +64,18 @@ const UserRole = styled.span`
   padding: 5px 10px;
   margin-top: 20px;
   color: #000000;
+`;
+
+const Form = styled.div`
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  /* border: 1px solid #CA9EF6; */
+  /* box-shadow: 0 0 15px rgba(202,	158, 246, 0.3); */
+  border: 1px solid #bcbcbc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#fbf8fe" : props.theme.secondary};
 `;
 
 const Label = styled.p`
@@ -154,6 +165,13 @@ export const PersonalInfoCommon = () => {
   // const birth = user.birth;
   const [phone, setPhone] = useState("010-1234-5678");
 
+  // let gender = user.gender;
+  // if (user.gender === "MALE") {
+  //   gender = "남";
+  // } else if (user.gender === "FEMALE") {
+  //   gender = "여";
+  // }
+
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
 
@@ -180,6 +198,18 @@ export const PersonalInfoCommon = () => {
     return <div>Loading...</div>;
   }
 
+  const handleChange = (e) => {
+    setNickname(e.target.value);
+  };
+
+  const handleEdit = () => {
+    const updateNickname = {
+      ...user,
+      nickname: nickname,
+    };
+    console.log(updateNickname);
+  };
+
   const handleSave = () => {
     const updatedUser = {
       ...user,
@@ -197,10 +227,10 @@ export const PersonalInfoCommon = () => {
   return (
     <>
       <Form>
-        {/* <Label>닉네임</Label>
+        <Label>닉네임</Label>
         <Input type="text" value={nickname} onChange={handleChange} />
         <EditButton onClick={handleEdit}>수정</EditButton>
-        <br /> */}
+        <br />
         <Label>이메일</Label>
         <InfoBox type="email" value={profile.email} readOnly />
         <br />
@@ -208,14 +238,10 @@ export const PersonalInfoCommon = () => {
         <InfoBox type="text" value={profile.birth} readOnly />
         <br />
         <Label>전화번호</Label>
-        <InfoBox type="text" value={profile.phone} readOnly />
+        <InfoBox type="text" value={phone} readOnly />
         <br />
         <Label>성별</Label>
-        <InfoBox
-          type="text"
-          value={profile.gender === "FEMALE" ? "여성" : "남성"}
-          readOnly
-        />
+        <InfoBox type="text" value={profile.gender} readOnly />
       </Form>
       <ButtonContainer>
         <DeleteButton>회원탈퇴</DeleteButton>
