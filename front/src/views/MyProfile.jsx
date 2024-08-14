@@ -90,7 +90,8 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   const [loginUser, setLoginUser] = useState([]);
 
   // Redux 상태에서 필요한 정보 가져오기
-  const { isLogin } = useSelector((state) => state.auth);
+  const loginNickname = useSelector((state) => state.auth.nickname);
+  const loginType = useSelector((state) => state.auth.type);
   const { nickname, type } = useParams(); // URL 파라미터에서 nickname과 type을 추출
   const [profile, setProfile] = useState([]); //profile 조회
   const [error, setError] = useState(null);
@@ -98,50 +99,105 @@ const ProfilePage = ({ theme, toggleTheme, handleLogout }) => {
   // 다른사람 프로필 조회시 필요한 정보
   // const [tempNickname, setTempNickname] = useState(nickname);
   // const [tempType, setTempType] = useState(type);
-
+  console.log(nickname)
+  console.log(loginNickname)
   console.log("MyProfile호출!", nickname, type);
 
-  // 타입별 프로필 정보 조회
+  // 타입별 프로필 조회
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        let response;
-
-        switch (type) {
-          case "COMMON":
-            response = await getCommonProfile(nickname);
-            break;
-          case "EMPLOYEE":
-            response = await getEmployeeProfile(nickname);
-            break;
-          case "SHOP":
-            response = await getShopProfile(nickname);
-            break;
-          default:
-            throw new Error("Invalid profile type");
-        }
-
-        if (response.success) {
-          setProfile(response.data);
-          console.log("success", profile);
-        } else {
-          console.log("Failed to load profile");
-          setError("Failed to load profile");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching the profile");
-      }
-    };
-
-    fetchProfile();
+    if (type === "COMMON") {
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/profiles/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("사용자 프로필 데이터를 찾지 못했습니다");
+        });
+    } else if (type === "SHOP") {
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/profiles/shops/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("매장 프로필 데이터를 찾지 못했습니다");
+        });
+    } else if (type === "EMPLOYEE") {
+      const access = localStorage.getItem("access");
+      axios
+        .get(`${BASE_URL}/api/profiles/employees/${nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.body);
+          setProfile(response.data.body);
+        })
+        .catch((err) => {
+          console.log("직원 프로필 데이터를 찾지 못했습니다");
+        });
+    }
   }, [nickname, type]);
-  if (error) {
-    console.log(error);
-  }
 
-  if (!profile) {
-    console.log("Loading...");
-  }
+  // 타입별 프로필 정보 조회
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       let response;
+
+  //       switch (type) {
+  //         case "COMMON":
+  //           response = await getCommonProfile(nickname);
+  //           break;
+  //         case "EMPLOYEE":
+  //           response = await getEmployeeProfile(nickname);
+  //           break;
+  //         case "SHOP":
+  //           response = await getShopProfile(nickname);
+  //           break;
+  //         default:
+  //           throw new Error("Invalid profile type");
+  //       }
+
+  //       if (response.success) {
+  //         setProfile(response.data);
+  //         console.log("success", profile);
+  //       } else {
+  //         console.log("Failed to load profile");
+  //         setError("Failed to load profile");
+  //       }
+  //     } catch (err) {
+  //       setError("An error occurred while fetching the profile");
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, [nickname, type]);
+  
+  // if (error) {
+  //   console.log(error);
+  // }
+
+  // if (!profile) {
+  //   console.log("Loading...");
+  // }
 
   // 타입별 리뷰 전체 조회
   useEffect(() => {
@@ -347,7 +403,7 @@ useEffect(() => {
           key={key}
           Card={postdata}
           currentUser={profile}
-          loginUser={nickname}
+          loginUser={loginNickname}
           type={type}
           currentTab={currentTab}
           reviewdata={renderGrid}
@@ -359,14 +415,14 @@ useEffect(() => {
           key={key}
           Card={scrapdata}
           currentUser={profile}
-          loginUser={nickname}
+          loginUser={loginNickname}
         />
       );
     } else if (content === "Likes") {
       return (
         <>
           {likeCard?.map((item) => (
-            <LikesCard key={item.id} Card={item} loginUser={nickname} />
+            <LikesCard key={item.id} Card={item} loginUser={loginNickname} />
           ))}
         </>
       );
@@ -376,7 +432,7 @@ useEffect(() => {
           key={key}
           Card={reviewdata}
           currentUser={profile}
-          loginUser={nickname}
+          loginUser={loginNickname}
           type={type}
           currentTab={currentTab}
           reviewdata={reviewdata}
@@ -405,7 +461,7 @@ useEffect(() => {
           theme={theme}
           toggleTheme={toggleTheme}
           currentUser={profile}
-          loginUser={nickname}
+          loginUser={loginNickname}
           handleLogout={handleLogout}
         />
         <ProfileContainer>
@@ -414,12 +470,12 @@ useEffect(() => {
             {type === "SHOP" ? (
               <ShopProfileInfo
                 currentUser={profile}
-                loginUser={nickname}
+                loginUser={loginNickname}
                 rating={ratingAvg}
                 likeshop={likeCard}
               />
             ) : (
-              <ProfileInfo currentUser={profile} loginUser={nickname} />
+              <ProfileInfo currentUser={profile} loginUser={loginNickname} />
             )}
           </IntroduceBox>
           <div ref={tabRef}>
