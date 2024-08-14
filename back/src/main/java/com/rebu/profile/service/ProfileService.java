@@ -11,6 +11,7 @@ import com.rebu.profile.entity.Profile;
 import com.rebu.profile.exception.MemberNotMatchException;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
+import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.util.JWTUtil;
 import com.rebu.storage.exception.FileUploadFailException;
@@ -60,7 +61,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public void changeNickname(ChangeNicknameDto changeNicknameDto, HttpServletResponse response) {
+    public ProfileInfo changeNickname(ChangeNicknameDto changeNicknameDto, HttpServletResponse response) {
 
         Profile profile = profileRepository.findByNickname(changeNicknameDto.getOldNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -70,6 +71,12 @@ public class ProfileService {
         redisService.deleteData("Refresh:" + changeNicknameDto.getOldNickname());
 
         resetToken(changeNicknameDto.getNewNickname(), profile.getType().toString(), response);
+
+        return ProfileInfo.builder()
+                .imageSrc(profile.getImageSrc())
+                .nickname(changeNicknameDto.getNewNickname())
+                .type(profile.getType().toString())
+                .build();
     }
 
     @Transactional
@@ -98,7 +105,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public void changePhoto(ChangeImgDto changeImgDto) {
+    public String changePhoto(ChangeImgDto changeImgDto) {
 
         Profile profile = profileRepository.findByNickname(changeImgDto.getNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -110,6 +117,7 @@ public class ProfileService {
         try {
             String path = storageService.uploadFile(profile.getId() + "." + extension , file.getBytes(), "/profiles");
             profile.changeImg(path);
+            return path;
         } catch (IOException e) {
             throw new FileUploadFailException();
         }
@@ -129,6 +137,7 @@ public class ProfileService {
         resetToken(profileToSwitch.getNickname(), profileToSwitch.getType().toString(), response);
 
         return ProfileInfo.builder()
+                .imageSrc(profileToSwitch.getImageSrc())
                 .nickname(profileToSwitch.getNickname())
                 .type(profileToSwitch.getType().toString())
                 .build();
@@ -161,12 +170,13 @@ public class ProfileService {
         resetToken(targetProfile.getNickname(), targetProfile.getType().toString(), response);
 
         return ProfileInfo.builder()
+                .imageSrc(targetProfile.getImageSrc())
                 .nickname(targetProfile.getNickname())
                 .type(targetProfile.getType().toString())
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public GetProfileResponse getProfile(GetProfileDto getProfileDto) {
         Profile targetProfile = profileRepository.findByNickname(getProfileDto.getTargetNickname())
                 .orElseThrow(ProfileNotFoundException::new);
@@ -196,6 +206,14 @@ public class ProfileService {
         Slice<Profile> profiles = profileRepository.searchProfileByKeyword(searchProfileDto.getKeyword(), searchProfileDto.getPageable());
 
         return profiles.map(SearchProfileResponse::from);
+    }
+
+    @Transactional
+    public void updateRecentTime(AuthProfileInfo authProfileInfo) {
+        Profile profile = profileRepository.findByNickname(authProfileInfo.getNickname())
+                .orElseThrow(ProfileNotFoundException::new);
+
+        profile.updateRecentTime();
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {

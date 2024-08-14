@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 public abstract class AlarmReadDto {
+    private Long alarmId;
     private String senderNickname;
     private Long senderId;
     private com.rebu.profile.enums.Type senderType;

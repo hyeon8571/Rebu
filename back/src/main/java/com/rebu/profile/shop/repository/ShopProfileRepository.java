@@ -13,7 +13,7 @@ public interface ShopProfileRepository extends JpaRepository<ShopProfile, Long> 
     @Query("""
         SELECT sp
         FROM ShopProfile sp
-        JOIN FETCH sp.employeeProfiles
+        LEFT JOIN FETCH sp.employeeProfiles
         WHERE sp.nickname = :nickname
     """)
     Optional<ShopProfile> findByNicknameFetch(String nickname);

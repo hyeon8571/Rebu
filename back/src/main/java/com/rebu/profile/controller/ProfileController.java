@@ -3,6 +3,7 @@ package com.rebu.profile.controller;
 import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.controller.dto.*;
 import com.rebu.profile.dto.*;
@@ -66,8 +67,8 @@ public class ProfileController {
         if (checkNickname == null || !checkNickname.equals(changeNicknameRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
-        profileService.changeNickname(changeNicknameRequest.toDto(authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("1C02", null));
+        ProfileInfo profileInfo = profileService.changeNickname(changeNicknameRequest.toDto(authProfileInfo.getNickname()), response);
+        return ResponseEntity.ok(new ApiResponse<>("1C02", profileInfo));
     }
 
     @PatchMapping("/{nickname}/introduction")
@@ -87,8 +88,15 @@ public class ProfileController {
     @PatchMapping("/{nickname}/image")
     public ResponseEntity<?> updateProfileImg(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                               @ProfileImg @RequestParam MultipartFile imgFile) {
-        profileService.changePhoto(new ChangeImgDto(imgFile, authProfileInfo.getNickname()));
-        return ResponseEntity.ok(new ApiResponse<>("1C05", null));
+        String path = profileService.changePhoto(new ChangeImgDto(imgFile, authProfileInfo.getNickname()));
+
+        ProfileInfo profileInfo = ProfileInfo.builder()
+                .imageSrc(path)
+                .nickname(authProfileInfo.getNickname())
+                .type(authProfileInfo.getType())
+                .build();
+
+        return ResponseEntity.ok(new ApiResponse<>("1C05", profileInfo));
     }
 
     @PatchMapping("/{nickname}/phone")
@@ -133,6 +141,7 @@ public class ProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1C09", profileInfo));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                         @PathVariable String nickname) {

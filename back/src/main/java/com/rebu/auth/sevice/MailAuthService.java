@@ -27,7 +27,7 @@ public class MailAuthService {
     private final JavaMailSender javaMailSender;
     private final RedisService redisService;
     private final ResourceLoader resourceLoader;
-    private static final String senderEmail = "w01085914442@gmail.com";
+    private static final String senderEmail = "rebu.glodenratio@gmail.com";
 
     private String createCode() {
         int leftLimit = 48; // number '0'

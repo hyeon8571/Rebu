@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useCallback } from "react";
+import styled from "styled-components";
 import { FaRegHeart, FaHeart, FaRegStar } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
 import StoreMark from "../../assets/images/storemark.png";
-import { BASE_URL } from '../../views/Signup';
-import axios from 'axios';
+import { BASE_URL } from "../../views/Signup";
+import axios from "axios";
 
 const InfoBox = styled.div`
   margin-left: 30px;
@@ -49,7 +49,7 @@ const StoreMarkBox = styled.img`
   margin-right: 5px;
   @media (max-width: 375px) {
     width: 18px;
-  height: 18px;
+    height: 18px;
   }
 `;
 
@@ -69,7 +69,7 @@ const RatingText = styled.span`
 
 const ImgLike = styled(FaRegHeart)`
   font-size: 20px;
-  color: #943Aee;
+  color: #943aee;
   cursor: pointer;
 `;
 
@@ -143,14 +143,14 @@ const ModalButtonContainer = styled.div`
 `;
 
 const ModalButton = styled.button`
-  background: #943AEE;
+  background: #943aee;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   &:hover {
-    background: #943AEE;
+    background: #943aee;
   }
 `;
 
@@ -160,22 +160,15 @@ const CloseButton = styled.button`
   font-size: 20px;
   cursor: pointer;
   &:hover {
-    color: #943AEE;
+    color: #943aee;
   }
 `;
 
-const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
+const InfoComponent = ({ currentUser, loginUser, rating }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
   const [isLikes, setIsLikes] = useState(currentUser.isfavorite);
-
-  useEffect(() => {
-    if (likeshop.map((shop) => {shop.nickname === currentUser.nickname})) {
-      setIsLikes(true);
-    };
-  }, []);
-  
 
   useEffect(() => {
     setNewIntroduce(currentUser.introduction);
@@ -194,46 +187,50 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
   const handleIntroduceChange = (e) => {
     setTempIntroduce(e.target.value);
   };
-  
 
   const handleLikeToggle = useCallback(() => {
-    
-    const access = localStorage.getItem('access');
+    const access = localStorage.getItem("access");
 
     // const isCurrentlyLiked = profile.isfavorite;
 
     // 좋아요 취소
     if (isLikes) {
-      axios.delete(`${BASE_URL}/api/shop-favorites/${currentUser.nickname}`, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("좋아요 취소");
-        setIsLikes(false);
-      })
-      .catch(error => {
-        console.log("좋아요 취소 오류 발생:", error);
-      });
-    } // 좋아요 
+      axios
+        .delete(`${BASE_URL}/api/shop-favorites/${currentUser.nickname}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("좋아요 취소");
+          setIsLikes(false);
+        })
+        .catch((error) => {
+          console.log("좋아요 취소 오류 발생:", error);
+        });
+    } // 좋아요
     else {
-      axios.post(`${BASE_URL}/api/shop-favorites`, {
-        shopNickname: currentUser.nickname,
-      }, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("좋아요 성공");
-        setIsLikes(true);
-      })
-      .catch(error => {
-        console.log("좋아요 오류 발생:", error);
-      });
+      axios
+        .post(
+          `${BASE_URL}/api/shop-favorites`,
+          {
+            shopNickname: currentUser.nickname,
+          },
+          {
+            headers: {
+              access: access,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("좋아요 성공");
+          setIsLikes(true);
+        })
+        .catch((error) => {
+          console.log("좋아요 오류 발생:", error);
+        });
     }
   }, []);
 
@@ -244,7 +241,7 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
 
   const saveIntroduce = async () => {
     try {
-      const access = localStorage.getItem('access');
+      const access = localStorage.getItem("access");
       // 백엔드 API 엔드포인트 주소
       const url = `${BASE_URL}/api/profiles/${currentUser.nickname}/introduction`;
 
@@ -255,21 +252,25 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
 
       const headers = {
         "Content-Type": "application/json",
-        "access" : access
-      }
+        access: access,
+      };
 
       // PATCH 요청 보내기
-      const response = await axios.patch(url, {
-        introduction: tempIntroduce,
-      }, {headers});
+      const response = await axios.patch(
+        url,
+        {
+          introduction: tempIntroduce,
+        },
+        { headers }
+      );
 
       // 성공 시 추가로 처리할 작업이 있다면 여기에 작성
-      console.log('소개글이 성공적으로 수정되었습니다:', response.data);
+      console.log("소개글이 성공적으로 수정되었습니다:", response.data);
     } catch (error) {
       // 에러 처리 로직 작성
-      console.error('소개글 수정에 실패했습니다:', error);
+      console.error("소개글 수정에 실패했습니다:", error);
     }
-    setNewIntroduce(tempIntroduce)
+    setNewIntroduce(tempIntroduce);
     closeModal();
   };
 
@@ -281,7 +282,7 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
           <StoreMarkBox src={StoreMark} />
           <Rating>
             <FaRegStar />
-        
+
             <RatingText>{rating}</RatingText>
           </Rating>
         </LeftContainer>
@@ -289,16 +290,18 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
           {currentUser.nickname !== loginUser ? (
             isLikes ? (
               <ImgLikeActive onClick={handleLikeToggle} />
-            ) : (<ImgLike onClick={handleLikeToggle} />)
-          ) : ("")}
+            ) : (
+              <ImgLike onClick={handleLikeToggle} />
+            )
+          ) : (
+            ""
+          )}
         </RightContainer>
       </NameInfo>
 
       <IntroduceInfo>
         <Introduction>{newIntroduce}</Introduction> &nbsp;
-        {currentUser.nickname === loginUser && (
-          <ImgEdit onClick={openModal} />
-        )}
+        {currentUser.nickname === loginUser && <ImgEdit onClick={openModal} />}
       </IntroduceInfo>
 
       {isModalOpen && (
@@ -308,7 +311,10 @@ const InfoComponent = ({ currentUser, loginUser, rating, likeshop }) => {
               <ModalTitle>소개글 수정</ModalTitle>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
             </ModalHeader>
-            <ModalInput value={tempIntroduce} onChange={handleIntroduceChange} />
+            <ModalInput
+              value={tempIntroduce}
+              onChange={handleIntroduceChange}
+            />
             <ModalButtonContainer>
               <ModalButton onClick={saveIntroduce}>저장</ModalButton>
             </ModalButtonContainer>

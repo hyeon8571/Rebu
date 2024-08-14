@@ -39,6 +39,6 @@ public class GetShopProfileResponse {
     }
 
     public enum Relation {
-        ONW, FOLLOWING, NONE
+        OWN, FOLLOWING, NONE
     }
 }

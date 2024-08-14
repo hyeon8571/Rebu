@@ -1,7 +1,10 @@
 package com.rebu.alarm.entity;
 
 import com.rebu.reservation.entity.Reservation;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +16,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class AlarmReservation extends Alarm{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id", nullable = false)

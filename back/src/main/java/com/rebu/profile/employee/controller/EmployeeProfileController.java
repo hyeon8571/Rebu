@@ -1,16 +1,18 @@
 package com.rebu.profile.employee.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
+import com.rebu.common.aop.annotation.UpdateRecentTime;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
-import com.rebu.profile.employee.controller.dto.EmployeeProfileReadPeriodScheduleResponse;
+import com.rebu.profile.employee.controller.dto.EmployeeReadPeriodScheduleResponse;
 import com.rebu.profile.employee.controller.dto.GenerateEmployeeProfileRequest;
 import com.rebu.profile.employee.dto.*;
 import com.rebu.profile.employee.service.EmployeeProfileService;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
 import com.rebu.security.dto.AuthProfileInfo;
+import com.rebu.security.dto.ProfileInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +37,8 @@ public class EmployeeProfileController {
         if (nickname == null || !nickname.equals(generateEmployeeProfileRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
-        employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
-        return ResponseEntity.ok(new ApiResponse<>("1D00", null));
+        ProfileInfo profileInfo = employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
+        return ResponseEntity.ok(new ApiResponse<>("1D00", profileInfo));
     }
 
     @Authorized(allowed = {Type.EMPLOYEE})
@@ -55,6 +57,7 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(new ApiResponse<>("1D02", null));
     }
 
+    @UpdateRecentTime
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getEmployeeProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                 @PathVariable String nickname) {
@@ -72,12 +75,12 @@ public class EmployeeProfileController {
     public ResponseEntity<?> readEmployeePeriodSchedule(@PathVariable String nickname,
                                                         @RequestParam("start-date") LocalDate startDate,
                                                         @RequestParam("end-date") LocalDate endDate) {
-        EmployeeProfilePeriodScheduleDto dto = employeeProfileService.readEmployeeProfilePeriodSchedule(EmployeeProfileReadPeriodScheduleDto.builder()
+        EmployeePeriodScheduleWithShopPeriodScheduleDto dto = employeeProfileService.readEmployeePeriodSchedule(EmployeeReadPeriodScheduleDto.builder()
                 .nickname(nickname)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build());
-        EmployeeProfileReadPeriodScheduleResponse response = EmployeeProfileReadPeriodScheduleResponse.from(dto);
+        EmployeeReadPeriodScheduleResponse response = EmployeeReadPeriodScheduleResponse.from(dto);
         return ResponseEntity.ok(new ApiResponse<>("1R04", response));
     }
 }
