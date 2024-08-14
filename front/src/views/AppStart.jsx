@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ButtonLarge from "../components/common/ButtonLarge";
-import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import BackgroundImg1 from "../../src/assets/images/shop1.png";
 import BackgroundImg2 from "../../src/assets/images/shop7.png";
 import BackgroundImg3 from "../../src/assets/images/shop10.png";
@@ -10,13 +10,14 @@ import RebuImg from "../assets/images/logo.png";
 
 const Wrapper = styled.div`
   display: flex;
-  width: 100vw;
+  width: 98vw;
   height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  margin-bottom: -4rem;
 `;
 
 const SlideContainer = styled.div`
@@ -134,7 +135,8 @@ const ButtonWrapper = styled.div`
 const AppStart = () => {
   const nav = useNavigate();
   const [current, setCurrent] = useState(0);
-  const nickname = localStorage.getItem('nickname');
+  const [buttonVisible, setButtonVisible] = useState(false);
+  const nickname = localStorage.getItem("nickname");
 
   const slides = [BackgroundImg1, BackgroundImg2, BackgroundImg3];
   const length = slides.length;
@@ -148,18 +150,28 @@ const AppStart = () => {
   const button = {
     onClick: () => nav("/login"),
     title: "시작하기",
-    highlight: true,
+    highlight: "true",
   };
 
   const nextSlide = () => {
     if (current < length - 1) {
       setCurrent(current + 1);
+      if (current === length - 2) {
+        setTimeout(() => {
+          setButtonVisible(true);
+        }, 200);
+      }
     }
   };
 
   const prevSlide = () => {
     if (current > 0) {
       setCurrent(current - 1);
+      if (current !== length - 2) {
+        setTimeout(() => {
+          setButtonVisible(false);
+        }, 100);
+      }
     }
   };
 
@@ -178,15 +190,9 @@ const AppStart = () => {
             <PostImage src={slide} alt={`slide-${index}`} />
             <LogoImg src={RebuImg} />
             <LogoText>REBU</LogoText>
-            {index === 0 && (
-              <SlideText>예약을 편리하게</SlideText>
-            )}
-            {index === 1 && (
-              <SlideText>리뷰를 간편하게</SlideText>
-            )}
-            {index === 2 && (
-              <SlideText>뷰티를 예약하다</SlideText>
-            )}
+            {index === 0 && <SlideText>예약을 편리하게</SlideText>}
+            {index === 1 && <SlideText>리뷰를 간편하게</SlideText>}
+            {index === 2 && <SlideText>뷰티를 예약하다</SlideText>}
           </Slide>
         ))}
       </SlideContainer>
@@ -197,7 +203,7 @@ const AppStart = () => {
         ))}
       </DotsWrapper>
 
-      {current === length - 1 && (
+      {buttonVisible && (
         <ButtonWrapper>
           <ButtonLarge button={button}></ButtonLarge>
         </ButtonWrapper>

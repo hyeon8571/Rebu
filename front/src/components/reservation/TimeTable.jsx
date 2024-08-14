@@ -122,7 +122,6 @@ export default function TimeTable({ designer }) {
           },
         })
         .then((response) => {
-          console.log(response);
           setReservationData(addEndDateTime(response.data.body.reservations));
         })
         .catch((error) => {

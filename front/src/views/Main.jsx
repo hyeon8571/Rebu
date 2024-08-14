@@ -9,7 +9,6 @@ import axios from "axios";
 import { BASE_URL } from "./Signup";
 import Login from "./Login";
 
-
 const Wrapper = styled.div`
   background-color: ${(props) =>
     props.theme.value === "light" ? "#ffffff" : props.theme.body};
@@ -21,24 +20,22 @@ const Wrapper = styled.div`
   margin-bottom: 70px;
 `;
 
-
 function Main({ theme, toggleTheme }) {
   const [loginUser, setLoginUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
   const [distance, setDistance] = useState(5);
-  const [period, setPeriod] = useState('');
+  const [period, setPeriod] = useState("");
   const [sortedLike, setSortedLike] = useState(false);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
   const [alarmdata, setAlarmdata] = useState([]);
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
   const dispatch = useDispatch();
-  const nickname = localStorage.getItem('nickname');
-  const type = localStorage.getItem('type');
+  const nickname = localStorage.getItem("nickname");
+  const type = localStorage.getItem("type");
   const access = localStorage.getItem("access");
   const [error, setError] = useState(null);
-  
 
   // 로그인 사용자 프로필 정보 조회
   useEffect(() => {
@@ -87,50 +84,52 @@ function Main({ theme, toggleTheme }) {
         .catch((err) => {
           console.log("사용자 프로필 데이터를 찾지 못했습니다");
         });
-    };
+    }
   }, []);
-    
 
   // 전체 피드 조회
   useEffect(() => {
-    const access = localStorage.getItem('access');
-    const lat = currentLocation.latitude
-    const lng = currentLocation.longitude
+    const access = localStorage.getItem("access");
+    const lat = currentLocation.latitude;
+    const lng = currentLocation.longitude;
 
-    axios.get(`${BASE_URL}/api/feeds`, {
-      params: {
-        lat: lat,
-        lng: lng,
-        distance: distance,
-        category: category,
-        period: period,
-        sortedLike: sortedLike
-      },
-      headers : {
-        "access" : access,
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => {
-      console.log(response)
-      console.log("피드 데이터를 조회했습니다")
-      console.log(response.data.body)
-      setFeed(response.data.body);
-    })
-    .catch(err => {
-      console.log('피드 데이터를 찾지 못했습니다');
-    })
+    axios
+      .get(`${BASE_URL}/api/feeds`, {
+        params: {
+          lat: lat,
+          lng: lng,
+          distance: distance,
+          category: category,
+          period: period,
+          sortedLike: sortedLike,
+        },
+        headers: {
+          access: access,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        console.log("피드 데이터를 조회했습니다");
+        console.log(response.data.body);
+        setFeed(response.data.body);
+      })
+      .catch((err) => {
+        console.log("피드 데이터를 찾지 못했습니다");
+      });
   }, []);
 
   useEffect(() => {
     fetch("/mockdata/alarmdata.json")
       .then((res) => res.json())
       .then((data) => {
-        const alarm = data.body.filter(
-          (alarm) => alarm.receiverNickname === loginUser.nickname
-        );
+        const alarm =
+          data &&
+          data.body.filter(
+            (alarm) => alarm.receiverNickname === loginUser.nickname
+          );
         setAlarmdata(alarm || data.body);
-        setAlarmCount(alarm.length);
+        setAlarmCount(alarm ? alarm.length : 0);
       });
   }, [feed]);
 
@@ -151,12 +150,17 @@ function Main({ theme, toggleTheme }) {
   //   initializeAlarms();
   // }, [dispatch]);
 
- 
-
   return (
     <Wrapper>
-      <MainHeader theme={theme} toggleTheme={toggleTheme} currentUser={profile} loginUser={nickname} Count={alarmCount} alarmdata={alarmdata}/>
-      <MainFilter 
+      <MainHeader
+        theme={theme}
+        toggleTheme={toggleTheme}
+        currentUser={profile}
+        loginUser={nickname}
+        Count={alarmCount}
+        alarmdata={alarmdata}
+      />
+      <MainFilter
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}
         category={category}
@@ -169,9 +173,13 @@ function Main({ theme, toggleTheme }) {
         setPeriod={setPeriod}
         feed={feed}
         setFeed={setFeed}
-
-        />
-      <MainFeed information={feed} currentUser={profile} loginUser={nickname} type={type}/>
+      />
+      <MainFeed
+        information={feed}
+        currentUser={profile}
+        loginUser={nickname}
+        type={type}
+      />
     </Wrapper>
   );
 }
