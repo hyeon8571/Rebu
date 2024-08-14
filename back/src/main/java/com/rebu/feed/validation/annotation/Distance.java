@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DistanceValidator.class)
 public @interface Distance {
-    String message() default "거리";
+    String message() default "검색 거리";
     Class[] groups() default {};
     Class[] payload() default {};
 }

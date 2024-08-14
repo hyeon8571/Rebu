@@ -8,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReviewKeywordExceptionConstants implements ExceptionConstants {
     NOT_FOUND("0R00");
-    final String code;
+    private final String code;
 }

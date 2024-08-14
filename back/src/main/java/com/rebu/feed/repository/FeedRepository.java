@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryCustom{
-    Optional<Feed> findById(Long id);
-
     @Query("""
         SELECT f
         FROM Feed f

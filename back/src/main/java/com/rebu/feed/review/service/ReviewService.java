@@ -63,6 +63,93 @@ public class ReviewService {
     private final ShopProfileRepository shopProfileRepository;
 
     /**
+     * ReviewService :: readReviewByProfile method
+     * 일반 프로필이 작성한 리뷰를 조회
+     * @param dto 조회할 리뷰 정보
+     */
+    @Transactional(readOnly = true)
+    public List<ReviewByProfileDto> readReviewByProfile(ReviewReadByProfileDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+        Profile searchProfile = profileRepository.findByNickname(dto.getSearchProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+
+        List<Review> reviews = reviewRepository.findByProfileAndType(searchProfile, Feed.Type.REVIEW);
+        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
+
+        Map<Long, ReviewByProfileDto> map = new LinkedHashMap<>();
+
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewByProfileDto.from(review));
+
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
+    }
+
+    /**
+     * ReviewService :: readReviewToEmployee method
+     * 직원 프로필에 작성된 리뷰를 조회
+     * @param dto 조회할 리뷰 정보
+     */
+    @Transactional(readOnly = true)
+    public List<ReviewToEmployeeDto> readReviewToEmployee(ReviewReadToEmployeeDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+        EmployeeProfile employee = employeeProfileRepository.findByNickname(dto.getEmployeeNickname()).orElseThrow(ProfileNotFoundException::new);
+
+        List<Review> reviews = reviewRepository.findByEmployeeProfileAndType(employee, Feed.Type.REVIEW);
+        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
+
+        Map<Long, ReviewToEmployeeDto> map = new LinkedHashMap<>();
+
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewToEmployeeDto.from(review));
+
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
+    }
+
+    /**
+     * ReviewService :: readReviewToShop method
+     * 매장 프로필에 작성된 리뷰를 조회
+     * @param dto 조회할 리뷰 정보
+     */
+    @Transactional(readOnly = true)
+    public List<ReviewToShopDto> readReviewToShop(ReviewReadToShopDto dto) {
+        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
+        ShopProfile shop = shopProfileRepository.findByNickname(dto.getShopNickname()).orElseThrow(ProfileNotFoundException::new);
+
+        List<Review> reviews = reviewRepository.findByShopProfileAndType(shop, Feed.Type.REVIEW);
+        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
+        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
+        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
+
+        Map<Long, ReviewToShopDto> map = new LinkedHashMap<>();
+
+        for(Review review : reviews)
+            map.put(review.getId(), ReviewToShopDto.from(review));
+
+        for(Scrap scrap : scraps)
+            map.get(scrap.getFeed().getId()).setIsScraped(true);
+
+        for(LikeFeed likeFeed : likeFeeds)
+            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
+
+        return map.values().stream().toList();
+    }
+
+    /**
      * ReviewService :: create method
      * 리뷰 정보를 받아 리뷰를 작성
      * @param dto 작성할 피드 정보
@@ -154,77 +241,5 @@ public class ReviewService {
                     .reviewKeyword(reviewKeyword).build());
         }
         return result;
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewToEmployeeDto> readReviewToEmployee(ReviewReadToEmployeeDto dto) {
-        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
-        EmployeeProfile employee = employeeProfileRepository.findByNickname(dto.getEmployeeNickname()).orElseThrow(ProfileNotFoundException::new);
-
-        List<Review> reviews = reviewRepository.findByEmployeeProfileAndType(employee, Feed.Type.REVIEW);
-        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
-
-        Map<Long, ReviewToEmployeeDto> map = new LinkedHashMap<>();
-
-        for(Review review : reviews)
-            map.put(review.getId(), ReviewToEmployeeDto.from(review));
-
-        for(Scrap scrap : scraps)
-            map.get(scrap.getFeed().getId()).setIsScraped(true);
-
-        for(LikeFeed likeFeed : likeFeeds)
-            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
-
-        return map.values().stream().toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewByProfileDto> readReviewByProfile(ReviewReadByProfileDto dto) {
-        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
-        Profile searchProfile = profileRepository.findByNickname(dto.getSearchProfileNickname()).orElseThrow(ProfileNotFoundException::new);
-
-        List<Review> reviews = reviewRepository.findByProfileAndType(searchProfile, Feed.Type.REVIEW);
-        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
-
-        Map<Long, ReviewByProfileDto> map = new LinkedHashMap<>();
-
-        for(Review review : reviews)
-            map.put(review.getId(), ReviewByProfileDto.from(review));
-
-        for(Scrap scrap : scraps)
-            map.get(scrap.getFeed().getId()).setIsScraped(true);
-
-        for(LikeFeed likeFeed : likeFeeds)
-            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
-
-        return map.values().stream().toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewToShopDto> readReviewToShop(ReviewReadToShopDto dto) {
-        Profile profile = profileRepository.findByNickname(dto.getProfileNickname()).orElseThrow(ProfileNotFoundException::new);
-        ShopProfile shop = shopProfileRepository.findByNickname(dto.getShopNickname()).orElseThrow(ProfileNotFoundException::new);
-
-        List<Review> reviews = reviewRepository.findByShopProfileAndType(shop, Feed.Type.REVIEW);
-        List<Feed> feeds = ListUtils.applyFunctionToElements(reviews, review -> (Feed)review);
-        List<Scrap> scraps = scrapRepository.findByProfileAndFeedIn(profile, feeds);
-        List<LikeFeed> likeFeeds = likeFeedRepository.findByProfileAndFeedIn(profile, feeds);
-
-        Map<Long, ReviewToShopDto> map = new LinkedHashMap<>();
-
-        for(Review review : reviews)
-            map.put(review.getId(), ReviewToShopDto.from(review));
-
-        for(Scrap scrap : scraps)
-            map.get(scrap.getFeed().getId()).setIsScraped(true);
-
-        for(LikeFeed likeFeed : likeFeeds)
-            map.get(likeFeed.getFeed().getId()).setIsLiked(true);
-
-        return map.values().stream().toList();
     }
 }

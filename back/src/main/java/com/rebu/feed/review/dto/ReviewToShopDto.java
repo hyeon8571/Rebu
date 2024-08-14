@@ -6,7 +6,6 @@ import com.rebu.feed.dto.HashtagDto;
 import com.rebu.feed.review.entity.Review;
 import com.rebu.profile.dto.ProfileDto;
 import com.rebu.profile.shop.dto.ShopProfileDto;
-import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.reviewkeyword.dto.ReviewKeywordDto;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,5 @@
 package com.rebu.feed.validation.validator;
 
-import com.rebu.feed.exception.LatitudeMismatchException;
 import com.rebu.feed.exception.LongitudeMismatchException;
 import com.rebu.feed.validation.annotation.Longitude;
 import jakarta.validation.ConstraintValidator;
