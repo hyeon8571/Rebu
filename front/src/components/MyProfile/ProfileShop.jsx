@@ -17,6 +17,8 @@ import ButtonSmall from "../common/ButtonSmall";
 import { BASE_URL } from "../../views/Signup";
 import { switchProfile } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { BASE_IMG_URL } from "../../util/commonFunction";
+import Img from "../../assets/images/img.webp";
 
 export const Div = styled.div`
   display: flex;
@@ -272,7 +274,7 @@ export const createShopProfile = async (formData) => {
 const ProfileShop = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [uploadImg, setUploadImg] = useState(null); //업로드할 프로필 이미지
   const [profileImg, setProfileImg] = useState(null);
   const [nickname, setNickname] = useState("");
   const [nicknameMsg, setNicknameMsg] = useState("");
@@ -426,8 +428,9 @@ const ProfileShop = () => {
     }
 
     const formData = new FormData();
-    if (profileImg) {
-      formData.append("imgFile", profileImg);
+    if (uploadImg) {
+      console.log("이미지 추가함");
+      formData.append("imgFile", uploadImg); //업로드할 프로필 이미지
     }
     formData.append("nickname", nickname);
     formData.append("name", name);
@@ -437,6 +440,7 @@ const ProfileShop = () => {
     // formData.append("category", category);
     formData.append("category", selected.toUpperCase());
 
+    console.log("프로필 생성 formData:", formData);
     try {
       const createResult = await createShopProfile(formData);
       console.log("프로필 생성 결과:", createResult);
@@ -479,11 +483,11 @@ const ProfileShop = () => {
 
     if (result.success) {
       console.log("인증요청axios 결과:", result.data);
-      if (result.data.code === "1B05") {
+      if (result.data.code === "1A05") {
         console.log("사업자 등록번호 인증 성공");
         alert("사업자 등록번호 인증에 성공했습니다.");
         setAddress(result.data.body.address);
-        setName(result.data.body.name);
+        setName(result.data.body.shopName);
       } else if (result.data.code === "0B13") {
         alert("유효하지 않은 사업자번호입니다. 다시 확인해주세요.");
       } else if (result.data.code === "0C06") {
@@ -497,14 +501,12 @@ const ProfileShop = () => {
   };
   return (
     <Container>
-      <Header>
-        <CloseButton onClick={() => navigate(-1)}>&times;</CloseButton>
-      </Header>
       <ProfileImageWrapper>
         <ProfileImage
-          src={profileImg ? URL.createObjectURL(profileImg) : "/logo.png"}
+          src={uploadImg ? URL.createObjectURL(uploadImg) : "/logo.png"}
           alt="Profile"
         />
+
         <ImgUpload
           onClick={() => document.getElementById("fileInput").click()}
         />
@@ -593,6 +595,7 @@ const ProfileShop = () => {
           {categories.map((category) => (
             <RadioButton
               key={category}
+              type="button"
               selected={selected === category}
               onClick={() => setSelected(category)}
             >

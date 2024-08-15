@@ -161,6 +161,7 @@ const Header = ({
     // 선택된 옵션에 대한 추가 작업 수행 가능
     setShowDropdown(false);
     setIsSettingActive(false);
+    navigate("/login/password");
   };
 
   const handleClickOutside = (event) => {
@@ -197,7 +198,7 @@ const Header = ({
         <DropdownItem
           onClick={() =>
             navigate("/personal-info", {
-              state: { user: loginUser, profile: currentUser },
+              state: { user: loginUser, profile: currentUser, type: type },
             })
           }
         >

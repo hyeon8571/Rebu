@@ -14,6 +14,7 @@ import Error from "../views/Error";
 import TestProfile from "../views/TestProfile";
 import CreateProfile from "../views/CreateProfile";
 import SignupForm2 from "../components/user/SignupForm2";
+import Withdrawal from "../views/Withdrawal";
 
 const AppRoutes = ({ theme, toggleTheme, handleLogin }) => (
   <Routes>
@@ -29,6 +30,7 @@ const AppRoutes = ({ theme, toggleTheme, handleLogin }) => (
     <Route path="/error" element={<Error />} />
     <Route path="/test" element={<TestProfile />} />
     <Route path="/create-profile" element={<CreateProfile />} />
+    <Route path="/withdrawal" element={<Withdrawal />} />
     {/* <Route path="*" element={<Notfound />} /> */}
   </Routes>
 );

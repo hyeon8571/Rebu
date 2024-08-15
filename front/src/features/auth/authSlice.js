@@ -179,12 +179,37 @@ export const switchProfile = (nickname) => async (dispatch) => {
   }
 };
 
-// // SSE 연결 종료 함수
-// export const closeAlarmsConnection = () => {
-//   if (eventSource) {
-//     eventSource.close();
-//     eventSource = null;
-//   }
-// };
+export const verifyPassword = async (password, purpose) => {
+  const access = localStorage.getItem("access");
+  try {
+    const response = await axios.post(
+      '/api/auths/password/verify',
+      {
+        'receiverPassword': password,
+        'purpose': purpose,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access': access, // Access 토큰이 필요하다면 여기서 설정합니다
+        },
+      }
+    );
+
+    // 성공 시 처리할 코드
+    if (response.data.code === "1A00") {
+      console.log('비밀번호 인증 성공', response.data);
+      return { success: true, data: response.data.body };
+    } else {
+      console.log('Verification failed:', response);
+      return { success: false, data: response.data.body };
+    }
+
+  } catch (error) {
+    // 오류 시 처리할 코드
+    console.error('Verification failed:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
 
 export default authSlice.reducer;

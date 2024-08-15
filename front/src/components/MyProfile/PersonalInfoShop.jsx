@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FiChevronLeft } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
-import { getCommonProfileInfo } from "../../features/common/userSlice";
+import { getShopMyProfile } from "../../features/common/userSlice";
 import Img from "../../assets/images/img.webp";
 
 const Form = styled.div`
@@ -99,7 +99,7 @@ const DeleteButton = styled(Button)`
   cursor: pointer;
 `;
 
-export const PersonalInfoCommon = () => {
+export const PersonalInfoShop = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [birth, setBirth] = useState("");
@@ -108,12 +108,11 @@ export const PersonalInfoCommon = () => {
   const [imageSrc, setImageSrc] = useState("");
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
-      const result = await getCommonProfileInfo();
-      console.log("getCommonProfileInfo result", result);
+      const result = await getShopMyProfile();
+      console.log("getShopMyProfile result", result);
       if (result.success) {
         setProfile(result.data);
         if (
@@ -192,13 +191,11 @@ export const PersonalInfoCommon = () => {
         <InfoBox type="text" value={gender} readOnly />
       </Form>
       <ButtonContainer>
-        <DeleteButton onClick={() => navigate("/withdrawal")}>
-          회원탈퇴
-        </DeleteButton>
+        <DeleteButton>회원탈퇴</DeleteButton>
         <SaveButton onClick={handleSave}>저장</SaveButton>
       </ButtonContainer>
     </>
   );
 };
 
-export default PersonalInfoCommon;
+export default PersonalInfoShop;
