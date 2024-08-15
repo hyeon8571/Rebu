@@ -87,7 +87,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String nickname = profile.getNickname();
         String type = profile.getType().toString();
 
-        String access = JWTUtil.createJWT("access", nickname, type, 1800000L);
+        String access = JWTUtil.createJWT("access", nickname, type, 86400000L);
         String refresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
 
         RefreshToken refreshToken = RefreshToken.builder()
