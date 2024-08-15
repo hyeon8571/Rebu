@@ -15,11 +15,6 @@ import { BASE_URL } from "./util/commonFunction";
 import axios from "axios";
 import { subscribeToAlarms, NotificationComponent } from "./features/common/alarmSlice"; //sse
 import { useSelector } from "react-redux";
-import { Provider } from 'react-redux'; // 추가
-import { PersistGate } from 'redux-persist/integration/react'; // 추가
-import store, { persistor } from './app/store'; // 수정
-import { AlarmResponse } from './features/common/AlarmResponse'; // 알람결과 테스트
-
 
 
 const Grid = styled.div`
@@ -48,8 +43,8 @@ function App() {
   const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
   const [type, setType] = useState(localStorage.getItem("type"));
   const [imageSrc, setImageSrc] = useState(localStorage.getItem("imageSrc"));
-  const isLogin = useSelector((state) => state.auth.isLogin); // NotificationComponent
-  const accessToken = useSelector((state) => state.auth.aceesToken); //NotificationComponent
+  const { isLogin } = useSelector((state) => state.auth.isLogin); // NotificationComponent
+  const accessToken = localStorage.getItem("access"); //NotificationComponent
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -102,55 +97,50 @@ function App() {
   };
 
   return (
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <BrowserRouter>
+        <GlobalStyles />
+        {/* NotificationComponent - alarm */}
+        <NotificationComponent />
 
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-          <BrowserRouter>
-            <GlobalStyles />
-            {/* NotificationComponent - alarm */}
-            {/* {isLogin && <NotificationComponent />} */}
-            <NotificationComponent />
-            <Grid>
-              {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
-              {auth &&
-                (isMobile ? (
-                  <NavigationBar
-                    auth={auth}
-                    nickname={nickname}
-                    type={type}
-                    profileImg={imageSrc}
-                  />
-                ) : (
-                  <NavigationRail
-                    auth={auth}
-                    nickname={nickname}
-                    type={type}
-                    profileImg={imageSrc}
-                  />
-                ))}
+        <Grid>
+          {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
+          {auth &&
+            (isMobile ? (
+              <NavigationBar
+                auth={auth}
+                nickname={nickname}
+                type={type}
+                profileImg={imageSrc}
+              />
+            ) : (
+              <NavigationRail
+                auth={auth}
+                nickname={nickname}
+                type={type}
+                profileImg={imageSrc}
+              />
+            ))}
 
-              <Layout>
-                <AppRoutes
-                  theme={theme}
-                  toggleTheme={toggleTheme}
-                  onLogin={handleLogin}
-                  handleLogin={handleLogin}
-                />
-                <PrivateRoutes
-                  theme={theme}
-                  toggleTheme={toggleTheme}
-                  handleLogout={handleLogout}
-                  setNickname={setNickname}
-                  setType={setType}
-                  setImageSrc={setImageSrc}
-                />
-              </Layout>
-            </Grid>
-          </BrowserRouter>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
+          <Layout>
+            <AppRoutes
+              theme={theme}
+              toggleTheme={toggleTheme}
+              onLogin={handleLogin}
+              handleLogin={handleLogin}
+            />
+            <PrivateRoutes
+              theme={theme}
+              toggleTheme={toggleTheme}
+              handleLogout={handleLogout}
+              setNickname={setNickname}
+              setType={setType}
+              setImageSrc={setImageSrc}
+            />
+          </Layout>
+        </Grid>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

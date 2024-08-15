@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
     "devextreme-intl": "^19.1.8",
+    "event-source-polyfill": "^1.0.31",
     "framer-motion": "^11.3.21",
     "http-proxy-middleware": "^3.0.0",
     "lottie-react": "^2.4.0",
@@ -27,6 +28,7 @@
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "string-similarity": "^4.0.4",
     "styled-components": "^6.1.11",
     "web-vitals": "^2.1.4"

@@ -77,7 +77,8 @@ const FindEmail = () => {
       const code = response.data.code;
       console.log("phone", phone);
 
-      if (code === "이메일 찾기 성공 코드") {
+      if (code === "1B03") {
+        //이메일 찾기 성공 코드
         // 이메일이 존재하고, 찾았을 때
         alert(`Email: ${response.data.body}`); //debug
         setIsEmailFound(true);
@@ -90,7 +91,8 @@ const FindEmail = () => {
         setFindEmailResult(
           "이름을 형식에 맞게 입력해주세요. 한/영 2자이상 16자 이하"
         );
-      } else if (code === "번호 미인증") {
+      } else if (code === "0A09") {
+        //번호 미인증
         //번호 없는 사람 -> 회원가입 안한 사람?
         // alert("이메일이 존재하지 않습니다."); //debug용
         setFindEmailResult("휴대폰 번호를 미인증 하셨습니다.");
