@@ -274,7 +274,7 @@ export const createShopProfile = async (formData) => {
 const ProfileShop = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [uploadImg, setUploadImg] = useState(null); //업로드할 프로필 이미지
   const [profileImg, setProfileImg] = useState(null);
   const [nickname, setNickname] = useState("");
   const [nicknameMsg, setNicknameMsg] = useState("");
@@ -428,8 +428,9 @@ const ProfileShop = () => {
     }
 
     const formData = new FormData();
-    if (profileImg) {
-      formData.append("imgFile", profileImg);
+    if (uploadImg) {
+      console.log("이미지 추가함");
+      formData.append("imgFile", uploadImg); //업로드할 프로필 이미지
     }
     formData.append("nickname", nickname);
     formData.append("name", name);
@@ -502,24 +503,10 @@ const ProfileShop = () => {
     <Container>
       <ProfileImageWrapper>
         <ProfileImage
-          src={
-            profileImg
-              ? URL.createObjectURL(profileImg)
-              : `${BASE_IMG_URL}/${profileImg}`
-          }
+          src={uploadImg ? URL.createObjectURL(uploadImg) : "/logo.png"}
           alt="Profile"
         />
-        {/* <ProfileImage
-          img={
-            profileImg === null || profileImg === "null"
-              ? Img
-              : `${BASE_IMG_URL}/${profileImg}`
-          }
-        /> */}
-        {/* <ProfileImage
-          src={profileImg ? URL.createObjectURL(profileImg) : "/logo.png"}
-          alt="Profile"
-        /> */}
+
         <ImgUpload
           onClick={() => document.getElementById("fileInput").click()}
         />

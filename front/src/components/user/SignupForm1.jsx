@@ -398,9 +398,14 @@ const SignupForm1 = ({
               코드요청
             </SmallButtonHover>
           </Div>
-          <Msg isValid={isEmailValid}>
+          {/* <Msg isValid={isEmailValid}>
             {isChecking ? "확인 중..." : emailMsg}
-          </Msg>
+          </Msg> */}
+          {purpose === "signup" && (
+            <Msg isValid={isEmailValid}>
+              {isChecking ? "확인 중..." : emailMsg}
+            </Msg>
+          )}
           {/* {emptyFieldsMsg.email && <Msg isValid={false}>내용을 입력하세요</Msg>} */}
 
           {/* 이메일인증번호확인 */}

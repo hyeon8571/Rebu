@@ -260,3 +260,91 @@ export const updateProfileImage = async (nickname, imageFile) => {
     };
   }
 };
+
+
+//활동명 변경 API
+export const updateWorkingName = async (nickname, newWorkingName) => {
+  const access = localStorage.getItem("access"); // 저장된 access 토큰 가져오기
+  try {
+    // PATCH 요청을 보냅니다.
+    const response = await axios.patch(
+      `/api/profiles/employees/${nickname}/working-name`, // 엔드포인트 URL
+      {
+        // Request Body에 포함될 데이터
+        "workingName": newWorkingName,
+      },
+      {
+        // Request Header에 포함될 데이터
+        headers: {
+          'Content-Type': 'application/json',
+          'access': access,
+        },
+      }
+    );
+
+    if (response.data.code === "1D02") {
+      // 요청이 성공적으로 완료되었을 때의 처리
+      console.log('활동명이 성공적으로 변경되었습니다:', response.data);
+      return response.data;
+    }
+    else {
+      console.error('활동명 변경 실패:', response.data);
+      throw response.data;
+    }
+  } catch (error) {
+    // 요청이 실패했을 때의 처리
+    console.error('활동명 변경 중 오류가 발생했습니다:', error);
+    throw error;
+  }
+};
+
+
+// 전화번호 변경 API
+export const updatePhoneNumber = async (nickname, newPhoneNumber) => {
+  const access = localStorage.getItem("access"); // 저장된 access 토큰 가져오기
+  try {
+    const response = await axios.patch(`/api/profiles/${nickname}/phone`, {
+      phone: newPhoneNumber
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'access': access
+      }
+    });
+
+    // 요청이 성공한 경우 처리
+    if (response.data.code === "1C06") {
+      console.log('Phone number updated successfully:', response.data);
+      return { success: true, data: response.data };
+    } else {
+      console.error('Failed to update phone number:', response.data);
+      return { success: false, error: response.data };
+    }
+  } catch (error) {
+    console.error('Error updating phone number:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+//프로필 삭제 API
+export const deleteProfile = async (nickname) => {
+  try {
+    const response = await axios.delete(`/api/profiles/${nickname}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // 요청이 성공한 경우 처리
+    if (response.data.code === "1C07") {
+      console.log('Profile deleted successfully:', response.data);
+      return { success: true, data: response.data };
+    } else {
+      console.error('Failed to delete profile:', response.data);
+      return { success: false, error: response.data };
+    }
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    return { success: false, error: error.message };
+  }
+};
