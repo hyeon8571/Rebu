@@ -43,6 +43,7 @@ public class ReservationReadByProfileResponse {
     };
 
     public static ReservationReadByProfileResponse from(ReservationByProfileDto dto){
+
         return ReservationReadByProfileResponse.builder()
                 .id(dto.getReservationDto().getId())
                 .startDateTime(dto.getReservationDto().getStartDateTime())

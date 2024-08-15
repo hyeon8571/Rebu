@@ -6,14 +6,13 @@ import com.rebu.profile.validation.annotation.LicenseNum;
 import com.rebu.profile.validation.annotation.Nickname;
 import com.rebu.profile.validation.annotation.Phone;
 import com.rebu.profile.validation.annotation.ProfileImg;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class GenerateShopProfileRequest {
 
     @ProfileImg
