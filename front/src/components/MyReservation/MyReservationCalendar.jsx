@@ -375,6 +375,7 @@ export default function MyReservationCalendar() {
                   key={rev.id}
                   Card={{
                     img: rev.shop.imageSrc,
+                    nickname: rev.shop.nickname,
                     title: rev.shop.name,
                     menu: rev.menu.title,
                     designer:

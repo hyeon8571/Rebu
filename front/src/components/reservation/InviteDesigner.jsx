@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 import ButtonSmall from "../common/ButtonSmall";
+import axios from "axios";
+import { BASE_URL } from "../../util/commonFunction";
+import { headers } from "next/headers";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -26,9 +29,41 @@ const DescriptionContainer = styled.div`
   text-align: center;
 `;
 
-export default function InviteDesigner({ setIsModalOpen }) {
+export default function InviteDesigner({ shopNickname, setIsModalOpen }) {
   const [nickname, setNickname] = useState("");
   const [role, setRole] = useState("");
+
+  async function sendInvite() {
+    console.log({
+      a: shopNickname,
+      b: nickname,
+      c: role,
+    });
+    await axios
+      .post(
+        `${BASE_URL}/api/profiles/shops/${shopNickname}/invite-employees`,
+        {
+          employeeNickname: nickname,
+          role: role,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            access: `${localStorage.getItem("access")}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data.code.substr(0, 1) === "1") {
+          alert("요청이 전송되었습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("전송에 실패했습니다.");
+      });
+  }
 
   const Button1 = {
     id: 1,
@@ -37,10 +72,10 @@ export default function InviteDesigner({ setIsModalOpen }) {
       if (role === "" || nickname === "") {
         window.alert("닉네임과 직급을 모두 입력해주세요");
       } else {
-        window.alert("닉네임 : " + nickname + "\n" + "직급 : " + role);
         setIsModalOpen(false);
         setNickname("");
         setRole("");
+        sendInvite();
       }
     },
     highlight: true,

@@ -10,7 +10,7 @@ import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
 import ModalPortal from "../../util/ModalPortal";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL } from "../../util/commonFunction";
+import { BASE_IMG_URL, BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
 import Header from "../common/Header";
 
@@ -58,7 +58,7 @@ const DesignerTitle = styled.div`
   user-select: none;
 `;
 
-const DesignerIntroduction = styled.li`
+const DesignerIntroduction = styled.div`
   font-size: 12px;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -200,7 +200,7 @@ export default function DesignerTab() {
         </ModalNoBackNoExit>
       </ModalPortal>
 
-      <Header title={"디자이너 선택"} />
+      <StyledHeader title={"디자이너 선택"} />
       <UpperTabWrapper>
         <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
       </UpperTabWrapper>
@@ -229,7 +229,9 @@ export default function DesignerTab() {
               </ReviewContainer>
             </DesignerContent>
             <DesignerPhotoContainer>
-              <DesignerPhoto src={Img} />
+              <DesignerPhoto
+                src={item.imageSrc ? BASE_IMG_URL + item.imageSrc : Img}
+              />
             </DesignerPhotoContainer>
           </DesignerCardContainer>
         ))}
@@ -261,3 +263,7 @@ export default function DesignerTab() {
     </>
   );
 }
+
+const StyledHeader = styled(Header)`
+  margin-bottom: 2rem;
+`;

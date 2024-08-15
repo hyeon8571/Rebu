@@ -3,7 +3,6 @@ import {
   getFollowerList,
   getFollowingList,
   follow,
-  unfollow,
 } from "../../features/common/followSlice";
 import { useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
@@ -166,7 +165,7 @@ const CloseButton = styled.button`
 
 const FollowButton = styled.button`
   margin-top: 10px;
-  width: ${(props) => (props.following === "FOLLOWING" ? "120px" : "90px")};
+  width: ${(props) => (props.following === "FOLLOWING" ? "100px" : "100px")};
   height: 40px;
   background-color: ${(props) =>
     props.following === "FOLLOWING" ? "#f4ebfd" : "#b475f3"};
@@ -185,7 +184,7 @@ const FollowButton = styled.button`
   }
 `;
 
-export default function ProfileLarge({ currentUser, isMyProfile, time }) {
+export default function ProfileLarge({ currentUser, time }) {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const online = time < 300;
@@ -196,12 +195,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
-  //팔로잉 팔로우 수
-  const [followersCount, setFollowersCount] = useState(currentUser.followerCnt);
-  const [followingCount, setFollowingCount] = useState(
-    currentUser.followingCnt
-  );
 
   // 팔로잉 목록
   const [followings, setFollowings] = useState([]); //팔로잉 목록
@@ -312,7 +305,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
       if (result.success) {
         setSuccess("팔로우가 성공적으로 추가되었습니다.");
         setRelation("FOLLOWING");
-        setFollowersCount((prevCount) => prevCount + 1);
       } else {
         setError(result.error || "팔로우 추가 실패");
       }
@@ -322,29 +314,26 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
       setLoading(false);
     }
   };
+  const handleUnfollow = () => {
+    setRelation("NONE");
+    // setLoading(true);
+    // setError(null);
+    // setSuccess(null);
 
-  //팔로우 취소하기 Unfollow API
-  const handleUnfollow = async () => {
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
+    // try {
+    //   const result = await unfollow(targetNickname);
 
-    try {
-      const result = await unfollow(currentUser.followId);
-
-      if (result.success) {
-        setSuccess("팔로우가 취소되었습니다.");
-        console.log(result);
-        setRelation("NONE");
-        setFollowersCount((prevCount) => prevCount - 1); //팔로우 수 줄이기
-      } else {
-        setError(result.error || "팔로우 취소 실패");
-      }
-    } catch (error) {
-      setError("알 수 없는 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
+    //   if (result.success) {
+    //     setSuccess("팔로우가 성공적으로 추가되었습니다.");
+    //     setRelation("FOLLOWING");
+    //   } else {
+    //     setError(result.error || "팔로우 추가 실패");
+    //   }
+    // } catch (error) {
+    //   setError("알 수 없는 오류가 발생했습니다.");
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleCloseFollowingModal = () => {
@@ -383,15 +372,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
     };
   }, []);
 
-  // 팔로우/언팔로우 버튼 클릭 핸들러
-  const handleFollowButtonClick = () => {
-    if (relation === "FOLLOWING") {
-      handleUnfollow();
-    } else {
-      handleFollow();
-    }
-  };
-
   return (
     <ProfileContainer>
       <ImgBox>
@@ -419,7 +399,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
         <div>
           <FollowInfo>
             <FollowerInfo>
-              {/* <FollowCount>{currentUser.followerCnt}</FollowCount> */}
               <FollowCount>{currentUser.followerCnt}</FollowCount>
               <FollowText onClick={handleOpenFollowersModal}>팔로워</FollowText>
             </FollowerInfo>
@@ -458,7 +437,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
                   key={index}
                   follower={follower}
                   time={130}
-                  isMyProfile={isMyProfile}
                   handleCloseFollowersModal={handleCloseFollowersModal}
                 />
               ))}
@@ -484,7 +462,6 @@ export default function ProfileLarge({ currentUser, isMyProfile, time }) {
                   key={index}
                   follower={follower}
                   time={130}
-                  isMyProfile={isMyProfile}
                   handleCloseFollowingModal={handleCloseFollowingModal}
                 />
               ))}

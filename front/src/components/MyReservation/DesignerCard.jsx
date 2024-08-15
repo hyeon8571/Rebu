@@ -2,7 +2,7 @@ import styled from "styled-components";
 import CancelButton from "./CancelButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { BASE_IMG_URL } from "../../util/commonFunction";
-import { Navigate, useNavigate } from "react-router-dom";
+import AcceptButton from "./AcceptButton";
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -160,7 +160,6 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
     return null;
   }
 
-  const navigate = useNavigate();
   let statusMessege = "";
   let statusColor = "";
   let isUnableCancle = false;
@@ -214,18 +213,13 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText
-              onClick={() => navigate(`/profile/${Card.nickname}/SHOP`)}
-            >
+            <TitleText>
               {Card.title}
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>
           </TitleWrapper>
           <MenuWrapper>{Card.menu}</MenuWrapper>
           <DesignerWrapper>{Card.designer}</DesignerWrapper>
-          <PriceWrapper>
-            가격 : <PriceText> {Card.price.toLocaleString()}</PriceText>원
-          </PriceWrapper>
           <ReservationTime>예약 시간 : {formattedDate}</ReservationTime>
           <ServiceStatusWrapper>
             예약 상태 :
@@ -235,10 +229,17 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
             </ServiceStatusText>
           </ServiceStatusWrapper>
           <ButtonWrapper>
+            <AcceptButton
+              button={{
+                id: 1,
+                title: "예약 수락",
+                ㅉ,
+              }}
+            />
             <CancelButton
               button={{
                 id: 1,
-                title: "예약 취소",
+                title: "예약 거절",
                 unable: isUnableCancle ? "true" : undefined,
                 onClick: () => {
                   setIsModalOpen(true);

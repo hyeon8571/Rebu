@@ -97,7 +97,8 @@ const ResultItem = styled.li`
   cursor: pointer;
 
   &:hover {
-    background: #f0f0f0;
+    background: ${(props) =>
+      props.theme.value === "light" ? "#f0f0f0" : "#7e7e7e"};
   }
 
   span {

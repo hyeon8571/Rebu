@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
 import { updateProfileImage } from "../features/common/userSlice";
 import { PersonalInfoCommon } from "../components/MyProfile/PersonalInfoCommon";
+import defaultImg from "../assets/images/img.webp";
 // import { useSelector } from "react-redux";
 
 export const Container = styled.div`
@@ -213,7 +214,11 @@ export const PersonalInfo = () => {
       <ProfileImageWrapper>
         {/* <ProfileImage src={profileImg} alt="Profile" /> */}
         <ProfileImage
-          src={profileImg ? profileImg : "/img.webp"}
+          src={
+            profileImg === null || profileImg === "null"
+              ? defaultImg
+              : profileImg
+          }
           alt="Profile"
         />
         <ImgUpload

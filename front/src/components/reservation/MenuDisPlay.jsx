@@ -6,9 +6,11 @@ import { IoSettings } from "react-icons/io5";
 import ModalPortal from "../../util/ModalPortal";
 import ButtonSmall from "../common/ButtonSmall";
 import { useLocation, useNavigate } from "react-router-dom";
+import Header from "../common/Header";
 import axios from "axios";
 
 const Wrapper = styled.div`
+  padding-top: 60px;
   padding-left: 1rem;
   padding-right: 1rem;
   height: 100%;
@@ -232,6 +234,7 @@ export default function MenuDisplay() {
           {modalContent}
         </ModalNoBackNoExit>
       </ModalPortal>
+      <Header title={"시술보기"} />
       <Wrapper>
         <IconWrapper onClick={handleSettingMode}>
           <IoSettings

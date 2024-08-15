@@ -75,6 +75,13 @@ const MenuTitleWrapper = styled.div`
   cursor: pointer;
 `;
 
+const NoticeText = styled.div`
+  font-size: 24px;
+  margin-top: 4rem;
+  margin-left: 2rem;
+  font-weight: 600;
+`;
+
 export default function MenuTab() {
   const [chosenMenu, setChosenMenu] = useState(null);
   const [menuType, setMenuType] = useState(null);
@@ -113,53 +120,59 @@ export default function MenuTab() {
   return (
     <>
       <Header title={"시술 선택"} />
-      {menuData.map((item) => (
-        <MenuCardContainer key={item.id}>
-          <MenuContent>
-            <MenuTitle>
-              <Checkbox
-                key={item.id}
-                value={chosenMenu ? item.id === chosenMenu.id : false}
-                onChange={() => handleChosenMenu(item)}
-              />
-              <MenuTitleWrapper onClick={() => handleChosenMenu(item)}>
-                {item.title}
-              </MenuTitleWrapper>
-            </MenuTitle>
-            <MenuIntroduction>{item.content}</MenuIntroduction>
-            <ServiceTimeText>시술 시간 : {item.timeTaken}분</ServiceTimeText>
-            <PriceText>가격 : {item.price}원</PriceText>
-          </MenuContent>
-          <MenuPhotoContainer>
-            <MenuPhoto src={BASE_IMG_URL + "/" + item.images[0]} />
-          </MenuPhotoContainer>
-        </MenuCardContainer>
-      ))}
+      {menuData.length > 0 ? (
+        menuData.map((item) => (
+          <MenuCardContainer key={item.id}>
+            <MenuContent>
+              <MenuTitle>
+                <Checkbox
+                  key={item.id}
+                  value={chosenMenu ? item.id === chosenMenu.id : false}
+                  onChange={() => handleChosenMenu(item)}
+                />
+                <MenuTitleWrapper onClick={() => handleChosenMenu(item)}>
+                  {item.title}
+                </MenuTitleWrapper>
+              </MenuTitle>
+              <MenuIntroduction>{item.content}</MenuIntroduction>
+              <ServiceTimeText>시술 시간 : {item.timeTaken}분</ServiceTimeText>
+              <PriceText>가격 : {item.price}원</PriceText>
+            </MenuContent>
+            <MenuPhotoContainer>
+              <MenuPhoto src={BASE_IMG_URL + "/" + item.images[0]} />
+            </MenuPhotoContainer>
+          </MenuCardContainer>
+        ))
+      ) : (
+        <NoticeText>등록된 시술이 없습니다.</NoticeText>
+      )}
       <ButtonWrapper>
-        <ButtonSmall
-          button={{
-            id: 1,
-            title: "다음",
-            onClick: () => {
-              if (chosenMenu) {
-                navigate("/calendar", {
-                  state: {
-                    info: {
-                      ...info,
-                      menuId: chosenMenu.id,
-                      menuTitle: chosenMenu.title,
-                      serviceTime: chosenMenu.timeTaken,
-                      cost: chosenMenu.price,
+        {menuData.length > 0 && (
+          <ButtonSmall
+            button={{
+              id: 1,
+              title: "다음",
+              onClick: () => {
+                if (chosenMenu) {
+                  navigate("/calendar", {
+                    state: {
+                      info: {
+                        ...info,
+                        menuId: chosenMenu.id,
+                        menuTitle: chosenMenu.title,
+                        serviceTime: chosenMenu.timeTaken,
+                        cost: chosenMenu.price,
+                      },
                     },
-                  },
-                });
-              } else {
-                window.alert("시술을 선택해주세요");
-              }
-            },
-            highlight: true,
-          }}
-        />
+                  });
+                } else {
+                  window.alert("시술을 선택해주세요");
+                }
+              },
+              highlight: true,
+            }}
+          />
+        )}
       </ButtonWrapper>
     </>
   );

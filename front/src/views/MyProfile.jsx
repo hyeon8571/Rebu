@@ -23,6 +23,7 @@ import TimeTable from "../views/TimeTablePage";
 import DesignerGrid from "../components/reservation/DesignerDisplay";
 import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
+import MenuDisplay from "../components/reservation/MenuDisPlay";
 import Login from "./Login";
 import { BASE_URL } from "./Signup";
 
@@ -391,8 +392,13 @@ const ProfilePage = ({
     } else if (content === "Likes") {
       return (
         <>
-          {likeCard.map((item) => (
-            <LikesCard key={item.id} Card={item} loginUser={loginNickname} />
+          {likeCard?.map((item) => (
+            <LikesCard
+              key={item.id}
+              Card={item}
+              loginUser={loginNickname}
+              rating={ratingAvg}
+            />
           ))}
           {likeCard == false && (
             <h3 style={{ color: "#b475f3", fontSize: "18px" }}>
@@ -445,11 +451,7 @@ const ProfilePage = ({
         />
         <ProfileContainer>
           <IntroduceBox>
-            <ProfileImage
-              currentUser={profile}
-              isMyProfile={myProfile}
-              time={130}
-            />
+            <ProfileImage currentUser={profile} time={130} />
             {type === "SHOP" ? (
               <ShopProfileInfo
                 currentUser={profile}

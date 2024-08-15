@@ -168,7 +168,8 @@ const InfoComponent = ({ currentUser, loginUser, rating }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIntroduce, setNewIntroduce] = useState(currentUser.introduction);
   const [tempIntroduce, setTempIntroduce] = useState(currentUser.introduction);
-  const [isLikes, setIsLikes] = useState(currentUser.isfavorite);
+  const [isLikes, setIsLikes] = useState(currentUser.isFavorite);
+  console.log(currentUser);
 
   useEffect(() => {
     setNewIntroduce(currentUser.introduction);
@@ -190,8 +191,6 @@ const InfoComponent = ({ currentUser, loginUser, rating }) => {
 
   const handleLikeToggle = useCallback(() => {
     const access = localStorage.getItem("access");
-
-    // const isCurrentlyLiked = profile.isfavorite;
 
     // 좋아요 취소
     if (isLikes) {
@@ -232,23 +231,13 @@ const InfoComponent = ({ currentUser, loginUser, rating }) => {
           console.log("좋아요 오류 발생:", error);
         });
     }
-  }, []);
-
-  // const handleunLikeToggle = () => {
-  //   // 매장 즐겨찾기 삭제 api delete 호출
-  //   setIsLikes(!isLikes)
-  // };
+  }, [isLikes, currentUser.nickname]);
 
   const saveIntroduce = async () => {
     try {
       const access = localStorage.getItem("access");
       // 백엔드 API 엔드포인트 주소
       const url = `${BASE_URL}/api/profiles/${currentUser.nickname}/introduction`;
-
-      // 업데이트할 데이터
-      // const updatedData = {
-      //   introduction: tempIntroduce,
-      // };
 
       const headers = {
         "Content-Type": "application/json",

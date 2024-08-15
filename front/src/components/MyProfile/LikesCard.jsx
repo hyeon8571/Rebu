@@ -93,9 +93,7 @@ const TitleText = styled.div`
   }
 `;
 
-const ShopName = styled.span`
-  
-`;
+const ShopName = styled.span``;
 
 const IntroWrapper = styled.div`
   padding-top: 10px;
@@ -135,8 +133,8 @@ const Rating = styled.div`
 `;
 
 const Ratingtext = styled.span`
-  color: ${(props) =>
-    props.theme.value === "light" ? "#777777" : "#ffffff"};
+  font-size: 15px;
+  color: ${(props) => (props.theme.value === "light" ? "#777777" : "#ffffff")};
 `;
 
 const ButtonWrapper = styled.div`
@@ -145,37 +143,26 @@ const ButtonWrapper = styled.div`
   padding-top: 0.5rem;
 `;
 
-
-export default function VisitedCard({ Card, loginUser }) {
+export default function VisitedCard({ Card, loginUser, rating }) {
   const navigate = useNavigate();
-  const [shopdata, setShopData] = useState([]);
-
-  useEffect(() => {
-    fetch('/mockdata/shopdata.json')
-      .then(res => res.json())
-      .then((data) => {
-        setShopData(data.body);
-      })      
-  }, []);
 
   const handleShopNameClick = (nickname) => {
-    const shopProfile = shopdata.find(shop => shop.nickname === nickname);
-    if (shopProfile) {
-      navigate('/store-profile', { state: { shop: shopProfile, user: loginUser } });
-    }
+    navigate(`/profile/${nickname}/SHOP`);
   };
 
   const button = {
-    onClick: () => {navigate("/designertab")},
+    onClick: () => {
+      navigate(`/reservation/${Card.nickname}`);
+    },
     title: "예약하기",
     highlight: true,
   };
-  
+
   return (
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={Card.imageSrc} />
+          <Photo src={"https://www.rebu.kro.kr/data/" + Card.imageSrc} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
@@ -184,36 +171,32 @@ export default function VisitedCard({ Card, loginUser }) {
               <HiOutlineChevronRight></HiOutlineChevronRight>
             </TitleText>
             <Rating>
-              <FaRegStar />&nbsp;
-              <Ratingtext>{Card.ratingAvg}</Ratingtext>
+              <FaRegStar />
+              &nbsp;
+              <Ratingtext>{rating}</Ratingtext>
             </Rating>
           </TitleWrapper>
           <IntroWrapper>{Card.introduction}</IntroWrapper>
         </Content>
       </GridContainer>
       <IntroContainer>
-        
-            <TabItem>
-              <Count>{Card.feedCnt}</Count>
-              <TabName>Post</TabName>
-            </TabItem>
-            <TabItem>
-              <Count>{Card.reviewCnt}</Count>
-              <TabName>Reviews</TabName>
-            </TabItem>
-            <TabItem>
-              <Count>{Card.reservationCnt}</Count>
-              <TabName>Reservaion</TabName>
-            </TabItem>
-          
-       
-     
-            <ButtonWrapper>
-              <ButtonSmall button={button}></ButtonSmall>
-            </ButtonWrapper>
-       
+        <TabItem>
+          <Count>{Card.feedCnt}</Count>
+          <TabName>Post</TabName>
+        </TabItem>
+        <TabItem>
+          <Count>{Card.reviewCnt}</Count>
+          <TabName>Reviews</TabName>
+        </TabItem>
+        <TabItem>
+          <Count>{Card.reservationCnt}</Count>
+          <TabName>Reservaion</TabName>
+        </TabItem>
+
+        <ButtonWrapper>
+          <ButtonSmall button={button}></ButtonSmall>
+        </ButtonWrapper>
       </IntroContainer>
-      
     </Wrapper>
   );
 }

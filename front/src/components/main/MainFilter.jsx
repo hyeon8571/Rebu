@@ -126,30 +126,32 @@ const MainFilter = ({
 
   useEffect(() => {
     const access = localStorage.getItem("access");
-    axios
-      .get(`${BASE_URL}/api/feeds`, {
-        params: {
-          lat: currentLocation.latitude,
-          lng: currentLocation.longitude,
-          distance: distance,
-          category: category,
-          period: period,
-          sortedLike: sortedLike,
-        },
-        headers: {
-          access: access,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        console.log("피드 데이터를 조회했습니다");
-        console.log(response.data.body);
-        setFeed(response.data.body);
-      })
-      .catch((err) => {
-        console.log("피드 데이터를 찾지 못했습니다");
-      });
+    if (currentLocation.longitude) {
+      axios
+        .get(`${BASE_URL}/api/feeds`, {
+          params: {
+            lat: currentLocation.latitude,
+            lng: currentLocation.longitude,
+            distance: distance,
+            category: category,
+            period: period,
+            sortedLike: sortedLike,
+          },
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("피드 데이터를 조회했습니다");
+          console.log(response.data.body);
+          setFeed(response.data.body);
+        })
+        .catch((err) => {
+          console.log("피드 데이터를 찾지 못했습니다");
+        });
+    }
   }, [selected]);
 
   const categoryButtons = [

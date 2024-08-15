@@ -9,7 +9,7 @@ import EditDesignerIntroduction from "../reservation/EditDesignerIntroduction";
 import AlertDeleteDesigner from "../reservation/AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
 import ModalPortal from "../../util/ModalPortal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { designerData } from "../../util/visitedDatas";
 
 const UpperTabWrapper = styled.div`
@@ -119,15 +119,13 @@ export default function DesignerDisplay() {
   const [chosenDesigner, setChosenDesigner] = useState(null);
 
   const navigate = useNavigate();
+  const { nickname } = useParams();
 
   // 디자이너인데 자기 항목일때
-  const isDesigner = false;
+  const isDesigner = localStorage.getItem("type") === "EMPLOYEE";
 
   // 가게 프로필 일떄
-  const isShop = false;
-
-  // 손님일때
-  const isCustomer = true;
+  const isShop = localStorage.getItem("type") === "SHOP";
 
   const toggleHandler = () => {
     setIsMale(!isMale);
