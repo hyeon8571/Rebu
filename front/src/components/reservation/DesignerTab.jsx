@@ -12,6 +12,7 @@ import ModalPortal from "../../util/ModalPortal";
 import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
+import Header from "../common/Header";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -199,6 +200,7 @@ export default function DesignerTab() {
         </ModalNoBackNoExit>
       </ModalPortal>
 
+      <Header title={"디자이너 선택"} />
       <UpperTabWrapper>
         <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
       </UpperTabWrapper>

@@ -193,9 +193,7 @@ const ButtonWrapper = styled.div`
 
 const MainFilterStat = ({
   currentLocation,
-  setCurrentLocation,
   category,
-  setCategory,
   distance,
   setDistance,
   sortedLike,
@@ -205,64 +203,45 @@ const MainFilterStat = ({
   feed,
   setFeed,
   closeButton,
+  feedKey,
+  setFeedKey,
 }) => {
-  const periodButtons = ["하루", "일주일", "한달", "일년"];
+  const [selectedPeriod, setSelectedPeriod] = useState(5);
+
+  const periodButtons = [
+    { id: 1, content: "히루" },
+    { id: 2, content: "일주일" },
+    { id: 3, content: "한달" },
+    { id: 4, content: "일년" },
+    { id: 5, content: "제한없음" },
+  ];
 
   const handleButtonClick = (button) => {
-    if (period === button) {
-      // 같은 버튼을 다시 클릭하면 해제
-      setPeriod("");
-    } else {
-      // 다른 버튼을 클릭하면 해당 기간을 설정
-      setPeriod(button);
+    if (selectedPeriod !== button.id) {
+      setSelectedPeriod(button.id);
+
+      switch (button.content) {
+        case "하루":
+          setPeriod("1");
+          break;
+        case "일주일":
+          setPeriod("7");
+          break;
+        case "한달":
+          setPeriod("30");
+          break;
+        case "일년":
+          setPeriod("365");
+          break;
+        default:
+          setPeriod("1000");
+          break;
+      }
     }
   };
 
   const handelSave = () => {
-    let periodValue;
-
-    switch (period) {
-      case "하루":
-        periodValue = 1;
-        break;
-      case "일주일":
-        periodValue = 7;
-        break;
-      case "한달":
-        periodValue = 30;
-        break;
-      case "일년":
-        periodValue = 365;
-        break;
-      default:
-        periodValue = 0;
-    }
-
-    const access = localStorage.getItem("access");
-    axios
-      .get(`${BASE_URL}/api/feeds`, {
-        params: {
-          lat: currentLocation.latitude,
-          lng: currentLocation.longitude,
-          distance: distance,
-          category: category,
-          period: periodValue,
-          sortedLike: sortedLike,
-        },
-        headers: {
-          access: access,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        console.log("피드 데이터를 조회했습니다");
-        console.log(response.data.body);
-        setFeed(response.data.body);
-      })
-      .catch((err) => {
-        console.log("피드 데이터를 찾지 못했습니다");
-      });
+    setFeedKey(feedKey + 1);
   };
 
   const handleChange = (e) => {
@@ -299,11 +278,11 @@ const MainFilterStat = ({
         <ButtonContainer>
           {periodButtons.map((button) => (
             <Button
-              key={button}
-              selected={period === button}
+              key={button.id}
+              selected={button.id === selectedPeriod}
               onClick={() => handleButtonClick(button)}
             >
-              {button}
+              {button.content}
             </Button>
           ))}
         </ButtonContainer>

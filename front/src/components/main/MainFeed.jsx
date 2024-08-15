@@ -1,11 +1,18 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaRegHeart, FaHeart, FaRegComment, FaRegBookmark, FaBookmark, FaRegStar } from "react-icons/fa";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaRegComment,
+  FaRegBookmark,
+  FaBookmark,
+  FaRegStar,
+} from "react-icons/fa";
 import { FiMoreVertical } from "react-icons/fi";
 import { MdPlace } from "react-icons/md";
 import { RiSendPlaneLine } from "react-icons/ri";
-import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import PostDelete from "../post/PostDeleteModal";
 import PostComment from "../post/PostComment";
 import PostModifyModal from "../post/PostModifyModal";
@@ -15,7 +22,8 @@ import { BASE_URL } from "../../views/Signup";
 import nullImg from "../../assets/images/img.webp";
 
 const PostWrapper = styled.div`
-  background-color: ${(props) => (props.theme.value === "light" ? "#fbf8fe" : "#404040")};
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#fbf8fe" : "#404040"};
   width: 70%;
   @media (max-width: 425px) {
     width: 80%;
@@ -80,7 +88,7 @@ const ShopName = styled.span`
 `;
 
 const IconBox = styled.div`
-  color: #943AEE;
+  color: #943aee;
   font-size: 25px;
   margin-top: 10px;
   position: relative;
@@ -97,7 +105,8 @@ const DropdownMenu = styled.div`
   padding: 5px;
   z-index: 1;
   border-radius: 10px;
-  background-color: ${(props) => (props.theme.value === "light" ? "#ffffff" : "#e5e5e5")};
+  background-color: ${(props) =>
+    props.theme.value === "light" ? "#ffffff" : "#e5e5e5"};
   color: black;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(21, 17, 17, 0.1);
@@ -302,32 +311,86 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostDetail = ({ information, currentUser, loginUser, type }) => {
+const PostDetail = ({
+  information = [],
+  currentUser,
+  loginUser,
+  type,
+  currentLocation,
+  feed,
+  setFeed,
+  period,
+  distance,
+  category,
+  sortedLike,
+  feedKey,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const updatedPost = location.state?.post;
   const modifyPostId = location.state?.postId;
-  const [showDropdown, setShowDropdown] = useState(Array(information.length).fill(false));
+  const [showDropdown, setShowDropdown] = useState(
+    Array(information?.length).fill(false)
+  );
   const [postModifyModalOpen, setPostModifyModalOpen] = useState(false);
   const [PostDeleteModalOpen, setPostDeleteModalOpen] = useState(false);
   const [postId, setPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [isCommnetActive, setIsCommentActive] = useState(Array(information.length).fill(false));
+  const [isCommnetActive, setIsCommentActive] = useState(
+    Array(information?.length).fill(false)
+  );
   const [posts, setPosts] = useState([]);
-  const [expandedComments, setExpandedComments] = useState(Array(information.length).fill(false));
+  const [expandedComments, setExpandedComments] = useState(
+    Array(information?.length).fill(false)
+  );
   const dropdownRefs = useRef([]);
-  console.log(posts)
+  console.log(posts);
 
- 
+  // 전체 피드 조회
   useEffect(() => {
-    setPosts(information.map((post) => ({ ...post, currentIndex: 0 })))
+    const access = localStorage.getItem("access");
+    if (currentLocation.longitude) {
+      axios
+        .get(`${BASE_URL}/api/feeds`, {
+          params: {
+            lat: currentLocation.latitude,
+            lng: currentLocation.longitude,
+            distance: distance,
+            category: category,
+            period: period,
+            sortedLike: sortedLike,
+          },
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("피드 데이터를 조회했습니다");
+          console.log(response.data.body);
+          setFeed(response.data.body);
+        })
+        .catch((err) => {
+          console.log("피드 데이터를 찾지 못했습니다");
+        });
+    }
+  }, [currentLocation, feedKey]);
+
+  useEffect(() => {
+    setPosts(
+      information && information.map((post) => ({ ...post, currentIndex: 0 }))
+    );
   }, [information]);
 
   const nextSlide = useCallback((index) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       const length = updatedPosts[index].feed.imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === length - 1 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex + 1;
+      updatedPosts[index].currentIndex =
+        updatedPosts[index].currentIndex === length - 1
+          ? updatedPosts[index].currentIndex
+          : updatedPosts[index].currentIndex + 1;
       return updatedPosts;
     });
   }, []);
@@ -336,7 +399,10 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
     setPosts((prevPosts) => {
       const updatedPosts = [...prevPosts];
       const length = updatedPosts[index].feed.imageSrcs.length;
-      updatedPosts[index].currentIndex = updatedPosts[index].currentIndex === 0 ? updatedPosts[index].currentIndex : updatedPosts[index].currentIndex - 1;
+      updatedPosts[index].currentIndex =
+        updatedPosts[index].currentIndex === 0
+          ? updatedPosts[index].currentIndex
+          : updatedPosts[index].currentIndex - 1;
       return updatedPosts;
     });
   }, []);
@@ -348,53 +414,58 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
   };
 
   const handleLikeToggle = useCallback((feedId, index) => {
-    
-    const access = localStorage.getItem('access');
+    const access = localStorage.getItem("access");
 
     const isCurrentlyLiked = posts[index]?.isLiked;
 
     // 좋아요 취소
     if (isCurrentlyLiked) {
-      axios.delete(`${BASE_URL}/api/likes/feed/${feedId}`, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("좋아요 취소");
-        setPosts((prevPosts) => {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[index].isLiked = false;
-          updatedPosts[index].feed.likeCnt -= 1;
-          return updatedPosts;
+      axios
+        .delete(`${BASE_URL}/api/likes/feed/${feedId}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("좋아요 취소");
+          setPosts((prevPosts) => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].isLiked = false;
+            updatedPosts[index].feed.likeCnt -= 1;
+            return updatedPosts;
+          });
+        })
+        .catch((error) => {
+          console.log("좋아요 취소 오류 발생:", error);
         });
-      })
-      .catch(error => {
-        console.log("좋아요 취소 오류 발생:", error);
-      });
-    } // 좋아요 
+    } // 좋아요
     else {
-      axios.post(`${BASE_URL}/api/likes/feed`, {
-        feedId: feedId,
-      }, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("좋아요 성공");
-        setPosts((prevPosts) => {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[index].isLiked = true;
-          updatedPosts[index].feed.likeCnt += 1;
-          return updatedPosts;
+      axios
+        .post(
+          `${BASE_URL}/api/likes/feed`,
+          {
+            feedId: feedId,
+          },
+          {
+            headers: {
+              access: access,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("좋아요 성공");
+          setPosts((prevPosts) => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].isLiked = true;
+            updatedPosts[index].feed.likeCnt += 1;
+            return updatedPosts;
+          });
+        })
+        .catch((error) => {
+          console.log("좋아요 오류 발생:", error);
         });
-      })
-      .catch(error => {
-        console.log("좋아요 오류 발생:", error);
-      });
     }
   }, []);
 
@@ -427,7 +498,7 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
   }, []);
 
   const handlePostSave = (updatedPost, index) => {
-    setPosts(prevPosts => {
+    setPosts((prevPosts) => {
       const newPosts = [...prevPosts];
       newPosts[index] = updatedPost;
       return newPosts;
@@ -448,29 +519,30 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
 
   const handleDelete = (deletedPostId) => {
     // 삭제된 게시글을 제외한 나머지 게시글로 상태 업데이트
-    setPosts(posts.filter(post => post.feedId !== deletedPostId));
+    setPosts(posts.filter((post) => post.feedId !== deletedPostId));
   };
 
   const closeModal = () => {
     setPostDeleteModalOpen(false);
-    setShowDropdown(Array(information.length).fill(false));
+    setShowDropdown(Array(information?.length).fill(false));
     setPostModifyModalOpen(false);
   };
 
-
-
-  const toggleComments = useCallback((index) => {
-    setExpandedComments((prevExpandedComments) => {
-      const updatedExpandedComments = Array(information.length).fill(false);
-      updatedExpandedComments[index] = !prevExpandedComments[index];
-      return updatedExpandedComments;
-    });
-    setIsCommentActive((prevIsCommentActive) => {
-      const updatedIsCommentActive = Array(information.length).fill(false);
-      updatedIsCommentActive[index] = !prevIsCommentActive[index];
-      return updatedIsCommentActive;
-    });
-  }, [information.length]);
+  const toggleComments = useCallback(
+    (index) => {
+      setExpandedComments((prevExpandedComments) => {
+        const updatedExpandedComments = Array(information?.length).fill(false);
+        updatedExpandedComments[index] = !prevExpandedComments[index];
+        return updatedExpandedComments;
+      });
+      setIsCommentActive((prevIsCommentActive) => {
+        const updatedIsCommentActive = Array(information?.length).fill(false);
+        updatedIsCommentActive[index] = !prevIsCommentActive[index];
+        return updatedIsCommentActive;
+      });
+    },
+    [information?.length]
+  );
 
   const handleShopNameClick = (nickname) => {
     navigate(`/profile/${nickname}/SHOP`);
@@ -486,150 +558,191 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
 
   return (
     <>
-      {posts.map((item, index) => (
-        <PostWrapper key={index}>
-          <PostHeader>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {item.writer.profileImageSrc === null ? (
-                <ProfileImage src={nullImg} alt="Porfile" />
-              ) : (
-                <ProfileImage src={"https://www.rebu.kro.kr/data/" + item.writer.profileImageSrc} alt="Profile" />
-              )}
-
-              <ProfileDetails>
-                <Username>{item.writer.nickname}</Username>
-                <Location>
-                  {item.shop && (<LocationIcon />)}
-                  <ShopName onClick={() => handleShopNameClick(item.shop?.shopNickname)}>
-                    {item.shop?.shopName}
-                  </ShopName>
-                </Location>
-              </ProfileDetails>
-            </div>
-
-            <div style={{ position: "relative" }}>
-              {item.writer.nickname === loginUser ? (
-                <IconBox onClick={() => handleMoreOptionToggle(index)}>
-                  <FiMoreVertical />
-                </IconBox>
-              ) : (
-                <IconBox onClick={() => handleScrapToggle(index)}>
-                  {item.feed.isScraped ? <FaBookmark /> : <FaRegBookmark />}
-                </IconBox>
-              )}
-              <DropdownMenu
-                ref={(el) => (dropdownRefs.current[index] = el)}
-                show={showDropdown[index]}
-              >
-                <DropdownItem onClick={() => ModifyModalOpen(item.feed.feedId)}>
-                  게시글 수정
-                </DropdownItem>
-                {postModifyModalOpen && selectedPost && (
-                  <ModalPortal>
-                    <PostModifyModal
-                      postModifyModalOpen={postModifyModalOpen}
-                      closeModal={closeModal}
-                      post={selectedPost}
-                      currentUser={currentUser}
-                      index={index}
-                      feedId={item.feed.feedId}
-                      onSave={handlePostSave}
-                    />
-                  </ModalPortal>
-                )}
-                <hr style={{ margin: "5px 0px" }} />
-                <DropdownItem onClick={() => postDeleteModalOpen(item.feed.feedId)}>
-                  게시글 삭제
-                </DropdownItem>
-                {PostDeleteModalOpen && (
-                  <ModalPortal>
-                    <PostDelete
-                      nickname={loginUser}
-                      PostDeleteModalOpen={PostDeleteModalOpen}
-                      closeModal={closeModal}
-                      postId={postId}
-                      type={type}
-                      onDelete={() => handleDelete(postId)}
-                    />
-                  </ModalPortal>
-                )}
-              </DropdownMenu>
-            </div>
-          </PostHeader>
-
-
-          <SlideImg>
-            <SlideBack onClick={() => prevSlide(index)} />
-            <SlideFront onClick={() => nextSlide(index)} />
-            {item.feed.imageSrcs?.map((slide, imgIndex) => (
-              <PostImage
-                key={imgIndex}
-                src={"https://www.rebu.kro.kr/data/" + slide}
-                alt={`Slide ${imgIndex}`}
-                style={{ display: imgIndex === item.currentIndex ? "block" : "none" }}
-              />
-            ))}
-            <DotsWrapper>
-              {item.feed.imageSrcs?.map((_, imgIndex) => (
-                <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
-              ))}
-            </DotsWrapper>
-          </SlideImg>
-
-
-          <PostActions>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <ActionIcon onClick={() => handleLikeToggle(item.feed.feedId, index)}>
-                {item.isLiked ? <FaHeart style={{ color: "red" }} /> : <FaRegHeart />}
-              </ActionIcon>
-              <ActionIcon>
-                {isCommnetActive[index] ? (
-                  <CommentIcon onClick={() => toggleComments(index)} />
-                ) : (
-                  <FaRegComment onClick={() => { toggleComments(index); scrollDown(); }} />
-                )}
-              </ActionIcon>
-              <ActionIcon><ShareIcon /></ActionIcon>
-            </div>
-
-            {item.feed.rating ? (
-              <Rating>
-                <FaRegStar />
-                &nbsp;
-                <RatingText>{item.feed.rating}</RatingText>
-              </Rating>
-            ) : ("")}
-
-          </PostActions>
-          <Likes>좋아요 {item.feed.likeCnt}개</Likes>
-          <PostDescription>
-            {updatedPost && modifyPostId === index && item.writer.nickname === loginUser ? updatedPost.feed.content : item.feed.content}
-          </PostDescription>
-          <HashtagContainer>
-            {item.feed.hashtags?.map((hashtag) => (
-              <PostHashtag>#{hashtag}</PostHashtag>
-            ))}
-          </HashtagContainer>
-          <BottomWrapper>
-            <CommentText onClick={() => {toggleComments(index); scrollDown();}} >
-              댓글 {item.feed.commentCnt}개
-            </CommentText>
-            <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>
-          </BottomWrapper>
-          <CommentList expanded={expandedComments[index]}>
-            {expandedComments[index] && (
-              <PostComment
-                currentUser={currentUser}
-                information={information}
-                posts={posts}
-                setPosts={setPosts}
-                index={index}
-                feedId={item.feed.feedId}
-              />
-            )}
-          </CommentList>
+      {posts?.length === 0 || information?.length === 0 ? (
+        <PostWrapper>
+          <p>피드가 존재하지 않습니다.</p>
         </PostWrapper>
-      ))}
+      ) : (
+        posts.map((item, index) => (
+          <PostWrapper key={index}>
+            <PostHeader>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {item.writer.profileImageSrc === null ? (
+                  <ProfileImage src={nullImg} alt="Profile" />
+                ) : (
+                  <ProfileImage
+                    src={
+                      "https://www.rebu.kro.kr/data/" +
+                      item.writer.profileImageSrc
+                    }
+                    alt="Profile"
+                  />
+                )}
+
+                <ProfileDetails>
+                  <Username>{item.writer.nickname}</Username>
+                  <Location>
+                    {item.shop && <LocationIcon />}
+                    <ShopName
+                      onClick={() =>
+                        handleShopNameClick(item.shop?.shopNickname)
+                      }
+                    >
+                      {item.shop?.shopName}
+                    </ShopName>
+                  </Location>
+                </ProfileDetails>
+              </div>
+
+              <div style={{ position: "relative" }}>
+                {item.writer.nickname === loginUser ? (
+                  <IconBox onClick={() => handleMoreOptionToggle(index)}>
+                    <FiMoreVertical />
+                  </IconBox>
+                ) : (
+                  <IconBox onClick={() => handleScrapToggle(index)}>
+                    {item.feed.isScraped ? <FaBookmark /> : <FaRegBookmark />}
+                  </IconBox>
+                )}
+                <DropdownMenu
+                  ref={(el) => (dropdownRefs.current[index] = el)}
+                  show={showDropdown[index]}
+                >
+                  <DropdownItem
+                    onClick={() => ModifyModalOpen(item.feed.feedId)}
+                  >
+                    게시글 수정
+                  </DropdownItem>
+                  {postModifyModalOpen && selectedPost && (
+                    <ModalPortal>
+                      <PostModifyModal
+                        postModifyModalOpen={postModifyModalOpen}
+                        closeModal={closeModal}
+                        post={selectedPost}
+                        currentUser={currentUser}
+                        index={index}
+                        feedId={item.feed.feedId}
+                        onSave={handlePostSave}
+                      />
+                    </ModalPortal>
+                  )}
+                  <hr style={{ margin: "5px 0px" }} />
+                  <DropdownItem
+                    onClick={() => postDeleteModalOpen(item.feed.feedId)}
+                  >
+                    게시글 삭제
+                  </DropdownItem>
+                  {PostDeleteModalOpen && (
+                    <ModalPortal>
+                      <PostDelete
+                        nickname={loginUser}
+                        PostDeleteModalOpen={PostDeleteModalOpen}
+                        closeModal={closeModal}
+                        postId={postId}
+                        type={type}
+                        onDelete={() => handleDelete(postId)}
+                      />
+                    </ModalPortal>
+                  )}
+                </DropdownMenu>
+              </div>
+            </PostHeader>
+
+            <SlideImg>
+              <SlideBack onClick={() => prevSlide(index)} />
+              <SlideFront onClick={() => nextSlide(index)} />
+              {item.feed.imageSrcs?.map((slide, imgIndex) => (
+                <PostImage
+                  key={imgIndex}
+                  src={"https://www.rebu.kro.kr/data/" + slide}
+                  alt={`Slide ${imgIndex}`}
+                  style={{
+                    display: imgIndex === item.currentIndex ? "block" : "none",
+                  }}
+                />
+              ))}
+              <DotsWrapper>
+                {item.feed.imageSrcs?.map((_, imgIndex) => (
+                  <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
+                ))}
+              </DotsWrapper>
+            </SlideImg>
+
+            <PostActions>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ActionIcon
+                  onClick={() => handleLikeToggle(item.feed.feedId, index)}
+                >
+                  {item.isLiked ? (
+                    <FaHeart style={{ color: "red" }} />
+                  ) : (
+                    <FaRegHeart />
+                  )}
+                </ActionIcon>
+                <ActionIcon>
+                  {isCommnetActive[index] ? (
+                    <CommentIcon onClick={() => toggleComments(index)} />
+                  ) : (
+                    <FaRegComment
+                      onClick={() => {
+                        toggleComments(index);
+                        scrollDown();
+                      }}
+                    />
+                  )}
+                </ActionIcon>
+                <ActionIcon>
+                  <ShareIcon />
+                </ActionIcon>
+              </div>
+
+              {item.feed.rating ? (
+                <Rating>
+                  <FaRegStar />
+                  &nbsp;
+                  <RatingText>{item.feed.rating}</RatingText>
+                </Rating>
+              ) : null}
+            </PostActions>
+            <Likes>좋아요 {item.feed.likeCnt}개</Likes>
+            <PostDescription>
+              {updatedPost &&
+              modifyPostId === index &&
+              item.writer.nickname === loginUser
+                ? updatedPost.feed.content
+                : item.feed.content}
+            </PostDescription>
+            <HashtagContainer>
+              {item.feed.hashtags?.map((hashtag, hashtagIndex) => (
+                <PostHashtag key={hashtagIndex}>#{hashtag}</PostHashtag>
+              ))}
+            </HashtagContainer>
+            <BottomWrapper>
+              <CommentText
+                onClick={() => {
+                  toggleComments(index);
+                  scrollDown();
+                }}
+              >
+                댓글 {item.feed.commentCnt}개
+              </CommentText>
+              <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>
+            </BottomWrapper>
+            <CommentList expanded={expandedComments[index]}>
+              {expandedComments[index] && (
+                <PostComment
+                  currentUser={currentUser}
+                  information={information}
+                  posts={posts}
+                  setPosts={setPosts}
+                  index={index}
+                  feedId={item.feed.feedId}
+                />
+              )}
+            </CommentList>
+          </PostWrapper>
+        ))
+      )}
     </>
   );
 };

@@ -95,12 +95,20 @@ export default function NavigationRail({ nickname, type, profileImg }) {
             <IoSearch size={ICON_SIZE} />
           </NavigationItem>
         </SearchDiv>
-        <StyledNavLink isModalOpen={isModalOpen} to="/visited">
+        <StyledNavLink
+          isModalOpen={isModalOpen}
+          to={
+            localStorage.getItem("type") === "SHOP" ||
+            localStorage.getItem("type") === "EMPLOYEE"
+              ? "/postfeed"
+              : "/visited"
+          }
+        >
           <NavigationItem>
             <CgAddR size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink isModalOpen={isModalOpen} to="/component">
+        <StyledNavLink isModalOpen={isModalOpen} to="/myreservation">
           <NavigationItem>
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>

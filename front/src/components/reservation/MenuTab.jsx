@@ -7,6 +7,7 @@ import ButtonSmall from "../common/ButtonSmall";
 import apiClient from "../../util/apiClient";
 import { BASE_URL } from "../../util/commonFunction";
 import { BASE_IMG_URL } from "../../util/commonFunction";
+import Header from "../common/Header";
 
 const MenuCardContainer = styled.div`
   display: grid;
@@ -111,6 +112,7 @@ export default function MenuTab() {
   }
   return (
     <>
+      <Header title={"시술 선택"} />
       {menuData.map((item) => (
         <MenuCardContainer key={item.id}>
           <MenuContent>
