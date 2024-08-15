@@ -99,10 +99,10 @@ export const follow = async (nickname) => {
 
 
 
-// 팔로우 취소 요청 함수
+// 팔로우 취소(언팔로우) 요청 함수
 export const unfollow = async (followId) => {
   const access = localStorage.getItem("access"); // 또는 적절한 방법으로 access 토큰을 가져오세요
-
+  console.log("언팔로우 followId:", followId);
   try {
     const response = await axios.delete(`${BASE_URL}/api/follows/${followId}`, {
       headers: {

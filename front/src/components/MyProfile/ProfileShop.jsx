@@ -15,6 +15,8 @@ import {
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import ButtonSmall from "../common/ButtonSmall";
 import { BASE_URL } from "../../views/Signup";
+import { switchProfile } from "../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 export const Div = styled.div`
   display: flex;
@@ -193,12 +195,14 @@ const RadioButton = styled.button`
 export const verifyLicense = async (licenceNum) => {
   const access = localStorage.getItem("access");
   try {
-    console.log("사업자 등록번호 인증 요청:", licenceNum);
+    // 하이픈 제거
+    const cleanedLicenceNum = licenceNum.replace(/-/g, "");
+    console.log("사업자 등록번호 인증 요청:", cleanedLicenceNum);
     const response = await axios.post(
       `${BASE_URL}/api/auths/license/verify`,
       {
-        licenceNum: licenceNum, // 요청 바디에 사업자 등록번호 포함
-        // purpose: "generateShopProfile", // 목적 설정
+        licenseNum: cleanedLicenceNum, // 요청 바디에 사업자 등록번호 포함 licence? license?
+        purpose: "generateShopProfile", // 목적 설정
       },
       {
         headers: {
@@ -207,6 +211,7 @@ export const verifyLicense = async (licenceNum) => {
         },
       }
     );
+    console.log("사업자번호axios", response);
     // 요청 성공 시 응답 데이터 반환
     return { success: true, data: response.data };
   } catch (error) {
@@ -266,6 +271,8 @@ export const createShopProfile = async (formData) => {
 
 const ProfileShop = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [profileImg, setProfileImg] = useState(null);
   const [nickname, setNickname] = useState("");
   const [nicknameMsg, setNicknameMsg] = useState("");
@@ -364,26 +371,49 @@ const ProfileShop = () => {
         {
           params: {
             nickname: nickname,
-            purpose: "signup",
+            purpose: "generateProfile",
           },
         }
       );
       console.log("닉네임 중복 확인", response);
 
-      if (response.data.code === "닉네임 중복 검사 성공 코드") {
+      //"닉네임 중복 검사 성공 코드"
+      if (response.data.code === "1C00") {
         console.log("닉네임 중복 검사 성공");
         if (response.data.body === true) {
           setNicknameMsg("중복된 닉네임입니다");
           setIsNicknameValid(false);
         } else {
+          //response.data.body === false
           setNicknameMsg("사용 가능한 닉네임입니다");
           setIsNicknameValid(true);
         }
+      } else {
+        setNicknameMsg("닉네임 중복 확인 중 오류가 발생했습니다.");
+        setIsNicknameValid(false);
       }
     } catch (error) {
       console.error("Error checking nickname availability:", error);
       setNicknameMsg("닉네임 확인 중 오류가 발생했습니다.");
       setIsNicknameValid(false);
+    }
+  };
+
+  // switchProfile 함수 호출
+  const handleProfileSwitch = async (nickname) => {
+    try {
+      console.log("handleProfileSwitch", nickname);
+      const switchResult = await dispatch(switchProfile(nickname)).unwrap();
+      console.log("handleProfileSwitch 결과", switchResult);
+      if (switchResult.success) {
+        console.log("프로필 전환 요청이 성공적으로 전송되었습니다.");
+      } else {
+        console.error("프로필 전환 요청 중 오류 발생:", switchResult.error);
+      }
+      return switchResult;
+    } catch (error) {
+      console.error("프로필 전환 요청 중 오류 발생:", error);
+      return { success: false, error };
     }
   };
 
@@ -404,28 +434,62 @@ const ProfileShop = () => {
     formData.append("licenceNum", licenceNum);
     formData.append("address", address);
     formData.append("phone", phone);
-    formData.append("category", category);
+    // formData.append("category", category);
+    formData.append("category", selected.toUpperCase());
 
     try {
-      await createShopProfile(formData);
-      navigate("/main");
+      const createResult = await createShopProfile(formData);
+      console.log("프로필 생성 결과:", createResult);
+
+      // 프로필 생성 후 자동으로 프로필 전환
+      const switchResult = await handleProfileSwitch(nickname);
+      if (switchResult.success) {
+        console.log("프로필 전환 성공:", switchResult);
+        navigate(`/profile/${nickname}/SHOP`); // SHOP 타입으로 프로필 페이지로 이동
+      } else {
+        console.error("프로필 전환 실패:", switchResult.error);
+        alert(
+          "프로필이 생성되었지만 전환 중 오류가 발생했습니다. 다시 시도해주세요."
+        );
+        navigate("/main"); // 메인 페이지로 이동
+      }
     } catch (error) {
       console.error("Failed to create profile:", error);
+      alert("프로필 생성 중 오류가 발생했습니다.");
     }
   };
+
+  /////////////////////////
+
   // API - 사업자등록증 조회 버튼 클릭 시 실행될 함수
   const handleClick = async () => {
     alert("사업자등록증 조회");
     // // 하이픈 제거 후 API 호출
     // const cleanedLicenceNum = licenceNum.replace(/-/g, '');
+    console.log("사업자등록증 조회:", licenceNum);
+
+    //형식 확인
+    const licenceNumRegex = /^\d{3}-\d{2}-\d{5}$/;
+    if (!licenceNumRegex.test(licenceNum)) {
+      alert("사업자등록번호 형식이 올바르지 않습니다. (예: 000-00-00000)");
+      return;
+    }
+
     const result = await verifyLicense(licenceNum);
 
     if (result.success) {
-      console.log("인증요청axios 성공:", result.data);
-      if (result.data.code === "유효하지 않은 인증 목적") {
-        alert("유효하지 않은 인증 목적입니다. 사업자번호를 다시 확인해주세요.");
+      console.log("인증요청axios 결과:", result.data);
+      if (result.data.code === "1B05") {
+        console.log("사업자 등록번호 인증 성공");
+        alert("사업자 등록번호 인증에 성공했습니다.");
+        setAddress(result.data.body.address);
+        setName(result.data.body.name);
+      } else if (result.data.code === "0B13") {
+        alert("유효하지 않은 사업자번호입니다. 다시 확인해주세요.");
+      } else if (result.data.code === "0C06") {
+        alert("사업자번호 형식이 올바르지 않습니다. 다시 확인해주세요.");
       } else {
-        console.log(result.data);
+        alert("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
       }
     } else {
       console.error("인증 실패:", result.error);
@@ -503,6 +567,7 @@ const ProfileShop = () => {
           value={name}
           onChange={handleChange}
           required
+          readOnly
         />
 
         <Label required>주소</Label>
@@ -512,6 +577,7 @@ const ProfileShop = () => {
           value={address}
           onChange={handleChange}
           required
+          readOnly
         />
         <Label required>휴대폰 번호</Label>
         <Input

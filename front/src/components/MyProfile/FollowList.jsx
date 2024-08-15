@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -120,11 +120,13 @@ const Button = styled.button`
 const FollowList = ({
   follower,
   time,
+  isMyProfile,
   handleCloseFollowingModal,
   handleCloseFollowersModal,
 }) => {
   const online = time < 300;
   const navigate = useNavigate();
+  const [listType, setListType] = useState("팔로잉목록");
 
   const handleProfileClick = () => {
     // '/profile' 경로로 이동하고, follower.nickname을 state로 전달
@@ -134,10 +136,12 @@ const FollowList = ({
     // 함수가 존재할 때만 호출
     if (handleCloseFollowingModal) {
       handleCloseFollowingModal();
+      setListType("팔로잉목록");
     }
 
     if (handleCloseFollowersModal) {
       handleCloseFollowersModal();
+      setListType("팔로워목록");
     }
   };
 

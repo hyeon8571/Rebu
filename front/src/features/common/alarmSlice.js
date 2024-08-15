@@ -4,19 +4,10 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import { BASE_URL } from '../../util/commonFunction';
 import { addAlarm, setAlarmConnection } from '../auth/authSlice';
 
-
-const MAX_RETRY_COUNT = 5;
-const INITIAL_RETRY_DELAY = 1000;
-const MAX_RETRY_DELAY = 30000;
-
-
 export const NotificationComponent = () => {
   const dispatch = useDispatch();
   const { isLogin, access, nickname } = useSelector(state => state.auth);
   const eventSourceRef = useRef(null);
-  const retryCountRef = useRef(0);
-  const retryTimeoutRef = useRef(null);
-
 
   const setupEventSource = useCallback(() => {
     if (isLogin && access && !eventSourceRef.current) {
@@ -31,14 +22,13 @@ export const NotificationComponent = () => {
           },
           heartbeatTimeout: 86400000,
           withCredentials: true,
-          transport: 'xhr' // Force HTTP/1.1 <-안되면 지우기
+          // transport: 'xhr' // HTTP/1.1로 강제 ... 안되면 삭제
         }
       );
 
       eventSource.onopen = () => {
         console.log('Alarm connection opened');
         dispatch(setAlarmConnection(true));
-        retryCountRef.current = 0;
       };
 
       eventSource.onmessage = (event) => {
@@ -56,37 +46,17 @@ export const NotificationComponent = () => {
         dispatch(setAlarmConnection(false));
         eventSource.close();
         eventSourceRef.current = null;
-        scheduleReconnect(); //
 
-        // if (retryCountRef.current < MAX_RETRY_COUNT) {
-        //   setTimeout(() => {
-        //     retryCountRef.current++;
-        //     setupEventSource();
-        //   }, RETRY_INTERVAL);
-        // } else {
-        //   console.error('Max retry count reached. Please check your connection.');
-        // }
+        // 페이지 즉시 새로고침
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 300000);  // 5분 후에 새로고침 (300,000 밀리초)
       };
 
       eventSourceRef.current = eventSource;
     }
   }, [isLogin, access, nickname, dispatch]);
 
-  const scheduleReconnect = useCallback(() => {
-    if (retryCountRef.current < MAX_RETRY_COUNT) {
-      const delay = Math.min(INITIAL_RETRY_DELAY * Math.pow(2, retryCountRef.current), MAX_RETRY_DELAY);
-      console.log(`Attempting to reconnect in ${delay}ms...`);
-      retryTimeoutRef.current = setTimeout(() => {
-        retryCountRef.current++;
-        setupEventSource();
-      }, delay);
-    } else {
-      console.error('Max retry count reached. Please check your connection.');
-    }
-  }, [setupEventSource]);
-
-
-  //promise handling
   const closeEventSource = useCallback(() => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
@@ -94,11 +64,6 @@ export const NotificationComponent = () => {
       dispatch(setAlarmConnection(false));
       console.log("Alarm SSE connection closed");
     }
-    if (retryTimeoutRef.current) {
-      clearTimeout(retryTimeoutRef.current);
-      retryTimeoutRef.current = null;
-    }
-    retryCountRef.current = 0;
   }, [dispatch]);
 
   useEffect(() => {

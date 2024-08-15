@@ -178,7 +178,8 @@ const SignupForm2 = ({
       );
       console.log("닉네임 중복 확인", response);
 
-      if (response.data.code === "닉네임 중복 검사 성공 코드") {
+      if (response.data.code === "1C00") {
+        //닉네임 중복 검사 성공 코드
         console.log("닉네임 중복 검사 성공");
         if (response.data.body === true) {
           // true가 중복이 있는 경우
@@ -189,6 +190,8 @@ const SignupForm2 = ({
           setNicknameMsg("사용 가능한 닉네임입니다");
           setIsNicknameValid(true);
         }
+      } else {
+        console.log("닉네임 중복 검사 실패");
       }
     } catch (error) {
       console.error("Error checking nickname availability:", error);
@@ -241,7 +244,7 @@ const SignupForm2 = ({
       alert("이름을 입력하세요.");
       return false;
     }
-    if (!isNicknameValid) {
+    if (isNicknameValid === false) {
       alert("닉네임을 올바르게 입력하세요.");
       return false;
     }

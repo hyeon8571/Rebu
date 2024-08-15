@@ -455,7 +455,11 @@ const ProfilePage = ({
         />
         <ProfileContainer>
           <IntroduceBox>
-            <ProfileImage currentUser={profile} time={130} />
+            <ProfileImage
+              currentUser={profile}
+              isMyProfile={myProfile}
+              time={130}
+            />
             {type === "SHOP" ? (
               <ShopProfileInfo
                 currentUser={profile}
