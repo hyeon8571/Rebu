@@ -143,6 +143,19 @@ const FollowList = ({
 
   const handleChat = () => {};
 
+  // 버튼에 표시될 이름
+  const getButtonText = (isMyProfile, follow) => {
+    if (isMyProfile === "yes" && follow.relation === "FOLLOWING") {
+      return "언팔로우";
+    } else if (isMyProfile === "yes" && follow.relation === "NONE") {
+      return "맞팔로우";
+    } else if (isMyProfile === "no" && follow.relation === "FOLLOWING") {
+      return "언팔로우";
+    } else if (isMyProfile === "no" && follow.relation === "NONE") {
+      return "팔로우";
+    }
+  };
+
   return (
     <FollowerContainer>
       <React.Fragment>
@@ -175,7 +188,7 @@ const FollowList = ({
         <Username onClick={handleProfileClick}>{follower.nickname}</Username>
         <Description>{follower.introduction}</Description>
       </Info>
-      <Button>DM</Button>
+      <Button>{getButtonText(isMyProfile, follow)}</Button>
     </FollowerContainer>
   );
 };
