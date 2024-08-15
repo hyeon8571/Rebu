@@ -25,7 +25,6 @@ import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
 import Login from "./Login";
 import { BASE_URL } from "./Signup";
-import apiClient from "../util/apiClient";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -180,7 +179,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "COMMON") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
           headers: {
             access: access,
@@ -196,7 +195,7 @@ const ProfilePage = ({
         });
     } else if (type === "SHOP") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds/reviews/shops/${nickname}`, {
           headers: {
             access: access,
@@ -212,7 +211,7 @@ const ProfilePage = ({
         });
     } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds/reviews/employees/${nickname}`, {
           headers: {
             access: access,
@@ -248,7 +247,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type !== "SHOP") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds`, {
           params: {
             scrapedBy: nickname,
@@ -273,7 +272,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "SHOP") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
           headers: {
             access: access,
@@ -289,7 +288,7 @@ const ProfilePage = ({
         });
     } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
           headers: {
             access: access,
@@ -310,7 +309,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "COMMON") {
       const access = localStorage.getItem("access");
-      apiClient
+      axios
         .get(`${BASE_URL}/api/shop-favorites/${nickname}`, {
           headers: {
             access: access,
@@ -334,15 +333,6 @@ const ProfilePage = ({
       setIsSticky(newIsSticky);
     }
   };
-
-  useEffect(() => {
-    // 스크롤 이벤트 리스너 추가
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      // 스크롤 이벤트 리스너 제거
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []); // 의존성 배열이 비어 있어 처음 마운트될 때만 실행됨
 
   //타입별 탭 구분
   useEffect(() => {

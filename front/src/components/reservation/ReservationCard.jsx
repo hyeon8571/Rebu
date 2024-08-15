@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import ButtonSmall from "../common/ButtonSmall";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { BASE_IMG_URL } from "../../util/commonFunction";
-import { Link, NavLink } from "react-router-dom";
+import defaultImg from "../../assets/images/img.webp";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -67,14 +67,9 @@ const TitleWrapper = styled.div`
   border-bottom: ${(props) =>
     props.theme.value === "light" ? "1px solid black" : "1px solid #a3a3a3"};
   padding-bottom: 0.2rem;
-
-  &:hover {
-    color: ${(props) =>
-      props.theme.value === "light" ? "lightgrey" : "#c1c1c1"};
-  }
 `;
 
-const TitleText = styled(NavLink)`
+const TitleText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -138,23 +133,23 @@ const PriceWrapper = styled.div`
   }
 `;
 
-export default function ShopCard({ Card }) {
+export default function ReservationCard({ Card }) {
   if (!Card) {
     console.log("카드 컴포넌트 불러오기 실패");
     return null;
   }
+
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <GridContainer>
         <PhotoSection>
-          <Photo src={BASE_IMG_URL + "/" + Card.img} />
+          <Photo src={Card.img ? BASE_IMG_URL + "/" + Card.img : defaultImg} />
         </PhotoSection>
         <Content>
           <TitleWrapper>
-            <TitleText to={`/profiles/${nickname}/shop`}>
-              {Card.title}
-              <HiOutlineChevronRight></HiOutlineChevronRight>
-            </TitleText>
+            <TitleText>{Card.title}</TitleText>
           </TitleWrapper>
           <MenuWrapper>{Card.menu}</MenuWrapper>
           <DesignerWrapper>{Card.designer}</DesignerWrapper>

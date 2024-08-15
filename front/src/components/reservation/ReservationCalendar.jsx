@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import ReservationForm from "./ReservationForm";
 import ReservationCard from "./ReservationCard";
-import Img from "../../assets/images/img.webp";
+import { BASE_URL } from "../../util/commonFunction";
+import axios from "axios";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -255,22 +256,67 @@ const weekday = ["일", "월", "화", "수", "목", "금", "토"];
 export default function ReservationCalendar() {
   const [date, setDate] = useState(new Date());
   const [chosenTime, setChosenTime] = useState(null);
-
+  const [shopInfo, setShopInfo] = useState({});
+  const [reservationData, setReservationData] = useState([]);
   const location = useLocation();
   const { info } = location.state;
 
   const card = {
     id: 1,
-    img: Img,
-    title: info.shopTitle,
-    menu: info.menu,
+    img: shopInfo.imageSrc,
+    title: shopInfo.name,
+    menu: info.menuTitle,
     designer: info.workingName + " " + info.role,
     serviceTime: info.serviceTime,
     price: info.cost,
   };
 
+  const reservationInfo = {
+    shopNickname: info.shopNickname,
+    menuId: info.menuId,
+    employeeNickname: info.employeeNickname,
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/profiles/shops/${info.shopNickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setShopInfo(res.data.body);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${BASE_URL}/api/profiles/employees/${info.employeeNickname}/period-schedule`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            access: `${localStorage.getItem("access")}`,
+          },
+          params: {
+            "start-date": "2023-08-01",
+            "end-date": "2025-08-30",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setReservationData(response.data.body);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   const moment = require("moment");
@@ -284,18 +330,16 @@ export default function ReservationCalendar() {
   }
 
   const chosenDay = convertDate(date);
-  const startTime = "08:00";
-  const endTime = "20:00";
-  const serviceDuration = info.serviceTime;
-  const intervalMinutes = 5;
+  const startTime = "09:00";
+  const endTime = "18:00";
 
   const shopTimeInfo = {
     date: chosenDay,
     startTime: startTime,
     endTime: endTime,
-    serviceDuration: serviceDuration,
-    intervalMinutes: intervalMinutes,
-    schedulerData: schedulerData,
+    serviceDuration: info.serviceTime,
+    intervalMinutes: reservationData.reservationInterval,
+    schedulerData: reservationData,
   };
 
   return (
@@ -346,6 +390,8 @@ export default function ReservationCalendar() {
         timeInfo={shopTimeInfo}
         chosenTime={chosenTime}
         setChosenTime={setChosenTime}
+        reservationData={reservationData}
+        reservationInfo={reservationInfo}
       />
     </>
   );

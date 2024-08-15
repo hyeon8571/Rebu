@@ -60,7 +60,7 @@ const SearchDiv = styled.div`
   border-radius: 1rem;
 
   color: ${(props) =>
-    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+    props.theme.value === "dark" ? "white" : "rgb(85, 26, 139)"};
   background-color: ${(props) =>
     props.isModalOpen ? props.theme.body : "none"};
 `;

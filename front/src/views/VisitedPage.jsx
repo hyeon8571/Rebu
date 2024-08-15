@@ -47,7 +47,7 @@ function calculateVisit(date, timeTaken) {
 }
 
 const BASE_URL = "https://www.rebu.kro.kr";
-const nickname = "rebu39";
+const nickname = localStorage.getItem("nickname");
 
 export default function VisitedPage() {
   const [data, setData] = useState([]);
@@ -63,21 +63,17 @@ export default function VisitedPage() {
   useEffect(() => {
     axios
       .get(
-        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=2024-08-01&end-date=2025-08-30`,
+        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=2023-08-01&end-date=2025-08-30`,
         {
           headers: {
             "Content-Type": "application/json",
-            Access:
-              "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsIm5pY2tuYW1lIjoicmVidTM5IiwidHlwZSI6IkNPTU1PTiIsImlhdCI6MTcyMzQ3ODQ5NSwiZXhwIjo5NzIzNDgwMjk1fQ.ca5yEAdzAFZ9SpB2xE1x5IUlfI9_wssEMbVFvANRBMQ",
+            Access: localStorage.getItem("access"),
           },
         }
       )
       .then((response) => {
-        console.log(response);
-        const sortedData = response.data.body.sort(
-          (a, b) => new Date(b.startDateTime) - new Date(a.sxtartDateTime)
-        );
         setData(sortedData);
+        console.log(response);
         setLoading(false);
       })
       .catch((error) => {

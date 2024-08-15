@@ -16,12 +16,18 @@ const DescriptionContainer = styled.div`
 export default function CheckReservation({
   setIsConfirmed,
   setIsModalOpen,
-  children,
+  submitReservation,
 }) {
   const Button1 = {
     id: 1,
     title: "예약",
-    onClick: () => setIsConfirmed(true),
+    onClick: () => {
+      if (submitReservation()) {
+        setIsConfirmed(true);
+      } else {
+        setIsConfirmed(false);
+      }
+    },
     highlight: true,
   };
 

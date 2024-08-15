@@ -13,8 +13,7 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 import "./TimeTable.css";
 import "moment/locale/ko"; // 한글 로케일을 가져옵니다.
-import Reservation from "../review/ReservationInfo";
-import apiClient from "../../util/apiClient";
+
 import { BASE_URL } from "../../util/commonFunction";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -114,8 +113,12 @@ export default function TimeTable({ designer }) {
 
   useEffect(() => {
     if (designer) {
-      apiClient
+      axios
         .get(`${BASE_URL}/api/profiles/employees/${designer}/period-schedule`, {
+          headers: {
+            "Content-Type": "application/json",
+            access: `${localStorage.getItem("access")}`,
+          },
           params: {
             "start-date": "2023-08-01",
             "end-date": "2025-08-30",

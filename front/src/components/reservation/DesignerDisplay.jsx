@@ -10,9 +10,6 @@ import ModalPortal from "../../util/ModalPortal";
 import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
-import apiClient from "../../util/apiClient";
-import nullImg from "../../assets/images/img.webp";
-import Header from "../common/Header";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -132,8 +129,13 @@ export default function DesignerDisplay() {
   // const nickname = localStorage.getItem("nickname");
 
   useEffect(() => {
-    apiClient
-      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
+    axios
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         setDesigners(response.data.body);

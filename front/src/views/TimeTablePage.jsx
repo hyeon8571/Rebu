@@ -1,12 +1,11 @@
 import styled, { css } from "styled-components";
 import TimeTable from "../components/reservation/TimeTable";
 import { useEffect, useState } from "react";
-import apiClient from "../util/apiClient";
 import { BASE_URL } from "../util/commonFunction";
 import { Navigate, useParams } from "react-router-dom";
-import ButtonLarge from "../components/common/ButtonLarge";
 import ButtonSmall from "../components/common/ButtonSmall";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ButtonLabelAndInputStyles = css`
   display: block;
@@ -79,8 +78,13 @@ export default function TimeTablePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    apiClient
-      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
+    axios
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         setDesigners(response.data.body);
@@ -94,16 +98,19 @@ export default function TimeTablePage() {
   return (
     <>
       <ButtonContainer>
-        <ButtonSmall
-          button={{
-            id: 1,
-            title: "예약하기",
-            onClick: () => {
-              navigate(`/reservation/${nickname}`);
-            },
-            highlight: "true",
-          }}
-        />
+        {nickname !== localStorage.getItem("nickname") &&
+          localStorage.getItem("type") === "COMMON" && (
+            <ButtonSmall
+              button={{
+                id: 1,
+                title: "예약하기",
+                onClick: () => {
+                  navigate(`/reservation/${nickname}`);
+                },
+                highlight: "true",
+              }}
+            />
+          )}
         {designers.map((item, index) => (
           <ButtonBigContainer key={index}>
             <ButtonInput

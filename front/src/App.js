@@ -44,29 +44,6 @@ function App() {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
-    if (localStorage.getItem("accees")) {
-      try {
-        axios
-          .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
-          .then((res) => {
-            console.log(res);
-            const newAccessToken = res.headers["access"];
-            localStorage.setItem("access", newAccessToken);
-
-            // 새로운 토큰으로 헤더 업데이트
-            originalRequest.headers["access"] = `${newAccessToken}`;
-
-            // 원래 요청을 다시 시도
-            return apiClient(originalRequest);
-          });
-      } catch (error) {
-        console.error("Token refresh failed:", error);
-        // 로그아웃 처리 또는 사용자에게 재로그인 요청
-        // window.location.href = '/login';
-        return Promise.reject(error);
-      }
-    }
-
     // 컴포넌트가 언마운트될떄(페이지가 꺼지면) 엑세스토큰 제거
     return () => {
       localStorage.removeItem("access");

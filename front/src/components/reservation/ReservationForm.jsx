@@ -5,6 +5,8 @@ import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
 import CheckReservation from "./CheckReservation";
 import ModalPortal from "../../util/ModalPortal";
 import ConfirmReservation from "./ConfirmReservation";
+import axios from "axios";
+import { BASE_URL } from "../../util/commonFunction";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -102,77 +104,6 @@ const DivideLine = styled.div`
   padding-top: 1rem;
 `;
 
-//date = 해당날짜, startTime = 매장 시작시각, endTime= 매장 종료시각, intervalMinutes = 예약 간격 최소시간, serviceDuration = 시술 소요시간, scheulerData = 기존 예약 시간들 (객체형태)
-// function generateTimeIntervals(
-//   date,
-//   startTime,
-//   endTime,
-//   intervalMinutes,
-//   serviceDuration,
-//   schedulerData
-// ) {
-//   // 날짜와 시간을 함께 처리하기 위해 startTime과 endTime을 Date 객체로 변환
-//   let [startHour, startMinute] = startTime.split(":").map(Number);
-//   let [endHour, endMinute] = endTime.split(":").map(Number);
-
-//   let currentTime = new Date(`${date}T${startTime}`);
-//   let endTimeObj = new Date(`${date}T${endTime}`);
-
-//   // 시간을 저장할 배열
-//   let timeIntervals = [];
-//   let currentHourArray = [];
-
-//   // 예약 시간을 Date 객체로 변환
-//   const reservations = schedulerData.map((reservation) => ({
-//     start: new Date(reservation.startDate),
-//     end: new Date(reservation.endDate),
-//   }));
-
-//   // 시술 시간을 분 단위로 변환
-//   const serviceDurationMinutes = serviceDuration;
-
-//   // 간격 만큼 시간을 추가하여 배열에 저장
-//   while (currentTime <= endTimeObj) {
-//     const endServiceTime = new Date(
-//       currentTime.getTime() + serviceDurationMinutes * 60000
-//     );
-
-//     // 현재 시간이 예약된 시간 사이에 있는지 확인 (end 포함)
-//     const isReserved = reservations.some(
-//       (reservation) =>
-//         currentTime < reservation.end && endServiceTime > reservation.start
-//     );
-
-//     // 예약된 시간이 아니면 배열에 추가
-//     if (!isReserved && endServiceTime <= endTimeObj) {
-//       let hours = String(currentTime.getHours()).padStart(2, "0");
-//       let minutes = String(currentTime.getMinutes()).padStart(2, "0");
-//       let timeString = `${hours}:${minutes}`;
-
-//       // 현재 시간이 변경된 경우 (새로운 시간대) 새 배열에 추가
-//       if (
-//         currentHourArray.length === 0 ||
-//         currentHourArray[0].split(":")[0] === hours
-//       ) {
-//         currentHourArray.push(timeString);
-//       } else {
-//         timeIntervals.push(currentHourArray);
-//         currentHourArray = [timeString];
-//       }
-//     }
-
-//     // 간격만큼 시간 증가
-//     currentTime.setMinutes(currentTime.getMinutes() + intervalMinutes);
-//   }
-
-//   // 마지막 시간대 배열을 추가
-//   if (currentHourArray.length > 0) {
-//     timeIntervals.push(currentHourArray);
-//   }
-//   // console.log(timeIntervals);
-//   return timeIntervals;
-// }
-
 function scrollDown() {
   window.scrollBy({
     top: 500, // 스크롤할 픽셀 수
@@ -182,125 +113,45 @@ function scrollDown() {
 }
 
 // timeInfo => 해당날짜, 가게시작시간, 가게종료시간, 선택한 시술 시간, 예약시간간격, 해당날짜 예약정보
-function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
+function ReservationForm({
+  timeInfo,
+  chosenTime,
+  setChosenTime,
+  reservationInfo,
+}) {
   const [chosenHour, setChosenHour] = useState(null);
   const [isHourChosen, setIsHourChosen] = useState(false);
   const [isTimeChosen, setIsTimeChosen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [inputRequest, setInputRequest] = useState("");
 
-  const data = {
-    employeeAbsences: [
-      {
-        startDate: "2024-08-12T00:00:00",
-        endDate: "2024-08-15T23:59:59",
-      },
-    ],
-    employeeWorkingInfos: [
-      {
-        day: "FRI",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "MON",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "SAT",
-        isHoliday: true,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "SUN",
-        isHoliday: true,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "THU",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "TUE",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "WED",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-    ],
-    shopAbsences: [
-      {
-        startDate: "2024-08-15T00:00:00",
-        endDate: "2024-08-19T09:45:00 ",
-      },
-    ],
-    shopWorkingInfos: [
-      {
-        day: "FRI",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "MON",
-        isHoliday: false,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "SAT",
-        isHoliday: true,
-        openAt: "09:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "SUN",
-        isHoliday: true,
-        openAt: "12:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "THU",
-        isHoliday: false,
-        openAt: "10:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "TUE",
-        isHoliday: false,
-        openAt: "11:00:00",
-        closeAt: "18:00:00",
-      },
-      {
-        day: "WED",
-        isHoliday: false,
-        openAt: "10:00:00",
-        closeAt: "18:00:00",
-      },
-    ],
-    reservations: [
-      {
-        startDateTime: "2024-08-19T15:30:00",
-        timeTaken: 30,
-      },
-      {
-        startDateTime: "2024-08-19T12:00:00",
-        timeTaken: 150,
-      },
-    ],
-  };
+  console.log(timeInfo);
+  console.log(chosenTime);
+
+  async function submitReservation() {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/reservations`,
+        {
+          ...reservationInfo,
+          startDateTime: formatDateTime(timeInfo.date + " " + chosenTime),
+          reservationRequest: RequestInput.current,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Access: `${localStorage.getItem("access")}`,
+          },
+        }
+      );
+      console.log(response);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
 
   const RequestInput = useRef("");
   function calculateAvailableSlots(
@@ -309,26 +160,25 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
     intervalMinutes,
     serviceDuration
   ) {
-    const {
-      employeeAbsences,
-      employeeWorkingInfos,
-      shopAbsences,
-      shopWorkingInfos,
-      reservations,
-    } = data;
+    const employeeAbsences = data.employeeAbsences;
+    const employeeWorkingInfos = data.employeeWorkingInfos;
+    const shopAbsences = data.shopAbsences;
+    const shopWorkingInfos = data.shopWorkingInfos;
+    const reservations = data.reservations;
 
     const targetDay = new Date(targetDate)
       .toLocaleString("en-US", { weekday: "short" })
       .toUpperCase();
 
-    const employeeWorkingInfo = employeeWorkingInfos.find(
+    const employeeWorkingInfo = employeeWorkingInfos?.find(
       (info) => info.day === targetDay
     );
-    const shopWorkingInfo = shopWorkingInfos.find(
+    const shopWorkingInfo = shopWorkingInfos?.find(
       (info) => info.day === targetDay
     );
 
-    if (!employeeWorkingInfo || !shopWorkingInfo) return []; // No working info available for the day
+    //해당 요일에 근무가 없으면 빈리스트
+    if (!employeeWorkingInfo || !shopWorkingInfo) return [];
 
     const employeeStart = new Date(
       `${targetDate}T${employeeWorkingInfo.openAt}`
@@ -352,9 +202,10 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
     };
 
     if (isDateInAbsences(employeeAbsences) || isDateInAbsences(shopAbsences)) {
-      return []; // Entire day is not available due to absences
+      return [];
     }
 
+    // 예약가능 시간들 계산
     function generateTimeSlots(start, end, interval) {
       const slots = [];
       let currentTime = new Date(start);
@@ -388,7 +239,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
       });
     });
 
-    // Group slots by hour and return as a 2D array
+    // 시간별 2차원 리스트로 출력하기
     const output = [];
 
     finalSlots.forEach((slot) => {
@@ -410,7 +261,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
   let idCount = 1;
 
   const availableSlots = calculateAvailableSlots(
-    data,
+    timeInfo.schedulerData,
     timeInfo.date,
     timeInfo.intervalMinutes,
     timeInfo.serviceDuration
@@ -427,6 +278,9 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
       }, 100);
     }
   }
+  function formatDateTime(dateTimeStr) {
+    return dateTimeStr.replace(" ", "T") + ":00";
+  }
 
   function handleChosenTime(item) {
     setChosenTime(item);
@@ -441,13 +295,18 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
   //useMemo 사용 (불필요 계산 방지)
   const intervals = useMemo(() => {
     const result = calculateAvailableSlots(
-      data,
+      timeInfo.schedulerData,
       timeInfo.date,
       timeInfo.intervalMinutes,
       timeInfo.serviceDuration
     );
     return result;
-  }, [data, timeInfo.date, timeInfo.intervalMinutes, timeInfo.serviceDuration]);
+  }, [
+    timeInfo.schedulerData,
+    timeInfo.date,
+    timeInfo.intervalMinutes,
+    timeInfo.serviceDuration,
+  ]);
 
   useEffect(() => {
     setChosenHour(null);
@@ -464,6 +323,7 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
             <CheckReservation
               setIsConfirmed={setIsConfirmed}
               setIsModalOpen={setIsModalOpen}
+              submitReservation={submitReservation}
             ></CheckReservation>
           ) : (
             <ConfirmReservation
@@ -552,8 +412,14 @@ function ReservationForm({ timeInfo, chosenTime, setChosenTime }) {
                 title: "예약하기",
                 onClick: () => {
                   if (isTimeChosen) {
-                    console.log(RequestInput);
                     setIsModalOpen(true);
+                    console.log({
+                      ...reservationInfo,
+                      startDateTime: formatDateTime(
+                        timeInfo.date + " " + chosenTime
+                      ),
+                      reservationRequest: RequestInput.current,
+                    });
                   } else {
                     window.alert("예약 시간을 선택해주세요");
                   }

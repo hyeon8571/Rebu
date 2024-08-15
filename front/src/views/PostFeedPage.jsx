@@ -43,39 +43,35 @@ export default function PostFeedPage() {
       endpointURL = "/api/feeds/shop";
     }
 
-    console.log({
-      images: feed.images,
-      content: feed.content,
-      hashtags: feed.hashtags,
+    const formData = new FormData();
+    formData.append("content", feed.content);
+    formData.append("hashtags", JSON.stringify(feed.hashtags));
+
+    // Assuming feed.images is an array of files
+    feed.images.forEach((image, index) => {
+      formData.append(`images[${index}]`, image);
     });
-    await axios
-      .post(
-        `${BASE_URL}${endpointURL}`,
-        {
-          images: feed.images,
-          content: feed.content,
-          hashtags: feed.hashtags,
+
+    console.log(formData);
+
+    try {
+      const response = await axios.post(`${BASE_URL}${endpointURL}`, formData, {
+        headers: {
+          Accept: "multipart/form-data",
+          Access: `${localStorage.getItem("access")}`,
         },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Access: `${localStorage.getItem("access")}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        console.log(feed.images);
-        setIsModalOpen(true);
-        setSubmitLoading(false);
-        setIsSubmitOk("OK");
-      })
-      .catch((error) => {
-        console.error("Error submitting the Feed:", error);
-        setSubmitLoading(false);
-        setIsSubmitOk("FAIL");
-        return false;
       });
+
+      console.log(response);
+      setIsModalOpen(true);
+      setSubmitLoading(false);
+      setIsSubmitOk("OK");
+    } catch (error) {
+      console.error("Error submitting the Feed:", error);
+      setSubmitLoading(false);
+      setIsSubmitOk("FAIL");
+      return false;
+    }
   }
 
   function ValidationFeed() {

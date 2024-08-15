@@ -6,8 +6,8 @@ import ReservationCard from "./ReservationCard";
 import ModalPortal from "../../util/ModalPortal";
 import CheckCancelModal from "./CheckCancelModal";
 import ModalNoBackNoExit from "../common/ModalNoBackNoExit";
-import apiClient from "../../util/apiClient";
 import { BASE_URL } from "../../util/commonFunction";
+import axios from "axios";
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -294,11 +294,16 @@ export default function MyReservationCalendar() {
 
   const nickname = localStorage.getItem("nickname");
   const type = localStorage.getItem("type");
-  console.log(nickname + type);
   useEffect(() => {
-    apiClient
+    axios
       .get(
-        `${BASE_URL}/api/reservations/profiles/rebu1?start-date=2023-01-01&end-date=2024-12-31`
+        `${BASE_URL}/api/reservations/profiles/${nickname}?start-date=2023-01-01&end-date=2024-12-31`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            access: `${localStorage.getItem("access")}`,
+          },
+        }
       )
       .then((response) => {
         console.log(response);

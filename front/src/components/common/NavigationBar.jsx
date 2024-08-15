@@ -10,8 +10,7 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ModalPortal from "../../util/ModalPortal";
 import SearchModal from "../Search/SearchModal";
-import apiClient from "../../util/apiClient";
-import { BASE_URL } from "../../util/commonFunction";
+
 import { BASE_IMG_URL } from "../../util/commonFunction";
 import Img from "../../assets/images/img.webp";
 
@@ -43,8 +42,10 @@ const SearchDiv = styled.div`
   transition: background-color 0.3s ease-in-out;
   border-radius: 1rem;
 
-  color: ${(props) =>
-    props.isModalOpen ? props.theme.primary : "rgb(85, 26, 139)"};
+  &.active {
+    color: ${(props) => props.theme.primary};
+  }
+
   background-color: ${(props) =>
     props.isModalOpen ? props.theme.body : "none"};
 `;

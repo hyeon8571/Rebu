@@ -83,10 +83,16 @@ export default function MenuTab() {
 
   const navigate = useNavigate();
   console.log(info);
+
   useEffect(() => {
     console.log(info.nickname);
     apiClient
-      .get(`${BASE_URL}/api/menus?employeeNickname=${info.nickname}`)
+      .get(`${BASE_URL}/api/menus?employeeNickname=${info.employeeNickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         setMenuData(response.data.body);
@@ -139,9 +145,9 @@ export default function MenuTab() {
                     info: {
                       ...info,
                       menuId: chosenMenu.id,
-                      ShopNickname: chosenMenu.nickname,
-                      serviceTime: chosenMenu.duration,
-                      cost: chosenMenu.cost,
+                      menuTitle: chosenMenu.title,
+                      serviceTime: chosenMenu.timeTaken,
+                      cost: chosenMenu.price,
                     },
                   },
                 });

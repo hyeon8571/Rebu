@@ -10,9 +10,8 @@ import AlertDeleteDesigner from "./AlertDeleteDesigner";
 import ButtonSmall from "../common/ButtonSmall";
 import ModalPortal from "../../util/ModalPortal";
 import { useNavigate, useParams } from "react-router-dom";
-import apiClient from "../../util/apiClient";
 import { BASE_URL } from "../../util/commonFunction";
-import Header from "../common/Header";
+import axios from "axios";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -126,8 +125,13 @@ export default function DesignerTab() {
   const { nickname } = useParams();
 
   useEffect(() => {
-    apiClient
-      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`)
+    axios
+      .get(`${BASE_URL}/api/profiles/shops/${nickname}/employees`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         setDesigners(response.data.body);
@@ -238,8 +242,7 @@ export default function DesignerTab() {
                   state: {
                     info: {
                       shopNickname: nickname,
-                      shopTitle: "싸피 헤어샵",
-                      nickname: chosenDesigner.nickname,
+                      employeeNickname: chosenDesigner.nickname,
                       workingName: chosenDesigner.workingName,
                       role: chosenDesigner.role,
                     },

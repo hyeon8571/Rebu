@@ -2,7 +2,8 @@ import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import { MdBorderColor } from "react-icons/md";
 import { useParams } from "react-router-dom";
-import apiClient from "../../util/apiClient";
+
+import axios from "axios";
 
 const keywordList = [
   {
@@ -126,8 +127,13 @@ export default function ReviewKeywordStat({ reviewNum }) {
   reviewNum = 5;
 
   useEffect(() => {
-    apiClient
-      .get(`${BASE_URL}/api/review-keywords/count?nickname=${nickname}`)
+    axios
+      .get(`${BASE_URL}/api/review-keywords/count?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+          access: `${localStorage.getItem("access")}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         const newEntity = response.data.body.map((item) => {
