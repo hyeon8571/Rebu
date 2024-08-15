@@ -14,6 +14,8 @@ import apiClient from "./util/apiClient";
 import { BASE_URL } from "./util/commonFunction";
 import axios from "axios";
 import { subscribeToAlarms, NotificationComponent } from "./features/common/alarmSlice"; //sse
+import { useSelector } from "react-redux";
+
 
 const Grid = styled.div`
   @media (min-width: 769px) {
@@ -41,11 +43,36 @@ function App() {
   const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
   const [type, setType] = useState(localStorage.getItem("type"));
   const [imageSrc, setImageSrc] = useState(localStorage.getItem("imageSrc"));
+  const { isLogin } = useSelector((state) => state.auth.isLogin); // NotificationComponent
+  const accessToken = localStorage.getItem("access"); //NotificationComponent
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
-    // 컴포넌트가 언마운트될떄(페이지가 꺼지면) 엑세스토큰 제거
+    if (localStorage.getItem("accees")) {
+      try {
+        axios
+          .post(`${BASE_URL}/api/auths/refresh`, { withCredentials: true })
+          .then((res) => {
+            console.log(res);
+            const newAccessToken = res.headers["access"];
+            localStorage.setItem("access", newAccessToken);
+
+            // 새로운 토큰으로 헤더 업데이트
+            originalRequest.headers["access"] = `${newAccessToken}`;
+
+            // 원래 요청을 다시 시도
+            return apiClient(originalRequest);
+          });
+      } catch (error) {
+        console.error("Token refresh failed:", error);
+        // 로그아웃 처리 또는 사용자에게 재로그인 요청
+        // window.location.href = '/login';
+        return Promise.reject(error);
+      }
+    }
+
+    // 컴포넌트가 언마운트될 때 (페이지가 꺼지면) 엑세스토큰 제거
     return () => {
       localStorage.removeItem("access");
     };
@@ -73,7 +100,9 @@ function App() {
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <BrowserRouter>
         <GlobalStyles />
+        {/* NotificationComponent - alarm */}
         <NotificationComponent />
+
         <Grid>
           {/* 로그인 상태에 따라 NavigationBar 또는 NavigationRail을 렌더링 */}
           {auth &&

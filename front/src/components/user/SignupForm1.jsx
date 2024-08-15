@@ -159,6 +159,7 @@ const SignupForm1 = ({
     if (formData.email && isEmailValid) {
       // if (email && isEmailValid) {
       try {
+        console.log("이메일 인증요청 purpose:", purpose);
         // 이메일 인증 API 호출
         const response = await axios({
           method: "post",
@@ -279,7 +280,8 @@ const SignupForm1 = ({
           alert("이메일 인증이 완료되었습니다.");
           setIsEmailVerified(true);
           setEmailVeriMsg("이메일 인증이 완료되었습니다.");
-        } else if (response.data.code === "이메일 인증 코드 불일치") {
+        } else if (response.data.code === "0A04") {
+          //이메일 인증 코드 불일치
           console.log("이메일 인증코드 불일치");
           setEmailVeriMsg("이메일 인증코드가 일치하지 않습니다.");
         } else {
@@ -340,6 +342,7 @@ const SignupForm1 = ({
 
   const handleNext = (event) => {
     event.preventDefault();
+    console.log("formData.email:", formData.email);
     if (
       isEmailVerified &&
       isPasswordValid &&

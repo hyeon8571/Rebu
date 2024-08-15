@@ -95,7 +95,13 @@ export default function NavigationBar({ nickname, type, profileImg }) {
             <RiCalendarScheduleLine size={ICON_SIZE} />
           </NavigationItem>
         </StyledNavLink>
-        <StyledNavLink to={`/profile/${nickname}/${type}`}>
+        {/* <StyledNavLink to={`/profile/${nickname}/${type}`}> */}
+        <StyledNavLink
+          to={{
+            pathname: `/profile/${nickname}/${type}`,
+            state: { myProfile: "yes" }, // isMyProfile=yes 전달
+          }}
+        >
           <NavigationItem>
             <ProfileSmall
               img={

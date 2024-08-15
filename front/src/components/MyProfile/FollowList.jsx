@@ -1,6 +1,8 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { follow, unfollow } from "../../features/common/followSlice";
 
 const rotateGradient = keyframes`
   0% {
@@ -120,11 +122,14 @@ const Button = styled.button`
 const FollowList = ({
   follower,
   time,
+  isMyProfile,
+  // buttonText,
   handleCloseFollowingModal,
   handleCloseFollowersModal,
 }) => {
   const online = time < 300;
   const navigate = useNavigate();
+  const [buttonText, setButtonText] = useState("");
 
   const handleProfileClick = () => {
     // '/profile' 경로로 이동하고, follower.nickname을 state로 전달
@@ -141,18 +146,93 @@ const FollowList = ({
     }
   };
 
-  const handleChat = () => {};
+  // const handleChat = () => {};
 
-  // 버튼에 표시될 이름
-  const getButtonText = (isMyProfile, follow) => {
-    if (isMyProfile === "yes" && follow.relation === "FOLLOWING") {
-      return "언팔로우";
-    } else if (isMyProfile === "yes" && follow.relation === "NONE") {
-      return "맞팔로우";
-    } else if (isMyProfile === "no" && follow.relation === "FOLLOWING") {
-      return "언팔로우";
-    } else if (isMyProfile === "no" && follow.relation === "NONE") {
-      return "팔로우";
+  const getButtonText = (isMyProfile, follower) => {
+    if (isMyProfile === "yes") {
+      // 본인의 프로필일 경우
+      if (follower.isFollow === true) {
+        return "언팔로우";
+      } else if (follower.isFollow === false) {
+        return "맞팔로우";
+      }
+    } else {
+      // 다른 사용자의 프로필일 경우
+      if (follower.isFollow === true) {
+        return "언팔로우";
+      } else if (follower.isFollow === false) {
+        return "팔로우";
+      }
+    }
+    console.log("팔로우?", isMyProfile, follower); // 기본값
+    return "팔로우?"; // 기본값
+  };
+
+  useEffect(() => {
+    const text = getButtonText(isMyProfile, follower);
+    setButtonText(text);
+  }, [isMyProfile, follower]);
+
+  // 팔로우하기 Follow API
+  const handleFollow = async () => {
+    // setLoading(true);
+    // setError(null);
+    // setSuccess(null);
+
+    try {
+      const result = await follow(follower.nickname);
+
+      if (result.success) {
+        console.log(result, "팔로우 성공");
+        // setSuccess("팔로우가 성공적으로 추가되었습니다.");
+        // setRelation("FOLLOWING");
+        // setFollowersCount((prevCount) => prevCount + 1);
+        setButtonText("언팔로우");
+      } else {
+        // setError(result.error || "팔로우 추가 실패");
+        console.log(result, "팔로우 실패");
+      }
+    } catch (error) {
+      console.log("error 발생", error);
+      // setError("알 수 없는 오류가 발생했습니다.");
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  //팔로우 취소하기 Unfollow API
+  const handleUnfollow = async () => {
+    // setLoading(true);
+    // setError(null);
+    // setSuccess(null);
+
+    try {
+      const result = await unfollow(follower.followId);
+
+      if (result.success) {
+        // setSuccess("팔로우가 취소되었습니다.");
+        console.log(result, "팔로우 취소 성공");
+        setButtonText("팔로우");
+        // setRelation("NONE");
+        // setFollowersCount((prevCount) => prevCount - 1); //팔로우 수 줄이기
+      } else {
+        // setError(result.error || "팔로우 취소 실패");
+        console.log(result, "error, 팔로우 취소 실패");
+      }
+    } catch (error) {
+      // setError("알 수 없는 오류가 발생했습니다.");
+      console.log("error 발생", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  // 버튼 클릭 시 실행될 핸들러 함수
+  const handleClick = () => {
+    if (buttonText === "팔로우" || buttonText === "맞팔로우") {
+      handleFollow(); // 팔로우 함수 실행
+    } else if (buttonText === "언팔로우") {
+      handleUnfollow(); // 언팔로우 함수 실행
     }
   };
 
@@ -188,7 +268,7 @@ const FollowList = ({
         <Username onClick={handleProfileClick}>{follower.nickname}</Username>
         <Description>{follower.introduction}</Description>
       </Info>
-      <Button>{getButtonText(isMyProfile, follow)}</Button>
+      <Button onClick={handleClick}>{buttonText}</Button>
     </FollowerContainer>
   );
 };

@@ -36,7 +36,16 @@ const Signup = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/members`, formData);
-      navigate("/login", { replace: true });
+      console.log("Signup formData:", formData);
+      console.log("Signup response:", response);
+      if (response.data.code === "1B00") {
+        console.log("회원가입 성공");
+        navigate("/login", { replace: true });
+      } else if (response.data.code === "0B09") {
+        console.log("이메일 중복검사 재실시");
+      } else {
+        console.log("회원가입 실패: ", response.data.code);
+      }
     } catch (error) {
       console.error("Signup error:", error);
       alert("회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.");

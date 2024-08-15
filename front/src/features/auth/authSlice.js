@@ -8,6 +8,9 @@ const initialState = {
   nickname: "",
   type: "COMMON",
   imageSrc: "",
+  access: "", // 추가
+  alarmConnection: false, // 추가
+  alarms: [], //알람 response를 저장할 배열
   profile: {
     //profile 나중에 삭제하기
     favoritesCnt: 0,
@@ -28,18 +31,22 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess(state, action) {
-      const { nickname, type, imageSrc } = action.payload;
+      // const { nickname, type, imageSrc } = action.payload;
+      const { nickname, type, imageSrc, access } = action.payload; // 수정
       state.isLogin = true;
       state.nickname = nickname;
       state.type = type;
       state.imageSrc = imageSrc;
+      state.access = access; // 추가
     },
     logout(state) {
+      // Object.assign(state, initialState);
       state.isLogin = false;
       state.nickname = "";
       state.type = "COMMON";
       state.imageSrc = "";
       state.profile = initialState.profile;
+      state.access = ""; // 추가
       // localStorage 지우기
       localStorage.removeItem("access");
       localStorage.removeItem("nickname");
@@ -51,10 +58,23 @@ const authSlice = createSlice({
     setProfile(state, action) {
       state.profile = { ...state.profile, ...action.payload };
     },
+    //알람 리듀서
+    setAlarmConnection(state, action) {
+      state.alarmConnection = action.payload;
+    },
+    addAlarm: (state, action) => {
+      state.alarms.push(action.payload);
+    },
+    setAlarms: (state, action) => {
+      state.alarms = action.payload;
+    },
+    clearAlarms: (state) => {
+      state.alarms = [];
+    },
   },
 });
 
-export const { loginSuccess, logout, setProfile } = authSlice.actions;
+export const { loginSuccess, logout, setProfile, setAlarmConnection, addAlarm, setAlarms, clearAlarms } = authSlice.actions;
 
 export const login = (email, password, navLogin) => async (dispatch) => {
   try {
@@ -83,7 +103,7 @@ export const login = (email, password, navLogin) => async (dispatch) => {
       // const profileResult = await dispatch(getProfile(nickname));
       // if (profileResult.success) {
 
-      dispatch(loginSuccess({ nickname, type, imageSrc }));
+      dispatch(loginSuccess({ nickname, type, imageSrc, access }));
       console.log("타입, 닉네임, 프로필이미지", type, nickname, imageSrc);
       return { success: true };
     } else {
@@ -142,7 +162,7 @@ export const switchProfile = (nickname) => async (dispatch) => {
       console.log(switchProfile, response.data);
       localStorage.setItem("access", response.headers["access"]); // 기존에 있던 access 토큰을 새로운 access 토큰으로 교체
       const { nickname, type, imageSrc } = response.data.body;
-      dispatch(loginSuccess({ nickname, type, imageSrc }));
+      dispatch(loginSuccess({ nickname, type, imageSrc, access }));
       // localStorage에 저장
       localStorage.setItem("nickname", nickname);
       localStorage.setItem("type", type);
