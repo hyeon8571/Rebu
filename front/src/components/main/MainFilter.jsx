@@ -118,10 +118,62 @@ const MainFilter = ({
   setPeriod,
   feed,
   setFeed,
+  feedKey,
+  setFeedKey,
 }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selected, setSelected] = useState(1);
 
-  const categoryButtons = ["헤어", "네일", "에스테틱", "타투", "애견미용"];
+  useEffect(() => {
+    const access = localStorage.getItem("access");
+    axios
+      .get(`${BASE_URL}/api/feeds`, {
+        params: {
+          lat: currentLocation.latitude,
+          lng: currentLocation.longitude,
+          distance: distance,
+          category: category,
+          period: period,
+          sortedLike: sortedLike,
+        },
+        headers: {
+          access: access,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        console.log("피드 데이터를 조회했습니다");
+        console.log(response.data.body);
+        setFeed(response.data.body);
+      })
+      .catch((err) => {
+        console.log("피드 데이터를 찾지 못했습니다");
+      });
+  }, [selected]);
+
+  const categoryButtons = [
+    {
+      id: 1,
+      content: "헤어",
+    },
+    {
+      id: 2,
+      content: "네일",
+    },
+    {
+      id: 3,
+      content: "에스테틱",
+    },
+    {
+      id: 4,
+      content: "타투",
+    },
+    {
+      id: 5,
+      content: "애견미용",
+    },
+  ];
 
   const handleFilterOpen = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -130,50 +182,25 @@ const MainFilter = ({
   const handleButtonClick = (button) => {
     let cate = "";
 
-    if (button === "헤어") {
+    if (button.content === "헤어") {
       cate = "HAIR";
-    } else if (button === "네일") {
+    } else if (button.content === "네일") {
       cate = "NAIL";
-    } else if (button === "에스테틱") {
+    } else if (button.content === "에스테틱") {
       cate = "AESTHETICS";
-    } else if (button === "타투") {
+    } else if (button.content === "타투") {
       cate = "TATTOO";
-    } else if (button === "애견미용") {
+    } else if (button.content === "애견미용") {
       cate = "PET";
     }
 
+    setSelected(button.id);
     if (category === cate) {
       // 이미 선택된 카테고리를 다시 클릭하면 해제
       setCategory("");
     } else {
       // 새로운 카테고리를 선택하면 그 카테고리로 설정
       setCategory(cate);
-
-      const access = localStorage.getItem("access");
-      axios
-        .get(`${BASE_URL}/api/feeds`, {
-          params: {
-            lat: currentLocation.latitude,
-            lng: currentLocation.longitude,
-            distance: distance,
-            category: cate, // 변경된 category를 사용
-            period: period,
-            sortedLike: sortedLike,
-          },
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          console.log("피드 데이터를 조회했습니다");
-          console.log(response.data.body);
-          setFeed(response.data.body);
-        })
-        .catch((err) => {
-          console.log("피드 데이터를 찾지 못했습니다");
-        });
     }
   };
 
@@ -207,6 +234,8 @@ const MainFilter = ({
             feed={feed}
             setFeed={setFeed}
             closeButton={setIsFilterOpen}
+            feedKey={feedKey}
+            setFeedKey={setFeedKey}
           />
         )}
       </FilterList>
@@ -214,22 +243,11 @@ const MainFilter = ({
       <SecondContainer>
         {categoryButtons.map((button) => (
           <Button
-            key={button}
-            selected={
-              category ===
-              (button === "헤어"
-                ? "HAIR"
-                : button === "네일"
-                ? "NAIL"
-                : button === "에스테틱"
-                ? "AESTHETICS"
-                : button === "타투"
-                ? "TATTOO"
-                : "PET")
-            }
+            key={button.id}
+            selected={selected === button.id}
             onClick={() => handleButtonClick(button)}
           >
-            {button}
+            {button.content}
           </Button>
         ))}
       </SecondContainer>

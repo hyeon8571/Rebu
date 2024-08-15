@@ -45,7 +45,7 @@ export default function PostFeedPage() {
 
     const formData = new FormData();
     formData.append("content", feed.content);
-    formData.append("hashtags", JSON.stringify(feed.hashtags));
+    formData.append("hashtags", feed.hashtags);
 
     // Assuming feed.images is an array of files
     feed.images.forEach((image, index) => {
@@ -57,7 +57,7 @@ export default function PostFeedPage() {
     try {
       const response = await axios.post(`${BASE_URL}${endpointURL}`, formData, {
         headers: {
-          Accept: "multipart/form-data",
+          "Content-Type": "multipart/form-data",
           Access: `${localStorage.getItem("access")}`,
         },
       });

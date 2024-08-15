@@ -311,7 +311,7 @@ const timeSince = (date) => {
   return `${Math.floor(years)}년 전`;
 };
 
-const PostDetail = ({ information, currentUser, loginUser, type }) => {
+const PostDetail = ({ information = {}, currentUser, loginUser, type }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const updatedPost = location.state?.post;
@@ -327,7 +327,7 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
     Array(information.length).fill(false)
   );
   const [posts, setPosts] = useState(
-    information.map((post) => ({ ...post, currentIndex: 0 }))
+    information ? information.map((post) => ({ ...post, currentIndex: 0 })) : {}
   );
   const [expandedComments, setExpandedComments] = useState(
     Array(information.length).fill(false)
@@ -426,52 +426,57 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
   }, []);
 
   const handleScrapToggle = useCallback((feedId, index) => {
-
     // 스크랩 api 호출
-    const access = localStorage.getItem('access');
+    const access = localStorage.getItem("access");
 
     const isCurrentScraped = posts[index].isScraped;
 
     // 스크랩 취소
     if (isCurrentScraped) {
-      axios.delete(`${BASE_URL}/api/scraps/${feedId}`, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("스크랩 취소");
-        setPosts((prevPosts) => {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[index].isScraped = false;
-          return updatedPosts;
+      axios
+        .delete(`${BASE_URL}/api/scraps/${feedId}`, {
+          headers: {
+            access: access,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("스크랩 취소");
+          setPosts((prevPosts) => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].isScraped = false;
+            return updatedPosts;
+          });
+        })
+        .catch((error) => {
+          console.log("스크랩 취소 오류 발생:", error);
         });
-      })
-      .catch(error => {
-        console.log("스크랩 취소 오류 발생:", error);
-      });
     } // 스크랩
     else {
-      axios.post(`${BASE_URL}/api/scraps`, {
-        feedId: feedId,
-      }, {
-        headers: {
-          "access": access,
-          "Content-Type": "application/json",
-        }
-      })
-      .then(response => {
-        console.log("스크랩 성공");
-        setPosts((prevPosts) => {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[index].isScraped = true;
-          return updatedPosts;
+      axios
+        .post(
+          `${BASE_URL}/api/scraps`,
+          {
+            feedId: feedId,
+          },
+          {
+            headers: {
+              access: access,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("스크랩 성공");
+          setPosts((prevPosts) => {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[index].isScraped = true;
+            return updatedPosts;
+          });
+        })
+        .catch((error) => {
+          console.log("스크랩 오류 발생:", error);
         });
-      })
-      .catch(error => {
-        console.log("스크랩 오류 발생:", error);
-      });
     }
 
     setPosts((prevPosts) => {
@@ -562,183 +567,190 @@ const PostDetail = ({ information, currentUser, loginUser, type }) => {
 
   return (
     <>
-      {posts?.map((item, index) => (
-        <PostWrapper key={index}>
-          <PostHeader>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {item.writer.profileImageSrc === null ? (
-                <ProfileImage src={nullImg} alt="Porfile" />
-              ) : (
-                <ProfileImage
-                  src={
-                    "https://www.rebu.kro.kr/data/" +
-                    item.writer.profileImageSrc
-                  }
-                  alt="Profile"
-                />
-              )}
-
-              <ProfileDetails>
-                <Username>{item.writer.nickname}</Username>
-                <Location>
-                  {item.shop && <LocationIcon />}
-                  <ShopName
-                    onClick={() => handleShopNameClick(item.shop?.shopNickname)}
-                  >
-                    {item.shop?.shopName}
-                  </ShopName>
-                </Location>
-              </ProfileDetails>
-            </div>
-
-            <div style={{ position: "relative" }}>
-              {item.writer.nickname === loginUser ? (
-                <IconBox onClick={() => handleMoreOptionToggle(index)}>
-                  <FiMoreVertical />
-                </IconBox>
-              ) : (
-                <IconBox onClick={() => handleScrapToggle(item.feed.feedId, index)}>
-                  {item.isScraped ? <FaBookmark /> : <FaRegBookmark />}
-                </IconBox>
-              )}
-              <DropdownMenu
-                ref={(el) => (dropdownRefs.current[index] = el)}
-                show={showDropdown[index]}
-              >
-                <DropdownItem onClick={() => ModifyModalOpen(item.feed.feedId)}>
-                  게시글 수정
-                </DropdownItem>
-                {postModifyModalOpen && selectedPost && (
-                  <ModalPortal>
-                    <PostModifyModal
-                      postModifyModalOpen={postModifyModalOpen}
-                      closeModal={closeModal}
-                      post={selectedPost}
-                      currentUser={currentUser}
-                      index={index}
-                      feedId={item.feed.feedId}
-                      onSave={handlePostSave}
-                    />
-                  </ModalPortal>
-                )}
-                <hr style={{ margin: "5px 0px" }} />
-                <DropdownItem
-                  onClick={() => postDeleteModalOpen(item.feed.feedId)}
-                >
-                  게시글 삭제
-                </DropdownItem>
-                {PostDeleteModalOpen && (
-                  <ModalPortal>
-                    <PostDelete
-                      nickname={loginUser}
-                      PostDeleteModalOpen={PostDeleteModalOpen}
-                      closeModal={closeModal}
-                      postId={postId}
-                      type={type}
-                      onDelete={() => handleDelete(postId)}
-                    />
-                  </ModalPortal>
-                )}
-              </DropdownMenu>
-            </div>
-          </PostHeader>
-
-          <SlideImg>
-            <SlideBack onClick={() => prevSlide(index)} />
-            <SlideFront onClick={() => nextSlide(index)} />
-            {item.feed.imageSrcs?.map((slide, imgIndex) => (
-              <PostImage
-                key={imgIndex}
-                src={"https://www.rebu.kro.kr/data/" + slide}
-                alt={`Slide ${imgIndex}`}
-                style={{
-                  display: imgIndex === item.currentIndex ? "block" : "none",
-                }}
-              />
-            ))}
-            <DotsWrapper>
-              {item.feed.imageSrcs?.map((_, imgIndex) => (
-                <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
-              ))}
-            </DotsWrapper>
-          </SlideImg>
-
-          <PostActions>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <ActionIcon
-                onClick={() => handleLikeToggle(item.feed.feedId, index)}
-              >
-                {item.isLiked ? (
-                  <FaHeart style={{ color: "red" }} />
+      {posts &&
+        posts.map((item, index) => (
+          <PostWrapper key={index}>
+            <PostHeader>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {item.writer.profileImageSrc === null ? (
+                  <ProfileImage src={nullImg} alt="Porfile" />
                 ) : (
-                  <FaRegHeart />
-                )}
-              </ActionIcon>
-              <ActionIcon>
-                {isCommnetActive[index] ? (
-                  <CommentIcon onClick={() => toggleComments(index)} />
-                ) : (
-                  <FaRegComment
-                    onClick={() => {
-                      toggleComments(index);
-                      scrollDown();
-                    }}
+                  <ProfileImage
+                    src={
+                      "https://www.rebu.kro.kr/data/" +
+                      item.writer.profileImageSrc
+                    }
+                    alt="Profile"
                   />
                 )}
-              </ActionIcon>
-              <ActionIcon>
-                <ShareIcon />
-              </ActionIcon>
-            </div>
 
-            {item.feed.rating ? (
-              <Rating>
-                <FaRegStar />
-                &nbsp;
-                <RatingText>{item.feed.rating}</RatingText>
-              </Rating>
-            ) : (
-              ""
-            )}
-          </PostActions>
-          <Likes>좋아요 {item.feed.likeCnt}개</Likes>
-          <PostDescription>
-            {updatedPost &&
-            modifyPostId === index &&
-            item.writer.nickname === loginUser
-              ? updatedPost.feed.content
-              : item.feed.content}
-          </PostDescription>
-          <HashtagContainer>
-            {item.feed.hashtags?.map((hashtag) => (
-              <PostHashtag>#{hashtag}</PostHashtag>
-            ))}
-          </HashtagContainer>
-          <BottomWrapper>
-            <CommentText
-              onClick={() => {
-                toggleComments(index);
-                scrollDown();
-              }}
-            >
-              댓글 {item.feed.commentCnt}개
-            </CommentText>
-            <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>
-          </BottomWrapper>
-          <CommentList expanded={expandedComments[index]}>
-            {expandedComments[index] && (
-              <PostComment
-                currentUser={currentUser}
-                information={information}
-                posts={posts}
-                setPosts={setPosts}
-                index={index}
-                feedId={item.feed.feedId}
-              />
-            )}
-          </CommentList>
-        </PostWrapper>
-      ))}
+                <ProfileDetails>
+                  <Username>{item.writer.nickname}</Username>
+                  <Location>
+                    {item.shop && <LocationIcon />}
+                    <ShopName
+                      onClick={() =>
+                        handleShopNameClick(item.shop?.shopNickname)
+                      }
+                    >
+                      {item.shop?.shopName}
+                    </ShopName>
+                  </Location>
+                </ProfileDetails>
+              </div>
+
+              <div style={{ position: "relative" }}>
+                {item.writer.nickname === loginUser ? (
+                  <IconBox onClick={() => handleMoreOptionToggle(index)}>
+                    <FiMoreVertical />
+                  </IconBox>
+                ) : (
+                  <IconBox
+                    onClick={() => handleScrapToggle(item.feed.feedId, index)}
+                  >
+                    {item.isScraped ? <FaBookmark /> : <FaRegBookmark />}
+                  </IconBox>
+                )}
+                <DropdownMenu
+                  ref={(el) => (dropdownRefs.current[index] = el)}
+                  show={showDropdown[index]}
+                >
+                  <DropdownItem
+                    onClick={() => ModifyModalOpen(item.feed.feedId)}
+                  >
+                    게시글 수정
+                  </DropdownItem>
+                  {postModifyModalOpen && selectedPost && (
+                    <ModalPortal>
+                      <PostModifyModal
+                        postModifyModalOpen={postModifyModalOpen}
+                        closeModal={closeModal}
+                        post={selectedPost}
+                        currentUser={currentUser}
+                        index={index}
+                        feedId={item.feed.feedId}
+                        onSave={handlePostSave}
+                      />
+                    </ModalPortal>
+                  )}
+                  <hr style={{ margin: "5px 0px" }} />
+                  <DropdownItem
+                    onClick={() => postDeleteModalOpen(item.feed.feedId)}
+                  >
+                    게시글 삭제
+                  </DropdownItem>
+                  {PostDeleteModalOpen && (
+                    <ModalPortal>
+                      <PostDelete
+                        nickname={loginUser}
+                        PostDeleteModalOpen={PostDeleteModalOpen}
+                        closeModal={closeModal}
+                        postId={postId}
+                        type={type}
+                        onDelete={() => handleDelete(postId)}
+                      />
+                    </ModalPortal>
+                  )}
+                </DropdownMenu>
+              </div>
+            </PostHeader>
+
+            <SlideImg>
+              <SlideBack onClick={() => prevSlide(index)} />
+              <SlideFront onClick={() => nextSlide(index)} />
+              {item.feed.imageSrcs?.map((slide, imgIndex) => (
+                <PostImage
+                  key={imgIndex}
+                  src={"https://www.rebu.kro.kr/data/" + slide}
+                  alt={`Slide ${imgIndex}`}
+                  style={{
+                    display: imgIndex === item.currentIndex ? "block" : "none",
+                  }}
+                />
+              ))}
+              <DotsWrapper>
+                {item.feed.imageSrcs?.map((_, imgIndex) => (
+                  <Dot key={imgIndex} active={imgIndex === item.currentIndex} />
+                ))}
+              </DotsWrapper>
+            </SlideImg>
+
+            <PostActions>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ActionIcon
+                  onClick={() => handleLikeToggle(item.feed.feedId, index)}
+                >
+                  {item.isLiked ? (
+                    <FaHeart style={{ color: "red" }} />
+                  ) : (
+                    <FaRegHeart />
+                  )}
+                </ActionIcon>
+                <ActionIcon>
+                  {isCommnetActive[index] ? (
+                    <CommentIcon onClick={() => toggleComments(index)} />
+                  ) : (
+                    <FaRegComment
+                      onClick={() => {
+                        toggleComments(index);
+                        scrollDown();
+                      }}
+                    />
+                  )}
+                </ActionIcon>
+                <ActionIcon>
+                  <ShareIcon />
+                </ActionIcon>
+              </div>
+
+              {item.feed.rating ? (
+                <Rating>
+                  <FaRegStar />
+                  &nbsp;
+                  <RatingText>{item.feed.rating}</RatingText>
+                </Rating>
+              ) : (
+                ""
+              )}
+            </PostActions>
+            <Likes>좋아요 {item.feed.likeCnt}개</Likes>
+            <PostDescription>
+              {updatedPost &&
+              modifyPostId === index &&
+              item.writer.nickname === loginUser
+                ? updatedPost.feed.content
+                : item.feed.content}
+            </PostDescription>
+            <HashtagContainer>
+              {item.feed.hashtags.map((hashtag) => (
+                <PostHashtag>#{hashtag}</PostHashtag>
+              ))}
+            </HashtagContainer>
+            <BottomWrapper>
+              <CommentText
+                onClick={() => {
+                  toggleComments(index);
+                  scrollDown();
+                }}
+              >
+                댓글 {item.feed.commentCnt}개
+              </CommentText>
+              <PostTime>{timeSince(new Date(item.feed.createAt))}</PostTime>
+            </BottomWrapper>
+            <CommentList expanded={expandedComments[index]}>
+              {expandedComments[index] && (
+                <PostComment
+                  currentUser={currentUser}
+                  information={information}
+                  posts={posts}
+                  setPosts={setPosts}
+                  index={index}
+                  feedId={item.feed.feedId}
+                />
+              )}
+            </CommentList>
+          </PostWrapper>
+        ))}
     </>
   );
 };

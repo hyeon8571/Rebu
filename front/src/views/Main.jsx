@@ -27,10 +27,11 @@ function Main({ theme, toggleTheme }) {
   const [distance, setDistance] = useState(5);
   const [period, setPeriod] = useState("");
   const [sortedLike, setSortedLike] = useState(false);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("HAIR");
   const [alarmdata, setAlarmdata] = useState([]);
   const [alarmCount, setAlarmCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState([]);
+  const [feedKey, setFeedKey] = useState(0);
   const dispatch = useDispatch();
   const nickname = localStorage.getItem("nickname");
   const type = localStorage.getItem("type");
@@ -87,50 +88,19 @@ function Main({ theme, toggleTheme }) {
     }
   }, []);
 
-  // 전체 피드 조회
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-    if (currentLocation.longitude) {
-      axios
-        .get(`${BASE_URL}/api/feeds`, {
-          params: {
-            lat: currentLocation.latitude,
-            lng: currentLocation.longitude,
-            distance: distance,
-            category: category,
-            period: period,
-            sortedLike: sortedLike,
-          },
-          headers: {
-            access: access,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          console.log("피드 데이터를 조회했습니다");
-          console.log(response.data.body);
-          setFeed(response.data.body);
-        })
-        .catch((err) => {
-          console.log("피드 데이터를 찾지 못했습니다");
-        });
-    }
-  }, [currentLocation]);
-
-  useEffect(() => {
-    fetch("/mockdata/alarmdata.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const alarm =
-          data &&
-          data.body.filter(
-            (alarm) => alarm.receiverNickname === loginUser.nickname
-          );
-        setAlarmdata(alarm || data.body);
-        setAlarmCount(alarm ? alarm.length : 0);
-      });
-  }, [feed]);
+  // useEffect(() => {
+  //   fetch("/mockdata/alarmdata.json")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const alarm =
+  //         data &&
+  //         data.body.filter(
+  //           (alarm) => alarm.receiverNickname === loginUser.nickname
+  //         );
+  //       setAlarmdata(alarm || data.body);
+  //       setAlarmCount(alarm ? alarm.length : 0);
+  //     });
+  // }, [feed]);
 
   // useEffect(() => {
   //   const initializeAlarms = async () => {
@@ -172,12 +142,23 @@ function Main({ theme, toggleTheme }) {
         setPeriod={setPeriod}
         feed={feed}
         setFeed={setFeed}
+        feedKey={feedKey}
+        setFeedKey={setFeedKey}
       />
       <MainFeed
         information={feed}
         currentUser={profile}
         loginUser={nickname}
         type={type}
+        feed={feed}
+        setFeed={setFeed}
+        feedKey={feedKey}
+        setFeedKey={setFeedKey}
+        currentLocation={currentLocation}
+        category={category}
+        distance={distance}
+        sortedLike={sortedLike}
+        period={period}
       />
     </Wrapper>
   );
