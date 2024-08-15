@@ -246,7 +246,7 @@ public class ProfileService {
     }
 
     private void resetToken(String nickname, String type, HttpServletResponse response) {
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
+        String newAccess = JWTUtil.createJWT("access", nickname, type, 86400000L);
         String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
 
         redisService.setDataExpire("Refresh:" + nickname, newRefresh, 86400000L);
