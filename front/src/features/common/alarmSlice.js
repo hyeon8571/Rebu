@@ -6,7 +6,7 @@ import { addAlarm, setAlarmConnection } from '../auth/authSlice';
 
 
 const MAX_RETRY_COUNT = 5;
-const RETRY_INTERVAL = 5000;
+const INITIAL_RETRY_DELAY = 1000;
 const MAX_RETRY_DELAY = 30000;
 
 
