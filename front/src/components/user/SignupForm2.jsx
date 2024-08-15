@@ -282,7 +282,8 @@ const SignupForm2 = ({
     if (validateForm()) {
       try {
         await parentHandleSubmit();
-        navigate("/signup-completed"); // SignupComp 페이지로 이동
+        alert("회원가입이 완료되었습니다.");
+        navigate("/login"); // 로그인 페이지로 이동
       } catch (error) {
         console.error("Form submission error:", error);
         // 에러 처리 로직 추가 필요!
