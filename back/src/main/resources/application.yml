@@ -17,13 +17,15 @@ spring:
   #      mode: always
   jpa:
     defer-datasource-initialization: true
+    open-in-view: false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        highlight_sql: true
+  #      show_sql: true
+  #      format_sql: true
+  #      highlight_sql: true
+        leak-detection-threshold: 10000
         default_batch_fetch_size: 1000
   servlet:
     multipart:

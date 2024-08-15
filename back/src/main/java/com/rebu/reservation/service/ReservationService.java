@@ -58,6 +58,7 @@ public class ReservationService {
     public List<ReservationByProfileDto> readProfileReservations(ReservationReadByProfileDto dto) {
         Profile profile = profileRepository.findByNickname(dto.getNickname()).orElseThrow(ProfileNotFoundException::new);
         List<ReservationAndReviewDto> reservationAndReviews = reservationRepository.findByProfileAndStartDateTimeBetweenUsingFetchJoinAll(profile, dto.getStartDate(), dto.getEndDate());
+        reservationAndReviews.sort((o1, o2) -> o2.getReservation().getStartDateTime().compareTo(o1.getReservation().getStartDateTime()));
         return ListUtils.applyFunctionToElements(reservationAndReviews, ReservationByProfileDto::from);
     }
 
