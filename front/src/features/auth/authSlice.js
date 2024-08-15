@@ -56,7 +56,7 @@ const authSlice = createSlice({
 
 export const { loginSuccess, logout, setProfile } = authSlice.actions;
 
-export const login = (email, password) => async (dispatch) => {
+export const login = (email, password, navLogin) => async (dispatch) => {
   try {
     const response = await axios.post(
       `${BASE_URL}/api/auths/login`,
@@ -77,7 +77,8 @@ export const login = (email, password) => async (dispatch) => {
       localStorage.setItem("access", access);
       localStorage.setItem("nickname", response.data.body.nickname);
       localStorage.setItem("type", response.data.body.type);
-
+      localStorage.setItem("imageSrc", imageSrc);
+      navLogin(nickname, type, imageSrc);
       // 프로필 가져오기
       // const profileResult = await dispatch(getProfile(nickname));
       // if (profileResult.success) {

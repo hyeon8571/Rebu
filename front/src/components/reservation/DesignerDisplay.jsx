@@ -12,6 +12,7 @@ import { BASE_URL } from "../../util/commonFunction";
 import axios from "axios";
 import apiClient from "../../util/apiClient";
 import nullImg from "../../assets/images/img.webp";
+import Header from "../common/Header";
 
 const UpperTabWrapper = styled.div`
   display: flex;

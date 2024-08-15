@@ -82,7 +82,7 @@ export default function MenuTab() {
   const { info } = location.state;
 
   const navigate = useNavigate();
-
+  console.log(info);
   useEffect(() => {
     console.log(info.nickname);
     apiClient

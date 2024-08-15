@@ -12,6 +12,7 @@ import ModalPortal from "../../util/ModalPortal";
 import { useNavigate, useParams } from "react-router-dom";
 import apiClient from "../../util/apiClient";
 import { BASE_URL } from "../../util/commonFunction";
+import Header from "../common/Header";
 
 const UpperTabWrapper = styled.div`
   display: flex;
@@ -122,8 +123,7 @@ export default function DesignerTab() {
 
   const navigate = useNavigate();
 
-  // const { nickname } = useParams();
-  const nickname = "rebu4_hair3";
+  const { nickname } = useParams();
 
   useEffect(() => {
     apiClient
@@ -194,6 +194,7 @@ export default function DesignerTab() {
           {modalContent}
         </ModalNoBackNoExit>
       </ModalPortal>
+
       <UpperTabWrapper>
         <Switch isMan={isMale === "MALE"} toggleHandler={toggleHandler} />
       </UpperTabWrapper>
@@ -236,6 +237,7 @@ export default function DesignerTab() {
                 navigate("/menutab", {
                   state: {
                     info: {
+                      shopNickname: nickname,
                       shopTitle: "싸피 헤어샵",
                       nickname: chosenDesigner.nickname,
                       workingName: chosenDesigner.workingName,

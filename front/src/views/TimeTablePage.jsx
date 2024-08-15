@@ -3,7 +3,10 @@ import TimeTable from "../components/reservation/TimeTable";
 import { useEffect, useState } from "react";
 import apiClient from "../util/apiClient";
 import { BASE_URL } from "../util/commonFunction";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
+import ButtonLarge from "../components/common/ButtonLarge";
+import ButtonSmall from "../components/common/ButtonSmall";
+import { useNavigate } from "react-router-dom";
 
 const ButtonLabelAndInputStyles = css`
   display: block;
@@ -72,7 +75,8 @@ const TimeTableWrapper = styled.div`
 export default function TimeTablePage() {
   const [designers, setDesigners] = useState([]);
   const [selectedDesigner, setSelectedDesigner] = useState(null);
-  const { nickname, type } = useParams();
+  const { nickname } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     apiClient
@@ -80,16 +84,26 @@ export default function TimeTablePage() {
       .then((response) => {
         console.log(response);
         setDesigners(response.data.body);
-        setSelectedDesigner(response.data.body[0].nickname); // Set the first designer as the default selected
+        setSelectedDesigner(response.data.body[0].nickname);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [nickname]);
+  }, []);
 
   return (
     <>
       <ButtonContainer>
+        <ButtonSmall
+          button={{
+            id: 1,
+            title: "예약하기",
+            onClick: () => {
+              navigate(`/reservation/${nickname}`);
+            },
+            highlight: "true",
+          }}
+        />
         {designers.map((item, index) => (
           <ButtonBigContainer key={index}>
             <ButtonInput

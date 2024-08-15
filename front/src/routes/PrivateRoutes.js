@@ -93,7 +93,7 @@ const PrivateRoutes = ({
     />
     <Route path="/menutab" element={<ProtectedRoute element={MenuTab} />} />
     <Route
-      path="/designertab"
+      path="/reservation/:nickname"
       element={<ProtectedRoute element={DesignerTab} />}
     />
     <Route

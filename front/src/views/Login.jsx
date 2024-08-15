@@ -38,54 +38,19 @@ const Login = ({ navLogin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   // setError(""); // 에러 상태 초기화
-
-  //   try {
-  //     const loginResult = await dispatch(login(email, password));
-  //     if (loginResult.success) {
-  //       // 로그인 성공
-  //       console.log("로그인 성공", loginResult);
-  //       navigate("/main", { replace: true });
-  //     } else {
-  //       // 로그인 실패
-  //       setError(loginResult.error || "로그인에 실패했습니다.");
-  //     }
-  //   } catch (error) {
-  //     console.error("로그인 과정에서 오류 발생:", error);
-  //     setError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
-  //   }
-  // };
-
   //handleLogin 함수
   const handleLogin = async (e) => {
     e.preventDefault();
     // setError(""); // 에러 상태 초기화
 
     try {
-      const loginResult = await dispatch(login(email, password));
+      const loginResult = await dispatch(login(email, password, navLogin));
       if (loginResult.success) {
         // 로그인 성공
         console.log("로그인 성공", loginResult);
-        //알람 구독
-        // try {
-        //   const alarmResult = await subscribeToAlarms();
-
-        //   if (alarmResult.success) {
-        //     console.log("알림 구독에 성공했습니다:", alarmResult.data);
-        //     // 구독 성공 시 처리할 로직 추가
-        //   } else {
-        //     console.error("알림 구독에 실패했습니다:", alarmResult.error);
-        //     // 구독 실패 시 처리할 로직 추가
-        //   }
-        // } catch (error) {
-        //   console.error("알림 구독 과정에서 오류 발생:", error);
-        // }
 
         // 로그인 성공 후 메인 페이지로 이동
         navigate("/main", { replace: true });
-        navLogin();
       } else {
         // 로그인 실패
         setError(loginResult.error || "로그인에 실패했습니다.");

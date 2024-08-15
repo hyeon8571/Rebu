@@ -25,6 +25,7 @@ import ShopTabComponent from "../components/storeProfile/StoreProfileTab";
 import ShopProfileInfo from "../components/storeProfile/StoreProfileInfo";
 import Login from "./Login";
 import { BASE_URL } from "./Signup";
+import apiClient from "../util/apiClient";
 
 const Wrapper = styled.div`
   background-color: ${(props) =>
@@ -179,7 +180,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "COMMON") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds/reviews/profiles/${nickname}`, {
           headers: {
             access: access,
@@ -195,7 +196,7 @@ const ProfilePage = ({
         });
     } else if (type === "SHOP") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds/reviews/shops/${nickname}`, {
           headers: {
             access: access,
@@ -211,7 +212,7 @@ const ProfilePage = ({
         });
     } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds/reviews/employees/${nickname}`, {
           headers: {
             access: access,
@@ -247,7 +248,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type !== "SHOP") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds`, {
           params: {
             scrapedBy: nickname,
@@ -272,7 +273,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "SHOP") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds/shops/${nickname}`, {
           headers: {
             access: access,
@@ -288,7 +289,7 @@ const ProfilePage = ({
         });
     } else if (type === "EMPLOYEE") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/feeds/employees/${nickname}`, {
           headers: {
             access: access,
@@ -309,7 +310,7 @@ const ProfilePage = ({
   useEffect(() => {
     if (type === "COMMON") {
       const access = localStorage.getItem("access");
-      axios
+      apiClient
         .get(`${BASE_URL}/api/shop-favorites/${nickname}`, {
           headers: {
             access: access,
