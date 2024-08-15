@@ -42,9 +42,9 @@ public class FollowService {
             throw new AlreadyFollowingException();
         }
 
-        Follow follow = followRepository.save(followDto.toEntity(sender, receiver));
+        followRepository.save(followDto.toEntity(sender, receiver));
 
-        alarmService.alarmFollow(follow, receiver, sender);
+        alarmService.alarmFollow(receiver, sender);
     }
 
     @Transactional
