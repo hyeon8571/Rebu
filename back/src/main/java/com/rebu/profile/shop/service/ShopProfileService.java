@@ -143,6 +143,7 @@ public class ShopProfileService {
                     .imageSrc(employeeProfile.getImageSrc())
                     .nickname(employeeProfile.getNickname())
                     .workingName(employeeProfile.getWorkingName())
+                    .workingIntroduction(employeeProfile.getWorkingIntroduction())
                     .gender(employeeProfile.getGender())
                     .role(employeeProfile.getRole())
                     .reviewCnt(reviewRepository.findAllByEmployeeProfileId(employeeProfile.getId()).size())
