@@ -99,16 +99,6 @@ const SaveButton = styled.button`
   font-size: 16px;
 `;
 
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  font-size: 3rem;
-  cursor: pointer;
-  &:hover {
-    color: #943aee;
-  }
-`;
-
 const UserRole = styled.span`
   background-color: #e5e5e5;
   border-radius: 15px;
@@ -135,7 +125,6 @@ export const formatPhoneNumber = (value) => {
 // createEmployeeProfile 함수를 Redux Thunk 액션 생성자로 변경
 export const createEmployeeProfile = (formData) => async (dispatch) => {
   const access = localStorage.getItem("access");
-
   try {
     const response = await axios.post(
       `${BASE_URL}/api/profiles/employees`,
@@ -147,7 +136,7 @@ export const createEmployeeProfile = (formData) => async (dispatch) => {
         },
       }
     );
-
+    console.log("프로필 생성 formData:------", formData.nickname);
     if (response.data.code === "1D00") {
       const { nickname, type, imageSrc } = response.data.body;
       const newAccess = response.headers.access;
@@ -230,10 +219,8 @@ const ProfileEmployee = () => {
     const regex =
       /^(?![_-])[A-Za-z0-9](?:[A-Za-z0-9]|[-_](?![_-])){0,14}[A-Za-z0-9]?$/;
 
-    console.log(value);
-
     if (regex.test(value) || value === "") {
-      setNickname(value);
+      setNickname(value); // 여기서 nickname 상태를 직접 업데이트합니다.
     }
 
     if (debounceTimeout) {
@@ -322,6 +309,11 @@ const ProfileEmployee = () => {
     formData.append("introduction", introduction);
     formData.append("phone", phone);
 
+    // FormData 내용 로깅 (디버깅용)
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -330,13 +322,9 @@ const ProfileEmployee = () => {
       console.log("프로필생성시작");
       const result = await dispatch(createEmployeeProfile(formData));
       console.log("프로필생성결과", result);
-      // FormData 내용 로깅 (디버깅용)
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
 
+      // 프로필 생성 성공
       if (result.success) {
-        // 프로필 생성 성공
         setSuccess(
           "직원 프로필이 성공적으로 생성되었습니다.",
           result.data.nickname

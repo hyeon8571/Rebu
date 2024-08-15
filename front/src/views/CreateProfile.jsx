@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProfileEmployee from "../components/MyProfile/ProfileEmployee";
 import ProfileShop from "../components/MyProfile/ProfileShop";
+import { Header, BackButton, HeaderText } from "./PersonalInfo";
 
 const Container = styled.div`
   padding: 20px;
@@ -13,6 +14,10 @@ const Heading = styled.h1`
   font-size: 24px;
   color: #333;
 `;
+const handleBackClick = () => {
+  //뒤로가기 버튼
+  window.history.back();
+};
 
 const CreateProfile = () => {
   const location = useLocation();
@@ -23,9 +28,10 @@ const CreateProfile = () => {
 
   return (
     <Container>
-      <Heading>
-        {role ? `새 계정 생성 테스트: ${role}` : "새 계정 생성"}
-      </Heading>
+      <Header>
+        <BackButton onClick={handleBackClick} />
+        <HeaderText>프로필 생성</HeaderText>
+      </Header>
       {role === "EMPLOYEE" && <ProfileEmployee />}
       {role === "SHOP" && <ProfileShop />}
     </Container>

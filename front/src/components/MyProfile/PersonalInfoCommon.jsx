@@ -4,7 +4,7 @@ import { FiChevronLeft } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiTwotonePlusCircle } from "react-icons/ai";
 import { getCommonProfileInfo } from "../../features/common/userSlice";
-
+import Img from "../../assets/images/img.webp";
 const Header = styled.div`
   width: 100%;
   display: flex;
@@ -160,18 +160,12 @@ const DeleteButton = styled(Button)`
 `;
 
 export const PersonalInfoCommon = () => {
-  const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
-  // const email = user.email;
-  // const birth = user.birth;
-  const [phone, setPhone] = useState("010-1234-5678");
-
-  // let gender = user.gender;
-  // if (user.gender === "MALE") {
-  //   gender = "남";
-  // } else if (user.gender === "FEMALE") {
-  //   gender = "여";
-  // }
-
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [birth, setBirth] = useState("");
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState(null);
 
@@ -181,6 +175,19 @@ export const PersonalInfoCommon = () => {
       console.log("getCommonProfileInfo result", result);
       if (result.success) {
         setProfile(result.data);
+        if (
+          (result.data.imageSrc === null) |
+          (result.data.imageSrc === "null")
+        ) {
+          setImageSrc(Img);
+        } else {
+          setImageSrc(result.data.imageSrc);
+        }
+        setNickname(result.data.nickname);
+        setEmail(result.data.email);
+        setBirth(result.data.birth);
+        setPhone(result.data.phone);
+        setGender(result.data.birth);
         console.log("profile 조회 성공", profile);
       } else {
         setError(result.error);
@@ -232,16 +239,16 @@ export const PersonalInfoCommon = () => {
         <EditButton onClick={handleEdit}>수정</EditButton>
         <br />
         <Label>이메일</Label>
-        <InfoBox type="email" value={profile.email} readOnly />
+        <InfoBox type="email" value={email} readOnly />
         <br />
         <Label>생년월일</Label>
-        <InfoBox type="text" value={profile.birth} readOnly />
+        <InfoBox type="text" value={birth} readOnly />
         <br />
         <Label>전화번호</Label>
         <InfoBox type="text" value={phone} readOnly />
         <br />
         <Label>성별</Label>
-        <InfoBox type="text" value={profile.gender} readOnly />
+        <InfoBox type="text" value={gender} readOnly />
       </Form>
       <ButtonContainer>
         <DeleteButton>회원탈퇴</DeleteButton>
