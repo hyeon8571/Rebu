@@ -226,13 +226,12 @@ public class AlarmService {
     }
 
     @Transactional
-    public void alarmFollow(Follow follow, Profile receiver, Profile sender) {
+    public void alarmFollow(Profile receiver, Profile sender) {
         String userNickname = receiver.getNickname();
 
         AlarmFollow alarmFollow = alarmFollowRepository.save(AlarmFollow.builder()
                 .receiverProfile(receiver)
                 .senderProfile(sender)
-                .follow(follow)
                 .type(Type.FOLLOW)
                 .build());
 
