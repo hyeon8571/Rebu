@@ -24,7 +24,7 @@ function Main({ theme, toggleTheme }) {
   const [loginUser, setLoginUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [feed, setFeed] = useState([]);
-  const [distance, setDistance] = useState(25);
+  const [distance, setDistance] = useState(100);
   const [period, setPeriod] = useState("");
   const [sortedLike, setSortedLike] = useState(false);
   const [category, setCategory] = useState("HAIR");

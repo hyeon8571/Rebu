@@ -100,6 +100,10 @@ const ButtonWrapper = styled.div`
   justify-content: space-around;
 `;
 
+const StyledHeader = styled(Header)`
+  margin-bottom: 2rem;
+`;
+
 export default function MenuDisplay() {
   const [menuData, setMenuData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -234,7 +238,7 @@ export default function MenuDisplay() {
           {modalContent}
         </ModalNoBackNoExit>
       </ModalPortal>
-      <Header title={"시술보기"} />
+      <StyledHeader title={"시술보기"} />
       <Wrapper>
         <IconWrapper onClick={handleSettingMode}>
           <IoSettings

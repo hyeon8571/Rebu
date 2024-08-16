@@ -9,6 +9,11 @@ import { BASE_URL } from "../../util/commonFunction";
 import { BASE_IMG_URL } from "../../util/commonFunction";
 import Header from "../common/Header";
 
+const Container = styled.div`
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+`;
+
 const MenuCardContainer = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
@@ -75,6 +80,10 @@ const MenuTitleWrapper = styled.div`
   cursor: pointer;
 `;
 
+const StyledHeader = styled(Header)`
+  margin-top: 2rem;
+`;
+
 const NoticeText = styled.div`
   font-size: 24px;
   margin-top: 4rem;
@@ -118,8 +127,8 @@ export default function MenuTab() {
     }
   }
   return (
-    <>
-      <Header title={"시술 선택"} />
+    <Container>
+      <StyledHeader title={"시술 선택"} />
       {menuData.length > 0 ? (
         menuData.map((item) => (
           <MenuCardContainer key={item.id}>
@@ -174,6 +183,6 @@ export default function MenuTab() {
           />
         )}
       </ButtonWrapper>
-    </>
+    </Container>
   );
 }

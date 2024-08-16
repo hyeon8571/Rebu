@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import PostDetail from "../post/PostDetail";
 import { CiLock } from "react-icons/ci";
 
@@ -28,7 +28,7 @@ const PrivateContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 60px;
-`
+`;
 
 const LockImg = styled(CiLock)`
   width: 120px;
@@ -45,12 +45,12 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-function GridComponent({ Card, currentUser, loginUser }) {
+function GridComponent({ Card, currentUser, loginUser, type }) {
   const [layouts, setLayouts] = useState({ lg: [], md: [] });
   const containerRef = useRef(null);
   const [rowHeight, setRowHeight] = useState(150);
   const [selectedPhotos, setSelectedPhotos] = useState(null);
-  const [isPrivate, setIsPrivate] = useState(currentUser.private);
+  const [isPrivate, setIsPrivate] = useState(currentUser.isPrivate);
 
   const generateLayout = useCallback((photos) => {
     return photos.map((photo, index) => ({
@@ -94,43 +94,58 @@ function GridComponent({ Card, currentUser, loginUser }) {
 
   return (
     <>
-      {isPrivate ? (
+      {isPrivate &&
+      currentUser.nickname !== loginUser &&
+      type !== "EMPLOYEE" ? (
         <PrivateContainer>
           <LockImg />
           <LockText>비공개 항목입니다</LockText>
         </PrivateContainer>
       ) : (
         <>
-        {Card == false && (
-          <h3 style={{color: "#b475f3", fontSize: "18px"}}>
-            스크랩한 게시글이 없습니다
-          </h3>
-        )}
-        {selectedPhotos ? (
-          <PostDetail information={selectedPhotos} currentUser={currentUser} loginUser={loginUser} type={type} />
-        ) : (
-          <GridContainer ref={containerRef}>
-            <ResponsiveGridLayout
-              layouts={layouts}
-              breakpoints={{ lg: 768, md: 425 }}
-              cols={{ lg: 3, md: 3 }}
-              rowHeight={rowHeight}
-              width={containerRef.current ? containerRef.current.clientWidth : 768}
-              isDraggable={false}
-              isResizable={false}
-            >
-              {Card.map((item, index) => (
-                <GridItem
-                  key={`photo-${index}`}
-                  data-grid={layouts.lg[index]}
-                  onClick={() => handlePhotoClick(index)}
-                >
-                <Photo src={"https://www.rebu.kro.kr/data/" + item.feed?.imageSrcs[0]} alt={`uploaded-${index}`} />
-                </GridItem>
-              ))}
-            </ResponsiveGridLayout>
-          </GridContainer>
-        )}
+          {Card == false && (
+            <h3 style={{ color: "#b475f3", fontSize: "18px" }}>
+              스크랩한 게시글이 없습니다
+            </h3>
+          )}
+          {selectedPhotos ? (
+            <PostDetail
+              information={selectedPhotos}
+              currentUser={currentUser}
+              loginUser={loginUser}
+              type={type}
+            />
+          ) : (
+            <GridContainer ref={containerRef}>
+              <ResponsiveGridLayout
+                layouts={layouts}
+                breakpoints={{ lg: 768, md: 425 }}
+                cols={{ lg: 3, md: 3 }}
+                rowHeight={rowHeight}
+                width={
+                  containerRef.current ? containerRef.current.clientWidth : 768
+                }
+                isDraggable={false}
+                isResizable={false}
+              >
+                {Card.map((item, index) => (
+                  <GridItem
+                    key={`photo-${index}`}
+                    data-grid={layouts.lg[index]}
+                    onClick={() => handlePhotoClick(index)}
+                  >
+                    <Photo
+                      src={
+                        "https://www.rebu.kro.kr/data/" +
+                        item.feed?.imageSrcs[0]
+                      }
+                      alt={`uploaded-${index}`}
+                    />
+                  </GridItem>
+                ))}
+              </ResponsiveGridLayout>
+            </GridContainer>
+          )}
         </>
       )}
     </>

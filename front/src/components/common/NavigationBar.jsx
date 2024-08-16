@@ -42,10 +42,8 @@ const SearchDiv = styled.div`
   transition: background-color 0.3s ease-in-out;
   border-radius: 1rem;
 
-  &.active {
-    color: ${(props) => props.theme.primary};
-  }
-
+  color: ${(props) =>
+    props.theme.value === "dark" ? "white" : "rgb(85, 26, 139)"};
   background-color: ${(props) =>
     props.isModalOpen ? props.theme.body : "none"};
 `;

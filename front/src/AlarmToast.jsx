@@ -26,10 +26,10 @@ const AlarmToast = ({ t, comment }) => {
   let onClickReject = () => toast.dismiss(t.id);
 
   switch (comment.alarmType) {
-    // case "FOLLOW":
-    //   message = `팔로우 알림`;
-    //   content = `${comment.senderNickname}님이 팔로우를 시작했습니다.`;
-    //   break;
+    case "FOLLOW":
+      message = `팔로우 알림`;
+      content = `${comment.senderNickname}님이 팔로우를 시작했습니다.`;
+      break;
     case "INVITE_EMPLOYEE":
       message = `매장 초대 요청`;
       content = `${comment.shopName}에서 ${comment.role}역할로 매장에 초대 받으셨습니다.`;
@@ -37,13 +37,17 @@ const AlarmToast = ({ t, comment }) => {
       const eId = comment.receiverId;
       const sId = comment.senderId;
       onClickAccept = () => addDesigner(eId, sId, comment.role);
+      break;
     case "RESERVATION":
+      console.log("찍히나?");
       message = `예약 요청 알림`;
       content = `${comment.receiverNickname}님이 ${formattedDate(
         comment.startDateTime
       )}에 예약 요청(${comment.timeTaken}분)을 하셨습니다`;
       isDouble = true;
-      onClickAccept = () => acceptReservation(comment.reservationId);
+      onClickAccept = () => acceptReservation(comment.reservationId, true);
+      onClickReject = () => acceptReservation(comment.reservationId, false);
+      break;
   }
   return (
     <ToastContainer visible={t.visible}>
@@ -56,11 +60,23 @@ const AlarmToast = ({ t, comment }) => {
       </Content>
 
       {!isDouble ? (
-        <CloseButton onClick={() => toast.dismiss(t.id)}>Close</CloseButton>
+        <CloseButton onClick={() => toast.dismiss(t.id)}>확인</CloseButton>
       ) : (
         <ButtonWrapper>
-          <CloseButton onClick={() => {}}>수락</CloseButton>
-          <CloseButton>거절</CloseButton>
+          <CloseButton
+            onClick={() => {
+              onClickAccept();
+            }}
+          >
+            수락
+          </CloseButton>
+          <CloseButton
+            onClick={() => {
+              onClickReject();
+            }}
+          >
+            거절
+          </CloseButton>
         </ButtonWrapper>
       )}
     </ToastContainer>
@@ -111,7 +127,7 @@ async function acceptReservation(rId, answer) {
 const ToastContainer = styled.div`
   max-width: 28rem;
   width: 100%;
-  background-color: #f6ebff;
+  background-color: #f8f0ff;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
     0px 4px 6px -2px rgba(0, 0, 0, 0.05);
   border-radius: 0.5rem;

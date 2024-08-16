@@ -71,6 +71,12 @@ const TimeTableWrapper = styled.div`
   overflow-x: hidden;
 `;
 
+const AbsoluteButtonWrapper = styled.div`
+  position: absolute;
+  right: 30%;
+  bottom: 25%;
+`;
+
 export default function TimeTablePage() {
   const [designers, setDesigners] = useState([]);
   const [selectedDesigner, setSelectedDesigner] = useState(null);

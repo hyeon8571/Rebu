@@ -72,7 +72,7 @@ export default function VisitedPage() {
         }
       )
       .then((response) => {
-        setData(sortedData);
+        setData(response.data.body);
         console.log(response);
         setLoading(false);
       })
