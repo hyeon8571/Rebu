@@ -16,7 +16,7 @@ public interface ShopFavoriteRepository extends JpaRepository<ShopFavorite, Shop
            s.imageSrc,
            s.nickname,
            s.name,
-           AVG(rv.rating),
+           AVG(rv.rating / 2),
            s.isPrivate,
            s.introduction,
            COUNT(DISTINCT f.id),
