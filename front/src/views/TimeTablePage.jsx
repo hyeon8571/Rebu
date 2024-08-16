@@ -65,6 +65,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
+  align-items: center;
 `;
 
 const TimeTableWrapper = styled.div`

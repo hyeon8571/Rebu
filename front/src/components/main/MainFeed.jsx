@@ -611,7 +611,7 @@ const PostDetail = ({
                   </IconBox>
                 ) : (
                   <IconBox onClick={() => handleScrapToggle(index)}>
-                    {item.feed.isScraped ? <FaBookmark /> : <FaRegBookmark />}
+                    {item.isScraped ? <FaBookmark /> : <FaRegBookmark />}
                   </IconBox>
                 )}
                 <DropdownMenu

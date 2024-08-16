@@ -238,7 +238,7 @@ const ProfilePage = ({
       );
       const averageRating =
         reviewdata.length > 0
-          ? (totalRating / reviewdata.length).toFixed(1)
+          ? (totalRating / reviewdata.length / 2).toFixed(1)
           : 0;
       setRatingAvg(averageRating);
     }
