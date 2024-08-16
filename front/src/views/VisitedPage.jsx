@@ -38,7 +38,7 @@ const NoDataMessage = styled.div`
   color: #999;
 `;
 
-function calculateVisit(date, timeTaken) {
+export function calculateVisit(date, timeTaken) {
   const givenTime = new Date(date);
   const currentTime = new Date();
   const timeAfter = new Date(givenTime.getTime() + timeTaken * 60 * 1000);

@@ -710,7 +710,7 @@ const PostDetail = ({
                 <Rating>
                   <FaRegStar />
                   &nbsp;
-                  <RatingText>{item.feed.rating}</RatingText>
+                  <RatingText>{item.feed.rating / 2}</RatingText>
                 </Rating>
               ) : null}
             </PostActions>

@@ -3,6 +3,7 @@ import CancelButton from "./CancelButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { BASE_IMG_URL } from "../../util/commonFunction";
 import { Navigate, useNavigate } from "react-router-dom";
+import { calculateVisit } from "../../views/VisitedPage";
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -197,6 +198,7 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
   }
 
   const date = new Date(Card.time);
+  const isInvalid = calculateVisit(Card.time);
   const year = date.getFullYear(); // 연도
   const month = date.getMonth() + 1; // 월 (0부터 시작하므로 1을 더함)
   const day = date.getDate(); // 일
@@ -238,8 +240,8 @@ export default function ShopCard({ Card, isModalOpen, setIsModalOpen }) {
             <CancelButton
               button={{
                 id: 1,
-                title: "예약 취소",
-                unable: isUnableCancle ? "true" : undefined,
+                title: isInvalid ? "예약종료" : "예약 취소",
+                unable: isInvalid || isUnableCancle ? "true" : undefined,
                 onClick: () => {
                   setIsModalOpen(true);
                 },

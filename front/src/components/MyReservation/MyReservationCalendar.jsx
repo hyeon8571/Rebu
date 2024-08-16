@@ -268,30 +268,6 @@ export default function MyReservationCalendar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCancel, setIsCancel] = useState(true);
 
-  // const fetchReservations = async () => {
-  //   try {
-  //     const response = await fetch("/mockdata/reservationdata.json");
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     const data = await response.json();
-
-  //     if (data && data.body) {
-  //       setReservations(data.body);
-  //     } else {
-  //       console.error("Reservations data is missing or incorrect format.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchReservations();
-  // }, []);
-
   const nickname = localStorage.getItem("nickname");
   const type = localStorage.getItem("type");
   useEffect(() => {
