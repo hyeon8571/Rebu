@@ -1,7 +1,7 @@
 # <img width="30" align="center" src="https://github.com/user-attachments/assets/4fd4dc80-de87-439a-a297-4a32bbdd3f4c"> REBU
 
 <p align="center">
-  <img width="800" src="https://github.com/user-attachments/assets/b9ae2991-6a03-4665-877b-d7ab35a53e5b" alt="Description">
+  <img width="70%" src="https://github.com/user-attachments/assets/b9ae2991-6a03-4665-877b-d7ab35a53e5b" alt="Description">
 </p>
 
 
