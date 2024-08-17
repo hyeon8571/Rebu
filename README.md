@@ -14,11 +14,16 @@
   <img width="1000" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
 </p>
 
+<br>
+
 <details>
 <summary>서비스 기능 상세보기</summary>
 <div markdown="1">
 
-<p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" /></p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b4bbd9a9-a23e-4e9b-9656-844eb22abd88" width="800" />
+  <img src="https://github.com/user-attachments/assets/206597af-b239-46e9-a27f-3dde7956e4e1" width="800" />
+</p>
 
 </div>
 </details>
@@ -81,4 +86,14 @@
 </details>
 
 ## 📊 API 명세서
+<details>
+<summary>API 명세서 이미지</summary>
+<div markdown="1">
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" />
+</p>
+
+</div>
+</details>
 https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936
