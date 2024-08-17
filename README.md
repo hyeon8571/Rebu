@@ -10,6 +10,9 @@
 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적으로 볼 수 있고, 즉시 예약을 할 수 있습니다. <br>
 매장과 디자이너는 자신에 맞게 시스템을 커스텀하여 더욱 효율적으로 일정을 관리하고 홍보를 할 수 있습니다.
 
+<p align="center">
+  <img width="1000" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
+</p>
 
 <br>
 
