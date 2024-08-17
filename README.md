@@ -86,14 +86,4 @@
 </details>
 
 ## 📊 API 명세서
-<details>
-<summary>API 명세서 이미지</summary>
-<div markdown="1">
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" />
-</p>
-
-</div>
-</details>
 https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936
