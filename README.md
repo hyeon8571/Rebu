@@ -14,6 +14,15 @@
   <img width="1000" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
 </p>
 
+<details>
+<summary>서비스 기능 상세보기</summary>
+<div markdown="1">
+
+<p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" /></p>
+
+</div>
+</details>
+
 <br>
 
 - **프로젝트 기간**: 2024.07.02 ~ 2024.08.16
@@ -58,3 +67,18 @@
   <span><img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat-square&logo=amazonec2&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white"/></span>
 </div>
+
+<br>
+
+## 🖨️ ERD
+<details>
+<summary>ERD 이미지</summary>
+<div markdown="1">
+
+<p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" /></p>
+
+</div>
+</details>
+
+## 📊 API 명세서
+https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936
