@@ -11,7 +11,7 @@
 매장과 디자이너는 자신에 맞게 시스템을 커스텀하여 더욱 효율적으로 일정을 관리하고 홍보를 할 수 있습니다.
 
 <p align="center">
-  <img width="1000" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
+  <img width="100%" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
 </p>
 
 <br>
@@ -23,8 +23,10 @@
 <br>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/323f626a-18ec-4aa9-ae64-fc66ced6093a" width="800" />
-  <img src="https://github.com/user-attachments/assets/70b3a248-0173-42e6-882e-53b533af2354" width="800" />
+  <img src="https://github.com/user-attachments/assets/323f626a-18ec-4aa9-ae64-fc66ced6093a" width="100%" />
+  <img src="https://github.com/user-attachments/assets/70b3a248-0173-42e6-882e-53b533af2354" width="100%" />
+  <img src="https://github.com/user-attachments/assets/a5f0debb-5152-49f4-8855-2d5728d9e33b" width="100%" />
+  <img src="https://github.com/user-attachments/assets/22f4b469-bab4-420b-a949-ef405893a3b1" width="100%" />
 </p>
 
 </div>
@@ -33,13 +35,13 @@
 <br>
 
 - **프로젝트 기간**: 2024.07.02 ~ 2024.08.16
-- **개발 인원**: (프론트) 양규현, 윤지원 / (백엔드) 이유승, 원승현, 김종덕
+- **개발 인원**: (프론트) 양규현, 윤지원, 노진서 / (백엔드) 이유승, 원승현, 김종덕
 
 <br>
 
 ## <img align="center" width="50" src="https://github.com/user-attachments/assets/471435b6-e345-414d-b6eb-2fb11de1eb8f"> 시스템 아키텍처
 <p align="center">
-  <img width="800" src="https://github.com/user-attachments/assets/3f58b604-8202-4d5c-877f-23ec9b284342">  
+  <img width="80%" src="https://github.com/user-attachments/assets/3f58b604-8202-4d5c-877f-23ec9b284342">  
 </p>
 
 - **Jenkins**: CI/CD 구축
@@ -84,7 +86,7 @@
 
 <br>
 
-<p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" /></p>
+<p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="100%" /></p>
 
 </div>
 </details>
