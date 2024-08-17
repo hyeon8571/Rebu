@@ -20,9 +20,11 @@
 <summary>서비스 기능 상세보기</summary>
 <div markdown="1">
 
+<br>
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b4bbd9a9-a23e-4e9b-9656-844eb22abd88" width="800" />
-  <img src="https://github.com/user-attachments/assets/206597af-b239-46e9-a27f-3dde7956e4e1" width="800" />
+  <img src="https://github.com/user-attachments/assets/323f626a-18ec-4aa9-ae64-fc66ced6093a" width="800" />
+  <img src="https://github.com/user-attachments/assets/70b3a248-0173-42e6-882e-53b533af2354" width="800" />
 </p>
 
 </div>
@@ -79,6 +81,8 @@
 <details>
 <summary>ERD 이미지</summary>
 <div markdown="1">
+
+<br>
 
 <p align="center"><img src="https://github.com/user-attachments/assets/a4f92f2f-37c8-40b7-8217-a05c0dc834e2" width="800" /></p>
 
