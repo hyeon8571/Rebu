@@ -17,7 +17,7 @@
 <br>
 
 <details>
-<summary>서비스 기능 상세보기</summary>
+<summary><h3>📌 서비스 기능 상세보기</h3></summary>
 <div markdown="1">
 
 <br>
