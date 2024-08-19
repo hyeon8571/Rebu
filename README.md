@@ -11,7 +11,7 @@
 매장과 디자이너는 자신에 맞게 시스템을 커스텀하여 더욱 효율적으로 일정을 관리하고 홍보를 할 수 있습니다.
 
 <p align="center">
-  <img width="100%" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
+ <img width="100%" src="https://github.com/user-attachments/assets/9e884983-9b06-4f3e-a60e-7763dc4ef844">
 </p>
 
 <br>
@@ -41,7 +41,7 @@
 
 ## <img align="center" width="50" src="https://github.com/user-attachments/assets/471435b6-e345-414d-b6eb-2fb11de1eb8f"> 시스템 아키텍처
 <p align="center">
-  <img width="80%" src="https://github.com/user-attachments/assets/3f58b604-8202-4d5c-877f-23ec9b284342">  
+  <img width="80%" src="https://github.com/user-attachments/assets/3f58b604-8202-4d5c-877f-23ec9b284342"> 
 </p>
 
 - **Jenkins**: CI/CD 구축
