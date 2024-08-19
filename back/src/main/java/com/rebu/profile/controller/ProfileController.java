@@ -4,6 +4,7 @@ import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.aop.annotation.UpdateRecentTime;
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.controller.dto.*;
 import com.rebu.profile.dto.*;
@@ -42,7 +43,7 @@ public class ProfileController {
         Boolean isExist = profileService.checkNicknameDuplicated(new CheckNicknameDupleDto(nickname, purpose));
 
         if (!isExist) {
-            session.setAttribute("CheckNickname:" + purpose, nickname);
+            session.setAttribute(RedisConstants.CHECK_NICKNAME + purpose, nickname);
         }
         return ResponseEntity.ok(new ApiResponse<>("1C00", isExist));
     }
@@ -54,7 +55,7 @@ public class ProfileController {
         Boolean isExist = profileService.checkPhoneDuplicated(new CheckPhoneDupleDto(phone, purpose));
 
         if (!isExist) {
-            session.setAttribute("CheckPhone:" + purpose, phone);
+            session.setAttribute(RedisConstants.CHECK_PHONE + purpose, phone);
         }
         return ResponseEntity.ok(new ApiResponse<>("1C01", isExist));
     }
@@ -63,7 +64,7 @@ public class ProfileController {
     public ResponseEntity<?> updateNickname(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                             @Valid @RequestBody ChangeNicknameRequest changeNicknameRequest,
                                             HttpServletResponse response,
-                                            @SessionAttribute(name = "CheckNickname:changeNickname", required = false) String checkNickname) {
+                                            @SessionAttribute(name = RedisConstants.CHECK_NICKNAME + "changeNickname", required = false) String checkNickname) {
         if (checkNickname == null || !checkNickname.equals(changeNicknameRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
@@ -102,8 +103,8 @@ public class ProfileController {
     @PatchMapping("/{nickname}/phone")
     public ResponseEntity<?> updatePhone(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                          @Valid @RequestBody ChangePhoneRequest changePhoneRequest,
-                                         @SessionAttribute(name = "CheckPhone:changePhone", required = false) String checkPhone,
-                                         @SessionAttribute(name = "AuthPhone:changePhone", required = false) String authPhone) {
+                                         @SessionAttribute(name = RedisConstants.CHECK_PHONE + "changePhone", required = false) String checkPhone,
+                                         @SessionAttribute(name = RedisConstants.AUTH_PHONE + "changePhone", required = false) String authPhone) {
         if (checkPhone == null || !checkPhone.equals(changePhoneRequest.getPhone())) {
             throw new PhoneDuplicateException();
         }
@@ -118,7 +119,7 @@ public class ProfileController {
     @Authorized(allowed = {Type.SHOP, Type.EMPLOYEE})
     @DeleteMapping("/{nickname}")
     public ResponseEntity<?> deleteProfile(@PathVariable String nickname,
-                                           @SessionAttribute(name = "AuthPassword:profileDelete", required = false) String authPassword,
+                                           @SessionAttribute(name = RedisConstants.AUTH_PASSWORD + "profileDelete", required = false) String authPassword,
                                            HttpServletResponse response) {
         if (authPassword == null || !authPassword.equals(nickname)) {
             throw new PasswordNotVerifiedException();

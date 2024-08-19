@@ -5,6 +5,7 @@ import com.rebu.auth.dto.MailSendDto;
 import com.rebu.auth.exception.MailCodeMismatchException;
 import com.rebu.auth.exception.MailSendException;
 import com.rebu.auth.exception.MailSessionNotFoundException;
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.service.RedisService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class MailAuthService {
     private static final String senderEmail = "rebu.glodenratio@gmail.com";
 
     private String createCode() {
-        int leftLimit = 48; // number '0'
-        int rightLimit = 122; // alphabet 'z'
+        int leftLimit = 48;
+        int rightLimit = 122;
         int targetStringLength = 6;
         Random random = new Random();
 
@@ -100,7 +101,7 @@ public class MailAuthService {
     }
 
     private String generatePrefixedKey(String email, String purpose) {
-        return "AuthCode:" + purpose + ":" + email;
+        return RedisConstants.AUTH_CODE + purpose + ":" + email;
     }
 
 }

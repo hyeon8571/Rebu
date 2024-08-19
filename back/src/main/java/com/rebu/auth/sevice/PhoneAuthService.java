@@ -4,6 +4,7 @@ import com.rebu.auth.dto.PhoneAuthDto;
 import com.rebu.auth.dto.PhoneSendDto;
 import com.rebu.auth.exception.PhoneCodeMismatchException;
 import com.rebu.auth.exception.PhoneSessionNotFoundException;
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.model.Message;
@@ -23,8 +24,8 @@ public class PhoneAuthService {
     private static final String senderPhone = "01085914442";
 
     private String createCode() {
-        int leftLimit = 48; // number '0'
-        int rightLimit = 122; // alphabet 'z'
+        int leftLimit = 48;
+        int rightLimit = 122;
         int targetStringLength = 6;
         Random random = new Random();
 
@@ -63,7 +64,7 @@ public class PhoneAuthService {
     }
 
     private String generatePrefixedKey(String phone, String purpose) {
-        return "AuthCode:" + purpose + ":" + phone;
+        return RedisConstants.AUTH_CODE + purpose + ":" + phone;
     }
 
 }

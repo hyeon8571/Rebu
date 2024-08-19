@@ -1,5 +1,6 @@
 package com.rebu.profile.service;
 
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.service.RedisService;
 import com.rebu.common.util.FileUtils;
 import com.rebu.follow.repository.FollowRepository;
@@ -68,7 +69,7 @@ public class ProfileService {
 
         profile.changeNickname(changeNicknameDto.getNewNickname());
 
-        redisService.deleteData("Refresh:" + changeNicknameDto.getOldNickname());
+        redisService.deleteData(RedisConstants.REFRESH + changeNicknameDto.getOldNickname());
 
         resetToken(changeNicknameDto.getNewNickname(), profile.getType().toString(), response);
 
@@ -132,7 +133,7 @@ public class ProfileService {
 
         Profile profileToSwitch = profileRepository.findFirstByEmailOrderByRecentTimeDesc(targetProfile.getMember().getEmail());
 
-        redisService.deleteData("Refresh:" + targetProfile.getNickname());
+        redisService.deleteData(RedisConstants.REFRESH + targetProfile.getNickname());
 
         resetToken(profileToSwitch.getNickname(), profileToSwitch.getType().toString(), response);
 
@@ -165,7 +166,7 @@ public class ProfileService {
             throw new MemberNotMatchException();
         }
 
-        redisService.deleteData("Refresh:" + nowProfile.getNickname());
+        redisService.deleteData(RedisConstants.REFRESH + nowProfile.getNickname());
 
         resetToken(targetProfile.getNickname(), targetProfile.getType().toString(), response);
 
@@ -249,7 +250,7 @@ public class ProfileService {
         String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
         String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
 
-        redisService.setDataExpire("Refresh:" + nickname, newRefresh, 86400000L);
+        redisService.setDataExpire(RedisConstants.REFRESH + nickname, newRefresh, 86400000L);
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
     }

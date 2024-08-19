@@ -1,6 +1,7 @@
 package com.rebu.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.common.service.RedisService;
 import com.rebu.security.util.JWTUtil;
@@ -20,8 +21,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
-
-    private static final String PREFIX = "Refresh:";
 
     private final RedisService redisService;
 
@@ -104,6 +103,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
     }
 
     private String generatePrefixedKey(String key) {
-        return PREFIX + key;
+        return RedisConstants.REFRESH + key;
     }
 }

@@ -2,6 +2,7 @@ package com.rebu.member.service;
 
 import com.rebu.auth.exception.EmailNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.service.RedisService;
 import com.rebu.member.dto.ChangePasswordDto;
 import com.rebu.member.dto.FindEmailDto;
@@ -85,30 +86,30 @@ public class MemberService {
 
         profileRepository.deleteProfileByMemberId(member.getId());
 
-        redisService.deleteData("Refresh: " + nickname);
+        redisService.deleteData(RedisConstants.REFRESH + nickname);
     }
 
     private Boolean checkSignupPreAuth(MemberJoinDto memberJoinDto, ProfileGenerateDto profileGenerateDto, HttpSession session) {
 
         String purpose = "signup";
 
-        if (session.getAttribute("CheckEmail:" + purpose) == null || !session.getAttribute("CheckEmail:" + purpose).equals(memberJoinDto.getEmail())) {
+        if (session.getAttribute(RedisConstants.CHECK_EMAIL + purpose) == null || !session.getAttribute(RedisConstants.CHECK_EMAIL + purpose).equals(memberJoinDto.getEmail())) {
             throw new EmailDuplicateException();
         }
 
-        if (session.getAttribute("AuthEmail:" + purpose) == null || !session.getAttribute("AuthEmail:" + purpose).equals(memberJoinDto.getEmail())) {
+        if (session.getAttribute(RedisConstants.AUTH_EMAIL + purpose) == null || !session.getAttribute(RedisConstants.AUTH_EMAIL + purpose).equals(memberJoinDto.getEmail())) {
             throw new EmailNotVerifiedException();
         }
 
-        if (session.getAttribute("CheckPhone:" + purpose) == null || !session.getAttribute("CheckPhone:" + purpose).equals(profileGenerateDto.getPhone())) {
+        if (session.getAttribute(RedisConstants.CHECK_PHONE + purpose) == null || !session.getAttribute(RedisConstants.CHECK_PHONE + purpose).equals(profileGenerateDto.getPhone())) {
             throw new PhoneDuplicateException();
         }
 
-        if (session.getAttribute("AuthPhone:" + purpose) == null || !session.getAttribute("AuthPhone:" + purpose).equals(profileGenerateDto.getPhone())) {
+        if (session.getAttribute(RedisConstants.AUTH_PHONE + purpose) == null || !session.getAttribute(RedisConstants.AUTH_PHONE + purpose).equals(profileGenerateDto.getPhone())) {
             throw new PhoneNotVerifiedException();
         }
 
-        if (session.getAttribute("CheckNickname:" + purpose) == null || !session.getAttribute("CheckNickname:" + purpose).equals(profileGenerateDto.getNickname())) {
+        if (session.getAttribute(RedisConstants.CHECK_NICKNAME + purpose) == null || !session.getAttribute(RedisConstants.CHECK_NICKNAME + purpose).equals(profileGenerateDto.getNickname())) {
             throw new NicknameDuplicateException();
         }
 

@@ -1,5 +1,6 @@
 package com.rebu.security.service;
 
+import com.rebu.common.constants.RedisConstants;
 import com.rebu.common.service.RedisService;
 import com.rebu.security.entity.RefreshToken;
 import com.rebu.security.exception.RefreshInvalidException;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private static final String PREFIX = "Refresh:";
     private final RedisService redisService;
 
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -77,7 +77,7 @@ public class RefreshTokenService {
     }
 
     private String generatePrefixedKey(String key) {
-        return PREFIX + key;
+        return RedisConstants.REFRESH + key;
     }
 
     private Cookie createCookie(String key, String value) {
