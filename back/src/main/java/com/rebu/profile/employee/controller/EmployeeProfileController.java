@@ -2,6 +2,7 @@ package com.rebu.profile.employee.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.aop.annotation.UpdateRecentTime;
+import com.rebu.common.constants.RedisSessionConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingIntroRequest;
 import com.rebu.profile.employee.controller.dto.ChangeWorkingNameRequest;
@@ -33,7 +34,7 @@ public class EmployeeProfileController {
     public ResponseEntity<?> generateEmployeeProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                      @Valid @ModelAttribute GenerateEmployeeProfileRequest generateEmployeeProfileRequest,
                                                      HttpServletResponse response,
-                                                     @SessionAttribute(name = "CheckNickname:generateProfile", required = false) String nickname) {
+                                                     @SessionAttribute(name = RedisSessionConstants.CHECK_NICKNAME + "generateProfile", required = false) String nickname) {
         if (nickname == null || !nickname.equals(generateEmployeeProfileRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }

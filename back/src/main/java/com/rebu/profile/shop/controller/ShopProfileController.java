@@ -2,6 +2,7 @@ package com.rebu.profile.shop.controller;
 
 import com.rebu.common.aop.annotation.Authorized;
 import com.rebu.common.aop.annotation.UpdateRecentTime;
+import com.rebu.common.constants.RedisSessionConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.NicknameDuplicateException;
@@ -32,8 +33,8 @@ public class ShopProfileController {
     public ResponseEntity<?> generateShopProfile(@AuthenticationPrincipal AuthProfileInfo authProfileInfo,
                                                  @ModelAttribute GenerateShopProfileRequest generateShopProfileRequest,
                                                  HttpServletResponse response,
-                                                 @SessionAttribute(name = "AuthLicenseNum:generateShopProfile", required = false) String licenseNum,
-                                                 @SessionAttribute(name = "CheckNickname:generateProfile", required = false) String nickname) {
+                                                 @SessionAttribute(name = RedisSessionConstants.AUTH_LICENSE_NUM + "generateShopProfile", required = false) String licenseNum,
+                                                 @SessionAttribute(name = RedisSessionConstants.CHECK_NICKNAME + "generateProfile", required = false) String nickname) {
         if (nickname == null || !nickname.equals(generateShopProfileRequest.getNickname())) {
             throw new NicknameDuplicateException();
         }
@@ -94,7 +95,7 @@ public class ShopProfileController {
 
     @GetMapping("/{nickname}/daily-schedule")
     public ResponseEntity<?> readShopDailySchedule(@PathVariable String nickname,
-                                                          @RequestParam LocalDate date) {
+                                                   @RequestParam LocalDate date) {
         ShopDailyScheduleWithEmployeesDailyScheduleDto dto = shopProfileService.readShopDailySchedule(ShopReadDailyScheduleDto.builder()
                         .nickname(nickname)
                         .date(date)
@@ -104,8 +105,8 @@ public class ShopProfileController {
 
     @GetMapping("/{nickname}/period-schedule")
     public ResponseEntity<?> readShopPeriodSchedule(@PathVariable String nickname,
-                                                           @RequestParam("start-date") LocalDate startDate,
-                                                           @RequestParam("end-date") LocalDate endDate) {
+                                                    @RequestParam("start-date") LocalDate startDate,
+                                                    @RequestParam("end-date") LocalDate endDate) {
         ShopPeriodScheduleWithEmployeesPeriodScheduleDto dto = shopProfileService.readShopPeriodSchedule(ShopReadPeriodScheduleDto.builder()
                 .nickname(nickname)
                 .startDate(startDate)

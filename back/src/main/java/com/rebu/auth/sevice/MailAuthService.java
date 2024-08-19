@@ -5,7 +5,7 @@ import com.rebu.auth.dto.MailSendDto;
 import com.rebu.auth.exception.MailCodeMismatchException;
 import com.rebu.auth.exception.MailSendException;
 import com.rebu.auth.exception.MailSessionNotFoundException;
-import com.rebu.common.constants.RedisConstants;
+import com.rebu.common.constants.RedisSessionConstants;
 import com.rebu.common.service.RedisService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +101,7 @@ public class MailAuthService {
     }
 
     private String generatePrefixedKey(String email, String purpose) {
-        return RedisConstants.AUTH_CODE + purpose + ":" + email;
+        return RedisSessionConstants.AUTH_CODE + purpose + ":" + email;
     }
 
 }

@@ -4,7 +4,6 @@ import com.rebu.absence.dto.AbsenceDto;
 import com.rebu.absence.entity.Absence;
 import com.rebu.absence.repository.AbsenceRepository;
 import com.rebu.alarm.service.AlarmService;
-import com.rebu.common.service.RedisService;
 import com.rebu.common.util.ListUtils;
 import com.rebu.feed.review.repository.ReviewRepository;
 import com.rebu.follow.repository.FollowRepository;
@@ -23,7 +22,6 @@ import com.rebu.profile.enums.Type;
 import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.profile.service.ProfileService;
-import com.rebu.profile.shop.dto.ShopDailyScheduleWithEmployeesDailyScheduleDto;
 import com.rebu.profile.shop.dto.*;
 import com.rebu.profile.shop.entity.ShopProfile;
 import com.rebu.profile.shop.exception.NotShopEmployeeException;
@@ -33,7 +31,7 @@ import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.repository.ReservationRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
-import com.rebu.security.util.JWTUtil;
+import com.rebu.security.service.JwtTokenService;
 import com.rebu.shop_favorite.entity.ShopFavoriteId;
 import com.rebu.shop_favorite.repository.ShopFavoriteRepository;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
@@ -41,7 +39,6 @@ import com.rebu.workingInfo.entity.WorkingInfo;
 import com.rebu.workingInfo.enums.Days;
 import com.rebu.workingInfo.repository.WorkingInfoRepository;
 import com.rebu.workingInfo.service.WorkingInfoService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,7 +53,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShopProfileService {
 
-    private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final ShopProfileRepository shopProfileRepository;
     private final ProfileRepository profileRepository;
@@ -71,6 +67,7 @@ public class ShopProfileService {
     private final AbsenceRepository absenceRepository;
     private final ReservationRepository reservationRepository;
     private final ShopFavoriteRepository shopFavoriteRepository;
+    private final JwtTokenService jwtTokenService;
 
     @Transactional
     public ProfileInfo generateProfile(GenerateShopProfileDto generateShopProfileDto, HttpServletResponse response) {
@@ -92,9 +89,7 @@ public class ShopProfileService {
             path = profileService.changePhoto(changeImgDto);
         }
 
-        redisService.deleteData("Refresh:" + generateShopProfileDto.getNowNickname());
-
-        resetToken(generateShopProfileDto.getNickname(), Type.SHOP.toString(), response);
+        jwtTokenService.resetToken(generateShopProfileDto.getNickname(), generateShopProfileDto.getNowNickname(), Type.SHOP.toString(), response);
 
         return ProfileInfo.builder()
                 .imageSrc(path)
@@ -337,24 +332,4 @@ public class ShopProfileService {
 
         employeeProfile.changeRole(updateEmployeeRoleDto.getRole());
     }
-
-    private void resetToken(String nickname, String type, HttpServletResponse response) {
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
-        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
-
-        redisService.setDataExpire("Refresh:" + nickname, newRefresh, 86400000L);
-        response.setHeader("access", newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
-    }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        return cookie;
-    }
-
-
 }

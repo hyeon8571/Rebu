@@ -1,6 +1,7 @@
 package com.rebu.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rebu.common.constants.JwtTokenConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.member.controller.dto.MemberLoginRequest;
 import com.rebu.profile.entity.Profile;
@@ -8,7 +9,7 @@ import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
 import com.rebu.security.entity.RefreshToken;
-import com.rebu.security.service.RefreshTokenService;
+import com.rebu.security.service.JwtTokenService;
 import com.rebu.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,12 +35,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final ProfileRepository profileRepository;
-    private final RefreshTokenService refreshTokenService;
+    private final JwtTokenService jwtTokenService;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, ProfileRepository profileRepository, RefreshTokenService refreshTokenService) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, ProfileRepository profileRepository, JwtTokenService jwtTokenService) {
         this.authenticationManager = authenticationManager;
         this.profileRepository = profileRepository;
-        this.refreshTokenService = refreshTokenService;
+        this.jwtTokenService = jwtTokenService;
         setFilterProcessesUrl("/auths/login");
     }
 
@@ -87,15 +88,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String nickname = profile.getNickname();
         String type = profile.getType().toString();
 
-        String access = JWTUtil.createJWT("access", nickname, type, 1800000L);
-        String refresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
+        String access = JWTUtil.createJWT("access", nickname, type, JwtTokenConstants.ACCESS_EXPIRED);
+        String refresh = JWTUtil.createJWT("refresh", nickname, type, JwtTokenConstants.REFRESH_EXPIRED);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .nickname(nickname)
                 .refreshToken(refresh)
                 .build();
 
-        refreshTokenService.saveRefreshToken(refreshToken, 86400000L);
+        jwtTokenService.saveRefreshToken(refreshToken, JwtTokenConstants.REFRESH_EXPIRED);
 
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));

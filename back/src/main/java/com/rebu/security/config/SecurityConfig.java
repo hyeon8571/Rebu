@@ -1,13 +1,11 @@
 package com.rebu.security.config;
 
 import com.rebu.common.service.RedisService;
-import com.rebu.member.repository.MemberRepository;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.security.filter.AuthenticationFilter;
 import com.rebu.security.filter.AuthorizationFilter;
 import com.rebu.security.filter.CustomLogoutFilter;
-import com.rebu.security.service.RefreshTokenService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.rebu.security.service.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -32,9 +26,8 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ProfileRepository profileRepository;
-    private final RefreshTokenService refreshTokenService;
+    private final JwtTokenService jwtTokenService;
     private final RedisService redisService;
-    private final MemberRepository memberRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -65,7 +58,7 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new CustomLogoutFilter(redisService), LogoutFilter.class);
         http
-                .addFilterAt(new AuthenticationFilter(authenticationManager(authenticationConfiguration), profileRepository, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new AuthenticationFilter(authenticationManager(authenticationConfiguration), profileRepository, jwtTokenService), UsernamePasswordAuthenticationFilter.class);
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

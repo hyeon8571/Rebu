@@ -1,6 +1,7 @@
 package com.rebu.security.service;
 
-import com.rebu.common.constants.RedisConstants;
+import com.rebu.common.constants.JwtTokenConstants;
+import com.rebu.common.constants.RedisSessionConstants;
 import com.rebu.common.service.RedisService;
 import com.rebu.security.entity.RefreshToken;
 import com.rebu.security.exception.RefreshInvalidException;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenService {
+public class JwtTokenService {
 
     private final RedisService redisService;
 
@@ -55,8 +56,8 @@ public class RefreshTokenService {
 
         String type = JWTUtil.getType(refreshToken);
 
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
-        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
+        String newAccess = JWTUtil.createJWT("access", nickname, type, JwtTokenConstants.ACCESS_EXPIRED);
+        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, JwtTokenConstants.REFRESH_EXPIRED);
 
         redisService.deleteData(generatePrefixedKey(nickname));
 
@@ -65,7 +66,7 @@ public class RefreshTokenService {
                 .refreshToken(newRefresh)
                 .build();
 
-        saveRefreshToken(newRefreshToken, 86400000L);
+        saveRefreshToken(newRefreshToken, JwtTokenConstants.REFRESH_EXPIRED);
 
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
@@ -77,7 +78,17 @@ public class RefreshTokenService {
     }
 
     private String generatePrefixedKey(String key) {
-        return RedisConstants.REFRESH + key;
+        return RedisSessionConstants.REFRESH + key;
+    }
+
+    public void resetToken(String nickname, String oldNickname , String type, HttpServletResponse response) {
+        redisService.deleteData(RedisSessionConstants.REFRESH + oldNickname);
+        String newAccess = JWTUtil.createJWT("access", nickname, type, JwtTokenConstants.ACCESS_EXPIRED);
+        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, JwtTokenConstants.REFRESH_EXPIRED);
+
+        redisService.setDataExpire(RedisSessionConstants.REFRESH + nickname, newRefresh, JwtTokenConstants.REFRESH_EXPIRED);
+        response.setHeader("access", newAccess);
+        response.addCookie(createCookie("refresh", newRefresh));
     }
 
     private Cookie createCookie(String key, String value) {

@@ -1,7 +1,5 @@
 package com.rebu.profile.service;
 
-import com.rebu.common.constants.RedisConstants;
-import com.rebu.common.service.RedisService;
 import com.rebu.common.util.FileUtils;
 import com.rebu.follow.repository.FollowRepository;
 import com.rebu.member.entity.Member;
@@ -14,10 +12,9 @@ import com.rebu.profile.exception.ProfileNotFoundException;
 import com.rebu.profile.repository.ProfileRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
-import com.rebu.security.util.JWTUtil;
+import com.rebu.security.service.JwtTokenService;
 import com.rebu.storage.exception.FileUploadFailException;
 import com.rebu.storage.service.StorageService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -33,10 +30,10 @@ import java.util.List;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final RedisService redisService;
     private final StorageService storageService;
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
+    private final JwtTokenService jwtTokenService;
 
     @Transactional
     public void generateProfile(ProfileGenerateDto profileGenerateDto, Member member) {
@@ -69,9 +66,7 @@ public class ProfileService {
 
         profile.changeNickname(changeNicknameDto.getNewNickname());
 
-        redisService.deleteData(RedisConstants.REFRESH + changeNicknameDto.getOldNickname());
-
-        resetToken(changeNicknameDto.getNewNickname(), profile.getType().toString(), response);
+        jwtTokenService.resetToken(changeNicknameDto.getNewNickname(), changeNicknameDto.getOldNickname(), profile.getType().toString(), response);
 
         return ProfileInfo.builder()
                 .imageSrc(profile.getImageSrc())
@@ -133,9 +128,7 @@ public class ProfileService {
 
         Profile profileToSwitch = profileRepository.findFirstByEmailOrderByRecentTimeDesc(targetProfile.getMember().getEmail());
 
-        redisService.deleteData(RedisConstants.REFRESH + targetProfile.getNickname());
-
-        resetToken(profileToSwitch.getNickname(), profileToSwitch.getType().toString(), response);
+        jwtTokenService.resetToken(profileToSwitch.getNickname(), targetProfile.getNickname(), profileToSwitch.getType().toString(), response);
 
         return ProfileInfo.builder()
                 .imageSrc(profileToSwitch.getImageSrc())
@@ -166,9 +159,7 @@ public class ProfileService {
             throw new MemberNotMatchException();
         }
 
-        redisService.deleteData(RedisConstants.REFRESH + nowProfile.getNickname());
-
-        resetToken(targetProfile.getNickname(), targetProfile.getType().toString(), response);
+        jwtTokenService.resetToken(targetProfile.getNickname(), nowProfile.getNickname(), targetProfile.getType().toString(), response);
 
         return ProfileInfo.builder()
                 .imageSrc(targetProfile.getImageSrc())
@@ -246,22 +237,4 @@ public class ProfileService {
                 .build();
     }
 
-    private void resetToken(String nickname, String type, HttpServletResponse response) {
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
-        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
-
-        redisService.setDataExpire(RedisConstants.REFRESH + nickname, newRefresh, 86400000L);
-        response.setHeader("access", newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
-    }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-
-        return cookie;
-    }
 }

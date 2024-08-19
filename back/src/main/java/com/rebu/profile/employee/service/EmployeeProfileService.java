@@ -3,7 +3,6 @@ package com.rebu.profile.employee.service;
 import com.rebu.absence.dto.AbsenceDto;
 import com.rebu.absence.entity.Absence;
 import com.rebu.absence.repository.AbsenceRepository;
-import com.rebu.common.service.RedisService;
 import com.rebu.common.util.ListUtils;
 import com.rebu.follow.repository.FollowRepository;
 import com.rebu.member.entity.Member;
@@ -28,12 +27,11 @@ import com.rebu.reservation.entity.Reservation;
 import com.rebu.reservation.repository.ReservationRepository;
 import com.rebu.security.dto.AuthProfileInfo;
 import com.rebu.security.dto.ProfileInfo;
-import com.rebu.security.util.JWTUtil;
+import com.rebu.security.service.JwtTokenService;
 import com.rebu.workingInfo.dto.WorkingInfoDto;
 import com.rebu.workingInfo.entity.WorkingInfo;
 import com.rebu.workingInfo.repository.WorkingInfoRepository;
 import com.rebu.workingInfo.service.WorkingInfoService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,12 +48,12 @@ public class EmployeeProfileService {
     private final ProfileService profileService;
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
-    private final RedisService redisService;
     private final WorkingInfoService workingInfoService;
     private final ShopProfileRepository shopProfileRepository;
     private final ReservationRepository reservationRepository;
     private final AbsenceRepository absenceRepository;
     private final WorkingInfoRepository workingInfoRepository;
+    private final JwtTokenService jwtTokenService;
 
     @Transactional
     public ProfileInfo generateProfile(GenerateEmployeeProfileDto generateEmployeeProfileDto, HttpServletResponse response) {
@@ -74,9 +72,7 @@ public class EmployeeProfileService {
             path = profileService.changePhoto(changeImgDto);
         }
 
-        redisService.deleteData("Refresh:" + generateEmployeeProfileDto.getNowNickname());
-
-        resetToken(generateEmployeeProfileDto.getNickname(), Type.EMPLOYEE.toString(), response);
+        jwtTokenService.resetToken(generateEmployeeProfileDto.getNickname(), generateEmployeeProfileDto.getNowNickname(), Type.EMPLOYEE.toString(), response);
 
         return ProfileInfo.builder()
                 .imageSrc(path)
@@ -191,24 +187,6 @@ public class EmployeeProfileService {
                 .workingName(myEmployeeProfile.getWorkingName())
                 .phone(myEmployeeProfile.getPhone())
                 .build();
-    }
-
-    private void resetToken(String nickname, String type, HttpServletResponse response) {
-        String newAccess = JWTUtil.createJWT("access", nickname, type, 1800000L);
-        String newRefresh = JWTUtil.createJWT("refresh", nickname, type, 86400000L);
-
-        redisService.setDataExpire("Refresh:" + nickname, newRefresh, 86400000L);
-        response.setHeader("access", newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
-    }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        return cookie;
     }
 
 }

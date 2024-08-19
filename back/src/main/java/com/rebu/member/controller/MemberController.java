@@ -4,7 +4,7 @@ import com.rebu.auth.exception.EmailNotVerifiedException;
 import com.rebu.auth.exception.PasswordNotVerifiedException;
 import com.rebu.auth.exception.PhoneNotVerifiedException;
 import com.rebu.common.aop.annotation.Authorized;
-import com.rebu.common.constants.RedisConstants;
+import com.rebu.common.constants.RedisSessionConstants;
 import com.rebu.common.controller.dto.ApiResponse;
 import com.rebu.member.controller.dto.MemberJoinRequest;
 import com.rebu.member.controller.dto.ChangePasswordRequest;
@@ -43,7 +43,7 @@ public class MemberController {
                                         HttpSession session) {
         Boolean isExist = memberService.checkEmailDuplicated(email);
         if (!isExist) {
-            session.setAttribute(RedisConstants.CHECK_EMAIL + purpose, email);
+            session.setAttribute(RedisSessionConstants.CHECK_EMAIL + purpose, email);
         }
         return ResponseEntity.ok(new ApiResponse<>("1B01", isExist));
     }
@@ -51,7 +51,7 @@ public class MemberController {
     @PatchMapping("/{email}/password")
     public ResponseEntity<?> changePassword(@PathVariable String email,
                                             @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
-                                            @SessionAttribute(name = RedisConstants.AUTH_EMAIL + "changePassword", required = false) String authEmail) {
+                                            @SessionAttribute(name = RedisSessionConstants.AUTH_EMAIL + "changePassword", required = false) String authEmail) {
         if (authEmail == null || !authEmail.equals(email)) {
             throw new EmailNotVerifiedException();
         }
@@ -62,7 +62,7 @@ public class MemberController {
     @GetMapping("/find-email")
     public ResponseEntity<?> findEmail(@Name @RequestParam String name,
                                        @Phone @RequestParam String phone,
-                                       @SessionAttribute(name = RedisConstants.AUTH_PHONE + "findEmail", required = false) String authPhone) {
+                                       @SessionAttribute(name = RedisSessionConstants.AUTH_PHONE + "findEmail", required = false) String authPhone) {
         if (authPhone == null || !authPhone.equals(phone)) {
             throw new PhoneNotVerifiedException();
         }
@@ -73,7 +73,7 @@ public class MemberController {
     @Authorized(allowed = Type.COMMON)
     @DeleteMapping
     public ResponseEntity<?> delete(@Nickname @RequestParam String nickname,
-                                    @SessionAttribute(name = RedisConstants.AUTH_PASSWORD + "withdrawal", required = false) String authPassword) {
+                                    @SessionAttribute(name = RedisSessionConstants.AUTH_PASSWORD + "withdrawal", required = false) String authPassword) {
         if (authPassword == null || !authPassword.equals(nickname)) {
             throw new PasswordNotVerifiedException();
         }

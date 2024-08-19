@@ -1,6 +1,6 @@
 package com.rebu.common.constants;
 
-public class RedisConstants {
+public class RedisSessionConstants {
     public static final String REFRESH = "Refresh:";
     public static final String CHECK_NICKNAME = "CheckNickname:";
     public static final String CHECK_PHONE = "CheckPhone:";
