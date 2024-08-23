@@ -15,7 +15,12 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 <br>
 
 - **프로젝트 기간**: 2024.07.02 ~ 2024.08.16
-- **개발 인원**: (프론트) 양규현, 윤지원, 노진서 / (백엔드) 이유승, 원승현, 김종덕
+  
+## 👨🏻‍💻 개발 인원
+
+|         <img src="https://github.com/yuseung0429.png" width="150">          |   <img src="https://github.com/hyeon8571.png" width="150">   |    <img src="https://github.com/Kimjongdeok11.png" width="150">     | <img src="https://github.com/altys31.png" width="150">  |   <img src="https://github.com/dbe0717.png" width="150">    |       <img src="https://github.com/Roh-Jinseo.png" width="150">       |
+| :----------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------: | :-----------------------------------------------------------: | :-----------------------------------------------------------------: |
+| [이유승<br>@yuseung0429](https://github.com/yuseung0429)<br/>`BE`<br/>`Leader` | [원승현<br>@hyeon8571](https://github.com/hyeon8571)<br/>`BE` | [김종덕<br>@Kimjongdeok11](https://github.com/Kimjongdeok11)<br/>`BE` | [양규현<br>@altys31](https://github.com/altys31)<br/>`FE` | [윤지원<br>@dbe0717](https://github.com/dbe0717)<br/>`FE` | [노진서<br>@Roh-Jinseo](https://github.com/Roh-Jinseo)<br/>`FE` |
 
 <br>
 
@@ -116,5 +121,5 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 
 ## 📊 API 명세서
 
-<a href="https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936"> 명세서 링크
+#### [명세서 링크](https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936)
 
