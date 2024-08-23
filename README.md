@@ -1,36 +1,16 @@
 # <img width="30" align="center" src="https://github.com/user-attachments/assets/4fd4dc80-de87-439a-a297-4a32bbdd3f4c"> REBU
 
 <p align="center">
-  <img width="70%" src="https://github.com/user-attachments/assets/025b82a3-ed33-4952-bfde-8a3a8d0458d9" alt="Description">
+  <img width="100%" src="https://github.com/user-attachments/assets/d0b26443-1d1c-4ced-bda8-52e356b50b40" alt="Description">
 </p>
 
 
 ## 💡 프로젝트 소개
 
-리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적으로 볼 수 있고, 즉시 예약을 할 수 있습니다. <br>
-매장과 디자이너는 자신에 맞게 시스템을 커스텀하여 더욱 효율적으로 일정을 관리하고 홍보를 할 수 있습니다.
+REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적으로 볼 수 있고, 즉시 예약을 할 수 있습니다. 
 
-<p align="center">
- <img width="100%" src="https://github.com/user-attachments/assets/dc935d69-9eac-492f-aaac-38e8c04da858">
-</p>
 
-<br>
-
-<details>
-<summary><h2>📌 서비스 기능 상세보기</h2></summary>
-<div markdown="1">
-
-<br>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c5f130eb-2be8-4d49-91fd-8a58b4602508" width="90%" />
-  <img src="https://github.com/user-attachments/assets/89ea024b-582a-4d07-a2da-1e293a9e40aa" width="90%" />
-  <img src="https://github.com/user-attachments/assets/32515e20-339f-4fb2-bc65-52b283bb44af" width="90%" />
-  <img src="https://github.com/user-attachments/assets/dbbd2b60-2385-451f-925b-48c6c5c1112b" width="90%" />
-</p>
-
-</div>
-</details>
+또한 매장과 디자이너는 자신에 맞게 시스템을 커스텀하여 더욱 효율적으로 일정을 관리하고 홍보를 할 수 있습니다.
 
 <br>
 
@@ -38,6 +18,29 @@
 - **개발 인원**: (프론트) 양규현, 윤지원, 노진서 / (백엔드) 이유승, 원승현, 김종덕
 
 <br>
+
+### 📌 주요기능 소개
+
+#### 고객 측면(리뷰)
+- 미용, 네일, 에스테틱 등 뷰티 관련 매장 리뷰를 SNS 형식으로 직관적으로 제공
+- 위치 기반 주변 매장 리뷰 검색
+- 프로필 검색을 통한 매장 리뷰 및 게시글 모아보기
+<div>
+  <img src="https://github.com/user-attachments/assets/8a6b7264-9eea-4757-9206-7a1becd22f7b" width="30%" />
+  <img src="https://github.com/user-attachments/assets/72732668-d339-445e-a9fd-ccd3bc7237e8" width="30%" />
+</div>
+
+#### 고객 측면(예약)
+
+  
+
+
+  <img src="https://github.com/user-attachments/assets/89ea024b-582a-4d07-a2da-1e293a9e40aa" width="90%" />
+  <img src="https://github.com/user-attachments/assets/32515e20-339f-4fb2-bc65-52b283bb44af" width="90%" />
+  <img src="https://github.com/user-attachments/assets/dbbd2b60-2385-451f-925b-48c6c5c1112b" width="90%" />
+
+<br>
+
 
 ## <img align="center" width="50" src="https://github.com/user-attachments/assets/471435b6-e345-414d-b6eb-2fb11de1eb8f"> 시스템 아키텍처
 <p align="center">
@@ -92,4 +95,6 @@
 </details>
 
 ## 📊 API 명세서
-https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936
+
+<a href="https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936"> 명세서 링크
+
