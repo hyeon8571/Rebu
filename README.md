@@ -104,7 +104,9 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 - **빌드 툴**: Gradle
 - **프레임워크**: Spring Boot 3.3.2
 
-**프레임워크 및 라이브러리**
+### 기술 스택
+
+**✔️ 프레임워크 및 라이브러리**
 <div>
   <span><img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white"/></span>
@@ -118,13 +120,17 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
   <span><img src="https://img.shields.io/badge/Styled--Component-DB7093?style=flat-square&logo=styled-components&logoColor=white"/></span>
 </div>
 
-**데이터베이스**
+<br>
+
+**✔️ 데이터베이스**
 <div>
   <span><img src="https://img.shields.io/badge/mysql-4479A1.svg?style=flat-square&logo=mysql&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white"/></span>
 </div>
 
-**인프라 및 배포**
+<br>
+
+**✔️ 인프라 및 배포**
 <div>
   <span><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/jenkins-%232C5263.svg?style=flat-square&logo=jenkins&logoColor=white"/></span>
@@ -147,6 +153,181 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 </details>
 
 ## 📊 API 명세서
+<details>
+<summary>API 명세서 보기</summary>
+<div markdown="1">
 
-#### [명세서 링크](https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936)
+<br>
+
+<p align="center"><img src="https://github.com/user-attachments/assets/48bb8b2a-4486-4082-9508-c9cdedc67084" width="100%" /></p>
+
+</div>
+</details>
+
+#### [명세서 자세히 보기](https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936)
+
+## 📂 디렉토리 구조
+<details>
+<summary>디렉토리 구조 보기</summary>
+<div markdown="1">
+  
+```
+  .
+├── java
+│   └── com
+│       └── rebu
+│           ├── RebuApplication.java
+│           ├── absence
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── alarm
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── enums
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── auth
+│           │   ├── config
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── enums
+│           │   ├── exception
+│           │   ├── sevice
+│           │   └── validation
+│           ├── comment
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   ├── service
+│           │   └── validation
+│           ├── common
+│           │   ├── aop
+│           │   ├── config
+│           │   ├── controller
+│           │   ├── exception
+│           │   ├── service
+│           │   ├── util
+│           │   └── validation
+│           ├── feed
+│           │   ├── config
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   ├── review
+│           │   ├── service
+│           │   └── validation
+│           ├── follow
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── like
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── member
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── enums
+│           │   ├── exception
+│           │   ├── repository
+│           │   ├── service
+│           │   └── validation
+│           ├── menu
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repositoy
+│           │   ├── service
+│           │   └── validation
+│           ├── profile
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── employee
+│           │   ├── entity
+│           │   ├── enums
+│           │   ├── exception
+│           │   ├── repository
+│           │   ├── service
+│           │   ├── shop
+│           │   └── validation
+│           ├── reservation
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   ├── service
+│           │   └── validation
+│           ├── reviewkeyword
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── scrap
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── security
+│           │   ├── config
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── filter
+│           │   ├── service
+│           │   └── util
+│           ├── shop_favorite
+│           │   ├── controller
+│           │   ├── dto
+│           │   ├── entity
+│           │   ├── exception
+│           │   ├── repository
+│           │   └── service
+│           ├── storage
+│           │   ├── exception
+│           │   └── service
+│           └── workingInfo
+│               ├── controller
+│               ├── dto
+│               ├── entity
+│               ├── enums
+│               ├── exception
+│               ├── repository
+│               ├── service
+│               └── validation
+└── resources
+    ├── application-secret.yml
+    ├── application.yml
+    ├── data.sql
+    └── email
+        └── form
+            ├── changePassword.html
+            └── signup.html
+```
+
+</div>
+</details>
 
