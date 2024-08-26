@@ -26,43 +26,66 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 
 ### 📌 주요기능 소개
 
-#### 고객 측면(리뷰)
+#### ✔️ 고객 측면(리뷰)
 - 미용, 네일, 에스테틱 등 뷰티 관련 매장 리뷰를 SNS 형식으로 직관적으로 제공
 - 위치 기반 주변 매장 리뷰 검색
 - 프로필 검색을 통한 매장 리뷰 및 게시글 모아보기
-<div>
-  <img src="https://github.com/user-attachments/assets/8a6b7264-9eea-4757-9206-7a1becd22f7b" width="30%" />
-  <img src="https://github.com/user-attachments/assets/72732668-d339-445e-a9fd-ccd3bc7237e8" width="30%" />
-</div>
 
-#### 고객 측면(예약)
+<details>
+<summary>서비스 이미지</summary>
+<div markdown="1">
+  <img src="https://github.com/user-attachments/assets/2495d97e-5aef-46e7-95fa-d0efb6f2cce1" width="26%" />
+  <img src="https://github.com/user-attachments/assets/ca769ee1-c9a7-4e5f-b48b-e429408b2d92" width="23.7%" />
+</div>
+</details>
+
+<hr>
+
+#### ✔️ 고객 측면(예약)
 - 리뷰를 보고 실시간 예약 가능
 - 팔로우, 즐겨찾기 기능을 통해 관심 매장 등록 후 예약 가능
 - 편리한 예약 정보 관리
-<div>
-  <img src="https://github.com/user-attachments/assets/162b91d5-34d3-4732-955d-238dd7f6c2d9" width="30%" />
-  <img src="https://github.com/user-attachments/assets/998249d7-4e7b-4baa-a750-510a22a77765" width="30%" />
-  <img src="https://github.com/user-attachments/assets/97220add-56e2-4381-abdb-ef4fa69ef7f4" width="30%" />
-</div>
 
-#### 매장/디자이너 측면
+<details>
+<summary>서비스 이미지</summary>
+<div markdown="1">  
+  <img src="https://github.com/user-attachments/assets/9a76a7fe-2883-472f-9b25-d33c1552e051" width="27%" />
+  <img src="https://github.com/user-attachments/assets/cfc83f04-0e2a-4bb7-976f-1fa3ac2db367" width="34.3%" />
+  <img src="https://github.com/user-attachments/assets/3d4a4d08-6402-49de-9523-9ccbe1070736" width="24.7%" />
+</div>
+</details>
+
+<hr>
+
+#### ✔️ 매장/디자이너 측면
 - 디자이너 관리 및 시술 정보 관리
 - 예약 시간 단위 커스텀 및 시술 시간에 따른 일정 관리
 - SNS 형식의 매장 홍보글 작성 가능
-<div>
-  <img src="https://github.com/user-attachments/assets/c4911886-c02e-4161-ac55-08caaeae5a16" width="30%" />
-  <img src="https://github.com/user-attachments/assets/baf110c1-bc6b-4217-a3ae-bacf6fefd917" width="30%" />
-  <img src="https://github.com/user-attachments/assets/698d2832-db9e-4ca5-bf42-286469555f35" width="30%" />
-</div>
 
-#### 기타
+<details>
+<summary>서비스 이미지</summary>
+<div markdown="1">  
+  <img src="https://github.com/user-attachments/assets/8d4650bc-a734-40f1-b4f5-feb4526d3384" width="24.5%" />
+  <img src="https://github.com/user-attachments/assets/dcfcb29a-b985-40d9-ab1d-350b3eb738cc" width="30%" />
+  <img src="https://github.com/user-attachments/assets/33610f86-d02b-44dc-924c-3c69d92ad18a" width="35%" />
+</div>
+</details>
+
+<hr>
+
+#### ✔️ 기타
 - 전화번호, 이메일 인증을 통한 고객 인증
 - 사업자 등록번호 검증을 통한 매장 등록
 - 프로필 전환을 통한 다양한 프로필 이용 가능
-<div>
-  <img src="https://github.com/user-attachments/assets/df85b01d-0e9b-417c-9e0a-e095ddd57fd3" width="30%" />
-  <img src="https://github.com/user-attachments/assets/3ee5cb80-f5b7-4207-9997-a06a68c4c729" width="30%" />
+
+<details>
+<summary>서비스 이미지</summary>
+<div markdown="1">  
+  <img src="https://github.com/user-attachments/assets/9e3dadbb-9ef4-4cc4-b53b-0508712f6c73" width="30%" />
+  <img src="https://github.com/user-attachments/assets/294f5bf7-f038-4312-be88-2767c07fda1d" width="30%" />
 </div>
+</details>
+
 
 <br>
 
@@ -87,6 +110,9 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
   <span><img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=java&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/QueryDSL-007396?style=flat-square&logo=java&logoColor=white"/></span>
+  <span><img src="https://img.shields.io/badge/Jsoup-008000?style=flat-square&logo=java&logoColor=white"/></span>
+</div>
+<div>
   <span><img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black"/></span>
   <span><img src="https://img.shields.io/badge/Styled--Component-DB7093?style=flat-square&logo=styled-components&logoColor=white"/></span>
 </div>
