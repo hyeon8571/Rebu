@@ -99,14 +99,14 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 - **Nginx**: Reverse Proxy를 이용하여 클라이언트의 요청 분배
 - **Redis**: 리프레시 토큰 저장 및 인증 세션 저장소
 
-### 개발 환경
+### 💭 개발 환경
 - **개발 언어**: Java 17
 - **빌드 툴**: Gradle
 - **프레임워크**: Spring Boot 3.3.2
 
 ### ⚒️ 기술 스택
 
-**✔️ 프레임워크 및 라이브러리**
+**프레임워크 및 라이브러리**
 <div>
   <span><img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white"/></span>
@@ -122,7 +122,7 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 
 <br>
 
-**✔️ 데이터베이스**
+**데이터베이스**
 <div>
   <span><img src="https://img.shields.io/badge/mysql-4479A1.svg?style=flat-square&logo=mysql&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white"/></span>
@@ -130,7 +130,7 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 
 <br>
 
-**✔️ 인프라 및 배포**
+**인프라 및 배포**
 <div>
   <span><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/jenkins-%232C5263.svg?style=flat-square&logo=jenkins&logoColor=white"/></span>
