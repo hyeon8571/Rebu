@@ -108,7 +108,8 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 <div>
   <span><img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white"/></span>
-  <span><img src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=java&logoColor=white"/></span>
+  <span><img src="https://img.shields.io/badge/JWT-B041FF?style=flat-square&logo=jsonwebtokens&logoColor=white"/></span>
+  <span><img src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=hibernate&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/QueryDSL-007396?style=flat-square&logo=java&logoColor=white"/></span>
   <span><img src="https://img.shields.io/badge/Jsoup-008000?style=flat-square&logo=java&logoColor=white"/></span>
 </div>
