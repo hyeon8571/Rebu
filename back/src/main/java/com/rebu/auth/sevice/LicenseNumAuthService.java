@@ -37,11 +37,11 @@ public class LicenseNumAuthService {
 
             Element addressElement = element.select("tr:has(th:contains(회사주소)) td").first();
             String addressHtml = addressElement.html();
-            String address = extractFirstAddress(addressHtml);
+            String address = extractFirst(addressHtml);
 
             Element ownerElement = element.select("tr:has(th:contains(대표자)) td").first();
             String ownerHtml = ownerElement.html();
-            String owner = extractFirstAddress(ownerHtml);
+            String owner = extractFirst(ownerHtml);
 
             if (shopName.isEmpty()) {
                 throw new LicenceNumInvalidException();
@@ -65,8 +65,8 @@ public class LicenseNumAuthService {
         }
     }
 
-    private String extractFirstAddress(String addressHtml) {
-        Document tempDoc = Jsoup.parseBodyFragment(addressHtml);
+    private String extractFirst(String html) {
+        Document tempDoc = Jsoup.parseBodyFragment(html);
         Element firstAddressElement = tempDoc.select("body").first();
 
         String[] lines = firstAddressElement.html().split("<br\\s*/?>");

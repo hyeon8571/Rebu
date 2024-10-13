@@ -35,9 +35,9 @@ public class EmployeeProfileController {
                                                      @Valid @ModelAttribute GenerateEmployeeProfileRequest generateEmployeeProfileRequest,
                                                      HttpServletResponse response,
                                                      @SessionAttribute(name = RedisSessionConstants.CHECK_NICKNAME + "generateProfile", required = false) String nickname) {
-        if (nickname == null || !nickname.equals(generateEmployeeProfileRequest.getNickname())) {
-            throw new NicknameDuplicateException();
-        }
+//        if (nickname == null || !nickname.equals(generateEmployeeProfileRequest.getNickname())) {
+//            throw new NicknameDuplicateException();
+//        }
         ProfileInfo profileInfo = employeeProfileService.generateProfile(generateEmployeeProfileRequest.toDto(authProfileInfo.getEmail(), authProfileInfo.getNickname()), response);
         return ResponseEntity.ok(new ApiResponse<>("1D00", profileInfo));
     }

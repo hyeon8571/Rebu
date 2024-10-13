@@ -40,11 +40,11 @@ public class MemberService {
     @Transactional
     public void join(MemberJoinDto memberJoinDto, ProfileGenerateDto profileGenerateDto, HttpSession session) {
 
-        if (checkSignupPreAuth(memberJoinDto, profileGenerateDto, session)) {
+        //if (checkSignupPreAuth(memberJoinDto, profileGenerateDto, session)) {
             String encodedPassword = bCryptPasswordEncoder.encode(memberJoinDto.getPassword());
             Member savedMember = memberRepository.save(memberJoinDto.toEntity(encodedPassword));
             profileService.generateProfile(profileGenerateDto, savedMember);
-        }
+        //}
     }
 
     @Transactional(readOnly = true)
