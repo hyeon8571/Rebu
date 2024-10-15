@@ -203,7 +203,7 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 </div>
 </details>
 
-#### [명세서 자세히 보기](https://www.notion.so/REST-API-eb150679fab942c7a17a89bb4d4fc936)
+#### [명세서 자세히 보기](https://atlantic-question-629.notion.site/REST-API-eb150679fab942c7a17a89bb4d4fc936?pvs=4)
 
 ## 📂 디렉토리 구조
 <details>
