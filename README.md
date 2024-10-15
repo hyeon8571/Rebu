@@ -22,6 +22,45 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 | :----------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------: | :-----------------------------------------------------------: | :-----------------------------------------------------------------: |
 | [이유승<br>@yuseung0429](https://github.com/yuseung0429)<br/>`BE`<br/>`Leader` | [원승현<br>@hyeon8571](https://github.com/hyeon8571)<br/>`BE` | [김종덕<br>@Kimjongdeok11](https://github.com/Kimjongdeok11)<br/>`BE` | [양규현<br>@altys31](https://github.com/altys31)<br/>`FE` | [윤지원<br>@dbe0717](https://github.com/dbe0717)<br/>`FE` | [노진서<br>@Roh-Jinseo](https://github.com/Roh-Jinseo)<br/>`FE` |
 
+<details>
+<summary>🧑‍🚀  BE 역할 상세</summary>
+<div markdown="1">
+<div class="team-member"> 
+<h3>이유승</h3>
+<ul>
+    <li>역할: 팀장, 백엔드 개발</li>
+    <li>담당</li>
+        <ul>
+            <li>서버 아키텍처 설계 및 CI/CD 구축</li>
+            <li>백엔드 애플리케이션 개발 (리뷰, 피드, 리뷰, 예약 기능 구현)</li>
+        </ul>
+</ul>
+</div>
+<div class="team-member"> 
+<h3>원승현</h3>
+<ul>
+    <li>역할: TechLeader, 백엔드 개발</li>
+    <li>담당</li>
+        <ul>
+            <li>회원 관련 인증 기능 개발</li>
+            <li>백엔드 애플리케이션 개발 (프로필, 팔로우, 즐겨찾기 기능 구현)</li>
+        </ul>
+</ul>
+</div>
+<div class="team-member"> 
+<h3>김종덕</h3>
+<ul>
+    <li>역할: 백엔드 개발</li>
+    <li>담당</li>
+        <ul>
+            <li>SSE를 이용한 알림 기능 개발</li>
+            <li>백엔드 애플리케이션 개발(시술, 좋아요, 스크랩, 댓글, 부재, 영업 기능 구현)</li>
+        </ul>
+</ul>
+</div>
+</div>
+</details>
+
 <br>
 
 ### 📌 주요기능 소개
