@@ -129,7 +129,7 @@ REBU는 리뷰/예약 기반 SNS 플랫폼으로 고객은 리뷰를 직관적�
 <br>
 
 
-## <img align="center" width="50" src="https://github.com/user-attachments/assets/471435b6-e345-414d-b6eb-2fb11de1eb8f"> 시스템 아키텍처
+## <img align="center" width="50" src="https://github.com/user-attachments/assets/2e9357e9-30a3-4de4-9db6-b753a952ec55"> 시스템 아키텍처
 <p align="center">
   <img width="80%" src="https://github.com/user-attachments/assets/7942911b-1f57-432e-bf19-367bc1a71084"> 
 </p>
